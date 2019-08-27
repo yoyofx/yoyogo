@@ -1,4 +1,4 @@
-package YoyoGo
+package Middleware
 
 import (
 	"encoding/json"

@@ -1,6 +1,7 @@
 package YoyoGo
 
 import (
+	"github.com/maxzhang1985/yoyogo/Middleware"
 	"log"
 	"net/http"
 	"os"
@@ -14,12 +15,20 @@ const (
 )
 
 type YoyoGo struct {
+	router     *Middleware.RouterMiddleware
 	middleware middleware
 	handlers   []Handler
 }
 
-func Classic() *YoyoGo {
+func UseClassic() *YoyoGo {
 	return &YoyoGo{}
+}
+
+func UseMvc() *YoyoGo {
+	router := Middleware.NewRouter()
+	self := New(router)
+	self.router = router
+	return self
 }
 
 func New(handlers ...Handler) *YoyoGo {
@@ -42,10 +51,8 @@ func (n *YoyoGo) Use(handler Handler) {
 
 // UseHandler adds a http.Handler onto the middleware stack. Handlers are invoked in the order they are added to a Negroni.
 
-var reqFuncMap = make(map[string]func(ctx *HttpContext))
-
-func (yoyo *YoyoGo) Map(relativePath string, handler func(ctx *HttpContext)) {
-	reqFuncMap[relativePath] = handler
+func (yoyo *YoyoGo) Map(relativePath string, handler func(ctx *Middleware.HttpContext)) {
+	yoyo.router.ReqFuncMap[relativePath] = handler
 }
 
 func (yoyo *YoyoGo) Run(addr ...string) {
@@ -79,7 +86,7 @@ func (n *YoyoGo) UseFunc(handlerFunc HandlerFunc) {
 
 func (yoyo *YoyoGo) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	yoyo.middleware.Invoke(NewContext(w, r))
+	yoyo.middleware.Invoke(Middleware.NewContext(w, r))
 	//fmt.Println(r.URL.Path)
 	//ctx := NewContext(w,r)
 	//fun,ok := reqFuncMap[r.URL.Path]

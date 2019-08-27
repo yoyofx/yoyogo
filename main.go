@@ -2,13 +2,14 @@ package main
 
 import (
 	"github.com/maxzhang1985/yoyogo/Framework"
+	"github.com/maxzhang1985/yoyogo/Middleware"
 )
 
 func main() {
 
-	app := YoyoGo.Classic()
+	app := YoyoGo.UseMvc()
 
-	app.Map("/info", func(ctx *YoyoGo.HttpContext) {
+	app.Map("/info", func(ctx *Middleware.HttpContext) {
 		ctx.JSON(YoyoGo.M{"info": "hello world"})
 	})
 
