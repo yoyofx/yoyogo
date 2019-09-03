@@ -25,8 +25,9 @@ func UseClassic() *YoyoGo {
 }
 
 func UseMvc() *YoyoGo {
+	logger := Middleware.NewLogger()
 	router := Middleware.NewRouter()
-	self := New(router)
+	self := New(logger, router)
 	self.router = router
 	return self
 }

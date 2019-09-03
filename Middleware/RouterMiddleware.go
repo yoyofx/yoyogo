@@ -30,8 +30,11 @@ func (router *RouterMiddleware) Inovke(ctx *HttpContext, next func(ctx *HttpCont
 	fun, ok := router.ReqFuncMap[ctx.Req.URL.Path]
 	if ok {
 		fun(ctx)
+		next(ctx)
 		return
-	} else {
-		_ = NotFoundHandler(ctx)
 	}
+	//else {
+	//	_ = NotFoundHandler(ctx)
+	//}
+	next(ctx)
 }
