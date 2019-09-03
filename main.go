@@ -8,7 +8,6 @@ import (
 func main() {
 
 	app := YoyoGo.UseMvc()
-	//http.Handle("/Static", http.StripPrefix("/Static", http.FileServer(http.Dir("/Users/yoyofx/Documents/Src/yoyogo/Static/"))))
 
 	app.Use(Middleware.NewStatic("Static"))
 	app.Map("/info", func(ctx *Middleware.HttpContext) {
