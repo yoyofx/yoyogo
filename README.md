@@ -79,3 +79,4 @@ func main() {
 * [ ] Router Support Prefix and Group Such as "/api/v1/endpoint"
 
 ## Features
+* [ ] swagger
