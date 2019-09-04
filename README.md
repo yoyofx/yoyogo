@@ -54,6 +54,7 @@ func main() {
 * [ ] Image
 * [ ] Binary
 * [ ] Other Format
+* [ ] Render View (Template)
 
 ## Middleware
 * [X] Logger
