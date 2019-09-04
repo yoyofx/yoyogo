@@ -1,11 +1,11 @@
-package main
+package main1
 
 import (
 	"github.com/maxzhang1985/yoyogo/Framework"
 	"github.com/maxzhang1985/yoyogo/Middleware"
 )
 
-func main() {
+func main1() {
 
 	app := YoyoGo.UseMvc()
 
