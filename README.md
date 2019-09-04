@@ -2,7 +2,7 @@
 YoyoGo is a simple, light and fast Web framework written in Go. 
 
 # Features
-- Pretty and fast router - based on radix tree
+- Pretty and fast router 
 - Middleware Support
 - Friendly to REST API
 - No regexp or reflect
@@ -43,20 +43,38 @@ func main() {
 * [X] Simple router binded handle func
 * [X] HttpContext (request,response)
 * [X] Static File EndPoint（Static File Server）
+* [X] JSON Serialization Struct （YoyoGo.M）
+
 ### Response
 * [X] JSON
 * [X] JSONP
 * [ ] TEXT
+* [ ] XML
 * [ ] File
 * [ ] Image
 * [ ] Binary
 * [ ] Other Format
 
 ## Middleware
+* [X] Logger
+* [X] StaticFile
+* [X] Router
+* [ ] Session
+* [ ] CORS
+* [ ] Binding
+* [ ] GZip	
+* [ ] JWT 
+* [ ] OAuth2	 
+* [ ] Prometheus 
+* [ ] Secure
+* [ ] JWT 
 
 ## Router
+* [ ] GET、POST、HEAD、PUT、DELETE Method Support
 * [ ] Router Tree
 * [ ] Router Expression
-* [ ] GET、POST、HEAD、PUT、DELETE Method Support
+* [ ] RouteData (var)
+* [ ] Router Support Struct Refect Func Binded.
+* [ ] Router Support Prefix and Group Such as "/api/v1/endpoint"
 
 ## Features
