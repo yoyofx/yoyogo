@@ -8,32 +8,6 @@ YoyoGo is a simple, light and fast Web framework written in Go.
 - No regexp or reflect
 - Inspired by many excellent Go Web framework
 
-# ToDo
-## Standard
-* [X] Unified program entry (YoyoGo)
-* [X] Simple router binded handle func
-* [X] HttpContext (request,response)
-* [X] Static File EndPoint（Static File Server）
-### Response
-* [X] JSON
-* [X] JSONP
-* [ ] TEXT
-* [ ] File
-* [ ] Image
-* [ ] Binary
-* [ ] Other Format
-
-## Middleware
-
-## Router
-* [ ] Router Tree
-* [ ] Router Expression
-* [ ] GET、POST、HEAD、PUT、DELETE Method Support
-
-## Features
-
-
-
 # Installation
 
 `go get github.com/maxzhang1985/yoyogo`
@@ -61,3 +35,28 @@ func main() {
 
 }
 ```
+
+
+# ToDo
+## Standard
+* [X] Unified program entry (YoyoGo)
+* [X] Simple router binded handle func
+* [X] HttpContext (request,response)
+* [X] Static File EndPoint（Static File Server）
+### Response
+* [X] JSON
+* [X] JSONP
+* [ ] TEXT
+* [ ] File
+* [ ] Image
+* [ ] Binary
+* [ ] Other Format
+
+## Middleware
+
+## Router
+* [ ] Router Tree
+* [ ] Router Expression
+* [ ] GET、POST、HEAD、PUT、DELETE Method Support
+
+## Features
