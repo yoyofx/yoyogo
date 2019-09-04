@@ -80,3 +80,4 @@ func main() {
 
 ## Features
 * [ ] swagger
+* [ ] configtion
