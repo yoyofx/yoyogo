@@ -47,7 +47,7 @@ func main() {
 
 ### Response
 * [X] JSON
-* [X] JSONP
+* [ ] JSONP
 * [ ] TEXT
 * [ ] XML
 * [ ] File
