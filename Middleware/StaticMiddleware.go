@@ -14,13 +14,10 @@ func NewStatic(path string) *Static {
 }
 
 func (s *Static) Inovke(ctx *HttpContext, next func(ctx *HttpContext)) {
-	if ctx.Req.Method != "GET" && ctx.Req.Method != "HEAD" && !strings.Contains(ctx.Req.URL.Path, s.VPath) {
+	if (ctx.Req.Method != "GET" && ctx.Req.Method != "HEAD") || !strings.Contains(ctx.Req.URL.Path, s.VPath) {
 		next(ctx)
 		return
 	}
-
-	//webroot := http.Dir("./ "+s.VPath)
-	//f,err := webroot.Open()
 
 	prefixPath := "/" + s.VPath
 	webroot := "." + prefixPath
