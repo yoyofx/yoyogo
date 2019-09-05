@@ -44,15 +44,15 @@ func main() {
 * [X] HttpContext (request,response)
 * [X] Static File EndPoint（Static File Server）
 * [X] JSON Serialization Struct （YoyoGo.M）
-
+* [X] Get Request File And Save
 ### Response
 * [X] JSON
-* [ ] JSONP
-* [ ] TEXT
+* [X] JSONP
+* [X] TEXT
+* [X] Binary
 * [ ] XML
 * [ ] File
 * [ ] Image
-* [ ] Binary
 * [ ] Other Format
 * [ ] Render View (Template)
 
