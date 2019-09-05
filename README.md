@@ -45,6 +45,8 @@ func main() {
 * [X] Static File EndPoint（Static File Server）
 * [X] JSON Serialization Struct （YoyoGo.M）
 * [X] Get Request File And Save
+* [X] Unite Get Post Data Away (form-data , x-www-form-urlencoded)
+
 ### Response
 * [X] JSON
 * [X] JSONP
