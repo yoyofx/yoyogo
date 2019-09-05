@@ -2,12 +2,14 @@ package Middleware
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"mime/multipart"
 	"net/http"
 	"net/url"
 	"os"
 	"path"
+	"strings"
 	"sync"
 )
 
@@ -73,21 +75,45 @@ func (ctx *HttpContext) GetCookie(name string) string {
 }
 
 //Get Post Params
-func (ctx *HttpContext) Params() url.Values {
-	return ctx.Req.Form
+func (ctx *HttpContext) PostForm() url.Values {
+	_ = ctx.Req.ParseForm()
+	return ctx.Req.PostForm
+}
+
+func (ctx *HttpContext) PostMultipartForm() url.Values {
+	_ = ctx.Req.ParseMultipartForm(32 << 20)
+	return ctx.Req.MultipartForm.Value
 }
 
 //Get Post Param
 func (ctx *HttpContext) Param(name string) string {
-	if ctx.Params()[name] != nil {
-		return ctx.Params()[name][0]
+	var form url.Values
+	content_type := strings.ToLower(ctx.Req.Header.Get("Content-Type"))
+	if content_type == "application/x-www-form-urlencoded" {
+		form = ctx.PostForm()
+	} else if strings.Contains(content_type, "multipart/form-data") {
+		form = ctx.PostMultipartForm()
+	}
+
+	if form[name] != nil {
+		return form[name][0]
 	}
 	return ""
 }
 
 // Get Query string
-func (ctx *HttpContext) QueryString() url.Values {
-	return ctx.Req.URL.Query()
+func (ctx *HttpContext) QueryStrings() url.Values {
+
+	queryForm, err := url.ParseQuery(ctx.Req.URL.RawQuery)
+	if err == nil {
+		return queryForm
+	}
+	return nil
+}
+
+// Get Query String By Key
+func (ctx *HttpContext) Query(key string) string {
+	return ctx.QueryStrings().Get(key)
 }
 
 // Redirect redirects the request
@@ -151,6 +177,12 @@ func (ctx *HttpContext) Error(code int, error string) {
 // Write Byte[] Response.
 func (ctx *HttpContext) Write(data []byte) (n int, err error) {
 	return ctx.Resp.Write(data)
+}
+
+// Text response text format data .
+func (ctx *HttpContext) String(code int, format string, datas ...interface{}) error {
+	text := fmt.Sprintf(format, datas)
+	return ctx.Text(code, text)
 }
 
 // Text response text data.
