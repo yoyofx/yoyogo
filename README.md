@@ -39,6 +39,7 @@ func main() {
 
 # ToDo
 ## Standard
+* [X] Print Logo (YoyoGo)
 * [X] Unified program entry (YoyoGo)
 * [X] Simple router binded handle func
 * [X] HttpContext (request,response)
