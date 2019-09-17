@@ -2,6 +2,7 @@ package Middleware
 
 import (
 	"bytes"
+	Std "github.com/maxzhang1985/yoyogo/Standard"
 	"html/template"
 	"log"
 	"net/http"
@@ -12,7 +13,7 @@ import (
 type LoggerInfo struct {
 	StartTime string
 	Status    int
-	Duration  time.Duration
+	Duration  string
 	HostName  string
 	Method    string
 	Path      string
@@ -56,7 +57,7 @@ func (l *Logger) Inovke(ctx *HttpContext, next func(ctx *HttpContext)) {
 	log := LoggerInfo{
 		StartTime: start.Format(l.dateFormat),
 		Status:    res.Status(),
-		Duration:  time.Since(start),
+		Duration:  Std.PadLeft(time.Since(start).String(), " ", 11),
 		HostName:  ctx.Req.Host,
 		Method:    ctx.Req.Method,
 		Path:      ctx.Req.URL.Path,

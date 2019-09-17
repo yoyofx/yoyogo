@@ -4,11 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/url"
 	"os"
 	"path"
+	"strconv"
 	"strings"
 	"sync"
 )
@@ -85,14 +87,40 @@ func (ctx *HttpContext) PostMultipartForm() url.Values {
 	return ctx.Req.MultipartForm.Value
 }
 
+func (ctx *HttpContext) PostJsonForm() url.Values {
+	ret := url.Values{}
+	var jsonMap map[string]interface{}
+	body, _ := ioutil.ReadAll(ctx.Req.Body)
+	_ = json.Unmarshal(body, &jsonMap)
+	var strVal string
+	for key, value := range jsonMap {
+		switch value.(type) {
+		case int32:
+		case int64:
+			strVal = strconv.Itoa(value.(int))
+			break
+		case float64:
+			strVal = strconv.FormatFloat(value.(float64), 'f', -1, 64)
+			break
+		default:
+			strVal = fmt.Sprint(value)
+		}
+		ret.Add(key, strVal)
+	}
+	return ret
+}
+
 //Get Post Param
 func (ctx *HttpContext) Param(name string) string {
 	var form url.Values
+
 	content_type := strings.ToLower(ctx.Req.Header.Get("Content-Type"))
 	if content_type == "application/x-www-form-urlencoded" {
 		form = ctx.PostForm()
 	} else if strings.Contains(content_type, "multipart/form-data") {
 		form = ctx.PostMultipartForm()
+	} else if strings.Contains(content_type, "application/json") {
+		form = ctx.PostJsonForm()
 	}
 
 	if form[name] != nil {

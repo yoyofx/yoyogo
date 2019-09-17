@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/maxzhang1985/yoyogo/Framework"
 	"github.com/maxzhang1985/yoyogo/Middleware"
+	"github.com/maxzhang1985/yoyogo/Standard"
 )
 
 func main() {
@@ -18,7 +19,7 @@ func main() {
 
 		strResult := fmt.Sprintf("Name:%s , Q1:%s", pd_name, qs_q1)
 
-		ctx.JSON(YoyoGo.M{"info": "hello world", "result": strResult})
+		ctx.JSON(Std.M{"info": "hello world", "result": strResult})
 	})
 
 	app.Run(":8080")

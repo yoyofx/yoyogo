@@ -1,13 +1,13 @@
 package YoyoGo
 
 import (
+	"encoding/base64"
+	"fmt"
 	"github.com/maxzhang1985/yoyogo/Middleware"
 	"log"
 	"net/http"
 	"os"
 )
-
-type M = map[string]string
 
 const (
 	// DefaultAddress is used if no other is specified.
@@ -56,8 +56,14 @@ func (yoyo *YoyoGo) Map(relativePath string, handler func(ctx *Middleware.HttpCo
 	yoyo.router.ReqFuncMap[relativePath] = handler
 }
 
+func (yoyo *YoyoGo) printLogo() {
+	logo, _ := base64.StdEncoding.DecodeString("CiBfICAgICBfICAgICAgICAgICAgICAgICAgICBfX18gICAgICAgICAgCiggKSAgICggKSAgICAgICAgICAgICAgICAgICggIF9gXCAgICAgICAgCmBcYFxfLycvJ18gICAgXyAgIF8gICAgXyAgIHwgKCAoXykgICBfICAgCiAgYFwgLycvJ19gXCAoICkgKCApIC8nX2BcIHwgfF9fXyAgLydfYFwgCiAgIHwgfCggKF8pICl8IChfKSB8KCAoXykgKXwgKF8sICkoIChfKSApCiAgIChfKWBcX19fLydgXF9fLCB8YFxfX18vJyhfX19fLydgXF9fXy8nCiAgICAgICAgICAgICAoIClffCB8ICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICBgXF9fXy8nICAgICAgICAgICAgICAgICAgICAgCg==")
+	fmt.Println(string(logo))
+}
+
 func (yoyo *YoyoGo) Run(addr ...string) {
-	l := log.New(os.Stdout, "[yoyofx] ", 0)
+	yoyo.printLogo()
+	l := log.New(os.Stdout, "[yoyogo] ", 0)
 	finalAddr := detectAddress(addr...)
 	l.Printf("listening on %s", finalAddr)
 	l.Fatal(http.ListenAndServe(finalAddr, yoyo))
