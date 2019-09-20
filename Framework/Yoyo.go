@@ -47,6 +47,10 @@ func (n *YoyoGo) Use(handler Handler) {
 	n.handlers = append(n.handlers, handler)
 	n.middleware = build(n.handlers)
 }
+func (app *YoyoGo) UseStatic(path string) {
+	app.Use(Middleware.NewStatic("Static"))
+
+}
 
 // UseFunc adds a Negroni-style handler function onto the middleware stack.
 
