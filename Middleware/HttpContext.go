@@ -1,11 +1,16 @@
 package Middleware
 
 import (
+	"bytes"
 	"encoding/json"
+	"encoding/xml"
+	"errors"
 	"fmt"
+	Std "github.com/maxzhang1985/yoyogo/Standard"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -13,6 +18,11 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+)
+
+const (
+	defaultTagName = "form"
+	jsonTagName    = "json"
 )
 
 type HttpContext struct {
@@ -90,7 +100,7 @@ func (ctx *HttpContext) PostMultipartForm() url.Values {
 func (ctx *HttpContext) PostJsonForm() url.Values {
 	ret := url.Values{}
 	var jsonMap map[string]interface{}
-	body, _ := ioutil.ReadAll(ctx.Req.Body)
+	body := ctx.PostBody()
 	_ = json.Unmarshal(body, &jsonMap)
 	var strVal string
 	for key, value := range jsonMap {
@@ -110,23 +120,98 @@ func (ctx *HttpContext) PostJsonForm() url.Values {
 	return ret
 }
 
-//Get Post Param
-func (ctx *HttpContext) Param(name string) string {
+func (ctx *HttpContext) GetAllParam() url.Values {
 	var form url.Values
+	content_type := ctx.Req.Header.Get("Content-Type")
 
-	content_type := strings.ToLower(ctx.Req.Header.Get("Content-Type"))
-	if content_type == "application/x-www-form-urlencoded" {
+	if strings.HasPrefix(content_type, Std.MIMEApplicationForm) {
 		form = ctx.PostForm()
-	} else if strings.Contains(content_type, "multipart/form-data") {
+	} else if strings.HasPrefix(content_type, Std.MIMEMultipartForm) {
 		form = ctx.PostMultipartForm()
-	} else if strings.Contains(content_type, "application/json") {
+	} else if strings.HasPrefix(content_type, Std.MIMEApplicationJSON) {
 		form = ctx.PostJsonForm()
 	}
+	return form
+}
 
+//Get Post Param
+func (ctx *HttpContext) Param(name string) string {
+	form := ctx.GetAllParam()
 	if form[name] != nil {
 		return form[name][0]
 	}
 	return ""
+}
+
+// PostBody returns data from the POST or PUT request body
+func (ctx *HttpContext) PostBody() []byte {
+	bts, err := ioutil.ReadAll(ctx.Req.Body)
+	ctx.Req.Body = ioutil.NopCloser(bytes.NewBuffer(bts))
+	if err != nil {
+		return []byte{}
+	}
+
+	return bts
+}
+
+func (ctx *HttpContext) Bind(i interface{}) (err error) {
+	req := ctx.Req
+	ctype := req.Header.Get(Std.HeaderContentType)
+	if req.Body == nil {
+		err = errors.New("request body can't be empty")
+		return err
+	}
+	err = errors.New("request unsupported MediaType -> " + ctype)
+	tagName := defaultTagName
+	switch {
+	case strings.HasPrefix(ctype, Std.MIMEApplicationXML):
+		err = xml.Unmarshal(ctx.PostBody(), i)
+	case strings.HasPrefix(ctype, Std.MIMEApplicationJSON):
+		tagName = jsonTagName
+	default:
+		// check is use json tag, fixed for issue #91
+		//tagName = defaultTagName
+		// no check content type for fixed issue #6
+
+	}
+	err = Std.ConvertMapToStruct(tagName, i, ctx.GetAllParam())
+	return err
+}
+
+// RemoteIP RemoteAddr to an "IP" address
+func (ctx *HttpContext) RemoteIP() string {
+	host, _, _ := net.SplitHostPort(ctx.Req.RemoteAddr)
+	return host
+}
+
+// RealIP returns the first ip from 'X-Forwarded-For' or 'X-Real-IP' header key
+// if not exists data, returns request.RemoteAddr
+// fixed for #164
+func (ctx *HttpContext) RealIP() string {
+	if ip := ctx.Req.Header.Get(Std.HeaderXForwardedFor); ip != "" {
+		return strings.Split(ip, ", ")[0]
+	}
+	if ip := ctx.Req.Header.Get(Std.HeaderXRealIP); ip != "" {
+		return ip
+	}
+	host, _, _ := net.SplitHostPort(ctx.Req.RemoteAddr)
+	return host
+}
+
+// FullRemoteIP RemoteAddr to an "IP:port" address
+func (ctx *HttpContext) FullRemoteIP() string {
+	fullIp := ctx.Req.RemoteAddr
+	return fullIp
+}
+
+// IsAJAX returns if it is a ajax request
+func (ctx *HttpContext) IsAJAX() bool {
+	return strings.Contains(ctx.Req.Header.Get(Std.HeaderXRequestedWith), "XMLHttpRequest")
+}
+
+// Url get request url
+func (ctx *HttpContext) Url() string {
+	return ctx.Req.URL.String()
 }
 
 // Get Query string
