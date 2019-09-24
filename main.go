@@ -8,7 +8,8 @@ import (
 )
 
 type UserInfo struct {
-	UserName string `json:"username"`
+	UserName string `param:"username"`
+	Number   string `param:"q1"`
 }
 
 func main() {

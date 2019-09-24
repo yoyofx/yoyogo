@@ -29,8 +29,9 @@ func main() {
 	app.Use(Middleware.NewStatic("Static"))
 	app.Map("/info", func(ctx *Middleware.HttpContext) {
 	    userInfo := &UserInfo{}
-        _ = ctx.Bind(userInfo)
-        ctx.JSON(YoyoGo.M{"info": "hello world"})
+            ctx.Bind(userInfo)
+            strResult := fmt.Sprintf("Name:%s , Q1:%s , bind: %s", pd_name, qs_q1, userInfo.UserName)
+            ctx.JSON(Std.M{"info": "hello world", "result": strResult})
 	})
 
 	app.Run(":8080")

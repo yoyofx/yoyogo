@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	Std "github.com/maxzhang1985/yoyogo/Standard"
+	"github.com/maxzhang1985/yoyogo/Utils"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -21,7 +22,7 @@ import (
 )
 
 const (
-	defaultTagName = "form"
+	defaultTagName = "param"
 	jsonTagName    = "json"
 )
 
@@ -131,6 +132,9 @@ func (ctx *HttpContext) GetAllParam() url.Values {
 	} else if strings.HasPrefix(content_type, Std.MIMEApplicationJSON) {
 		form = ctx.PostJsonForm()
 	}
+
+	Utils.MergeMap(form, ctx.QueryStrings())
+
 	return form
 }
 
@@ -167,7 +171,7 @@ func (ctx *HttpContext) Bind(i interface{}) (err error) {
 	case strings.HasPrefix(ctype, Std.MIMEApplicationXML):
 		err = xml.Unmarshal(ctx.PostBody(), i)
 	case strings.HasPrefix(ctype, Std.MIMEApplicationJSON):
-		tagName = jsonTagName
+		//tagName = jsonTagName
 	default:
 		// check is use json tag, fixed for issue #91
 		//tagName = defaultTagName
