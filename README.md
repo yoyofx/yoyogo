@@ -86,3 +86,5 @@ func main() {
 ## Features
 * [ ] swagger
 * [ ] configtion
+* [ ] WebSocket
+* [ ] GRpc
