@@ -28,7 +28,9 @@ func main() {
 
 	app.Use(Middleware.NewStatic("Static"))
 	app.Map("/info", func(ctx *Middleware.HttpContext) {
-		ctx.JSON(YoyoGo.M{"info": "hello world"})
+	    userInfo := &UserInfo{}
+        _ = ctx.Bind(userInfo)
+        ctx.JSON(YoyoGo.M{"info": "hello world"})
 	})
 
 	app.Run(":8080")
@@ -47,7 +49,7 @@ func main() {
 * [X] JSON Serialization Struct （YoyoGo.M）
 * [X] Get Request File And Save
 * [X] Unite Get Post Data Away (form-data , x-www-form-urlencoded)
-
+* [X] Binding Model for Http Request ( From, JSON ) 
 ### Response
 * [X] JSON
 * [X] JSONP
@@ -65,7 +67,7 @@ func main() {
 * [X] Router
 * [ ] Session
 * [ ] CORS
-* [ ] Binding
+* [X] Binding
 * [ ] GZip	
 * [ ] JWT 
 * [ ] OAuth2	 
