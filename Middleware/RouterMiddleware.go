@@ -2,39 +2,45 @@ package Middleware
 
 import (
 	"net/http"
+	"strings"
 )
 
 //var ReqFuncMap = make(map[string]func(ctx * YoyoGo.HttpContext))
 
 type RouterMiddleware struct {
 	ReqFuncMap map[string]func(ctx *HttpContext)
+	Tree       *Trie
 }
 
 func NewRouter() *RouterMiddleware {
-	return &RouterMiddleware{ReqFuncMap: make(map[string]func(ctx *HttpContext))}
+	tree := &Trie{
+		Component: "/",
+		Methods:   make(map[string]func(ctx *HttpContext)),
+	}
+
+	return &RouterMiddleware{ReqFuncMap: make(map[string]func(ctx *HttpContext)), Tree: tree}
 }
 
-func NotFoundHandler(ctx *HttpContext) error {
+func NotFoundHandler(ctx *HttpContext) {
 	http.NotFound(ctx.Resp, ctx.Req)
-	return nil
 }
 
 // MethodNotAllowedHandler .
-func MethodNotAllowedHandler(ctx *HttpContext) error {
+func MethodNotAllowedHandler(ctx *HttpContext) {
 	http.Error(ctx.Resp, "Method Not Allowed", 405)
-	return nil
 }
 
 func (router *RouterMiddleware) Inovke(ctx *HttpContext, next func(ctx *HttpContext)) {
-
-	fun, ok := router.ReqFuncMap[ctx.Req.URL.Path]
-	if ok {
-		fun(ctx)
-		next(ctx)
-		return
+	var handler func(ctx *HttpContext)
+	node := router.Tree.Search(strings.Split(ctx.Req.URL.Path, "/")[1:], ctx.RouterData)
+	if node != nil && node.Methods[ctx.Req.Method] != nil {
+		handler = node.Methods[ctx.Req.Method]
+	} else if node != nil && node.Methods[ctx.Req.Method] == nil {
+		handler = MethodNotAllowedHandler
+	} else {
+		handler = NotFoundHandler
 	}
-	//else {
-	//	_ = NotFoundHandler(ctx)
-	//}
+
+	handler(ctx)
 	next(ctx)
 }
