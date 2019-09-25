@@ -29,6 +29,7 @@ const (
 type HttpContext struct {
 	Req        *http.Request
 	Resp       *responseWriter
+	RouterData url.Values
 	store      map[string]interface{}
 	storeMutex *sync.RWMutex
 }
@@ -43,6 +44,7 @@ func (ctx *HttpContext) init(w http.ResponseWriter, r *http.Request) {
 	ctx.storeMutex = new(sync.RWMutex)
 	ctx.Resp = &responseWriter{w, 0, 0, nil}
 	ctx.Req = r
+	ctx.RouterData = url.Values{}
 	ctx.storeMutex.Lock()
 	ctx.store = nil
 	ctx.storeMutex.Unlock()
@@ -134,7 +136,7 @@ func (ctx *HttpContext) GetAllParam() url.Values {
 	}
 
 	Utils.MergeMap(form, ctx.QueryStrings())
-
+	Utils.MergeMap(form, ctx.RouterData)
 	return form
 }
 
