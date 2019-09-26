@@ -89,6 +89,14 @@ func (ctx *HttpContext) GetCookie(name string) string {
 	return url.QueryEscape(cookie.Value)
 }
 
+func (c *HttpContext) Header(key, value string) {
+	if value == "" {
+		c.Resp.Header().Del(key)
+		return
+	}
+	c.Resp.Header().Set(key, value)
+}
+
 //Get Post Params
 func (ctx *HttpContext) PostForm() url.Values {
 	_ = ctx.Req.ParseForm()
@@ -215,6 +223,14 @@ func (ctx *HttpContext) IsAJAX() bool {
 	return strings.Contains(ctx.Req.Header.Get(Std.HeaderXRequestedWith), "XMLHttpRequest")
 }
 
+func (ctx *HttpContext) IsWebsocket() bool {
+	if strings.Contains(strings.ToLower(ctx.Req.Header.Get("Connection")), "upgrade") &&
+		strings.EqualFold(ctx.Req.Header.Get("Upgrade"), "websocket") {
+		return true
+	}
+	return false
+}
+
 // Url get request url
 func (ctx *HttpContext) Url() string {
 	return ctx.Req.URL.String()
@@ -261,8 +277,13 @@ func (ctx *HttpContext) Method() string {
 }
 
 //Get Http Status Code.
-func (ctx *HttpContext) Status() int {
+func (ctx *HttpContext) GetStatus() int {
 	return ctx.Resp.status
+}
+
+// Status sets the HTTP response code.
+func (ctx *HttpContext) Status(code int) {
+	ctx.Resp.WriteHeader(code)
 }
 
 // FormFile gets file from request.
@@ -313,7 +334,7 @@ func (ctx *HttpContext) Text(code int, body string) error {
 }
 
 // Write Json Response.
-func (ctx *HttpContext) JSON(data interface{}) {
+func (ctx *HttpContext) JSON(code int, data interface{}) {
 	ctx.Resp.Header().Set("Content-Type", "application/json")
 	jsons, _ := json.Marshal(data)
 	_, _ = ctx.Resp.Write(jsons)

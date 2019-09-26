@@ -4,35 +4,13 @@ import (
 	"encoding/base64"
 	"fmt"
 	"github.com/maxzhang1985/yoyogo/Middleware"
+	"github.com/maxzhang1985/yoyogo/Standard"
 	"log"
 	"net/http"
 	"os"
 )
 
 // HTTP methods
-const (
-	CONNECT = http.MethodConnect
-	DELETE  = http.MethodDelete
-	GET     = http.MethodGet
-	HEAD    = http.MethodHead
-	OPTIONS = http.MethodOptions
-	PATCH   = http.MethodPatch
-	POST    = http.MethodPost
-	PUT     = http.MethodPut
-	TRACE   = http.MethodTrace
-)
-
-var methods = [...]string{
-	http.MethodConnect,
-	http.MethodDelete,
-	http.MethodGet,
-	http.MethodHead,
-	http.MethodOptions,
-	http.MethodPatch,
-	http.MethodPost,
-	http.MethodPut,
-	http.MethodTrace,
-}
 
 const (
 	// DefaultAddress is used if no other is specified.
@@ -141,52 +119,56 @@ func (yoyo *YoyoGo) Map(method string, path string, handler func(ctx *Middleware
 
 // GET register GET request handler
 func (yoyo *YoyoGo) GET(path string, handler func(ctx *Middleware.HttpContext)) {
-	yoyo.Map(GET, path, handler)
+	yoyo.Map(Std.GET, path, handler)
 }
 
 // HEAD register HEAD request handler
 func (yoyo *YoyoGo) HEAD(path string, handler func(ctx *Middleware.HttpContext)) {
-	yoyo.Map(HEAD, path, handler)
+	yoyo.Map(Std.HEAD, path, handler)
 }
 
 // OPTIONS register OPTIONS request handler
 func (yoyo *YoyoGo) OPTIONS(path string, handler func(ctx *Middleware.HttpContext)) {
-	yoyo.Map(OPTIONS, path, handler)
+	yoyo.Map(Std.OPTIONS, path, handler)
 }
 
 // POST register POST request handler
 func (yoyo *YoyoGo) POST(path string, handler func(ctx *Middleware.HttpContext)) {
-	yoyo.Map(POST, path, handler)
+	yoyo.Map(Std.POST, path, handler)
 }
 
 // PUT register PUT request handler
 func (yoyo *YoyoGo) PUT(path string, handler func(ctx *Middleware.HttpContext)) {
-	yoyo.Map(PUT, path, handler)
+	yoyo.Map(Std.PUT, path, handler)
 }
 
 // PATCH register PATCH request HandlerFunc
 func (yoyo *YoyoGo) PATCH(path string, handler func(ctx *Middleware.HttpContext)) {
-	yoyo.Map(PATCH, path, handler)
+	yoyo.Map(Std.PATCH, path, handler)
 }
 
 // DELETE register DELETE request handler
 func (yoyo *YoyoGo) DELETE(path string, handler func(ctx *Middleware.HttpContext)) {
-	yoyo.Map(DELETE, path, handler)
+	yoyo.Map(Std.DELETE, path, handler)
 }
 
 // CONNECT register CONNECT request handler
 func (yoyo *YoyoGo) CONNECT(path string, handler func(ctx *Middleware.HttpContext)) {
-	yoyo.Map(CONNECT, path, handler)
+	yoyo.Map(Std.CONNECT, path, handler)
 }
 
 // TRACE register TRACE request handler
 func (yoyo *YoyoGo) TRACE(path string, handler func(ctx *Middleware.HttpContext)) {
-	yoyo.Map(TRACE, path, handler)
+	yoyo.Map(Std.TRACE, path, handler)
 }
 
 // Any register any method handler
 func (yoyo *YoyoGo) Any(path string, handler func(ctx *Middleware.HttpContext)) {
-	for _, m := range methods {
+	for _, m := range Std.Methods {
 		yoyo.Map(m, path, handler)
 	}
+}
+
+func (yoyo *YoyoGo) Group(routerBuilderFunc func(router *Middleware.RouterGroup)) {
+
 }

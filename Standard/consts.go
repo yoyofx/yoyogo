@@ -1,5 +1,7 @@
 package Std
 
+import "net/http"
+
 // Http define
 const (
 	CharsetUTF8 = "charset=utf-8"
@@ -67,3 +69,27 @@ const (
 	HeaderContentSecurityPolicy   = "Content-Security-Policy"
 	HeaderXCSRFToken              = "X-CSRF-Token"
 )
+
+const (
+	CONNECT = http.MethodConnect
+	DELETE  = http.MethodDelete
+	GET     = http.MethodGet
+	HEAD    = http.MethodHead
+	OPTIONS = http.MethodOptions
+	PATCH   = http.MethodPatch
+	POST    = http.MethodPost
+	PUT     = http.MethodPut
+	TRACE   = http.MethodTrace
+)
+
+var Methods = [...]string{
+	http.MethodConnect,
+	http.MethodDelete,
+	http.MethodGet,
+	http.MethodHead,
+	http.MethodOptions,
+	http.MethodPatch,
+	http.MethodPost,
+	http.MethodPut,
+	http.MethodTrace,
+}

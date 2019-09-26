@@ -28,7 +28,7 @@ func main() {
 
 		strResult := fmt.Sprintf("Name:%s , Q1:%s , bind: %s", pd_name, qs_q1, userInfo)
 
-		ctx.JSON(Std.M{"info": "hello world", "result": strResult})
+		ctx.JSON(200, Std.M{"info": "hello world", "result": strResult})
 	})
 
 	app.Run(":8080")
