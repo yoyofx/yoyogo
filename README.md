@@ -56,16 +56,20 @@ func main() {
 * [X] JSONP
 * [X] TEXT
 * [X] Binary
+* [ ] Protobuf
+* [ ] MessagePack
 * [ ] XML
+* [ ] YAML
 * [ ] File
 * [ ] Image
-* [ ] Other Format
-* [ ] Render View (Template)
+* [ ] Template
+* [ ] Render (Abstract Type) first ！！！
 
 ## Middleware
 * [X] Logger
 * [X] StaticFile
 * [X] Router
+* [ ] Router Filter or Middleware (first ！！！)
 * [ ] Session
 * [ ] CORS
 * [X] Binding
@@ -77,11 +81,11 @@ func main() {
 * [ ] JWT 
 
 ## Router
-* [ ] GET、POST、HEAD、PUT、DELETE Method Support
-* [ ] Router Tree
-* [ ] Router Expression
-* [ ] RouteData (var)
-* [ ] Router Support Struct Refect Func Binded.
+* [x] GET、POST、HEAD、PUT、DELETE Method Support
+* [x] Router Tree
+* [x] Router Expression
+* [x] RouteData (var)
+* [x] Router Support Struct Refect Func Binded.
 * [ ] Router Support Prefix and Group Such as "/api/v1/endpoint"
 
 ## Features
