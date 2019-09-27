@@ -16,7 +16,19 @@ type UserInfo struct {
 func main() {
 
 	app := YoyoGo.UseMvc()
+
+	app.Recovery.PanicHandlerFunc = func(information *Middleware.PanicInformation) {
+		fmt.Println("----------------------------------------------ERROR----------------------------------------------------")
+		fmt.Println("********************************  Global Recovery Display Errors  *************************************")
+		fmt.Println("-----------------------------------------------END-----------------------------------------------------")
+
+	}
+
 	app.UseStatic("Static")
+
+	app.GET("/error", func(ctx *Middleware.HttpContext) {
+		panic("http get error")
+	})
 
 	app.POST("/info/:id", PostInfo)
 

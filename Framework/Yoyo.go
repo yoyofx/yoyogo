@@ -20,6 +20,7 @@ const (
 type YoyoGo struct {
 	Mode       string
 	router     *Middleware.RouterMiddleware
+	Recovery   *Middleware.Recovery
 	middleware middleware
 	handlers   []Handler
 }
@@ -29,10 +30,12 @@ func UseClassic() *YoyoGo {
 }
 
 func UseMvc() *YoyoGo {
+	recovery := Middleware.NewRecovery()
 	logger := Middleware.NewLogger()
 	router := Middleware.NewRouter()
-	self := New(logger, router)
+	self := New(logger, recovery, router)
 	self.router = router
+	self.Recovery = recovery
 	return self
 }
 
