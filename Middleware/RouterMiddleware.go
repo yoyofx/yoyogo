@@ -1,7 +1,6 @@
 package Middleware
 
 import (
-	"net/http"
 	"strings"
 )
 
@@ -22,12 +21,14 @@ func NewRouter() *RouterMiddleware {
 }
 
 func NotFoundHandler(ctx *HttpContext) {
-	http.NotFound(ctx.Resp, ctx.Req)
+	//http.NotFound(ctx.Resp, ctx.Req)
+	ctx.Resp.WriteHeader(400)
 }
 
 // MethodNotAllowedHandler .
 func MethodNotAllowedHandler(ctx *HttpContext) {
-	http.Error(ctx.Resp, "Method Not Allowed", 405)
+	//http.Error(ctx.Resp, "Method Not Allowed", 405)
+	ctx.Resp.WriteHeader(405)
 }
 
 func (router *RouterMiddleware) Inovke(ctx *HttpContext, next func(ctx *HttpContext)) {
@@ -35,12 +36,13 @@ func (router *RouterMiddleware) Inovke(ctx *HttpContext, next func(ctx *HttpCont
 	node := router.Tree.Search(strings.Split(ctx.Req.URL.Path, "/")[1:], ctx.RouterData)
 	if node != nil && node.Methods[ctx.Req.Method] != nil {
 		handler = node.Methods[ctx.Req.Method]
+		handler(ctx)
 	} else if node != nil && node.Methods[ctx.Req.Method] == nil {
 		handler = MethodNotAllowedHandler
 	} else {
 		handler = NotFoundHandler
 	}
 
-	handler(ctx)
 	next(ctx)
+
 }

@@ -18,13 +18,14 @@ const (
 )
 
 type YoyoGo struct {
+	Mode       string
 	router     *Middleware.RouterMiddleware
 	middleware middleware
 	handlers   []Handler
 }
 
 func UseClassic() *YoyoGo {
-	return &YoyoGo{}
+	return &YoyoGo{Mode: Dev}
 }
 
 func UseMvc() *YoyoGo {
@@ -37,9 +38,13 @@ func UseMvc() *YoyoGo {
 
 func New(handlers ...Handler) *YoyoGo {
 	return &YoyoGo{
+		Mode:       Dev,
 		handlers:   handlers,
 		middleware: build(handlers),
 	}
+}
+func (app *YoyoGo) SetMode(mode string) {
+	app.Mode = mode
 }
 
 func (n *YoyoGo) Use(handler Handler) {
@@ -62,11 +67,6 @@ func (app *YoyoGo) UseStatic(path string) {
 //func (yoyo *YoyoGo) Map(relativePath string, handler func(ctx *Middleware.HttpContext)) {
 //	yoyo.router.ReqFuncMap[relativePath] = handler
 //}
-
-func (yoyo *YoyoGo) printLogo() {
-	logo, _ := base64.StdEncoding.DecodeString("CiBfICAgICBfICAgICAgICAgICAgICAgICAgICBfX18gICAgICAgICAgCiggKSAgICggKSAgICAgICAgICAgICAgICAgICggIF9gXCAgICAgICAgCmBcYFxfLycvJ18gICAgXyAgIF8gICAgXyAgIHwgKCAoXykgICBfICAgCiAgYFwgLycvJ19gXCAoICkgKCApIC8nX2BcIHwgfF9fXyAgLydfYFwgCiAgIHwgfCggKF8pICl8IChfKSB8KCAoXykgKXwgKF8sICkoIChfKSApCiAgIChfKWBcX19fLydgXF9fLCB8YFxfX18vJyhfX19fLydgXF9fXy8nCiAgICAgICAgICAgICAoIClffCB8ICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICBgXF9fXy8nICAgICAgICAgICAgICAgICAgICAgCg==")
-	fmt.Println(string(logo))
-}
 
 func (n *YoyoGo) UseHandler(handler http.Handler) {
 	n.Use(wrap(handler))
@@ -92,11 +92,20 @@ func (yoyo *YoyoGo) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	//}
 }
 
+func (yoyo *YoyoGo) printLogo(l *log.Logger, port string) {
+	logo, _ := base64.StdEncoding.DecodeString("CiBfICAgICBfICAgICAgICAgICAgICAgICAgICBfX18gICAgICAgICAgCiggKSAgICggKSAgICAgICAgICAgICAgICAgICggIF9gXCAgICAgICAgCmBcYFxfLycvJ18gICAgXyAgIF8gICAgXyAgIHwgKCAoXykgICBfICAgCiAgYFwgLycvJ19gXCAoICkgKCApIC8nX2BcIHwgfF9fXyAgLydfYFwgCiAgIHwgfCggKF8pICl8IChfKSB8KCAoXykgKXwgKF8sICkoIChfKSApCiAgIChfKWBcX19fLydgXF9fLCB8YFxfX18vJyhfX19fLydgXF9fXy8nCiAgICAgICAgICAgICAoIClffCB8ICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICBgXF9fXy8nICAgICAgICAgICAgICAgICAgICAgCg==")
+	fmt.Println(string(logo))
+
+	l.Printf("listening on %s", port)
+	l.Printf("application is runing pid: %d", os.Getpid())
+	l.Printf("runing in %s mode , switch on 'Prod' mode in production.", yoyo.Mode)
+	l.Println(" - use Prod app.SetMode(Prod) ")
+}
+
 func (yoyo *YoyoGo) Run(addr ...string) {
-	yoyo.printLogo()
-	l := log.New(os.Stdout, "[yoyogo] ", 0)
 	finalAddr := detectAddress(addr...)
-	l.Printf("listening on %s", finalAddr)
+	l := log.New(os.Stdout, "[yoyogo] ", 0)
+	yoyo.printLogo(l, finalAddr)
 	l.Fatal(http.ListenAndServe(finalAddr, yoyo))
 }
 
@@ -169,6 +178,14 @@ func (yoyo *YoyoGo) Any(path string, handler func(ctx *Middleware.HttpContext)) 
 	}
 }
 
-func (yoyo *YoyoGo) Group(routerBuilderFunc func(router *Middleware.RouterGroup)) {
+func (yoyo *YoyoGo) Group(name string, routerBuilderFunc func(router *Middleware.RouterGroup)) {
+	group := &Middleware.RouterGroup{
+		Name:       name,
+		RouterTree: yoyo.router.Tree,
+	}
+	if routerBuilderFunc == nil {
+		panic("routerBuilderFunc is nil")
+	}
 
+	routerBuilderFunc(group)
 }

@@ -19,6 +19,7 @@ func (s *Static) Inovke(ctx *HttpContext, next func(ctx *HttpContext)) {
 		return
 	}
 
+	//ctx.Resp.WriteHeader(200)
 	prefixPath := "/" + s.VPath
 	webroot := "." + prefixPath
 	staticHandle := http.StripPrefix(prefixPath,
