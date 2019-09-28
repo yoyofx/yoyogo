@@ -47,7 +47,7 @@ func main() {
 * [X] Simple router binded handle func
 * [X] HttpContext (request,response)
 * [X] Static File EndPoint（Static File Server）
-* [X] JSON Serialization Struct （YoyoGo.M）
+* [X] JSON Serialization Struct （Std.M）
 * [X] Get Request File And Save
 * [X] Unite Get Post Data Away (form-data , x-www-form-urlencoded)
 * [X] Binding Model for Http Request ( From, JSON ) 
@@ -86,7 +86,8 @@ func main() {
 * [x] Router Expression
 * [x] RouteData (var)
 * [x] Router Support Struct Refect Func Binded.
-* [ ] Router Support Prefix and Group Such as "/api/v1/endpoint"
+* [x] Router Support Prefix and Group Such as "/api/v1/endpoint"
+* [ ] Controller Router And Router Tempalte (Default)
 
 ## Features
 * [ ] swagger

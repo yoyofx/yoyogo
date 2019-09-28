@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/maxzhang1985/yoyogo/Framework"
 	"github.com/maxzhang1985/yoyogo/Middleware"
-	Std "github.com/maxzhang1985/yoyogo/Standard"
+	"github.com/maxzhang1985/yoyogo/Standard"
 )
 
 type UserInfo struct {
