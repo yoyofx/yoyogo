@@ -51,11 +51,16 @@ func main() {
 * [X] Get Request File And Save
 * [X] Unite Get Post Data Away (form-data , x-www-form-urlencoded)
 * [X] Binding Model for Http Request ( From, JSON ) 
-### Response
-* [X] JSON
-* [X] JSONP
-* [X] TEXT
-* [X] Binary
+### Response Render
+* [X] Render Interface
+* [X] JSON Render
+* [X] JSONP Render
+* [X] Indented Json Render
+* [X] Secure Json Render
+* [X] Ascii Json Render
+* [X] Pure Json Render
+* [X] Binary Data Render
+* [ ] TEXT
 * [ ] Protobuf
 * [ ] MessagePack
 * [ ] XML
@@ -63,7 +68,6 @@ func main() {
 * [ ] File
 * [ ] Image
 * [ ] Template
-* [ ] Render (Abstract Type) first ！！！
 
 ## Middleware
 * [X] Logger
