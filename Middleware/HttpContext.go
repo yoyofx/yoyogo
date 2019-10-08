@@ -247,6 +247,11 @@ func (ctx *HttpContext) QueryStrings() url.Values {
 }
 
 // Get Query String By Key
+// GET /path?id=1234&name=Manu&value=
+// c.Query("id") == "1234"
+// c.Query("name") == "Manu"
+// c.Query("value") == ""
+// c.Query("wtf") == ""
 func (ctx *HttpContext) Query(key string) string {
 	return ctx.QueryStrings().Get(key)
 }
@@ -352,4 +357,31 @@ func (ctx *HttpContext) JSONP(code int, callback string, data interface{}) error
 	_, _ = ctx.Resp.Write(j)
 	_, _ = ctx.Resp.Write([]byte(");"))
 	return nil
+}
+
+func bodyAllowedForStatus(status int) bool {
+	switch {
+	case status >= 100 && status <= 199:
+		return false
+	case status == http.StatusNoContent:
+		return false
+	case status == http.StatusNotModified:
+		return false
+	}
+	return true
+}
+
+// Render writes the response headers and calls render.Render to render data.
+func (c *HttpContext) Render(code int, r render.Render) {
+	c.Status(code)
+
+	if !bodyAllowedForStatus(code) {
+		r.WriteContentType(c.Writer)
+		c.Writer.WriteHeaderNow()
+		return
+	}
+
+	if err := r.Render(c.Writer); err != nil {
+		panic(err)
+	}
 }
