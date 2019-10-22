@@ -53,6 +53,13 @@ func (rw *responseWriter) WriteHeader(s int) {
 	rw.ResponseWriter.WriteHeader(s)
 }
 
+func (w *responseWriter) WriteHeaderNow() {
+	if !w.Written() {
+		w.size = 0
+		w.ResponseWriter.WriteHeader(w.status)
+	}
+}
+
 func (rw *responseWriter) Write(b []byte) (int, error) {
 	if !rw.Written() {
 		// The status will be StatusOK if WriteHeader has not been called yet
