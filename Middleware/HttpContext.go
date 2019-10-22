@@ -257,6 +257,14 @@ func (ctx *HttpContext) Query(key string) string {
 	return ctx.QueryStrings().Get(key)
 }
 
+func (ctx *HttpContext) QueryStringOrDefault(key string, defaultval string) string {
+	val := ctx.QueryStrings().Get(key)
+	if val == "" {
+		val = defaultval
+	}
+	return val
+}
+
 // Redirect redirects the request
 func (ctx *HttpContext) Redirect(code int, url string) {
 	http.Redirect(ctx.Resp, ctx.Req, url, code)
@@ -326,39 +334,39 @@ func (ctx *HttpContext) Write(data []byte) (n int, err error) {
 }
 
 // Text response text format data .
-func (ctx *HttpContext) String(code int, format string, datas ...interface{}) error {
-	text := fmt.Sprintf(format, datas)
-	return ctx.Text(code, text)
-}
+//func (ctx *HttpContext) String(code int, format string, datas ...interface{}) error {
+//	text := fmt.Sprintf(format, datas)
+//	return ctx.Text(code, text)
+//}
 
 // Text response text data.
-func (ctx *HttpContext) Text(code int, body string) error {
-	ctx.Resp.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	ctx.Resp.WriteHeader(code)
-	_, err := ctx.Resp.Write([]byte(body))
-	return err
-}
+//func (ctx *HttpContext) Text(code int, body string) error {
+//	ctx.Resp.Header().Set("Content-Type", "text/plain; charset=utf-8")
+//	ctx.Resp.WriteHeader(code)
+//	_, err := ctx.Resp.Write([]byte(body))
+//	return err
+//}
 
 // Write Json Response.
-func (ctx *HttpContext) JSON(code int, data interface{}) {
-	ctx.Resp.Header().Set("Content-Type", "application/json")
-	jsons, _ := json.Marshal(data)
-	_, _ = ctx.Resp.Write(jsons)
-}
-
-// JSONP return JSONP data.
-func (ctx *HttpContext) JSONP(code int, callback string, data interface{}) error {
-	j, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-	ctx.Resp.Header().Set("Content-Type", "application/javascript; charset=utf-8")
-	ctx.Resp.WriteHeader(code)
-	_, _ = ctx.Resp.Write([]byte(callback + "("))
-	_, _ = ctx.Resp.Write(j)
-	_, _ = ctx.Resp.Write([]byte(");"))
-	return nil
-}
+//func (ctx *HttpContext) JSON(code int, data interface{}) {
+//	ctx.Resp.Header().Set("Content-Type", "application/json")
+//	jsons, _ := json.Marshal(data)
+//	_, _ = ctx.Resp.Write(jsons)
+//}
+//
+//// JSONP return JSONP data.
+//func (ctx *HttpContext) JSONP(code int, callback string, data interface{}) error {
+//	j, err := json.Marshal(data)
+//	if err != nil {
+//		return err
+//	}
+//	ctx.Resp.Header().Set("Content-Type", "application/javascript; charset=utf-8")
+//	ctx.Resp.WriteHeader(code)
+//	_, _ = ctx.Resp.Write([]byte(callback + "("))
+//	_, _ = ctx.Resp.Write(j)
+//	_, _ = ctx.Resp.Write([]byte(");"))
+//	return nil
+//}
 
 func bodyAllowedForStatus(status int) bool {
 	switch {

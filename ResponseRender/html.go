@@ -16,7 +16,7 @@ type Delims struct {
 // HTMLRender interface is to be implemented by HTMLProduction and HTMLDebug.
 type HTMLRender interface {
 	// Instance returns an HTML instance.
-	Instance(string, interface{}) Render
+	Instance(string, interface{}) ResponseRender
 }
 
 // HTMLProduction contains template reference and its delims.
