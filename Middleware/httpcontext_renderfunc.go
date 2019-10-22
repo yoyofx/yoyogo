@@ -2,6 +2,7 @@ package Middleware
 
 import (
 	"github.com/maxzhang1985/yoyogo/ResponseRender"
+	"net/http"
 )
 
 func (ctx *HttpContext) HTML(code int, name string, obj interface{}) {
@@ -66,4 +67,13 @@ func (c *HttpContext) ProtoBuf(code int, obj interface{}) {
 // String writes the given string into the response body.
 func (c *HttpContext) Text(code int, format string, values ...interface{}) {
 	c.Render(code, ResponseRender.Text{Format: format, Data: values})
+}
+
+func (c *HttpContext) File(filepath string) {
+	http.ServeFile(c.Resp, c.Req, filepath)
+}
+
+func (c *HttpContext) FileStream(code int, bytes []byte) {
+	render := ResponseRender.FormFileStream(bytes)
+	c.Render(code, render)
 }
