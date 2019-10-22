@@ -6,7 +6,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"github.com/maxzhang1985/yoyogo/Render"
+	"github.com/maxzhang1985/yoyogo/ResponseRender"
 	Std "github.com/maxzhang1985/yoyogo/Standard"
 	"github.com/maxzhang1985/yoyogo/Utils"
 	"io"
@@ -372,8 +372,8 @@ func bodyAllowedForStatus(status int) bool {
 	return true
 }
 
-// Render writes the response headers and calls render.Render to render data.
-func (c *HttpContext) Render(code int, r Render.Render) {
+// ResponseRender writes the response headers and calls render.ResponseRender to render data.
+func (c *HttpContext) Render(code int, r ResponseRender.ResponseRender) {
 	c.Status(code)
 
 	if !bodyAllowedForStatus(code) {

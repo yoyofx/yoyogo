@@ -1,4 +1,4 @@
-package Render
+package ResponseRender
 
 import (
 	"bytes"
@@ -47,7 +47,7 @@ func writeJSON(w http.ResponseWriter, obj interface{}) error {
 	return err
 }
 
-// Render (JSON) writes data with custom ContentType.
+// ResponseRender (JSON) writes data with custom ContentType.
 func (d Json) Render(w http.ResponseWriter) (err error) {
 	if err = writeJSON(w, d.Data); err != nil {
 		panic(err)
@@ -59,7 +59,7 @@ func (d Json) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, jsonContentType)
 }
 
-// Render (IndentedJSON) marshals the given interface object and writes it with custom ContentType.
+// ResponseRender (IndentedJSON) marshals the given interface object and writes it with custom ContentType.
 func (r IndentedJson) Render(w http.ResponseWriter) error {
 	r.WriteContentType(w)
 	jsonBytes, err := json.MarshalIndent(r.Data, "", "    ")
@@ -76,7 +76,7 @@ func (r IndentedJson) WriteContentType(w http.ResponseWriter) {
 
 // SecureJSON 用来防止json劫持。
 // 如果给定的结构体是数值型，默认预置“while(1)” 到response body
-// Render (SecureJSON) marshals the given interface object and writes it with custom ContentType.
+// ResponseRender (SecureJSON) marshals the given interface object and writes it with custom ContentType.
 func (r SecureJson) Render(w http.ResponseWriter) error {
 	r.WriteContentType(w)
 	jsonBytes, err := json.Marshal(r.Data)
@@ -99,7 +99,7 @@ func (r SecureJson) WriteContentType(w http.ResponseWriter) {
 }
 
 // callback(json)
-// Render (Jsonp JSON) marshals the given interface object and writes it and its callback with custom ContentType.
+// ResponseRender (Jsonp JSON) marshals the given interface object and writes it and its callback with custom ContentType.
 func (r Jsonp) Render(w http.ResponseWriter) (err error) {
 	r.WriteContentType(w)
 	ret, err := json.Marshal(r.Data)
@@ -138,7 +138,7 @@ func (r Jsonp) WriteContentType(w http.ResponseWriter) {
 }
 
 // 使用Ascii JSON 生成仅有 ASCII字符的JSON，非ASCII字符将会被转义
-// Render (AsciiJSON) marshals the given interface object and writes it with custom ContentType.
+// ResponseRender (AsciiJSON) marshals the given interface object and writes it with custom ContentType.
 func (r AsciiJson) Render(w http.ResponseWriter) (err error) {
 	r.WriteContentType(w)
 	ret, err := json.Marshal(r.Data)
@@ -164,7 +164,7 @@ func (r AsciiJson) WriteContentType(w http.ResponseWriter) {
 }
 
 // 原始字符串，不通过Html编码
-// Render (PureJSON) writes custom ContentType and encodes the given interface object.
+// ResponseRender (PureJSON) writes custom ContentType and encodes the given interface object.
 func (r PureJson) Render(w http.ResponseWriter) error {
 	r.WriteContentType(w)
 	encoder := json.NewEncoder(w)

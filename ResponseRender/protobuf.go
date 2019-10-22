@@ -1,4 +1,4 @@
-package Render
+package ResponseRender
 
 import (
 	"github.com/golang/protobuf/proto"
