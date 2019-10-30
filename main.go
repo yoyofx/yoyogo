@@ -5,6 +5,7 @@ import (
 	"github.com/maxzhang1985/yoyogo/Framework"
 	"github.com/maxzhang1985/yoyogo/Middleware"
 	"github.com/maxzhang1985/yoyogo/Standard"
+	"os"
 )
 
 type UserInfo struct {
@@ -15,29 +16,53 @@ type UserInfo struct {
 
 func main() {
 
-	app := YoyoGo.UseMvc()
+	//app := YoyoGo.UseMvc()
+	//
+	//app.Recovery.PanicHandlerFunc = func(information *Middleware.PanicInformation) {
+	//	fmt.Println("----------------------------------------------ERROR----------------------------------------------------")
+	//	fmt.Println("********************************  Global Recovery Display Errors  *************************************")
+	//	fmt.Println("-----------------------------------------------END-----------------------------------------------------")
+	//
+	//}
+	//
+	//app.UseStatic("Static")
+	//
+	//app.GET("/error", func(ctx *Middleware.HttpContext) {
+	//	panic("http get error")
+	//})
+	//
+	//app.POST("/info/:id", PostInfo)
+	//
+	//app.Group("/v1/api", func(router *Middleware.RouterGroup) {
+	//	router.POST("/info/:id", PostInfo)
+	//})
+	//
+	//app.Run(":8080")
 
-	app.Recovery.PanicHandlerFunc = func(information *Middleware.PanicInformation) {
-		fmt.Println("----------------------------------------------ERROR----------------------------------------------------")
-		fmt.Println("********************************  Global Recovery Display Errors  *************************************")
-		fmt.Println("-----------------------------------------------END-----------------------------------------------------")
+	webHost := CreateWebHostBuilder(os.Args).Build()
+	webHost.Run()
 
-	}
+}
 
-	app.UseStatic("Static")
+func CreateWebHostBuilder(args []string) YoyoGo.HostBuilder {
+	return YoyoGo.NewWebHostBuilder().
+		UseServer(YoyoGo.DefaultHttpServer(":8080")).
+		Configure(func(app *YoyoGo.ApplicationBuilder) {
 
-	app.GET("/error", func(ctx *Middleware.HttpContext) {
-		panic("http get error")
-	})
+			app.UseMvc()
+		}).
+		UseRouter(func(router Middleware.IRouterBuilder) {
 
-	app.POST("/info/:id", PostInfo)
+			router.GET("/error", func(ctx *Middleware.HttpContext) {
+				panic("http get error")
+			})
 
-	app.Group("/v1/api", func(router *Middleware.RouterGroup) {
-		router.POST("/info/:id", PostInfo)
-	})
+			router.POST("/info/:id", PostInfo)
 
-	app.Run(":8080")
-
+			router.GET("/info", func(ctx *Middleware.HttpContext) {
+				ctx.JSON(200, Std.M{"info": "ok"})
+			})
+		})
 }
 
 func PostInfo(ctx *Middleware.HttpContext) {

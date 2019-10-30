@@ -3,8 +3,7 @@ package YoyoGo
 import "os"
 
 type IServer interface {
-	Run(addr string) error
-	RunOverTLS(addr, certFile, keyFile string) error
+	Run(delegate IRequestDelegate) (e error)
 }
 
 func detectAddress(addr ...string) string {

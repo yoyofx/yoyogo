@@ -40,6 +40,15 @@ func UseMvc() *ApplicationBuilder {
 	return self
 }
 
+func (self *ApplicationBuilder) UseMvc() *ApplicationBuilder {
+	self.router = Middleware.NewRouter()
+	self.Recovery = Middleware.NewRecovery()
+	self.Use(Middleware.NewLogger())
+	self.Use(self.router)
+	self.Use(self.Recovery)
+	return self
+}
+
 func New(handlers ...Handler) *ApplicationBuilder {
 	return &ApplicationBuilder{
 		Mode:       Dev,
@@ -57,8 +66,14 @@ func (n *ApplicationBuilder) Use(handler Handler) {
 	}
 
 	n.handlers = append(n.handlers, handler)
-	n.middleware = build(n.handlers)
+	//n.middleware = build(n.handlers)
 }
+
+func (n *ApplicationBuilder) Build() IRequestDelegate {
+	n.middleware = build(n.handlers)
+	return n
+}
+
 func (app *ApplicationBuilder) UseStatic(path string) {
 	app.Use(Middleware.NewStatic("Static"))
 
