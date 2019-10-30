@@ -1,4 +1,4 @@
-package YoyoGo
+package Controller
 
 import (
 	"encoding/json"

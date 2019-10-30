@@ -1,4 +1,4 @@
-package YoyoGo
+package Controller
 
 type Controller struct {
 	Data interface{}
