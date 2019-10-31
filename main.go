@@ -8,42 +8,13 @@ import (
 	"os"
 )
 
-type UserInfo struct {
-	UserName string `param:"username"`
-	Number   string `param:"q1"`
-	Id       string `param:"id"`
-}
-
 func main() {
-	//region demo
-	//app := YoyoGo.UseMvc()
-	//
-	//app.Recovery.PanicHandlerFunc = func(information *Middleware.PanicInformation) {
-	//	fmt.Println("----------------------------------------------ERROR----------------------------------------------------")
-	//	fmt.Println("********************************  Global Recovery Display Errors  *************************************")
-	//	fmt.Println("-----------------------------------------------END-----------------------------------------------------")
-	//
-	//}
-	//
-	//app.UseStatic("Static")
-	//
-	//app.GET("/error", func(ctx *Middleware.HttpContext) {
-	//	panic("http get error")
-	//})
-	//
-	//app.POST("/info/:id", PostInfo)
-	//
-	//app.Group("/v1/api", func(router *Middleware.RouterGroup) {
-	//	router.POST("/info/:id", PostInfo)
-	//})
-	//
-	//app.Run(":8080")
-	//endregion
+
 	webHost := CreateWebHostBuilder(os.Args).Build()
 	webHost.Run()
 
 }
-
+//region Create the builder of Web host
 func CreateWebHostBuilder(args []string) YoyoGo.HostBuilder {
 	return YoyoGo.NewWebHostBuilder().
 		UseServer(YoyoGo.DefaultHttpServer(":8080")).
@@ -65,13 +36,24 @@ func CreateWebHostBuilder(args []string) YoyoGo.HostBuilder {
 			router.GET("/info", GetInfo)
 		})
 }
+//endregion
 
+//region Http Request Methods
+
+type UserInfo struct {
+	UserName string `param:"username"`
+	Number   string `param:"q1"`
+	Id       string `param:"id"`
+}
+
+//HttpGet request: /info  or /v1/api/info
+//bind UserInfo for id,q1,username
 func GetInfo(ctx *Middleware.HttpContext) {
 	ctx.JSON(200, Std.M{"info": "ok"})
 }
 
+//HttpPost request: /info/:id ?q1=abc&username=123
 func PostInfo(ctx *Middleware.HttpContext) {
-
 	qs_q1 := ctx.Query("q1")
 	pd_name := ctx.Param("username")
 
@@ -82,3 +64,5 @@ func PostInfo(ctx *Middleware.HttpContext) {
 
 	ctx.JSON(200, Std.M{"info": "hello world", "result": strResult})
 }
+
+//endregion
