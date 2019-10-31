@@ -24,7 +24,7 @@ func (self HostBuilder) UseServer(server IServer) HostBuilder {
 }
 
 func (self HostBuilder) Build() WebHost {
-	builder := UseMvc()
+	builder := NewApplicationBuilder()
 
 	for _, configure := range self.configures {
 		configure(builder)

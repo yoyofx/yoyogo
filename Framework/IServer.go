@@ -3,6 +3,7 @@ package YoyoGo
 import "os"
 
 type IServer interface {
+	GetAddr() string
 	Run(delegate IRequestDelegate) (e error)
 }
 

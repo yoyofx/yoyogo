@@ -36,13 +36,13 @@ func (router *RouterMiddleware) Inovke(ctx *HttpContext, next func(ctx *HttpCont
 	node := router.Tree.Search(strings.Split(ctx.Req.URL.Path, "/")[1:], ctx.RouterData)
 	if node != nil && node.Methods[ctx.Req.Method] != nil {
 		handler = node.Methods[ctx.Req.Method]
-		handler(ctx)
+
 	} else if node != nil && node.Methods[ctx.Req.Method] == nil {
 		handler = MethodNotAllowedHandler
 	} else {
 		handler = NotFoundHandler
 	}
-
+	handler(ctx)
 	next(ctx)
 
 }

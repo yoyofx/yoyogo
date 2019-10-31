@@ -30,7 +30,7 @@ func UseClassic() *ApplicationBuilder {
 	return &ApplicationBuilder{Mode: Dev}
 }
 
-func UseMvc() *ApplicationBuilder {
+func NewApplicationBuilder() *ApplicationBuilder {
 	recovery := Middleware.NewRecovery()
 	logger := Middleware.NewLogger()
 	router := Middleware.NewRouter()
@@ -44,8 +44,9 @@ func (self *ApplicationBuilder) UseMvc() *ApplicationBuilder {
 	self.router = Middleware.NewRouter()
 	self.Recovery = Middleware.NewRecovery()
 	self.Use(Middleware.NewLogger())
-	self.Use(self.router)
 	self.Use(self.Recovery)
+	self.Use(self.router)
+
 	return self
 }
 
@@ -76,7 +77,6 @@ func (n *ApplicationBuilder) Build() IRequestDelegate {
 
 func (app *ApplicationBuilder) UseStatic(path string) {
 	app.Use(Middleware.NewStatic("Static"))
-
 }
 
 // UseFunc adds a Negroni-style handler function onto the middleware stack.

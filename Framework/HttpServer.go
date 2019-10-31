@@ -11,6 +11,10 @@ func DefaultHttpServer(addr string) HttpServer {
 	return HttpServer{IsTLS: false, Addr: addr}
 }
 
+func (server HttpServer) GetAddr() string {
+	return server.Addr
+}
+
 func (server HttpServer) Run(delegate IRequestDelegate) (e error) {
 	if server.IsTLS {
 		e = http.ListenAndServeTLS(server.Addr, server.CertFile, server.KeyFile, delegate)

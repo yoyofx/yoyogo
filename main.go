@@ -15,7 +15,7 @@ type UserInfo struct {
 }
 
 func main() {
-
+	//region demo
 	//app := YoyoGo.UseMvc()
 	//
 	//app.Recovery.PanicHandlerFunc = func(information *Middleware.PanicInformation) {
@@ -38,7 +38,7 @@ func main() {
 	//})
 	//
 	//app.Run(":8080")
-
+	//endregion
 	webHost := CreateWebHostBuilder(os.Args).Build()
 	webHost.Run()
 
@@ -48,8 +48,8 @@ func CreateWebHostBuilder(args []string) YoyoGo.HostBuilder {
 	return YoyoGo.NewWebHostBuilder().
 		UseServer(YoyoGo.DefaultHttpServer(":8080")).
 		Configure(func(app *YoyoGo.ApplicationBuilder) {
-
-			app.UseMvc()
+			//app.UseMvc()
+			app.UseStatic("Static")
 		}).
 		UseRouter(func(router Middleware.IRouterBuilder) {
 
@@ -58,11 +58,16 @@ func CreateWebHostBuilder(args []string) YoyoGo.HostBuilder {
 			})
 
 			router.POST("/info/:id", PostInfo)
-
-			router.GET("/info", func(ctx *Middleware.HttpContext) {
-				ctx.JSON(200, Std.M{"info": "ok"})
+			router.Group("/v1/api", func(router *Middleware.RouterGroup) {
+				router.GET("/info", GetInfo)
 			})
+
+			router.GET("/info", GetInfo)
 		})
+}
+
+func GetInfo(ctx *Middleware.HttpContext) {
+	ctx.JSON(200, Std.M{"info": "ok"})
 }
 
 func PostInfo(ctx *Middleware.HttpContext) {
