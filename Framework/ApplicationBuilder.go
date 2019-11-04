@@ -1,14 +1,9 @@
 package YoyoGo
 
 import (
-	"encoding/base64"
-	"fmt"
-	"github.com/maxzhang1985/yoyogo/Certificate"
 	"github.com/maxzhang1985/yoyogo/Middleware"
 	"github.com/maxzhang1985/yoyogo/Standard"
-	"log"
 	"net/http"
-	"os"
 )
 
 // HTTP methods
@@ -21,7 +16,6 @@ const (
 type ApplicationBuilder struct {
 	Mode       string
 	router     *Middleware.RouterMiddleware
-	Recovery   *Middleware.Recovery
 	middleware middleware
 	handlers   []Handler
 }
@@ -36,16 +30,15 @@ func NewApplicationBuilder() *ApplicationBuilder {
 	router := Middleware.NewRouter()
 	self := New(logger, recovery, router)
 	self.router = router
-	self.Recovery = recovery
 	return self
 }
 
 func (self *ApplicationBuilder) UseMvc() *ApplicationBuilder {
 	self.router = Middleware.NewRouter()
-	self.Recovery = Middleware.NewRecovery()
-	self.Use(Middleware.NewLogger())
-	self.Use(self.Recovery)
-	self.Use(self.router)
+	//self.Recovery = Middleware.NewRecovery()
+	self.UseMiddleware(Middleware.NewLogger())
+	self.UseMiddleware(Middleware.NewRecovery())
+	self.UseMiddleware(self.router)
 
 	return self
 }
@@ -61,7 +54,7 @@ func (app *ApplicationBuilder) SetMode(mode string) {
 	app.Mode = mode
 }
 
-func (n *ApplicationBuilder) Use(handler Handler) {
+func (n *ApplicationBuilder) UseMiddleware(handler Handler) {
 	if handler == nil {
 		panic("handler cannot be nil")
 	}
@@ -76,63 +69,47 @@ func (n *ApplicationBuilder) Build() IRequestDelegate {
 }
 
 func (app *ApplicationBuilder) UseStatic(path string) {
-	app.Use(Middleware.NewStatic("Static"))
+	app.UseMiddleware(Middleware.NewStatic("Static"))
 }
 
-// UseFunc adds a Negroni-style handler function onto the middleware stack.
-
-// UseHandler adds a http.Handler onto the middleware stack. Handlers are invoked in the order they are added to a Negroni.
-
-//func (yoyo *ApplicationBuilder) Map(relativePath string, handler func(ctx *Middleware.HttpContext)) {
-//	yoyo.router.ReqFuncMap[relativePath] = handler
-//}
-
 func (n *ApplicationBuilder) UseHandler(handler http.Handler) {
-	n.Use(wrap(handler))
+	n.UseMiddleware(wrap(handler))
 }
 
 func (n *ApplicationBuilder) UseHandlerFunc(handlerFunc func(rw http.ResponseWriter, r *http.Request)) {
-	n.Use(wrapFunc(handlerFunc))
+	n.UseMiddleware(wrapFunc(handlerFunc))
 }
 
 func (n *ApplicationBuilder) UseFunc(handlerFunc HandlerFunc) {
-	n.Use(handlerFunc)
+	n.UseMiddleware(handlerFunc)
 }
 
 func (yoyo *ApplicationBuilder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-
 	yoyo.middleware.Invoke(Middleware.NewContext(w, r))
-	//fmt.Println(r.URL.Path)
-	//ctx := NewContext(w,r)
-	//fun,ok := reqFuncMap[r.URL.Path]
-	//if ok{
-	//	fun(ctx)
-	//	return
-	//}
 }
 
-func (yoyo *ApplicationBuilder) printLogo(l *log.Logger, port string) {
-	logo, _ := base64.StdEncoding.DecodeString("CiBfICAgICBfICAgICAgICAgICAgICAgICAgICBfX18gICAgICAgICAgCiggKSAgICggKSAgICAgICAgICAgICAgICAgICggIF9gXCAgICAgICAgCmBcYFxfLycvJ18gICAgXyAgIF8gICAgXyAgIHwgKCAoXykgICBfICAgCiAgYFwgLycvJ19gXCAoICkgKCApIC8nX2BcIHwgfF9fXyAgLydfYFwgCiAgIHwgfCggKF8pICl8IChfKSB8KCAoXykgKXwgKF8sICkoIChfKSApCiAgIChfKWBcX19fLydgXF9fLCB8YFxfX18vJyhfX19fLydgXF9fXy8nCiAgICAgICAgICAgICAoIClffCB8ICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICBgXF9fXy8nICAgICAgICAgICAgICAgICAgICAgCg==")
-	fmt.Println(string(logo))
-
-	l.Printf("listening on %s", port)
-	l.Printf("application is runing pid: %d", os.Getpid())
-	l.Printf("runing in %s mode , switch on 'Prod' mode in production.", yoyo.Mode)
-	l.Println(" - use Prod app.SetMode(Prod) ")
-}
-
-func (yoyo *ApplicationBuilder) Run(addr ...string) {
-	finalAddr := detectAddress(addr...)
-	l := log.New(os.Stdout, "[yoyogo] ", 0)
-	yoyo.printLogo(l, finalAddr)
-
-	cert, key := Certificate.GetCertificatePaths()
-	server := HttpServer{IsTLS: false, CertFile: cert, KeyFile: key, Addr: finalAddr}
-	err := server.Run(yoyo)
-	//err := http.ListenAndServe(finalAddr, yoyo)
-
-	l.Fatal(err)
-}
+//func (yoyo *ApplicationBuilder) printLogo(l *log.Logger, port string) {
+//	logo, _ := base64.StdEncoding.DecodeString("CiBfICAgICBfICAgICAgICAgICAgICAgICAgICBfX18gICAgICAgICAgCiggKSAgICggKSAgICAgICAgICAgICAgICAgICggIF9gXCAgICAgICAgCmBcYFxfLycvJ18gICAgXyAgIF8gICAgXyAgIHwgKCAoXykgICBfICAgCiAgYFwgLycvJ19gXCAoICkgKCApIC8nX2BcIHwgfF9fXyAgLydfYFwgCiAgIHwgfCggKF8pICl8IChfKSB8KCAoXykgKXwgKF8sICkoIChfKSApCiAgIChfKWBcX19fLydgXF9fLCB8YFxfX18vJyhfX19fLydgXF9fXy8nCiAgICAgICAgICAgICAoIClffCB8ICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICBgXF9fXy8nICAgICAgICAgICAgICAgICAgICAgCg==")
+//	fmt.Println(string(logo))
+//
+//	l.Printf("listening on %s", port)
+//	l.Printf("application is runing pid: %d", os.Getpid())
+//	l.Printf("runing in %s mode , switch on 'Prod' mode in production.", yoyo.Mode)
+//	l.Println(" - use Prod app.SetMode(Prod) ")
+//}
+//
+//func (yoyo *ApplicationBuilder) Run(addr ...string) {
+//	finalAddr := detectAddress(addr...)
+//	l := log.New(os.Stdout, "[yoyogo] ", 0)
+//	yoyo.printLogo(l, finalAddr)
+//
+//	cert, key := Certificate.GetCertificatePaths()
+//	server := HttpServer{IsTLS: false, CertFile: cert, KeyFile: key, Addr: finalAddr}
+//	err := server.Run(yoyo)
+//	//err := http.ListenAndServe(finalAddr, yoyo)
+//
+//	l.Fatal(err)
+//}
 
 func (yoyo *ApplicationBuilder) Map(method string, path string, handler func(ctx *Middleware.HttpContext)) {
 	if len(path) < 1 || path[0] != '/' {

@@ -15,29 +15,14 @@ type UserInfo struct {
 }
 
 func main() {
-	//region demo
-	//app := YoyoGo.UseMvc()
-	//
+	//region PanicHandlerFunc
+
 	//app.Recovery.PanicHandlerFunc = func(information *Middleware.PanicInformation) {
 	//	fmt.Println("----------------------------------------------ERROR----------------------------------------------------")
 	//	fmt.Println("********************************  Global Recovery Display Errors  *************************************")
 	//	fmt.Println("-----------------------------------------------END-----------------------------------------------------")
 	//
 	//}
-	//
-	//app.UseStatic("Static")
-	//
-	//app.GET("/error", func(ctx *Middleware.HttpContext) {
-	//	panic("http get error")
-	//})
-	//
-	//app.POST("/info/:id", PostInfo)
-	//
-	//app.Group("/v1/api", func(router *Middleware.RouterGroup) {
-	//	router.POST("/info/:id", PostInfo)
-	//})
-	//
-	//app.Run(":8080")
 	//endregion
 	webHost := CreateWebHostBuilder(os.Args).Build()
 	webHost.Run()
