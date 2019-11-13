@@ -1,7 +1,11 @@
 # YoyoGo
-[![Build Status](https://travis-ci.org/maxzhang1985/yoyogo.svg?branch=master)](https://travis-ci.org/maxzhang1985/yoyogo)
-
 YoyoGo is a simple, light and fast Web framework written in Go. 
+
+[![Documentation](https://img.shields.io/badge/godoc-reference-blue.svg?color=24B898&style=for-the-badge&logo=go&logoColor=ffffff)](https://godoc.org/github.com/maxzhang1985/yoyogo)
+![Release](https://img.shields.io/github/v/tag/maxzhang1985/yoyogo.svg?color=24B898&label=release&logo=github&sort=semver&style=for-the-badge)
+[![Build Status](https://img.shields.io/travis/maxzhang1985/yoyogo.svg?style=for-the-badge&logo=travis)](https://travis-ci.org/maxzhang1985/yoyogo)
+![Contributors](https://img.shields.io/github/contributors/maxzhang1985/yoyogo.svg?style=for-the-badge)
+
 
 # Features
 - Pretty and fast router 
@@ -17,27 +21,31 @@ YoyoGo is a simple, light and fast Web framework written in Go.
 
 # Example
 ```golang
-package main
-
-import (
-	"github.com/maxzhang1985/yoyogo/Framework"
-	"github.com/maxzhang1985/yoyogo/Middleware"
-)
-
 func main() {
 
-	app := YoyoGo.UseMvc()
+	webHost := CreateWebHostBuilder(os.Args).Build()
+	webHost.Run()
 
-	app.Use(Middleware.NewStatic("Static"))
-	app.Map("/info", func(ctx *Middleware.HttpContext) {
-	    userInfo := &UserInfo{}
-            ctx.Bind(userInfo)
-            strResult := fmt.Sprintf("Name:%s , Q1:%s , bind: %s", pd_name, qs_q1, userInfo.UserName)
-            ctx.JSON(Std.M{"info": "hello world", "result": strResult})
-	})
+}
+//region Create the builder of Web host
+func CreateWebHostBuilder(args []string) YoyoGo.HostBuilder {
+	return YoyoGo.NewWebHostBuilder().
+		UseServer(YoyoGo.DefaultHttpServer(":8080")).
+		Configure(func(app *YoyoGo.ApplicationBuilder) {
+			app.UseStatic("Static")
+		}).
+		UseRouter(func(router Middleware.IRouterBuilder) {
+			router.GET("/error", func(ctx *Middleware.HttpContext) {
+				panic("http get error")
+			})
+			
+			router.POST("/info/:id", PostInfo)
+			router.Group("/v1/api", func(router *Middleware.RouterGroup) {
+				router.GET("/info", GetInfo)
+			})
 
-	app.Run(":8080")
-
+			router.GET("/info", GetInfo)
+		})
 }
 ```
 
@@ -62,29 +70,26 @@ func main() {
 * [X] Ascii Json Render
 * [X] Pure Json Render
 * [X] Binary Data Render
-* [ ] TEXT
-* [ ] Protobuf
-* [ ] MessagePack
-* [ ] XML
-* [ ] YAML
-* [ ] File
-* [ ] Image
+* [X] TEXT
+* [X] Protobuf
+* [X] MessagePack
+* [X] XML
+* [X] YAML
+* [X] File
+* [X] Image
 * [ ] Template
+* [ ] Auto formater Render
 
 ## Middleware
 * [X] Logger
 * [X] StaticFile
 * [X] Router
-* [ ] Router Filter or Middleware (first ！！！)
+* [X] Router Middleware
 * [ ] Session
 * [ ] CORS
 * [X] Binding
 * [ ] GZip	
-* [ ] JWT 
-* [ ] OAuth2	 
-* [ ] Prometheus 
-* [ ] Secure
-* [ ] JWT 
+
 
 ## Router
 * [x] GET、POST、HEAD、PUT、DELETE Method Support
@@ -93,10 +98,20 @@ func main() {
 * [x] RouteData (var)
 * [x] Router Support Struct Refect Func Binded.
 * [x] Router Support Prefix and Group Such as "/api/v1/endpoint"
+* [ ] Router Filter
 * [ ] Controller Router And Router Tempalte (Default)
+
+## Dependency injection
+* [ ] Dependency injection Framework
+* [ ] Dependency injection Integration
 
 ## Features
 * [ ] swagger
 * [ ] configtion
 * [ ] WebSocket
 * [ ] GRpc
+* [ ] JWT 
+* [ ] OAuth2	 
+* [ ] Prometheus 
+* [ ] Secure
+* [ ] JWT 
