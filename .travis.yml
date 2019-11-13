@@ -1,0 +1,12 @@
+go_import_path: github.com/maxzhang1985/yoyogo
+language: go
+sudo: false
+
+matrix:
+  include:
+    - go: "1.13.x"
+  fast_finish: true
+
+env:
+  global:
+    - GO111MODULE=on
