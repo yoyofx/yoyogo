@@ -1,4 +1,5 @@
 # YoyoGo
+[![Build Status](https://travis-ci.org/maxzhang1985/yoyogo.svg?branch=master)](https://travis-ci.org/maxzhang1985/yoyogo)
 YoyoGo is a simple, light and fast Web framework written in Go. 
 
 # Features
