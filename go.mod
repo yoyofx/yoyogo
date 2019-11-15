@@ -20,4 +20,5 @@ replace (
 	golang.org/x/sys => github.com/golang/sys v0.0.0-20191029155521-f43be2a4598c
 	golang.org/x/text => github.com/golang/text v0.3.2
 	golang.org/x/tools => github.com/golang/tools v0.0.0-20191030003036-b2a7f28a184a
+	golang.org/x/xerrors => github.com/golang/xerrors v0.0.0-20191011141410-1b5146add898
 )
