@@ -20,9 +20,9 @@ func (d DefaultRouterHandler) Search(ctx *Context.HttpContext, components []stri
 	if node != nil && node.Methods[ctx.Req.Method] != nil {
 		handler = node.Methods[ctx.Req.Method]
 	} else if node != nil && node.Methods[ctx.Req.Method] == nil {
-		handler = MethodNotAllowedHandler
+		//handler = MethodNotAllowedHandler
 	} else {
-		handler = NotFoundHandler
+		//handler = NotFoundHandler
 	}
 	return handler
 }
