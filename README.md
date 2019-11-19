@@ -1,10 +1,13 @@
 # YoyoGo
 YoyoGo is a simple, light and fast Web framework written in Go. 
 
-[![Documentation](https://img.shields.io/badge/godoc-reference-blue.svg?color=24B898&style=for-the-badge&logo=go&logoColor=ffffff)](https://godoc.org/github.com/maxzhang1985/yoyogo)
-![Release](https://img.shields.io/github/v/tag/maxzhang1985/yoyogo.svg?color=24B898&label=release&logo=github&sort=semver&style=for-the-badge)
-[![Build Status](https://img.shields.io/travis/maxzhang1985/yoyogo.svg?style=for-the-badge&logo=travis)](https://travis-ci.org/maxzhang1985/yoyogo)
-![Contributors](https://img.shields.io/github/contributors/maxzhang1985/yoyogo.svg?style=for-the-badge)
+[![Report](https://goreportcard.com/badge/github.com/maxzhang1985/yoyogo)](https://goreportcard.com/report/github.com/maxzhang1985/yoyogo)
+![Release](https://img.shields.io/github/v/tag/maxzhang1985/yoyogo.svg?color=24B898&label=release&logo=github&sort=semver)
+[![Build Status](https://img.shields.io/travis/maxzhang1985/yoyogo.svg)](https://travis-ci.org/maxzhang1985/yoyogo)
+[![Documentation](https://img.shields.io/badge/godoc-reference-blue.svg?color=24B898&logo=go&logoColor=ffffff)](https://godoc.org/github.com/maxzhang1985/yoyogo)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+![Contributors](https://img.shields.io/github/contributors/maxzhang1985/yoyogo.svg)
+
 
 
 # Features
