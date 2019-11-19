@@ -1,4 +1,4 @@
-package Middleware
+package Context
 
 import (
 	"bytes"
@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/maxzhang1985/yoyogo/ResponseRender"
-	Std "github.com/maxzhang1985/yoyogo/Standard"
+	"github.com/maxzhang1985/yoyogo/Standard"
 	"github.com/maxzhang1985/yoyogo/Utils"
 	"io"
 	"io/ioutil"

@@ -2,6 +2,7 @@ package Middleware
 
 import (
 	"fmt"
+	"github.com/maxzhang1985/yoyogo/Context"
 	"html/template"
 	"log"
 	"net/http"
@@ -104,7 +105,7 @@ func NewLogger() *Logger {
 	return logger
 }
 
-func (l *Logger) Inovke(ctx *HttpContext, next func(ctx *HttpContext)) {
+func (l *Logger) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 	start := time.Now()
 	next(ctx)
 	res := ctx.Resp

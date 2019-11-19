@@ -2,6 +2,7 @@ package Middleware
 
 import (
 	"fmt"
+	"github.com/maxzhang1985/yoyogo/Context"
 	"html/template"
 	"log"
 	"net/http"
@@ -152,7 +153,7 @@ func NewRecovery() *Recovery {
 	}
 }
 
-func (rec *Recovery) Inovke(ctx *HttpContext, next func(ctx *HttpContext)) {
+func (rec *Recovery) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 	defer func() {
 		if err := recover(); err != nil {
 			ctx.Resp.WriteHeader(http.StatusInternalServerError)

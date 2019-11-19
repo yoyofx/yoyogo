@@ -1,19 +1,19 @@
 package YoyoGo
 
 import (
-	"github.com/maxzhang1985/yoyogo/Middleware"
+	"github.com/maxzhang1985/yoyogo/Context"
 	"net/http"
 )
 
 type Handler interface {
-	Inovke(ctx *Middleware.HttpContext, next func(ctx *Middleware.HttpContext))
+	Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext))
 }
 
-type NextFunc func(ctx *Middleware.HttpContext)
+type NextFunc func(ctx *Context.HttpContext)
 
-type HandlerFunc func(ctx *Middleware.HttpContext, next func(ctx *Middleware.HttpContext))
+type HandlerFunc func(ctx *Context.HttpContext, next func(ctx *Context.HttpContext))
 
-func (h HandlerFunc) Inovke(ctx *Middleware.HttpContext, next func(ctx *Middleware.HttpContext)) {
+func (h HandlerFunc) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 	h(ctx, next)
 }
 
@@ -21,7 +21,7 @@ type middleware struct {
 	handler Handler
 
 	// nextfn stores the next.ServeHTTP to reduce memory allocate
-	nextfn func(ctx *Middleware.HttpContext)
+	nextfn func(ctx *Context.HttpContext)
 }
 
 func newMiddleware(handler Handler, next *middleware) middleware {
@@ -31,19 +31,19 @@ func newMiddleware(handler Handler, next *middleware) middleware {
 	}
 }
 
-func (m middleware) Invoke(ctx *Middleware.HttpContext) {
+func (m middleware) Invoke(ctx *Context.HttpContext) {
 	m.handler.Inovke(ctx, m.nextfn)
 }
 
 func wrap(handler http.Handler) Handler {
-	return HandlerFunc(func(ctx *Middleware.HttpContext, next func(ctx *Middleware.HttpContext)) {
+	return HandlerFunc(func(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 		handler.ServeHTTP(ctx.Resp, ctx.Req)
 		next(ctx)
 	})
 }
 
 func wrapFunc(handlerFunc http.HandlerFunc) Handler {
-	return HandlerFunc(func(ctx *Middleware.HttpContext, next func(ctx *Middleware.HttpContext)) {
+	return HandlerFunc(func(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 		handlerFunc(ctx.Resp, ctx.Req)
 		next(ctx)
 	})
@@ -51,7 +51,7 @@ func wrapFunc(handlerFunc http.HandlerFunc) Handler {
 
 func voidMiddleware() middleware {
 	return newMiddleware(
-		HandlerFunc(func(ctx *Middleware.HttpContext, next func(ctx *Middleware.HttpContext)) {}),
+		HandlerFunc(func(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {}),
 		&middleware{},
 	)
 }

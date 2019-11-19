@@ -1,6 +1,7 @@
-package Middleware
+package Router
 
 import (
+	"github.com/maxzhang1985/yoyogo/Context"
 	"net/url"
 	"strings"
 )
@@ -10,11 +11,11 @@ type Trie struct {
 	children  []*Trie
 	param     byte
 	Component string
-	Methods   map[string]func(ctx *HttpContext)
+	Methods   map[string]func(ctx *Context.HttpContext)
 }
 
 // Insert a node into the tree.
-func (t *Trie) Insert(method, path string, handler func(ctx *HttpContext)) {
+func (t *Trie) Insert(method, path string, handler func(ctx *Context.HttpContext)) {
 	components := strings.Split(path, "/")[1:]
 Next:
 	for _, component := range components {
@@ -25,7 +26,7 @@ Next:
 			}
 		}
 		newNode := &Trie{Component: component,
-			Methods: make(map[string]func(ctx *HttpContext))}
+			Methods: make(map[string]func(ctx *Context.HttpContext))}
 		if len(component) > 0 {
 			if component[0] == ':' || component[0] == '*' {
 				newNode.param = component[0]

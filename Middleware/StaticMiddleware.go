@@ -1,6 +1,7 @@
 package Middleware
 
 import (
+	"github.com/maxzhang1985/yoyogo/Context"
 	"net/http"
 	"os"
 	"strings"
@@ -19,7 +20,7 @@ func (s *Static) SetPrefix() {
 	s.IsPrefix = true
 }
 
-func (s *Static) Inovke(ctx *HttpContext, next func(ctx *HttpContext)) {
+func (s *Static) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 	if (ctx.Req.Method != "GET" && ctx.Req.Method != "HEAD") || (s.IsPrefix && !strings.Contains(ctx.Req.URL.Path, s.VirualPath)) {
 		next(ctx)
 		return

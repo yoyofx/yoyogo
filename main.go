@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/maxzhang1985/yoyogo/Context"
 	"github.com/maxzhang1985/yoyogo/Framework"
-	"github.com/maxzhang1985/yoyogo/Middleware"
+	"github.com/maxzhang1985/yoyogo/Router"
 	"github.com/maxzhang1985/yoyogo/Standard"
 	"os"
 )
@@ -14,6 +15,7 @@ func main() {
 	webHost.Run()
 
 }
+
 //region Create the builder of Web host
 func CreateWebHostBuilder(args []string) YoyoGo.HostBuilder {
 	return YoyoGo.NewWebHostBuilder().
@@ -22,20 +24,21 @@ func CreateWebHostBuilder(args []string) YoyoGo.HostBuilder {
 			//app.UseMvc()
 			app.UseStatic("Static")
 		}).
-		UseRouter(func(router Middleware.IRouterBuilder) {
+		UseRouter(func(router Router.IRouterBuilder) {
 
-			router.GET("/error", func(ctx *Middleware.HttpContext) {
+			router.GET("/error", func(ctx *Context.HttpContext) {
 				panic("http get error")
 			})
 
 			router.POST("/info/:id", PostInfo)
-			router.Group("/v1/api", func(router *Middleware.RouterGroup) {
+			router.Group("/v1/api", func(router *Router.RouterGroup) {
 				router.GET("/info", GetInfo)
 			})
 
 			router.GET("/info", GetInfo)
 		})
 }
+
 //endregion
 
 //region Http Request Methods
@@ -48,12 +51,12 @@ type UserInfo struct {
 
 //HttpGet request: /info  or /v1/api/info
 //bind UserInfo for id,q1,username
-func GetInfo(ctx *Middleware.HttpContext) {
+func GetInfo(ctx *Context.HttpContext) {
 	ctx.JSON(200, Std.M{"info": "ok"})
 }
 
 //HttpPost request: /info/:id ?q1=abc&username=123
-func PostInfo(ctx *Middleware.HttpContext) {
+func PostInfo(ctx *Context.HttpContext) {
 	qs_q1 := ctx.Query("q1")
 	pd_name := ctx.Param("username")
 

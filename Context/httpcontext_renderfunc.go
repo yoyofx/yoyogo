@@ -1,4 +1,4 @@
-package Middleware
+package Context
 
 import (
 	"github.com/maxzhang1985/yoyogo/ResponseRender"

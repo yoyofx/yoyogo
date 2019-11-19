@@ -1,11 +1,11 @@
 package YoyoGo
 
-import "github.com/maxzhang1985/yoyogo/Middleware"
+import "github.com/maxzhang1985/yoyogo/Router"
 
 type HostBuilder struct {
 	server          IServer
 	configures      []func(*ApplicationBuilder)
-	routeconfigures []func(Middleware.IRouterBuilder)
+	routeconfigures []func(Router.IRouterBuilder)
 }
 
 func (self HostBuilder) Configure(configure func(*ApplicationBuilder)) HostBuilder {
@@ -13,7 +13,7 @@ func (self HostBuilder) Configure(configure func(*ApplicationBuilder)) HostBuild
 	return self
 }
 
-func (self HostBuilder) UseRouter(configure func(Middleware.IRouterBuilder)) HostBuilder {
+func (self HostBuilder) UseRouter(configure func(Router.IRouterBuilder)) HostBuilder {
 	self.routeconfigures = append(self.routeconfigures, configure)
 	return self
 }

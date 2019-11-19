@@ -1,8 +1,9 @@
 package YoyoGo
 
 import (
+	"github.com/maxzhang1985/yoyogo/Context"
 	"github.com/maxzhang1985/yoyogo/Middleware"
-	"github.com/maxzhang1985/yoyogo/Standard"
+	"github.com/maxzhang1985/yoyogo/Router"
 	"net/http"
 )
 
@@ -14,10 +15,10 @@ const (
 )
 
 type ApplicationBuilder struct {
-	Mode       string
-	router     *Middleware.RouterMiddleware
-	middleware middleware
-	handlers   []Handler
+	Mode          string
+	routerHandler Router.IRouterHandler
+	middleware    middleware
+	handlers      []Handler
 }
 
 func UseClassic() *ApplicationBuilder {
@@ -25,20 +26,20 @@ func UseClassic() *ApplicationBuilder {
 }
 
 func NewApplicationBuilder() *ApplicationBuilder {
+	routerHandler := Router.NewRouterHandler()
 	recovery := Middleware.NewRecovery()
 	logger := Middleware.NewLogger()
-	router := Middleware.NewRouter()
+	router := Middleware.NewRouter(routerHandler)
 	self := New(logger, recovery, router)
-	self.router = router
+	self.routerHandler = routerHandler
 	return self
 }
 
 func (self *ApplicationBuilder) UseMvc() *ApplicationBuilder {
-	self.router = Middleware.NewRouter()
-	//self.Recovery = Middleware.NewRecovery()
+	self.routerHandler = Router.NewRouterHandler()
 	self.UseMiddleware(Middleware.NewLogger())
 	self.UseMiddleware(Middleware.NewRecovery())
-	self.UseMiddleware(self.router)
+	self.UseMiddleware(Middleware.NewRouter(self.routerHandler))
 
 	return self
 }
@@ -84,100 +85,10 @@ func (n *ApplicationBuilder) UseFunc(handlerFunc HandlerFunc) {
 	n.UseMiddleware(handlerFunc)
 }
 
+/*
+Middleware of Server Handler , request port.
+*/
+
 func (yoyo *ApplicationBuilder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	yoyo.middleware.Invoke(Middleware.NewContext(w, r))
-}
-
-//func (yoyo *ApplicationBuilder) printLogo(l *log.Logger, port string) {
-//	logo, _ := base64.StdEncoding.DecodeString("CiBfICAgICBfICAgICAgICAgICAgICAgICAgICBfX18gICAgICAgICAgCiggKSAgICggKSAgICAgICAgICAgICAgICAgICggIF9gXCAgICAgICAgCmBcYFxfLycvJ18gICAgXyAgIF8gICAgXyAgIHwgKCAoXykgICBfICAgCiAgYFwgLycvJ19gXCAoICkgKCApIC8nX2BcIHwgfF9fXyAgLydfYFwgCiAgIHwgfCggKF8pICl8IChfKSB8KCAoXykgKXwgKF8sICkoIChfKSApCiAgIChfKWBcX19fLydgXF9fLCB8YFxfX18vJyhfX19fLydgXF9fXy8nCiAgICAgICAgICAgICAoIClffCB8ICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICBgXF9fXy8nICAgICAgICAgICAgICAgICAgICAgCg==")
-//	fmt.Println(string(logo))
-//
-//	l.Printf("listening on %s", port)
-//	l.Printf("application is runing pid: %d", os.Getpid())
-//	l.Printf("runing in %s mode , switch on 'Prod' mode in production.", yoyo.Mode)
-//	l.Println(" - use Prod app.SetMode(Prod) ")
-//}
-//
-//func (yoyo *ApplicationBuilder) Run(addr ...string) {
-//	finalAddr := detectAddress(addr...)
-//	l := log.New(os.Stdout, "[yoyogo] ", 0)
-//	yoyo.printLogo(l, finalAddr)
-//
-//	cert, key := Certificate.GetCertificatePaths()
-//	server := HttpServer{IsTLS: false, CertFile: cert, KeyFile: key, Addr: finalAddr}
-//	err := server.Run(yoyo)
-//	//err := http.ListenAndServe(finalAddr, yoyo)
-//
-//	l.Fatal(err)
-//}
-
-func (yoyo *ApplicationBuilder) Map(method string, path string, handler func(ctx *Middleware.HttpContext)) {
-	if len(path) < 1 || path[0] != '/' {
-		panic("Path should be like '/yoyo/go'")
-	}
-	yoyo.router.Tree.Insert(method, path, handler)
-}
-
-// GET register GET request handler
-func (yoyo *ApplicationBuilder) GET(path string, handler func(ctx *Middleware.HttpContext)) {
-	yoyo.Map(Std.GET, path, handler)
-}
-
-// HEAD register HEAD request handler
-func (yoyo *ApplicationBuilder) HEAD(path string, handler func(ctx *Middleware.HttpContext)) {
-	yoyo.Map(Std.HEAD, path, handler)
-}
-
-// OPTIONS register OPTIONS request handler
-func (yoyo *ApplicationBuilder) OPTIONS(path string, handler func(ctx *Middleware.HttpContext)) {
-	yoyo.Map(Std.OPTIONS, path, handler)
-}
-
-// POST register POST request handler
-func (yoyo *ApplicationBuilder) POST(path string, handler func(ctx *Middleware.HttpContext)) {
-	yoyo.Map(Std.POST, path, handler)
-}
-
-// PUT register PUT request handler
-func (yoyo *ApplicationBuilder) PUT(path string, handler func(ctx *Middleware.HttpContext)) {
-	yoyo.Map(Std.PUT, path, handler)
-}
-
-// PATCH register PATCH request HandlerFunc
-func (yoyo *ApplicationBuilder) PATCH(path string, handler func(ctx *Middleware.HttpContext)) {
-	yoyo.Map(Std.PATCH, path, handler)
-}
-
-// DELETE register DELETE request handler
-func (yoyo *ApplicationBuilder) DELETE(path string, handler func(ctx *Middleware.HttpContext)) {
-	yoyo.Map(Std.DELETE, path, handler)
-}
-
-// CONNECT register CONNECT request handler
-func (yoyo *ApplicationBuilder) CONNECT(path string, handler func(ctx *Middleware.HttpContext)) {
-	yoyo.Map(Std.CONNECT, path, handler)
-}
-
-// TRACE register TRACE request handler
-func (yoyo *ApplicationBuilder) TRACE(path string, handler func(ctx *Middleware.HttpContext)) {
-	yoyo.Map(Std.TRACE, path, handler)
-}
-
-// Any register any method handler
-func (yoyo *ApplicationBuilder) Any(path string, handler func(ctx *Middleware.HttpContext)) {
-	for _, m := range Std.Methods {
-		yoyo.Map(m, path, handler)
-	}
-}
-
-func (yoyo *ApplicationBuilder) Group(name string, routerBuilderFunc func(router *Middleware.RouterGroup)) {
-	group := &Middleware.RouterGroup{
-		Name:       name,
-		RouterTree: yoyo.router.Tree,
-	}
-	if routerBuilderFunc == nil {
-		panic("routerBuilderFunc is nil")
-	}
-
-	routerBuilderFunc(group)
+	yoyo.middleware.Invoke(Context.NewContext(w, r))
 }
