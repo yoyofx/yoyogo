@@ -37,8 +37,11 @@ func (s *Static) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpCon
 	}
 
 	staticHandle := http.FileServer(http.Dir(webrootPath))
-	if s.IsPrefix {
-		staticHandle = http.StripPrefix(prefixPath, staticHandle)
+
+	if ctx.Req.URL.Path != "/favicon.ico" {
+		if s.IsPrefix {
+			staticHandle = http.StripPrefix(prefixPath, staticHandle)
+		}
 	}
 
 	staticHandle.ServeHTTP(ctx.Resp, ctx.Req)
