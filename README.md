@@ -35,15 +35,17 @@ func CreateWebHostBuilder(args []string) YoyoGo.HostBuilder {
 	return YoyoGo.NewWebHostBuilder().
 		UseServer(YoyoGo.DefaultHttpServer(":8080")).
 		Configure(func(app *YoyoGo.ApplicationBuilder) {
+			//app.UseMvc()
 			app.UseStatic("Static")
 		}).
-		UseRouter(func(router Middleware.IRouterBuilder) {
-			router.GET("/error", func(ctx *Middleware.HttpContext) {
+		UseRouter(func(router Router.IRouterBuilder) {
+
+			router.GET("/error", func(ctx *Context.HttpContext) {
 				panic("http get error")
 			})
-			
+
 			router.POST("/info/:id", PostInfo)
-			router.Group("/v1/api", func(router *Middleware.RouterGroup) {
+			router.Group("/v1/api", func(router *Router.RouterGroup) {
 				router.GET("/info", GetInfo)
 			})
 
