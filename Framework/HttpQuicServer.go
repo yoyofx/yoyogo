@@ -8,6 +8,11 @@ type HttpQUICServer struct {
 	Addr, CertFile, KeyFile string
 }
 
+func NewQUICServer(addr string, certfile string, keyfile string) HttpQUICServer {
+
+	return HttpQUICServer{Addr: addr, CertFile: "./Certificate/server.crt", KeyFile: "./Certificate/server.key"}
+}
+
 func (server HttpQUICServer) GetAddr() string {
 	return server.Addr
 }
