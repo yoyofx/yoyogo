@@ -1,7 +1,9 @@
 package DependencyInjection
 
 type IServiceProvider interface {
-	GetService(providerType interface{}) interface{}
+	GetService(refObject interface{}, providerType interface{})
 
-	GetServiceByName(providerType interface{}, name string) interface{}
+	GetServiceByName(refObject interface{}, providerType interface{}, name string)
+
+	GetServices(refObjects interface{}, implementType interface{})
 }
