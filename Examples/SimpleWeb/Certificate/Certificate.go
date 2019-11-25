@@ -23,5 +23,5 @@ func GetApplicationPath() string {
 // GetCertificatePaths returns the paths to certificate and key
 func GetCertificatePaths() (string, string) {
 	certPath := GetApplicationPath()
-	return path.Join(certPath, "server.crt"), path.Join(certPath, "server.key")
+	return path.Join(certPath, "server.pem"), path.Join(certPath, "server.key")
 }
