@@ -3,7 +3,6 @@ module github.com/maxzhang1985/yoyogo
 go 1.13
 
 require (
-	github.com/defval/inject v1.5.2 // indirect
 	github.com/golang/protobuf v1.3.2
 	github.com/lucas-clemente/quic-go v0.12.1
 	github.com/maxzhang1985/inject v1.5.1
