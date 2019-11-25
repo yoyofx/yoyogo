@@ -2,8 +2,6 @@ github.com/cheekybits/genny v1.0.0 h1:uGGa4nei+j20rOSeDeP5Of12XVm7TGUd4dJA9RDitf
 github.com/cheekybits/genny v1.0.0/go.mod h1:+tQajlRqAUrPI7DOSpB0XAqZYtQakVtB7wXkRAgjxjQ=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/defval/inject v1.5.2 h1:S5xWimfTlPTYC1RJiLmG2yS1TbvHWeXdtH22nRsDhlI=
-github.com/defval/inject v1.5.2/go.mod h1:Ix1VbBgZujBhdIhl5yi5mFlE/tyqi3rNvvUiLsYE9Fc=
 github.com/emicklei/dot v0.10.0 h1:BAuTQEJM56bu8Z0+d073CPJrc9I8gj4uXCKDIO0Cwpk=
 github.com/emicklei/dot v0.10.0/go.mod h1:kZg82Ikwc4pqb31Ct2yb0B7RUqxh3JESIXw2uWSv/xY=
 github.com/fsnotify/fsnotify v1.4.7 h1:IXs+QLmnXW2CcXuY+8Mzv/fWEsPGWxqefPtCP5CnV9I=
@@ -32,10 +30,7 @@ github.com/marten-seemann/qpack v0.1.0 h1:/0M7lkda/6mus9B8u34Asqm8ZhHAAt9Ho0vniN
 github.com/marten-seemann/qpack v0.1.0/go.mod h1:LFt1NU/Ptjip0C2CPkhimBz5CGE3WGDAUWqna+CNTrI=
 github.com/marten-seemann/qtls v0.3.2 h1:O7awy4bHEzSX/K3h+fZig3/Vo03s/RxlxgsAk9sYamI=
 github.com/marten-seemann/qtls v0.3.2/go.mod h1:xzjG7avBwGGbdZ8dTGxlBnLArsVKLvwmjgmPuiQEcYk=
-github.com/maxzhang1985/inject v1.5.0 h1:SRddiBygfHGrNxD5uwJhL3tAEmdZFGoqwSZj41ApXDw=
-github.com/maxzhang1985/inject v1.5.0/go.mod h1:axr9tPAJS8RCXgezN4qzN6L1fOdq3HkU3oJhhCsXVME=
-github.com/maxzhang1985/inject v1.5.1 h1:wfd8gseUzk5vPgivvBzjLwDooZkLsRbTcwnqncbZyOY=
-github.com/maxzhang1985/inject v1.5.1/go.mod h1:mwGKDMp5tpBnyBWRB0QhENC0/qtGd0FlpC+XXufodYo=
+github.com/maxzhang1985/inject v1.8.2/go.mod h1:QMtIRoi54Yf6XxSk3C1JXaKVeTisGWFbcvrVMmZpqqY=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/ginkgo v1.7.0 h1:WSHQ+IS43OoUrWtD1/bbclrwK8TTH5hzp+umCiuxHgs=
 github.com/onsi/ginkgo v1.7.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=

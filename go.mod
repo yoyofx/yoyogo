@@ -5,7 +5,7 @@ go 1.13
 require (
 	github.com/golang/protobuf v1.3.2
 	github.com/lucas-clemente/quic-go v0.12.1
-	github.com/maxzhang1985/inject v1.5.1
+	github.com/maxzhang1985/inject v1.8.2
 	github.com/stretchr/testify v1.4.0
 	github.com/ugorji/go/codec v1.1.7
 	gopkg.in/yaml.v2 v2.2.4
