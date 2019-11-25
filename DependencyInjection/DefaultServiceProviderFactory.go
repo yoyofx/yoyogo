@@ -1,6 +1,8 @@
 package DependencyInjection
 
-import "github.com/maxzhang1985/inject"
+import (
+	"github.com/maxzhang1985/inject"
+)
 
 func (sc ServiceCollection) Build() IServiceProvider {
 	var providers []inject.Option
@@ -14,9 +16,9 @@ func (sc ServiceCollection) Build() IServiceProvider {
 			providerOptions = append(providerOptions, inject.WithName(desc.Name))
 		}
 		if desc.Lifetime == Singleton {
-			providerOptions = append(providerOptions, inject.Lifetime(Singleton))
+			providerOptions = append(providerOptions, inject.Lifetime(0))
 		} else {
-			providerOptions = append(providerOptions, inject.Lifetime(Transient))
+			providerOptions = append(providerOptions, inject.Lifetime(2))
 		}
 
 		provider := inject.Provide(desc.Provider, providerOptions...)
