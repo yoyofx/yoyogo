@@ -3,16 +3,16 @@ module github.com/maxzhang1985/yoyogo
 go 1.13
 
 require (
-	github.com/defval/inject v1.5.2
+	github.com/defval/inject v1.5.2 // indirect
 	github.com/golang/protobuf v1.3.2
 	github.com/lucas-clemente/quic-go v0.12.1
+	github.com/maxzhang1985/inject v1.5.1
 	github.com/stretchr/testify v1.4.0
 	github.com/ugorji/go/codec v1.1.7
 	gopkg.in/yaml.v2 v2.2.4
 )
 
 replace (
-	github.com/defval/inject v1.5.2 => github.com/maxzhang1985/inject v1.5.0
 	github.com/golang/protobuf v1.3.0 => github.com/golang/protobuf v1.3.2
 	golang.org/x/crypto => github.com/golang/crypto v0.0.0-20191029031824-8986dd9e96cf
 	golang.org/x/net => github.com/golang/net v0.0.0-20191028085509-fe3aa8a45271

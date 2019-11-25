@@ -1,17 +1,23 @@
 package DependencyInjection
 
+import "github.com/maxzhang1985/inject"
+
 type DefaultServiceProvider struct {
-	servicecollection ServiceCollection
+	container *inject.Container
 }
 
-func (d DefaultServiceProvider) GetService(refObject interface{}, providerType interface{}) {
-	panic("implement me")
+func (d DefaultServiceProvider) GetService(refObject interface{}) (err error) {
+	err = d.container.Extract(refObject)
+	if err != nil {
+		panic(err)
+	}
+	return err
 }
 
-func (d DefaultServiceProvider) GetServiceByName(refObject interface{}, providerType interface{}, name string) {
-	panic("implement me")
-}
-
-func (d DefaultServiceProvider) GetServices(refObjects interface{}, implementType interface{}) {
-	panic("implement me")
+func (d DefaultServiceProvider) GetServiceByName(refObject interface{}, name string) (err error) {
+	err = d.container.Extract(refObject, inject.Name(name))
+	if err != nil {
+		panic(err)
+	}
+	return err
 }
