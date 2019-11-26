@@ -39,7 +39,6 @@ func CreateCustomWebHostBuilder(args []string) YoyoGo.HostBuilder {
 	return YoyoGo.NewWebHostBuilder().
 		UseServer(YoyoGo.DefaultHttps(":8080", "./Certificate/server.pem", "./Certificate/server.key")).
 		Configure(func(app *YoyoGo.ApplicationBuilder) {
-			//app.UseMvc()
 			app.UseStatic("Static")
 		}).
 		UseRouter(RouterConfigFunc)
