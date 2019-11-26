@@ -33,17 +33,19 @@ func main() {
 	webHost.Run()
 }
 
-//region Create the builder of Web host
+
+/* Create the builder of Web host
 func CreateCustomWebHostBuilder(args []string) YoyoGo.HostBuilder {
 	return YoyoGo.NewWebHostBuilder().
 		UseServer(YoyoGo.DefaultHttps(":8080", "./Certificate/server.pem", "./Certificate/server.key")).
 		Configure(func(app *YoyoGo.ApplicationBuilder) {
-			//app.UseMvc()
 			app.UseStatic("Static")
 		}).
 		UseRouter(RouterConfigFunc)
 }
+ */
 
+//region router config function
 func RouterConfigFunc(router Router.IRouterBuilder) {
 	router.GET("/error", func(ctx *Context.HttpContext) {
 		panic("http get error")

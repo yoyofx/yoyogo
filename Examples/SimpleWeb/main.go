@@ -16,7 +16,7 @@ func main() {
 
 }
 
-//region Create the builder of Web host
+/* Create the builder of Web host
 func CreateCustomWebHostBuilder(args []string) YoyoGo.HostBuilder {
 	return YoyoGo.NewWebHostBuilder().
 		UseServer(YoyoGo.DefaultHttps(":8080", "./Certificate/server.pem", "./Certificate/server.key")).
@@ -26,7 +26,9 @@ func CreateCustomWebHostBuilder(args []string) YoyoGo.HostBuilder {
 		}).
 		UseRouter(RouterConfigFunc)
 }
+*/
 
+//region router config function
 func RouterConfigFunc(router Router.IRouterBuilder) {
 	router.GET("/error", func(ctx *Context.HttpContext) {
 		panic("http get error")
