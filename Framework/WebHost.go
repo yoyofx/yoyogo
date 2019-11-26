@@ -9,6 +9,7 @@ import (
 
 type HostEnv struct {
 	ApplicationName string
+	Version         string
 	AppMode         string
 	Args            []string
 	Addr            string
@@ -36,7 +37,7 @@ func (host WebHost) Run() {
 	host.hostEnv.Addr = host.webServer.GetAddr()
 	host.hostEnv.Port = detectAddress(host.hostEnv.Addr)
 	host.hostEnv.PID = os.Getpid()
-
+	host.hostEnv.Version = Version
 	printLogo(l, host.hostEnv)
 
 	l.Fatal(host.webServer.Run(host.requestDelegate))
@@ -47,11 +48,12 @@ func (host WebHost) SetAppMode(mode string) {
 }
 
 func printLogo(l *log.Logger, env HostEnv) {
-	logo, _ := base64.StdEncoding.DecodeString("CiBfICAgICBfICAgICAgICAgICAgICAgICAgICBfX18gICAgICAgICAgCiggKSAgICggKSAgICAgICAgICAgICAgICAgICggIF9gXCAgICAgICAgCmBcYFxfLycvJ18gICAgXyAgIF8gICAgXyAgIHwgKCAoXykgICBfICAgCiAgYFwgLycvJ19gXCAoICkgKCApIC8nX2BcIHwgfF9fXyAgLydfYFwgCiAgIHwgfCggKF8pICl8IChfKSB8KCAoXykgKXwgKF8sICkoIChfKSApCiAgIChfKWBcX19fLydgXF9fLCB8YFxfX18vJyhfX19fLydgXF9fXy8nCiAgICAgICAgICAgICAoIClffCB8ICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICBgXF9fXy8nICAgICAgICAgICAgICAgICAgICAgCg==")
+	logo, _ := base64.StdEncoding.DecodeString("IF8gICAgIF8gICAgICAgICAgICAgICAgICAgIF9fXyAgICAgICAgICAKKCApICAgKCApICAgICAgICAgICAgICAgICAgKCAgX2BcICAgICAgICAKYFxgXF8vJy8nXyAgICBfICAgXyAgICBfICAgfCAoIChfKSAgIF8gICAKICBgXCAvJy8nX2BcICggKSAoICkgLydfYFwgfCB8X19fICAvJ19gXCAKICAgfCB8KCAoXykgKXwgKF8pIHwoIChfKSApfCAoXywgKSggKF8pICkKICAgKF8pYFxfX18vJ2BcX18sIHxgXF9fXy8nKF9fX18vJ2BcX19fLycKICAgICAgICAgICAgICggKV98IHwgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgIGBcX19fLycgICAgICAgICAgICBMaWdodCBhbmQgZmFzdC4gIA==")
 	fmt.Println(string(logo))
 
+	l.Printf("version: %s", env.Version)
 	l.Printf("listening on %s", env.Port)
-	l.Printf("application is runing pid: %d", env.PID)
+	l.Printf("application is runing , pid: %d", env.PID)
 	l.Printf("runing in %s mode , switch on 'Prod' mode in production.", env.AppMode)
-	l.Println(" - use Prod app.SetMode(Prod) ")
+	l.Print(" - use Prod app.SetMode(Prod) ")
 }

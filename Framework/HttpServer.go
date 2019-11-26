@@ -1,6 +1,12 @@
 package YoyoGo
 
-import "net/http"
+import (
+	"golang.org/x/net/context"
+	"log"
+	"net/http"
+	"os"
+	"os/signal"
+)
 
 type HttpServer struct {
 	IsTLS                   bool
@@ -20,14 +26,36 @@ func (server HttpServer) GetAddr() string {
 }
 
 func (server HttpServer) Run(delegate IRequestDelegate) (e error) {
-	if server.IsTLS {
-		e = http.ListenAndServeTLS(server.Addr, server.CertFile, server.KeyFile, delegate)
-	} else {
-		e = http.ListenAndServe(server.Addr, delegate)
+
+	webserver := &http.Server{
+		Addr:    server.Addr,
+		Handler: delegate,
 	}
 
+	// 创建系统信号接收器
+	quit := make(chan os.Signal)
+	signal.Notify(quit, os.Interrupt)
+	go func() {
+		<-quit
+
+		if err := webserver.Shutdown(context.Background()); err != nil {
+			log.Fatal("Shutdown server:", err)
+		}
+	}()
+
+	log.Println("Starting HTTP server...")
+
+	if server.IsTLS {
+		e = webserver.ListenAndServeTLS(server.CertFile, server.KeyFile)
+	} else {
+		e = webserver.ListenAndServe()
+	}
 	if e != nil {
-		panic(e)
+		if e == http.ErrServerClosed {
+			log.Print("Server closed under request")
+		} else {
+			log.Fatal("Server closed unexpected")
+		}
 	}
 
 	return nil
