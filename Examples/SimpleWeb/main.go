@@ -24,19 +24,7 @@ func CreateCustomWebHostBuilder(args []string) YoyoGo.HostBuilder {
 			//app.UseMvc()
 			app.UseStatic("Static")
 		}).
-		UseRouter(func(router Router.IRouterBuilder) {
-
-			router.GET("/error", func(ctx *Context.HttpContext) {
-				panic("http get error")
-			})
-
-			router.POST("/info/:id", PostInfo)
-			router.Group("/v1/api", func(router *Router.RouterGroup) {
-				router.GET("/info", GetInfo)
-			})
-
-			router.GET("/info", GetInfo)
-		})
+		UseRouter(RouterConfigFunc)
 }
 
 func RouterConfigFunc(router Router.IRouterBuilder) {
@@ -45,6 +33,7 @@ func RouterConfigFunc(router Router.IRouterBuilder) {
 	})
 
 	router.POST("/info/:id", PostInfo)
+
 	router.Group("/v1/api", func(router *Router.RouterGroup) {
 		router.GET("/info", GetInfo)
 	})

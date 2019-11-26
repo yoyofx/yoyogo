@@ -25,35 +25,35 @@ YoyoGo is a simple, light and fast Web framework written in Go.
 # Example
 ```golang
 func main() {
-
-	webHost := CreateWebHostBuilder(os.Args).Build()
+	webHost := YoyoGo.CreateDefaultWebHostBuilder(os.Args, RouterConfigFunc).Build()
 	webHost.Run()
-
 }
+
 //region Create the builder of Web host
-func CreateWebHostBuilder(args []string) YoyoGo.HostBuilder {
+func CreateCustomWebHostBuilder(args []string) YoyoGo.HostBuilder {
 	return YoyoGo.NewWebHostBuilder().
-		UseServer(YoyoGo.DefaultHttpServer(":8080")).
+		UseServer(YoyoGo.DefaultHttps(":8080", "./Certificate/server.pem", "./Certificate/server.key")).
 		Configure(func(app *YoyoGo.ApplicationBuilder) {
 			//app.UseMvc()
 			app.UseStatic("Static")
 		}).
-		UseRouter(func(router Router.IRouterBuilder) {
+		UseRouter(RouterConfigFunc)
+}
 
-			router.GET("/error", func(ctx *Context.HttpContext) {
-				panic("http get error")
-			})
+func RouterConfigFunc(router Router.IRouterBuilder) {
+	router.GET("/error", func(ctx *Context.HttpContext) {
+		panic("http get error")
+	})
 
-			router.POST("/info/:id", PostInfo)
-			router.Group("/v1/api", func(router *Router.RouterGroup) {
-				router.GET("/info", GetInfo)
-			})
+	router.POST("/info/:id", PostInfo)
 
-			router.GET("/info", GetInfo)
-		})
+	router.Group("/v1/api", func(router *Router.RouterGroup) {
+		router.GET("/info", GetInfo)
+	})
+
+	router.GET("/info", GetInfo)
 }
 ```
-
 
 # ToDo
 ## Standard
