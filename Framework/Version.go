@@ -1,7 +1,7 @@
 package YoyoGo
 
 const (
-	Version = "v1.1.0"
+	Version = "v1.2.0"
 	Dev     = "Dev"
 	Prod    = "Prod"
 	Test    = "Test"

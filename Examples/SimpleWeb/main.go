@@ -11,13 +11,13 @@ import (
 
 func main() {
 
-	webHost := CreateWebHostBuilder(os.Args).Build()
+	webHost := YoyoGo.CreateDefaultWebHostBuilder(os.Args, RouterConfigFunc).Build()
 	webHost.Run()
 
 }
 
 //region Create the builder of Web host
-func CreateWebHostBuilder(args []string) YoyoGo.HostBuilder {
+func CreateCustomWebHostBuilder(args []string) YoyoGo.HostBuilder {
 	return YoyoGo.NewWebHostBuilder().
 		UseServer(YoyoGo.DefaultHttps(":8080", "./Certificate/server.pem", "./Certificate/server.key")).
 		Configure(func(app *YoyoGo.ApplicationBuilder) {
@@ -37,6 +37,19 @@ func CreateWebHostBuilder(args []string) YoyoGo.HostBuilder {
 
 			router.GET("/info", GetInfo)
 		})
+}
+
+func RouterConfigFunc(router Router.IRouterBuilder) {
+	router.GET("/error", func(ctx *Context.HttpContext) {
+		panic("http get error")
+	})
+
+	router.POST("/info/:id", PostInfo)
+	router.Group("/v1/api", func(router *Router.RouterGroup) {
+		router.GET("/info", GetInfo)
+	})
+
+	router.GET("/info", GetInfo)
 }
 
 //endregion
