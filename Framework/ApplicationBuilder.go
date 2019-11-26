@@ -25,6 +25,16 @@ func UseClassic() *ApplicationBuilder {
 	return &ApplicationBuilder{Mode: Dev}
 }
 
+//region Create the builder of Web host
+func CreateDefaultWebHostBuilder(args []string, routerConfig func(router Router.IRouterBuilder)) HostBuilder {
+	return NewWebHostBuilder().
+		UseServer(DefaultHttpServer(DefaultAddress)).
+		Configure(func(app *ApplicationBuilder) {
+			app.UseStatic("Static")
+		}).
+		UseRouter(routerConfig)
+}
+
 func NewApplicationBuilder() *ApplicationBuilder {
 	routerHandler := Router.NewRouterHandler()
 	recovery := Middleware.NewRecovery()
