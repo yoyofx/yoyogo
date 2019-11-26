@@ -24,6 +24,10 @@ YoyoGo is a simple, light and fast Web framework written in Go.
 
 # Example
 ```golang
+package main
+
+import ...
+
 func main() {
 	webHost := YoyoGo.CreateDefaultWebHostBuilder(os.Args, RouterConfigFunc).Build()
 	webHost.Run()
@@ -54,6 +58,8 @@ func RouterConfigFunc(router Router.IRouterBuilder) {
 	router.GET("/info", GetInfo)
 }
 ```
+![](./yoyorun.jpg)
+
 
 # ToDo
 ## Standard
