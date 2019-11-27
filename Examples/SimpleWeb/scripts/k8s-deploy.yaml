@@ -1,0 +1,27 @@
+#yoyogodemo:v1_k8s-deploy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yoyogodemo
+spec:
+  selector:
+    matchLabels:
+      app: yoyogodemo
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  template: # create pods using pod definition in this template
+    metadata:
+      labels:
+        app: yoyogodemo
+    spec:
+      containers:
+        - name: yoyogodemo
+          image: yoyogodemo:v1
+          imagePullPolicy: Never #just for minikube,do not use this in production!!!
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /info
+              port: 8080
+            initialDelaySeconds: 15
+            timeoutSeconds: 1
