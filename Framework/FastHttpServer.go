@@ -12,6 +12,7 @@ import (
 type FastHttpServer struct {
 	IsTLS                   bool
 	Addr, CertFile, KeyFile string
+	webserver               *fasthttp.Server
 }
 
 func NewFastHttp(addr string) FastHttpServer {
@@ -29,8 +30,8 @@ func (server FastHttpServer) GetAddr() string {
 func (server FastHttpServer) Run(delegate IRequestDelegate) (e error) {
 
 	fastHttpHandler := fasthttpadaptor.NewFastHTTPHandler(delegate)
-	e = fasthttp.ListenAndServe(server.Addr, fastHttpHandler)
-	webserver := &fasthttp.Server{
+
+	server.webserver = &fasthttp.Server{
 		Handler: fastHttpHandler,
 	}
 
@@ -39,18 +40,13 @@ func (server FastHttpServer) Run(delegate IRequestDelegate) (e error) {
 	signal.Notify(quit, os.Interrupt)
 	go func() {
 		<-quit
-
-		if err := webserver.Shutdown(); err != nil {
-			log.Fatal("Shutdown server:", err)
-		}
+		server.Shutdown()
 	}()
 
-	log.Println("Starting HTTP server...")
-
 	if server.IsTLS {
-		e = webserver.ListenAndServeTLS(server.Addr, server.CertFile, server.KeyFile)
+		e = server.webserver.ListenAndServeTLS(server.Addr, server.CertFile, server.KeyFile)
 	} else {
-		e = webserver.ListenAndServe(server.Addr)
+		e = server.webserver.ListenAndServe(server.Addr)
 	}
 	if e != nil {
 		if e == http.ErrServerClosed {
@@ -61,4 +57,11 @@ func (server FastHttpServer) Run(delegate IRequestDelegate) (e error) {
 	}
 
 	return e
+}
+
+func (server FastHttpServer) Shutdown() {
+	log.Println("Shutdown HTTP server...")
+	if err := server.webserver.Shutdown(); err != nil {
+		log.Fatal("Shutdown server:", err)
+	}
 }

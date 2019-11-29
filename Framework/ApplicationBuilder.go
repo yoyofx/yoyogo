@@ -15,14 +15,14 @@ const (
 )
 
 type ApplicationBuilder struct {
-	Mode          string
+	hostContext   *HostBuildContext
 	routerHandler Router.IRouterHandler
 	middleware    middleware
 	handlers      []Handler
 }
 
 func UseClassic() *ApplicationBuilder {
-	return &ApplicationBuilder{Mode: Dev}
+	return &ApplicationBuilder{}
 }
 
 //region Create the builder of Web host
@@ -35,13 +35,14 @@ func CreateDefaultWebHostBuilder(args []string, routerConfig func(router Router.
 		UseRouter(routerConfig)
 }
 
-func NewApplicationBuilder() *ApplicationBuilder {
+func NewApplicationBuilder(context *HostBuildContext) *ApplicationBuilder {
 	routerHandler := Router.NewRouterHandler()
 	recovery := Middleware.NewRecovery()
 	logger := Middleware.NewLogger()
 	router := Middleware.NewRouter(routerHandler)
 	self := New(logger, recovery, router)
 	self.routerHandler = routerHandler
+	self.hostContext = context
 	return self
 }
 
@@ -56,13 +57,9 @@ func (self *ApplicationBuilder) UseMvc() *ApplicationBuilder {
 
 func New(handlers ...Handler) *ApplicationBuilder {
 	return &ApplicationBuilder{
-		Mode:       Dev,
 		handlers:   handlers,
 		middleware: build(handlers),
 	}
-}
-func (app *ApplicationBuilder) SetMode(mode string) {
-	app.Mode = mode
 }
 
 func (n *ApplicationBuilder) UseMiddleware(handler Handler) {

@@ -5,6 +5,7 @@ import "os"
 type IServer interface {
 	GetAddr() string
 	Run(delegate IRequestDelegate) (e error)
+	Shutdown()
 }
 
 func detectAddress(addr ...string) string {
