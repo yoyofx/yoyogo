@@ -41,8 +41,8 @@ func printLogo(l *log.Logger, env *HostEnv) {
 
 	l.Printf("version: %s", env.Version)
 	l.Printf("listening on %s", env.Port)
-	l.Printf("application is runing , pid: %d", env.PID)
-	l.Printf("runing in %s mode , switch on 'Prod' mode in production.", env.AppMode)
+	l.Printf("application is running , pid: %d", env.PID)
+	l.Printf("running in %s mode , switch on 'Prod' mode in production.", env.AppMode)
 	l.Print(" - use Prod app.SetMode(Prod) ")
 	l.Print("Starting HTTP server...")
 }
