@@ -4,11 +4,11 @@ go 1.13
 
 require (
 	github.com/golang/protobuf v1.3.2
-	github.com/lucas-clemente/quic-go v0.12.1
 	github.com/maxzhang1985/inject v1.8.2
 	github.com/stretchr/testify v1.4.0
 	github.com/ugorji/go/codec v1.1.7
-	golang.org/x/net v0.0.0-20190620200207-3b0461eec859
+	github.com/valyala/fasthttp v1.6.0
+	golang.org/x/net v0.0.0-20190827160401-ba9fcec4b297
 	gopkg.in/yaml.v2 v2.2.4
 )
 

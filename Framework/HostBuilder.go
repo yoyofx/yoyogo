@@ -2,8 +2,20 @@ package YoyoGo
 
 import "github.com/maxzhang1985/yoyogo/Router"
 
+type HostEnv struct {
+	ApplicationName string
+	DefaultAddress  string
+	Version         string
+	AppMode         string
+	Args            []string
+	Addr            string
+	Port            string
+	PID             int
+}
+
 type HostBuilder struct {
 	server          IServer
+	context         *HostBuildContext
 	configures      []func(*ApplicationBuilder)
 	routeconfigures []func(Router.IRouterBuilder)
 }
@@ -24,7 +36,10 @@ func (self HostBuilder) UseServer(server IServer) HostBuilder {
 }
 
 func (self HostBuilder) Build() WebHost {
-	builder := NewApplicationBuilder()
+	self.context.hostingEnvironment.AppMode = "Dev"
+	self.context.hostingEnvironment.DefaultAddress = ":8080"
+
+	builder := NewApplicationBuilder(self.context)
 
 	for _, configure := range self.configures {
 		configure(builder)
@@ -34,10 +49,10 @@ func (self HostBuilder) Build() WebHost {
 		configure(builder)
 	}
 
-	return NewWebHost(self.server, builder.Build())
+	return NewWebHost(self.server, builder.Build(), self.context)
 
 }
 
 func NewWebHostBuilder() HostBuilder {
-	return HostBuilder{}
+	return HostBuilder{context: &HostBuildContext{hostingEnvironment: &HostEnv{}}}
 }

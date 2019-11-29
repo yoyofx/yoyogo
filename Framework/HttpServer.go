@@ -11,6 +11,7 @@ import (
 type HttpServer struct {
 	IsTLS                   bool
 	Addr, CertFile, KeyFile string
+	webserver               *http.Server
 }
 
 func DefaultHttpServer(addr string) HttpServer {
@@ -27,7 +28,7 @@ func (server HttpServer) GetAddr() string {
 
 func (server HttpServer) Run(delegate IRequestDelegate) (e error) {
 
-	webserver := &http.Server{
+	server.webserver = &http.Server{
 		Addr:    server.Addr,
 		Handler: delegate,
 	}
@@ -37,18 +38,13 @@ func (server HttpServer) Run(delegate IRequestDelegate) (e error) {
 	signal.Notify(quit, os.Interrupt)
 	go func() {
 		<-quit
-
-		if err := webserver.Shutdown(context.Background()); err != nil {
-			log.Fatal("Shutdown server:", err)
-		}
+		server.Shutdown()
 	}()
 
-	log.Println("Starting HTTP server...")
-
 	if server.IsTLS {
-		e = webserver.ListenAndServeTLS(server.CertFile, server.KeyFile)
+		e = server.webserver.ListenAndServeTLS(server.CertFile, server.KeyFile)
 	} else {
-		e = webserver.ListenAndServe()
+		e = server.webserver.ListenAndServe()
 	}
 	if e != nil {
 		if e == http.ErrServerClosed {
@@ -59,4 +55,11 @@ func (server HttpServer) Run(delegate IRequestDelegate) (e error) {
 	}
 
 	return nil
+}
+
+func (server HttpServer) Shutdown() {
+	if err := server.webserver.Shutdown(context.Background()); err != nil {
+		log.Fatal("Shutdown server:", err)
+	}
+	log.Fatal("Shutdown HTTP server...")
 }
