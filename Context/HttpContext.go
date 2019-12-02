@@ -6,6 +6,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"github.com/maxzhang1985/yoyogo/DependencyInjection"
 	"github.com/maxzhang1985/yoyogo/ResponseRender"
 	"github.com/maxzhang1985/yoyogo/Standard"
 	"github.com/maxzhang1985/yoyogo/Utils"
@@ -28,24 +29,26 @@ const (
 )
 
 type HttpContext struct {
-	Req        *http.Request
-	Resp       *responseWriter
-	RouterData url.Values
-	store      map[string]interface{}
-	storeMutex *sync.RWMutex
+	Req              *http.Request
+	Resp             *responseWriter
+	RouterData       url.Values
+	RequiredServices DependencyInjection.IServiceProvider
+	store            map[string]interface{}
+	storeMutex       *sync.RWMutex
 }
 
-func NewContext(w http.ResponseWriter, r *http.Request) *HttpContext {
+func NewContext(w http.ResponseWriter, r *http.Request, sp DependencyInjection.IServiceProvider) *HttpContext {
 	ctx := &HttpContext{}
-	ctx.init(w, r)
+	ctx.init(w, r, sp)
 	return ctx
 }
 
-func (ctx *HttpContext) init(w http.ResponseWriter, r *http.Request) {
+func (ctx *HttpContext) init(w http.ResponseWriter, r *http.Request, sp DependencyInjection.IServiceProvider) {
 	ctx.storeMutex = new(sync.RWMutex)
 	ctx.Resp = &responseWriter{w, 0, 0, nil}
 	ctx.Req = r
 	ctx.RouterData = url.Values{}
+	ctx.RequiredServices = sp
 	ctx.storeMutex.Lock()
 	ctx.store = nil
 	ctx.storeMutex.Unlock()

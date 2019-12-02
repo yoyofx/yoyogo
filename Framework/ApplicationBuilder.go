@@ -67,19 +67,19 @@ func New(handlers ...Handler) *ApplicationBuilder {
 }
 
 // apply middleware in builder
-func (n *ApplicationBuilder) UseMiddleware(handler Handler) {
+func (app *ApplicationBuilder) UseMiddleware(handler Handler) {
 	if handler == nil {
 		panic("handler cannot be nil")
 	}
 
-	n.handlers = append(n.handlers, handler)
+	app.handlers = append(app.handlers, handler)
 	//n.middleware = build(n.handlers)
 }
 
 // build and combo all middleware to request delegate (ServeHTTP(w http.ResponseWriter, r *http.Request))
-func (n *ApplicationBuilder) Build() IRequestDelegate {
-	n.middleware = build(n.handlers)
-	return n
+func (app *ApplicationBuilder) Build() IRequestDelegate {
+	app.middleware = build(app.handlers)
+	return app
 }
 
 // apply static middleware in builder
@@ -88,23 +88,23 @@ func (app *ApplicationBuilder) UseStatic(path string) {
 }
 
 // apply handler middleware in builder
-func (n *ApplicationBuilder) UseHandler(handler http.Handler) {
-	n.UseMiddleware(wrap(handler))
+func (app *ApplicationBuilder) UseHandler(handler http.Handler) {
+	app.UseMiddleware(wrap(handler))
 }
 
 // apply handler func middleware in builder
-func (n *ApplicationBuilder) UseHandlerFunc(handlerFunc func(rw http.ResponseWriter, r *http.Request)) {
-	n.UseMiddleware(wrapFunc(handlerFunc))
+func (app *ApplicationBuilder) UseHandlerFunc(handlerFunc func(rw http.ResponseWriter, r *http.Request)) {
+	app.UseMiddleware(wrapFunc(handlerFunc))
 }
 
 // apply handler func middleware in builder
-func (n *ApplicationBuilder) UseFunc(handlerFunc HandlerFunc) {
-	n.UseMiddleware(handlerFunc)
+func (app *ApplicationBuilder) UseFunc(handlerFunc HandlerFunc) {
+	app.UseMiddleware(handlerFunc)
 }
 
 /*
 Middleware of Server Handler , request port.
 */
-func (yoyo *ApplicationBuilder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	yoyo.middleware.Invoke(Context.NewContext(w, r))
+func (app *ApplicationBuilder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	app.middleware.Invoke(Context.NewContext(w, r, app.hostContext.applicationServices))
 }
