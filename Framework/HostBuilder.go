@@ -1,6 +1,9 @@
 package YoyoGo
 
-import "github.com/maxzhang1985/yoyogo/Router"
+import (
+	"github.com/maxzhang1985/yoyogo/DependencyInjection"
+	"github.com/maxzhang1985/yoyogo/Router"
+)
 
 type HostEnv struct {
 	ApplicationName string
@@ -14,10 +17,11 @@ type HostEnv struct {
 }
 
 type HostBuilder struct {
-	server          IServer
-	context         *HostBuildContext
-	configures      []func(*ApplicationBuilder)
-	routeconfigures []func(Router.IRouterBuilder)
+	server             IServer
+	context            *HostBuildContext
+	configures         []func(*ApplicationBuilder)
+	routeconfigures    []func(Router.IRouterBuilder)
+	servicesconfigures []func(*DependencyInjection.ServiceCollection)
 }
 
 func (self *HostBuilder) Configure(configure func(*ApplicationBuilder)) *HostBuilder {
@@ -27,6 +31,11 @@ func (self *HostBuilder) Configure(configure func(*ApplicationBuilder)) *HostBui
 
 func (self *HostBuilder) UseRouter(configure func(Router.IRouterBuilder)) *HostBuilder {
 	self.routeconfigures = append(self.routeconfigures, configure)
+	return self
+}
+
+func (self *HostBuilder) ConfigureServices(configure func(*DependencyInjection.ServiceCollection)) *HostBuilder {
+	self.servicesconfigures = append(self.servicesconfigures, configure)
 	return self
 }
 
@@ -49,6 +58,8 @@ func (self *HostBuilder) Build() WebHost {
 	self.context.hostingEnvironment.AppMode = "Dev"
 	self.context.hostingEnvironment.DefaultAddress = ":8080"
 
+	services := DependencyInjection.NewServiceCollection()
+
 	builder := NewApplicationBuilder(self.context)
 
 	for _, configure := range self.configures {
@@ -58,6 +69,13 @@ func (self *HostBuilder) Build() WebHost {
 	for _, configure := range self.routeconfigures {
 		configure(builder)
 	}
+
+	for _, configure := range self.servicesconfigures {
+		configure(services)
+	}
+
+	serviceProvider := services.Build()
+	self.context.applicationServices = serviceProvider
 
 	return NewWebHost(self.server, builder.Build(), self.context)
 

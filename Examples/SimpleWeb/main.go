@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/maxzhang1985/yoyogo/Context"
+	"github.com/maxzhang1985/yoyogo/DependencyInjection"
+	"github.com/maxzhang1985/yoyogo/Examples/SimpleWeb/models"
 	"github.com/maxzhang1985/yoyogo/Framework"
 	"github.com/maxzhang1985/yoyogo/Router"
 	"github.com/maxzhang1985/yoyogo/Standard"
@@ -23,7 +25,10 @@ func CreateCustomWebHostBuilder(args []string) *YoyoGo.HostBuilder {
 		Configure(func(app *YoyoGo.ApplicationBuilder) {
 			app.UseStatic("Static")
 		}).
-		UseRouter(RouterConfigFunc)
+		UseRouter(RouterConfigFunc).
+		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
+			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
+		})
 }
 
 //*/
@@ -41,6 +46,7 @@ func RouterConfigFunc(router Router.IRouterBuilder) {
 	})
 
 	router.GET("/info", GetInfo)
+	router.GET("/ioc", GetInfoByIOC)
 }
 
 //endregion
@@ -57,6 +63,12 @@ type UserInfo struct {
 //bind UserInfo for id,q1,username
 func GetInfo(ctx *Context.HttpContext) {
 	ctx.JSON(200, Std.M{"info": "ok"})
+}
+
+func GetInfoByIOC(ctx *Context.HttpContext) {
+	var userAction models.IUserAction
+	_ = ctx.RequiredServices.GetService(&userAction)
+	ctx.JSON(200, Std.M{"info": "ok " + userAction.Login("zhang")})
 }
 
 //HttpPost request: /info/:id ?q1=abc&username=123

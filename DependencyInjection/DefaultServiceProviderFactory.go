@@ -31,5 +31,5 @@ func (sc ServiceCollection) Build() IServiceProvider {
 		return nil
 	}
 
-	return DefaultServiceProvider{container}
+	return &DefaultServiceProvider{container}
 }
