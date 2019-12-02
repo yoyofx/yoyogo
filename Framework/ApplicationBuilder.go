@@ -8,12 +8,12 @@ import (
 )
 
 // HTTP methods
-
 const (
 	// DefaultAddress is used if no other is specified.
 	DefaultAddress = ":8080"
 )
 
+//application builder struct
 type ApplicationBuilder struct {
 	hostContext   *HostBuildContext
 	routerHandler Router.IRouterHandler
@@ -21,6 +21,7 @@ type ApplicationBuilder struct {
 	handlers      []Handler
 }
 
+// create classic application builder
 func UseClassic() *ApplicationBuilder {
 	return &ApplicationBuilder{}
 }
@@ -35,6 +36,7 @@ func CreateDefaultWebHostBuilder(args []string, routerConfig func(router Router.
 		UseRouter(routerConfig)
 }
 
+// create new application builder
 func NewApplicationBuilder(context *HostBuildContext) *ApplicationBuilder {
 	routerHandler := Router.NewRouterHandler()
 	recovery := Middleware.NewRecovery()
@@ -46,6 +48,7 @@ func NewApplicationBuilder(context *HostBuildContext) *ApplicationBuilder {
 	return self
 }
 
+// after create builder , apply router and logger and recovery middleware
 func (self *ApplicationBuilder) UseMvc() *ApplicationBuilder {
 	self.routerHandler = Router.NewRouterHandler()
 	self.UseMiddleware(Middleware.NewLogger())
@@ -55,6 +58,7 @@ func (self *ApplicationBuilder) UseMvc() *ApplicationBuilder {
 	return self
 }
 
+// create application builder when combo all handlers to middleware
 func New(handlers ...Handler) *ApplicationBuilder {
 	return &ApplicationBuilder{
 		handlers:   handlers,
@@ -62,6 +66,7 @@ func New(handlers ...Handler) *ApplicationBuilder {
 	}
 }
 
+// apply middleware in builder
 func (n *ApplicationBuilder) UseMiddleware(handler Handler) {
 	if handler == nil {
 		panic("handler cannot be nil")
@@ -71,23 +76,28 @@ func (n *ApplicationBuilder) UseMiddleware(handler Handler) {
 	//n.middleware = build(n.handlers)
 }
 
+// build and combo all middleware to request delegate (ServeHTTP(w http.ResponseWriter, r *http.Request))
 func (n *ApplicationBuilder) Build() IRequestDelegate {
 	n.middleware = build(n.handlers)
 	return n
 }
 
+// apply static middleware in builder
 func (app *ApplicationBuilder) UseStatic(path string) {
 	app.UseMiddleware(Middleware.NewStatic("Static"))
 }
 
+// apply handler middleware in builder
 func (n *ApplicationBuilder) UseHandler(handler http.Handler) {
 	n.UseMiddleware(wrap(handler))
 }
 
+// apply handler func middleware in builder
 func (n *ApplicationBuilder) UseHandlerFunc(handlerFunc func(rw http.ResponseWriter, r *http.Request)) {
 	n.UseMiddleware(wrapFunc(handlerFunc))
 }
 
+// apply handler func middleware in builder
 func (n *ApplicationBuilder) UseFunc(handlerFunc HandlerFunc) {
 	n.UseMiddleware(handlerFunc)
 }
@@ -95,7 +105,6 @@ func (n *ApplicationBuilder) UseFunc(handlerFunc HandlerFunc) {
 /*
 Middleware of Server Handler , request port.
 */
-
 func (yoyo *ApplicationBuilder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	yoyo.middleware.Invoke(Context.NewContext(w, r))
 }
