@@ -10,16 +10,15 @@ import (
 )
 
 func main() {
-
+	//webHost := YoyoGo.CreateDefaultWebHostBuilder(os.Args,RouterConfigFunc).Build()
 	webHost := CreateCustomWebHostBuilder(os.Args).Build()
 	webHost.Run()
-
 }
 
 //* Create the builder of Web host
-func CreateCustomWebHostBuilder(args []string) YoyoGo.HostBuilder {
+func CreateCustomWebHostBuilder(args []string) *YoyoGo.HostBuilder {
 	return YoyoGo.NewWebHostBuilder().
-		UseServer(YoyoGo.NewFastHttp(":8080")).
+		UseFastHttp(":8080").
 		//UseServer(YoyoGo.DefaultHttps(":8080", "./Certificate/server.pem", "./Certificate/server.key")).
 		Configure(func(app *YoyoGo.ApplicationBuilder) {
 			app.UseStatic("Static")

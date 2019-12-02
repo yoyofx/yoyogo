@@ -20,22 +20,32 @@ type HostBuilder struct {
 	routeconfigures []func(Router.IRouterBuilder)
 }
 
-func (self HostBuilder) Configure(configure func(*ApplicationBuilder)) HostBuilder {
+func (self *HostBuilder) Configure(configure func(*ApplicationBuilder)) *HostBuilder {
 	self.configures = append(self.configures, configure)
 	return self
 }
 
-func (self HostBuilder) UseRouter(configure func(Router.IRouterBuilder)) HostBuilder {
+func (self *HostBuilder) UseRouter(configure func(Router.IRouterBuilder)) *HostBuilder {
 	self.routeconfigures = append(self.routeconfigures, configure)
 	return self
 }
 
-func (self HostBuilder) UseServer(server IServer) HostBuilder {
+func (self *HostBuilder) UseServer(server IServer) *HostBuilder {
 	self.server = server
 	return self
 }
 
-func (self HostBuilder) Build() WebHost {
+func (self *HostBuilder) UseFastHttp(addr string) *HostBuilder {
+	self.server = NewFastHttp(addr)
+	return self
+}
+
+func (self *HostBuilder) UseHttp(addr string) *HostBuilder {
+	self.server = DefaultHttpServer(addr)
+	return self
+}
+
+func (self *HostBuilder) Build() WebHost {
 	self.context.hostingEnvironment.AppMode = "Dev"
 	self.context.hostingEnvironment.DefaultAddress = ":8080"
 
@@ -53,6 +63,6 @@ func (self HostBuilder) Build() WebHost {
 
 }
 
-func NewWebHostBuilder() HostBuilder {
-	return HostBuilder{context: &HostBuildContext{hostingEnvironment: &HostEnv{}}}
+func NewWebHostBuilder() *HostBuilder {
+	return &HostBuilder{context: &HostBuildContext{hostingEnvironment: &HostEnv{}}}
 }

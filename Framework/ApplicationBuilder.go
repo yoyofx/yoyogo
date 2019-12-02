@@ -26,7 +26,7 @@ func UseClassic() *ApplicationBuilder {
 }
 
 //region Create the builder of Web host
-func CreateDefaultWebHostBuilder(args []string, routerConfig func(router Router.IRouterBuilder)) HostBuilder {
+func CreateDefaultWebHostBuilder(args []string, routerConfig func(router Router.IRouterBuilder)) *HostBuilder {
 	return NewWebHostBuilder().
 		UseServer(DefaultHttpServer(DefaultAddress)).
 		Configure(func(app *ApplicationBuilder) {
