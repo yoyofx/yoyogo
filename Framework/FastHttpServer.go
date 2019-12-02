@@ -15,8 +15,8 @@ type FastHttpServer struct {
 	webserver               *fasthttp.Server
 }
 
-func NewFastHttp(addr string) FastHttpServer {
-	return FastHttpServer{IsTLS: false, Addr: addr}
+func NewFastHttp(addr string) *FastHttpServer {
+	return &FastHttpServer{IsTLS: false, Addr: addr}
 }
 
 func NewFastHttps(addr string, cert string, key string) FastHttpServer {
