@@ -88,17 +88,17 @@ func PostInfo(ctx *Context.HttpContext) {
 }
 
 func getApplicationLifeEvent(life *YoyoGo.ApplicationLife) {
-	printDataEvent := func(ch string, data YoyoGo.ApplicationEvent) {
-		fmt.Printf("Channel: %s; Topic: %s; DataEvent: %v\n", ch, data.Topic, data.Data)
+	printDataEvent := func(event YoyoGo.ApplicationEvent) {
+		fmt.Printf("[yoyogo] Topic: %s; Event: %v\n", event.Topic, event.Data)
 	}
 
 	for {
 		select {
-		case d := <-life.ApplicationStarted:
-			go printDataEvent("ch1", d)
-		case d := <-life.ApplicationStopped:
-			go printDataEvent("ch2", d)
-
+		case ev := <-life.ApplicationStarted:
+			go printDataEvent(ev)
+		case ev := <-life.ApplicationStopped:
+			go printDataEvent(ev)
+			break
 		}
 	}
 }

@@ -1,8 +1,8 @@
 package YoyoGo
 
 const (
-	APPLICATION_LIFE_START = "application_life_start"
-	APPLICATION_LIFE_STOP  = "application_life_stop"
+	APPLICATION_LIFE_START = "APPLICATION_LIFE_START"
+	APPLICATION_LIFE_STOP  = "APPLICATION_LIFE_STOP"
 )
 
 //var ApplicationCycle = NewApplicationLife()
@@ -25,9 +25,9 @@ func NewApplicationLife() *ApplicationLife {
 }
 
 func (life *ApplicationLife) StartApplication() {
-	life.eventPublisher.Publish(APPLICATION_LIFE_START, "start")
+	life.eventPublisher.Publish(APPLICATION_LIFE_START, "Start")
 }
 
 func (life *ApplicationLife) StopApplication() {
-	life.eventPublisher.Publish(APPLICATION_LIFE_STOP, "stop")
+	life.eventPublisher.Publish(APPLICATION_LIFE_STOP, "Stop")
 }
