@@ -22,6 +22,7 @@ type HostBuilder struct {
 	configures         []func(*ApplicationBuilder)
 	routeconfigures    []func(Router.IRouterBuilder)
 	servicesconfigures []func(*DependencyInjection.ServiceCollection)
+	lifeConfigure      func(*ApplicationLife)
 }
 
 func (self *HostBuilder) Configure(configure func(*ApplicationBuilder)) *HostBuilder {
@@ -36,6 +37,11 @@ func (self *HostBuilder) UseRouter(configure func(Router.IRouterBuilder)) *HostB
 
 func (self *HostBuilder) ConfigureServices(configure func(*DependencyInjection.ServiceCollection)) *HostBuilder {
 	self.servicesconfigures = append(self.servicesconfigures, configure)
+	return self
+}
+
+func (self *HostBuilder) OnApplicationLifeEvent(lifeConfigure func(*ApplicationLife)) *HostBuilder {
+	self.lifeConfigure = lifeConfigure
 	return self
 }
 
@@ -55,12 +61,19 @@ func (self *HostBuilder) UseHttp(addr string) *HostBuilder {
 }
 
 func (self *HostBuilder) Build() WebHost {
-	self.context.hostingEnvironment.AppMode = "Dev"
-	self.context.hostingEnvironment.DefaultAddress = ":8080"
-
 	services := DependencyInjection.NewServiceCollection()
 
+	self.context.hostingEnvironment.AppMode = "Dev"
+	self.context.hostingEnvironment.DefaultAddress = ":8080"
+	self.context.ApplicationCycle = NewApplicationLife()
+
 	builder := NewApplicationBuilder(self.context)
+
+	configures(self.context, services)
+
+	for _, configure := range self.servicesconfigures {
+		configure(services)
+	}
 
 	for _, configure := range self.configures {
 		configure(builder)
@@ -70,15 +83,15 @@ func (self *HostBuilder) Build() WebHost {
 		configure(builder)
 	}
 
-	for _, configure := range self.servicesconfigures {
-		configure(services)
-	}
+	self.context.applicationServices = services.Build() //serviceProvider
+	self.context.RequestDelegate = builder.Build()      // ServeHTTP(w http.ResponseWriter, r *http.Request)
 
-	serviceProvider := services.Build()
-	self.context.applicationServices = serviceProvider
+	go self.lifeConfigure(self.context.ApplicationCycle)
+	return NewWebHost(self.server, self.context)
+}
 
-	return NewWebHost(self.server, builder.Build(), self.context)
-
+func configures(hostContext *HostBuildContext, serviceCollection *DependencyInjection.ServiceCollection) {
+	serviceCollection.AddSingleton(hostContext.ApplicationCycle)
 }
 
 func NewWebHostBuilder() *HostBuilder {

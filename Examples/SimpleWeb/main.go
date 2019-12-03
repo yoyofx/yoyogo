@@ -13,7 +13,9 @@ import (
 
 func main() {
 	//webHost := YoyoGo.CreateDefaultWebHostBuilder(os.Args,RouterConfigFunc).Build()
+
 	webHost := CreateCustomWebHostBuilder(os.Args).Build()
+	//go getApplicationLifeEvent(webHost.HostContext.ApplicationCycle)
 	webHost.Run()
 }
 
@@ -28,7 +30,8 @@ func CreateCustomWebHostBuilder(args []string) *YoyoGo.HostBuilder {
 		UseRouter(RouterConfigFunc).
 		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
-		})
+		}).
+		OnApplicationLifeEvent(getApplicationLifeEvent)
 }
 
 //*/
@@ -82,6 +85,22 @@ func PostInfo(ctx *Context.HttpContext) {
 	strResult := fmt.Sprintf("Name:%s , Q1:%s , bind: %s", pd_name, qs_q1, userInfo)
 
 	ctx.JSON(200, Std.M{"info": "hello world", "result": strResult})
+}
+
+func getApplicationLifeEvent(life *YoyoGo.ApplicationLife) {
+	printDataEvent := func(event YoyoGo.ApplicationEvent) {
+		fmt.Printf("[yoyogo] Topic: %s; Event: %v\n", event.Topic, event.Data)
+	}
+
+	for {
+		select {
+		case ev := <-life.ApplicationStarted:
+			go printDataEvent(ev)
+		case ev := <-life.ApplicationStopped:
+			go printDataEvent(ev)
+			break
+		}
+	}
 }
 
 //endregion

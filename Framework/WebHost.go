@@ -8,31 +8,30 @@ import (
 )
 
 type WebHost struct {
-	hostEnv         *HostEnv
-	webServer       IServer
-	requestDelegate IRequestDelegate
+	HostContext *HostBuildContext
+	webServer   IServer
 }
 
-func NewWebHost(server IServer, request IRequestDelegate, hostContext *HostBuildContext) WebHost {
-
-	return WebHost{webServer: server, requestDelegate: request, hostEnv: hostContext.hostingEnvironment}
+func NewWebHost(server IServer, hostContext *HostBuildContext) WebHost {
+	return WebHost{webServer: server, HostContext: hostContext}
 }
 
 func (host WebHost) Run() {
+	hostEnv := host.HostContext.hostingEnvironment
 	vlog := log.New(os.Stdout, "[yoyogo] ", 0)
-	host.hostEnv.Args = os.Args
-	host.hostEnv.Addr = host.webServer.GetAddr()
-	host.hostEnv.Port = detectAddress(host.hostEnv.Addr)
-	host.hostEnv.PID = os.Getpid()
-	host.hostEnv.Version = Version
-	printLogo(vlog, host.hostEnv)
+	hostEnv.Args = os.Args
+	hostEnv.Addr = host.webServer.GetAddr()
+	hostEnv.Port = detectAddress(hostEnv.Addr)
+	hostEnv.PID = os.Getpid()
+	hostEnv.Version = Version
+	printLogo(vlog, hostEnv)
 
-	vlog.Fatal(host.webServer.Run(host.requestDelegate))
+	vlog.Fatal(host.webServer.Run(host.HostContext))
 
 }
 
 func (host WebHost) SetAppMode(mode string) {
-	host.hostEnv.AppMode = mode
+	host.HostContext.hostingEnvironment.AppMode = mode
 }
 
 func printLogo(l *log.Logger, env *HostEnv) {

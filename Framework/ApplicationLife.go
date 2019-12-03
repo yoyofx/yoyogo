@@ -1,14 +1,33 @@
 package YoyoGo
 
+const (
+	APPLICATION_LIFE_START = "APPLICATION_LIFE_START"
+	APPLICATION_LIFE_STOP  = "APPLICATION_LIFE_STOP"
+)
+
+//var ApplicationCycle = NewApplicationLife()
+
 type ApplicationLife struct {
-	StopApplicationEvent  chan int
-	StartApplicationEvent chan int
+	eventPublisher     *ApplicationEventPublisher
+	ApplicationStopped chan ApplicationEvent
+	ApplicationStarted chan ApplicationEvent
 }
 
-func (life ApplicationLife) StartApplication() {
-	life.StartApplicationEvent <- 1
+func NewApplicationLife() *ApplicationLife {
+	applife := &ApplicationLife{
+		eventPublisher:     NewEventPublisher(),
+		ApplicationStopped: make(chan ApplicationEvent),
+		ApplicationStarted: make(chan ApplicationEvent),
+	}
+	applife.eventPublisher.Subscribe(APPLICATION_LIFE_START, applife.ApplicationStarted)
+	applife.eventPublisher.Subscribe(APPLICATION_LIFE_STOP, applife.ApplicationStopped)
+	return applife
 }
 
-func (life ApplicationLife) StopApplication() {
-	life.StopApplicationEvent <- 1
+func (life *ApplicationLife) StartApplication() {
+	life.eventPublisher.Publish(APPLICATION_LIFE_START, "Start")
+}
+
+func (life *ApplicationLife) StopApplication() {
+	life.eventPublisher.Publish(APPLICATION_LIFE_STOP, "Stop")
 }
