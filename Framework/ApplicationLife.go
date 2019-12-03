@@ -1,14 +1,23 @@
 package YoyoGo
 
+var ApplicationCycle = NewApplicationLife()
+
 type ApplicationLife struct {
-	StopApplicationEvent  chan int
-	StartApplicationEvent chan int
+	StopApplicationEvent  chan ApplicationEvent
+	StartApplicationEvent chan ApplicationEvent
 }
 
-func (life ApplicationLife) StartApplication() {
-	life.StartApplicationEvent <- 1
+func NewApplicationLife() *ApplicationLife {
+	return &ApplicationLife{
+		StopApplicationEvent:  make(chan ApplicationEvent),
+		StartApplicationEvent: make(chan ApplicationEvent),
+	}
 }
 
-func (life ApplicationLife) StopApplication() {
-	life.StopApplicationEvent <- 1
+func (life *ApplicationLife) StartApplication() {
+	//life.StartApplicationEvent <- nil
+}
+
+func (life *ApplicationLife) StopApplication() {
+	//life.StopApplicationEvent <- nil
 }
