@@ -26,11 +26,11 @@ func (server HttpServer) GetAddr() string {
 	return server.Addr
 }
 
-func (server HttpServer) Run(delegate IRequestDelegate) (e error) {
+func (server HttpServer) Run(context *HostBuildContext) (e error) {
 
 	server.webserver = &http.Server{
 		Addr:    server.Addr,
-		Handler: delegate,
+		Handler: context.RequestDelegate,
 	}
 
 	// 创建系统信号接收器
@@ -38,8 +38,11 @@ func (server HttpServer) Run(delegate IRequestDelegate) (e error) {
 	signal.Notify(quit, os.Interrupt)
 	go func() {
 		<-quit
+		context.ApplicationCycle.StopApplication()
 		server.Shutdown()
 	}()
+
+	context.ApplicationCycle.StartApplication()
 
 	if server.IsTLS {
 		e = server.webserver.ListenAndServeTLS(server.CertFile, server.KeyFile)

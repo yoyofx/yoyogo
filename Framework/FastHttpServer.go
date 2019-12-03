@@ -27,9 +27,9 @@ func (server FastHttpServer) GetAddr() string {
 	return server.Addr
 }
 
-func (server FastHttpServer) Run(delegate IRequestDelegate) (e error) {
+func (server FastHttpServer) Run(context *HostBuildContext) (e error) {
 
-	fastHttpHandler := fasthttpadaptor.NewFastHTTPHandler(delegate)
+	fastHttpHandler := fasthttpadaptor.NewFastHTTPHandler(context.RequestDelegate)
 
 	server.webserver = &fasthttp.Server{
 		Handler: fastHttpHandler,
@@ -40,9 +40,11 @@ func (server FastHttpServer) Run(delegate IRequestDelegate) (e error) {
 	signal.Notify(quit, os.Interrupt)
 	go func() {
 		<-quit
+		context.ApplicationCycle.StopApplication()
 		server.Shutdown()
 	}()
 
+	context.ApplicationCycle.StartApplication()
 	if server.IsTLS {
 		e = server.webserver.ListenAndServeTLS(server.Addr, server.CertFile, server.KeyFile)
 	} else {
