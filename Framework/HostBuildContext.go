@@ -1,10 +1,13 @@
 package YoyoGo
 
-import "github.com/maxzhang1985/yoyogo/DependencyInjection"
+import (
+	"github.com/maxzhang1985/yoyogo/Context"
+	"github.com/maxzhang1985/yoyogo/DependencyInjection"
+)
 
 type HostBuildContext struct {
 	RequestDelegate     IRequestDelegate
 	ApplicationCycle    *ApplicationLife
-	hostingEnvironment  *HostEnv
+	hostingEnvironment  *Context.HostEnvironment
 	applicationServices DependencyInjection.IServiceProvider
 }

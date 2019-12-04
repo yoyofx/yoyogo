@@ -27,7 +27,7 @@ func UseClassic() *ApplicationBuilder {
 }
 
 //region Create the builder of Web host
-func CreateDefaultWebHostBuilder(args []string, routerConfig func(router Router.IRouterBuilder)) *HostBuilder {
+func CreateDefaultBuilder(routerConfig func(router Router.IRouterBuilder)) *HostBuilder {
 	return NewWebHostBuilder().
 		UseServer(DefaultHttpServer(DefaultAddress)).
 		Configure(func(app *ApplicationBuilder) {
@@ -80,6 +80,10 @@ func (app *ApplicationBuilder) UseMiddleware(handler Handler) {
 func (app *ApplicationBuilder) Build() IRequestDelegate {
 	app.middleware = build(app.handlers)
 	return app
+}
+
+func (app *ApplicationBuilder) SetEnvironment(mode string) {
+	app.hostContext.hostingEnvironment.AppMode = mode
 }
 
 // apply static middleware in builder

@@ -8,26 +8,24 @@ import (
 	"github.com/maxzhang1985/yoyogo/Framework"
 	"github.com/maxzhang1985/yoyogo/Router"
 	"github.com/maxzhang1985/yoyogo/Standard"
-	"os"
 )
 
 func main() {
-	//webHost := YoyoGo.CreateDefaultWebHostBuilder(os.Args,RouterConfigFunc).Build()
-
-	webHost := CreateCustomWebHostBuilder(os.Args).Build()
-	//go getApplicationLifeEvent(webHost.HostContext.ApplicationCycle)
+	//webHost := YoyoGo.CreateDefaultBuilder(RegisterRouterConfigFunc).Build()
+	webHost := CreateCustomBuilder().Build()
 	webHost.Run()
 }
 
 //* Create the builder of Web host
-func CreateCustomWebHostBuilder(args []string) *YoyoGo.HostBuilder {
+func CreateCustomBuilder() *YoyoGo.HostBuilder {
 	return YoyoGo.NewWebHostBuilder().
-		UseFastHttp(":8080").
+		UseFastHttp().
 		//UseServer(YoyoGo.DefaultHttps(":8080", "./Certificate/server.pem", "./Certificate/server.key")).
 		Configure(func(app *YoyoGo.ApplicationBuilder) {
+			//app.SetEnvironment(Context.Prod)
 			app.UseStatic("Static")
 		}).
-		UseRouter(RouterConfigFunc).
+		UseRouter(RegisterRouterConfigFunc).
 		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
 		}).
@@ -37,7 +35,7 @@ func CreateCustomWebHostBuilder(args []string) *YoyoGo.HostBuilder {
 //*/
 
 //region router config function
-func RouterConfigFunc(router Router.IRouterBuilder) {
+func RegisterRouterConfigFunc(router Router.IRouterBuilder) {
 	router.GET("/error", func(ctx *Context.HttpContext) {
 		panic("http get error")
 	})

@@ -27,12 +27,15 @@ func (server HttpServer) GetAddr() string {
 }
 
 func (server HttpServer) Run(context *HostBuildContext) (e error) {
-
-	server.webserver = &http.Server{
-		Addr:    server.Addr,
-		Handler: context.RequestDelegate,
+	addr := server.Addr
+	if server.Addr == "" {
+		addr = context.hostingEnvironment.Addr
 	}
 
+	server.webserver = &http.Server{
+		Addr:    addr,
+		Handler: context.RequestDelegate,
+	}
 	// 创建系统信号接收器
 	quit := make(chan os.Signal)
 	signal.Notify(quit, os.Interrupt)

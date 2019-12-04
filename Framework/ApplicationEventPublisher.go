@@ -26,6 +26,10 @@ func NewEventPublisher() *ApplicationEventPublisher {
 	return eb
 }
 
+func (eb *ApplicationEventPublisher) NewEvent() chan ApplicationEvent {
+	return make(chan ApplicationEvent)
+}
+
 func (eb *ApplicationEventPublisher) Publish(topic string, data interface{}) {
 	eb.rm.RLock()
 	if chans, found := eb.subscribers[topic]; found {
