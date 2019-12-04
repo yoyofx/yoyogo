@@ -82,6 +82,10 @@ func (app *ApplicationBuilder) Build() IRequestDelegate {
 	return app
 }
 
+func (app *ApplicationBuilder) SetEnvironment(mode string) {
+	app.hostContext.hostingEnvironment.AppMode = mode
+}
+
 // apply static middleware in builder
 func (app *ApplicationBuilder) UseStatic(path string) {
 	app.UseMiddleware(Middleware.NewStatic("Static"))

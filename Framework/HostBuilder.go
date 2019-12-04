@@ -1,20 +1,11 @@
 package YoyoGo
 
 import (
+	"github.com/maxzhang1985/yoyogo/Context"
 	"github.com/maxzhang1985/yoyogo/DependencyInjection"
 	"github.com/maxzhang1985/yoyogo/Router"
 	"os"
 )
-
-type HostEnv struct {
-	ApplicationName string
-	Version         string
-	AppMode         string
-	Args            []string
-	Addr            string
-	Port            string
-	PID             int
-}
 
 type HostBuilder struct {
 	server             IServer
@@ -70,33 +61,36 @@ func (self *HostBuilder) UseHttp() *HostBuilder {
 	return self
 }
 
-func runningHostEnvironmentSetting(hostEnv *HostEnv) {
+func runningHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
 	hostEnv.Port = detectAddress(hostEnv.Addr)
 	hostEnv.PID = os.Getpid()
 }
 
-func buildingHostEnvironmentSetting(hostEnv *HostEnv) {
+func buildingHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
 	// build each configuration by init , such as file or env or args ...
 	hostEnv.Args = os.Args
 	hostEnv.ApplicationName = "app"
 	hostEnv.Version = "v1.0.0"
-	hostEnv.AppMode = "Dev"
+	if hostEnv.AppMode == "" {
+		hostEnv.AppMode = Context.Dev
+	}
 	hostEnv.Addr = ":8080"
 }
 
 func (self *HostBuilder) Build() WebHost {
 	services := DependencyInjection.NewServiceCollection()
-	configures(self.context, services)
 
 	buildingHostEnvironmentSetting(self.context.hostingEnvironment)
-
 	self.context.ApplicationCycle = NewApplicationLife()
 
-	builder := NewApplicationBuilder(self.context)
-
+	configures(self.context, services)
 	for _, configure := range self.servicesconfigures {
 		configure(services)
 	}
+
+	self.context.applicationServices = services.Build() //serviceProvider
+
+	builder := NewApplicationBuilder(self.context)
 
 	for _, configure := range self.configures {
 		configure(builder)
@@ -106,8 +100,7 @@ func (self *HostBuilder) Build() WebHost {
 		configure(builder)
 	}
 
-	self.context.applicationServices = services.Build() //serviceProvider
-	self.context.RequestDelegate = builder.Build()      // ServeHTTP(w http.ResponseWriter, r *http.Request)
+	self.context.RequestDelegate = builder.Build() // ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	go self.lifeConfigure(self.context.ApplicationCycle)
 	return NewWebHost(self.server, self.context)
@@ -115,8 +108,9 @@ func (self *HostBuilder) Build() WebHost {
 
 func configures(hostContext *HostBuildContext, serviceCollection *DependencyInjection.ServiceCollection) {
 	serviceCollection.AddSingleton(hostContext.ApplicationCycle)
+	serviceCollection.AddSingleton(hostContext.hostingEnvironment)
 }
 
 func NewWebHostBuilder() *HostBuilder {
-	return &HostBuilder{context: &HostBuildContext{hostingEnvironment: &HostEnv{}}}
+	return &HostBuilder{context: &HostBuildContext{hostingEnvironment: &Context.HostEnvironment{}}}
 }

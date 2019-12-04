@@ -15,7 +15,12 @@ const (
 	// NoPrintStackBodyString is the body content returned when HTTP stack printing is suppressed
 	NoPrintStackBodyString = "500 Internal Server Error"
 
-	panicText = "PANIC: %s\n%s"
+	panicText = `{
+	 Result:0,
+	 Data: 'error',
+	 Message:'%s'
+}`
+
 	panicHTML = `<html>
 <head><title>PANIC: {{.RecoveredPanic}}</title></head>
 <style type="text/css">
@@ -112,10 +117,10 @@ type TextPanicFormatter struct{}
 
 func (t *TextPanicFormatter) FormatPanicError(rw http.ResponseWriter, r *http.Request, infos *PanicInformation) {
 	if rw.Header().Get("Content-Type") == "" {
-		rw.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		rw.Header().Set("Content-Type", "application/json; charset=utf-8")
 	}
-
-	fmt.Fprintf(rw, panicText, infos.RecoveredPanic, infos.Stack)
+	//infos.Stack
+	fmt.Fprintf(rw, panicText, infos.RecoveredPanic)
 }
 
 // HTMLPanicFormatter output the stack inside
@@ -149,15 +154,22 @@ func NewRecovery() *Recovery {
 		LogStack:   true,
 		StackAll:   false,
 		StackSize:  1024 * 8,
-		Formatter:  &HTMLPanicFormatter{},
+		Formatter:  &TextPanicFormatter{},
 	}
 }
 
 func (rec *Recovery) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 	defer func() {
 		if err := recover(); err != nil {
+			var hostEnv *Context.HostEnvironment
+			envErr := ctx.RequiredServices.GetService(&hostEnv)
 			ctx.Resp.WriteHeader(http.StatusInternalServerError)
-
+			if envErr == nil && hostEnv.IsDevelopment() {
+				rec.PrintStack = true
+				rec.LogStack = true
+				rec.StackAll = true
+				rec.Formatter = &HTMLPanicFormatter{}
+			}
 			stack := make([]byte, rec.StackSize)
 			stack = stack[:runtime.Stack(stack, rec.StackAll)]
 			infos := &PanicInformation{RecoveredPanic: err, Request: ctx.Req}
@@ -189,6 +201,7 @@ func (rec *Recovery) Inovke(ctx *Context.HttpContext, next func(ctx *Context.Htt
 					rec.PanicHandlerFunc(infos)
 				}()
 			}
+
 		}
 	}()
 

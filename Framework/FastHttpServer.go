@@ -52,7 +52,7 @@ func (server FastHttpServer) Run(context *HostBuildContext) (e error) {
 	if server.IsTLS {
 		e = server.webserver.ListenAndServeTLS(addr, server.CertFile, server.KeyFile)
 	} else {
-		e = server.webserver.ListenAndServe(server.Addr)
+		e = server.webserver.ListenAndServe(addr)
 	}
 	if e != nil {
 		if e == http.ErrServerClosed {
