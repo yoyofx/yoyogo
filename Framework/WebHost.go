@@ -19,13 +19,10 @@ func NewWebHost(server IServer, hostContext *HostBuildContext) WebHost {
 func (host WebHost) Run() {
 	hostEnv := host.HostContext.hostingEnvironment
 	vlog := log.New(os.Stdout, "[yoyogo] ", 0)
-	hostEnv.Args = os.Args
-	hostEnv.Addr = host.webServer.GetAddr()
-	hostEnv.Port = detectAddress(hostEnv.Addr)
-	hostEnv.PID = os.Getpid()
-	hostEnv.Version = Version
-	printLogo(vlog, hostEnv)
 
+	runningHostEnvironmentSetting(hostEnv)
+
+	printLogo(vlog, hostEnv)
 	vlog.Fatal(host.webServer.Run(host.HostContext))
 
 }

@@ -3,11 +3,11 @@ package YoyoGo
 import (
 	"github.com/maxzhang1985/yoyogo/DependencyInjection"
 	"github.com/maxzhang1985/yoyogo/Router"
+	"os"
 )
 
 type HostEnv struct {
 	ApplicationName string
-	DefaultAddress  string
 	Version         string
 	AppMode         string
 	Args            []string
@@ -50,26 +50,49 @@ func (self *HostBuilder) UseServer(server IServer) *HostBuilder {
 	return self
 }
 
-func (self *HostBuilder) UseFastHttp(addr string) *HostBuilder {
+func (self *HostBuilder) UseFastHttpByAddr(addr string) *HostBuilder {
 	self.server = NewFastHttp(addr)
 	return self
 }
 
-func (self *HostBuilder) UseHttp(addr string) *HostBuilder {
+func (self *HostBuilder) UseFastHttp() *HostBuilder {
+	self.server = NewFastHttp("")
+	return self
+}
+
+func (self *HostBuilder) UseHttpByAddr(addr string) *HostBuilder {
 	self.server = DefaultHttpServer(addr)
 	return self
 }
 
+func (self *HostBuilder) UseHttp() *HostBuilder {
+	self.server = DefaultHttpServer("")
+	return self
+}
+
+func runningHostEnvironmentSetting(hostEnv *HostEnv) {
+	hostEnv.Port = detectAddress(hostEnv.Addr)
+	hostEnv.PID = os.Getpid()
+}
+
+func buildingHostEnvironmentSetting(hostEnv *HostEnv) {
+	// build each configuration by init , such as file or env or args ...
+	hostEnv.Args = os.Args
+	hostEnv.ApplicationName = "app"
+	hostEnv.Version = "v1.0.0"
+	hostEnv.AppMode = "Dev"
+	hostEnv.Addr = ":8080"
+}
+
 func (self *HostBuilder) Build() WebHost {
 	services := DependencyInjection.NewServiceCollection()
+	configures(self.context, services)
 
-	self.context.hostingEnvironment.AppMode = "Dev"
-	self.context.hostingEnvironment.DefaultAddress = ":8080"
+	buildingHostEnvironmentSetting(self.context.hostingEnvironment)
+
 	self.context.ApplicationCycle = NewApplicationLife()
 
 	builder := NewApplicationBuilder(self.context)
-
-	configures(self.context, services)
 
 	for _, configure := range self.servicesconfigures {
 		configure(services)

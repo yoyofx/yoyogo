@@ -44,9 +44,13 @@ func (server FastHttpServer) Run(context *HostBuildContext) (e error) {
 		server.Shutdown()
 	}()
 
+	addr := server.Addr
+	if server.Addr == "" {
+		addr = context.hostingEnvironment.Addr
+	}
 	context.ApplicationCycle.StartApplication()
 	if server.IsTLS {
-		e = server.webserver.ListenAndServeTLS(server.Addr, server.CertFile, server.KeyFile)
+		e = server.webserver.ListenAndServeTLS(addr, server.CertFile, server.KeyFile)
 	} else {
 		e = server.webserver.ListenAndServe(server.Addr)
 	}
