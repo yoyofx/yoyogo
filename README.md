@@ -42,15 +42,17 @@ func main() {
 //* Create the builder of Web host
 func CreateCustomWebHostBuilder(args []string) *YoyoGo.HostBuilder {
 	return YoyoGo.NewWebHostBuilder().
-		UseFastHttp(":8080").
+		UseFastHttp().   //default port:8080
 		//UseServer(YoyoGo.DefaultHttps(":8080", "./Certificate/server.pem", "./Certificate/server.key")).
 		Configure(func(app *YoyoGo.ApplicationBuilder) {
+            app.SetEnvironment(Context.Prod)   //set prod to environment
 			app.UseStatic("Static")
 		}).
 		UseRouter(RouterConfigFunc).
 		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
-		})
+		}).
+        OnApplicationLifeEvent(fireApplicationLifeEvent)
 }
 
 //*/
@@ -104,6 +106,21 @@ func PostInfo(ctx *Context.HttpContext) {
 	strResult := fmt.Sprintf("Name:%s , Q1:%s , bind: %s", pd_name, qs_q1, userInfo)
 
 	ctx.JSON(200, Std.M{"info": "hello world", "result": strResult})
+}
+
+func fireApplicationLifeEvent(life *YoyoGo.ApplicationLife) {
+	printDataEvent := func(event YoyoGo.ApplicationEvent) {
+		fmt.Printf("[yoyogo] Topic: %s; Event: %v\n", event.Topic, event.Data)
+	}
+	for {
+		select {
+		case ev := <-life.ApplicationStarted:
+			go printDataEvent(ev)
+		case ev := <-life.ApplicationStopped:
+			go printDataEvent(ev)
+			break
+		}
+	}
 }
 ```
 ![](./yoyorun.jpg)
