@@ -83,7 +83,7 @@ func (app *ApplicationBuilder) Build() IRequestDelegate {
 }
 
 func (app *ApplicationBuilder) SetEnvironment(mode string) {
-	app.hostContext.hostingEnvironment.AppMode = mode
+	app.hostContext.hostingEnvironment.Profile = mode
 }
 
 // apply static middleware in builder

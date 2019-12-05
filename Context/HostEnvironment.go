@@ -9,7 +9,7 @@ const (
 type HostEnvironment struct {
 	ApplicationName string
 	Version         string
-	AppMode         string
+	Profile         string
 	Args            []string
 	Addr            string
 	Port            string
@@ -17,13 +17,13 @@ type HostEnvironment struct {
 }
 
 func (env HostEnvironment) IsDevelopment() bool {
-	return env.AppMode == Dev
+	return env.Profile == Dev
 }
 
 func (env HostEnvironment) IsStaging() bool {
-	return env.AppMode == Test
+	return env.Profile == Test
 }
 
 func (env HostEnvironment) IsProduction() bool {
-	return env.AppMode == Prod
+	return env.Profile == Prod
 }

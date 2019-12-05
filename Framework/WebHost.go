@@ -33,7 +33,7 @@ func (host WebHost) Shutdown() {
 }
 
 func (host WebHost) SetAppMode(mode string) {
-	host.HostContext.hostingEnvironment.AppMode = mode
+	host.HostContext.hostingEnvironment.Profile = mode
 }
 
 func printLogo(l *log.Logger, env *Context.HostEnvironment) {
@@ -43,7 +43,7 @@ func printLogo(l *log.Logger, env *Context.HostEnvironment) {
 	l.Printf("version: %s", env.Version)
 	l.Printf("listening on %s", env.Port)
 	l.Printf("application is running , pid: %d", env.PID)
-	l.Printf("running in %s mode , switch on 'Dev' or 'Test' or 'Prod' mode in production.", env.AppMode)
+	l.Printf("running in %s mode , switch on 'Dev' or 'Test' or 'Prod' mode in production.", env.Profile)
 	l.Print("- use Prod by app.SetEnvironment(Context.Prod) ")
 	l.Print("Starting HTTP server...")
 }
