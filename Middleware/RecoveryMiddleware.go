@@ -120,7 +120,7 @@ func (t *TextPanicFormatter) FormatPanicError(rw http.ResponseWriter, r *http.Re
 		rw.Header().Set("Content-Type", "application/json; charset=utf-8")
 	}
 	//infos.Stack
-	fmt.Fprintf(rw, panicText, infos.RecoveredPanic)
+	_, _ = fmt.Fprintf(rw, panicText, infos.RecoveredPanic)
 }
 
 // HTMLPanicFormatter output the stack inside
@@ -132,7 +132,7 @@ func (t *HTMLPanicFormatter) FormatPanicError(rw http.ResponseWriter, r *http.Re
 	if rw.Header().Get("Content-Type") == "" {
 		rw.Header().Set("Content-Type", "text/html; charset=utf-8")
 	}
-	panicHTMLTemplate.Execute(rw, infos)
+	_ = panicHTMLTemplate.Execute(rw, infos)
 
 }
 
@@ -183,11 +183,11 @@ func (rec *Recovery) Inovke(ctx *Context.HttpContext, next func(ctx *Context.Htt
 				if ctx.Resp.Header().Get("Content-Type") == "" {
 					ctx.Resp.Header().Set("Content-Type", "text/plain; charset=utf-8")
 				}
-				fmt.Fprint(ctx.Resp, NoPrintStackBodyString)
+				_, _ = fmt.Fprint(ctx.Resp, NoPrintStackBodyString)
 			}
 
 			if rec.LogStack {
-				rec.Logger.Printf(panicText, err, stack)
+				rec.Logger.Printf(panicText, err, string(stack))
 			}
 
 			if rec.PanicHandlerFunc != nil {
