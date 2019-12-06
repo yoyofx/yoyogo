@@ -2,6 +2,9 @@ package Test
 
 import (
 	"fmt"
+	"github.com/maxzhang1985/yoyogo/Context"
+	_ "github.com/maxzhang1985/yoyogo/Context"
+	"github.com/maxzhang1985/yoyogo/Utils"
 	"reflect"
 	"testing"
 )
@@ -9,6 +12,57 @@ import (
 type UserInfo struct {
 	Name string `json:"name" w1:"12"`
 	Age  int
+}
+
+func (user *UserInfo) Say(hi string) {
+	fmt.Print(hi)
+}
+
+func (user *UserInfo) Hello(context *Context.HttpContext, hi string) string {
+	return hi
+}
+
+func Test_reflectCall(t *testing.T) {
+	utype := new(UserInfo)
+	result := reflectCall(utype, "Hello", &Context.HttpContext{}, "hello world!")
+
+	fmt.Println()
+	fmt.Printf("Result: %s", result)
+	fmt.Println()
+}
+
+func reflectCall(ctype interface{}, funcName string, params ...interface{}) interface{} {
+	t := reflect.ValueOf(ctype)
+	methodInfo := t.MethodByName(funcName)
+	methodType := methodInfo.Type()
+
+	methodParamsNum := methodType.NumIn()
+	paramTypes := make([]reflect.Type, methodParamsNum)
+	paramValues := make([]reflect.Value, methodParamsNum)
+	for idx := 0; idx < methodParamsNum; idx++ {
+		paramTypes[idx] = methodType.In(idx)
+		paramValues[idx] = reflect.ValueOf(params[idx])
+	}
+
+	fmt.Printf("Type: %s ,Call Method: %s", t.Type().Name(), funcName)
+	fmt.Printf("%s", paramTypes)
+
+	rets := t.MethodByName(funcName).Call(paramValues)
+
+	if len(rets) > 0 {
+		return rets[0].Interface()
+	}
+	return nil
+}
+
+func Test_MethodCallerCall(t *testing.T) {
+	utype := new(UserInfo)
+	method := Utils.NewMethodCaller(utype, "Hello")
+	results := method.Invoke(&Context.HttpContext{}, "hello world!")
+
+	fmt.Println()
+	fmt.Printf("Result: %s", results)
+	fmt.Println()
 }
 
 func Test_StructGetFieldTag(t *testing.T) {
