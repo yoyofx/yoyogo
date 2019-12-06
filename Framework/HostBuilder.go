@@ -71,8 +71,8 @@ func buildingHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
 	hostEnv.Args = os.Args
 	hostEnv.ApplicationName = "app"
 	hostEnv.Version = "v1.0.0"
-	if hostEnv.AppMode == "" {
-		hostEnv.AppMode = Context.Dev
+	if hostEnv.Profile == "" {
+		hostEnv.Profile = Context.Dev
 	}
 	hostEnv.Addr = ":8080"
 }
