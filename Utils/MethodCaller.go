@@ -9,6 +9,7 @@ type MethodCaller struct {
 	paramsNum   int
 	paramTypes  []reflect.Type
 	paramValues []reflect.Value
+	foundMethod bool
 }
 
 func NewMethodCaller(obj interface{}, funcName string) *MethodCaller {
@@ -16,14 +17,16 @@ func NewMethodCaller(obj interface{}, funcName string) *MethodCaller {
 		Object:     obj,
 		MethodName: funcName,
 	}
-	caller.Init()
-
+	caller.foundMethod = caller.findMethod()
 	return caller
 }
 
-func (method *MethodCaller) Init() {
+func (method *MethodCaller) findMethod() bool {
 	t := reflect.ValueOf(method.Object)
 	method.methodInfo = t.MethodByName(method.MethodName)
+	if method.methodInfo.IsNil() {
+		return false
+	}
 	methodType := method.methodInfo.Type()
 
 	method.paramsNum = methodType.NumIn()
@@ -32,6 +35,7 @@ func (method *MethodCaller) Init() {
 	for idx := 0; idx < method.paramsNum; idx++ {
 		paramTypes[idx] = methodType.In(idx)
 	}
+	return true
 }
 
 func (method *MethodCaller) Invoke(params ...interface{}) []interface{} {
