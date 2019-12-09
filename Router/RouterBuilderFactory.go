@@ -9,13 +9,13 @@ import "github.com/maxzhang1985/yoyogo/Context"
 //	}
 //}
 
-func NewRouterHandler() IRouterHandler {
+func NewRouterBuilder() IRouterBuilder {
 	tree := &Trie{
 		Component: "/",
 		Methods:   make(map[string]func(ctx *Context.HttpContext)),
 	}
 
-	defaultRouterHandler := &DefaultRouterHandler{routerTree: tree}
+	defaultRouterHandler := &DefaultRouterBuilder{routerTree: tree}
 
 	return defaultRouterHandler
 }

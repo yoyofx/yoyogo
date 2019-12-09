@@ -16,7 +16,7 @@ const (
 //application builder struct
 type ApplicationBuilder struct {
 	hostContext   *HostBuildContext
-	routerHandler Router.IRouterHandler
+	routerBuilder Router.IRouterBuilder
 	middleware    middleware
 	handlers      []Handler
 }
@@ -38,23 +38,19 @@ func CreateDefaultBuilder(routerConfig func(router Router.IRouterBuilder)) *Host
 
 // create new application builder
 func NewApplicationBuilder(context *HostBuildContext) *ApplicationBuilder {
-	routerHandler := Router.NewRouterHandler()
+	routerBuilder := Router.NewRouterBuilder()
 	recovery := Middleware.NewRecovery()
 	logger := Middleware.NewLogger()
-	router := Middleware.NewRouter(routerHandler)
+	router := Middleware.NewRouter(routerBuilder)
 	self := New(logger, recovery, router)
-	self.routerHandler = routerHandler
+	self.routerBuilder = routerBuilder
 	self.hostContext = context
 	return self
 }
 
 // after create builder , apply router and logger and recovery middleware
 func (self *ApplicationBuilder) UseMvc() *ApplicationBuilder {
-	self.routerHandler = Router.NewRouterHandler()
-	self.UseMiddleware(Middleware.NewLogger())
-	self.UseMiddleware(Middleware.NewRecovery())
-	self.UseMiddleware(Middleware.NewRouter(self.routerHandler))
-
+	self.routerBuilder.(*Router.DefaultRouterBuilder).SetMvc(true)
 	return self
 }
 

@@ -97,7 +97,7 @@ func (self *HostBuilder) Build() WebHost {
 	}
 
 	for _, configure := range self.routeconfigures {
-		configure(builder)
+		configure(builder.routerBuilder)
 	}
 
 	self.context.RequestDelegate = builder.Build() // ServeHTTP(w http.ResponseWriter, r *http.Request)
