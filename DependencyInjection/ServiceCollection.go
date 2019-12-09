@@ -30,6 +30,12 @@ func (sc *ServiceCollection) AddSingletonByImplements(provider interface{}, impl
 	sc.AddServiceDescriptor(sd)
 }
 
+func (sc *ServiceCollection) AddSingletonByNameAndImplements(name string, provider interface{}, implements interface{}) {
+	sd := NewServiceDescriptorByImplements(provider, implements, Singleton)
+	sd.Name = name
+	sc.AddServiceDescriptor(sd)
+}
+
 func (sc *ServiceCollection) AddTransient(provider interface{}) {
 	sd := NewServiceDescriptorByProvider(provider, Transient)
 	sc.AddServiceDescriptor(sd)

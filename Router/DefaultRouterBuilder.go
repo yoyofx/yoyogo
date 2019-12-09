@@ -8,27 +8,31 @@ import (
 )
 
 type DefaultRouterBuilder struct {
-	UseMvc     bool
-	routerTree *Trie
+	mvcRouterHandler *MvcRouterHandler
+	routerTree       *Trie
 }
 
 func (router *DefaultRouterBuilder) SetMvc(used bool) {
-	router.UseMvc = used
+	if used {
+		router.mvcRouterHandler = &MvcRouterHandler{}
+	} else {
+		router.mvcRouterHandler = nil
+	}
 }
 
 func (router *DefaultRouterBuilder) IsMvc() bool {
-	return router.UseMvc
+	return router.mvcRouterHandler != nil
 }
 
 func (router *DefaultRouterBuilder) Search(ctx *Context.HttpContext, components []string, params url.Values) func(ctx *Context.HttpContext) {
 	var handler func(ctx *Context.HttpContext)
-	node := router.routerTree.Search(strings.Split(ctx.Req.URL.Path, "/")[1:], ctx.RouterData)
-	if node != nil && node.Methods[ctx.Req.Method] != nil {
-		handler = node.Methods[ctx.Req.Method]
-	} else if node != nil && node.Methods[ctx.Req.Method] == nil {
-		//handler = MethodNotAllowedHandler
+	if router.IsMvc() {
+		handler = router.mvcRouterHandler.Invoke(ctx, strings.Split(ctx.Req.URL.Path, "/")[1:])
 	} else {
-		//handler = NotFoundHandler
+		node := router.routerTree.Search(strings.Split(ctx.Req.URL.Path, "/")[1:], ctx.RouterData)
+		if node != nil && node.Methods[ctx.Req.Method] != nil {
+			handler = node.Methods[ctx.Req.Method]
+		}
 	}
 	return handler
 }

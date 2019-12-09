@@ -1,31 +1,29 @@
 package Controller
 
-import (
-	"net/http"
-)
-
 type UserController struct {
+	//*ApiController
 }
 
-type RegiserResult struct {
+func (c *UserController) GetView() string {
+	return ""
+}
+
+func NewUserController() *UserController {
+	return &UserController{}
+}
+
+type RegiserRequest struct {
+	RequestParam
 	UserName string
 	Password string
 }
 
-func (p *UserController) Register(w http.ResponseWriter, r *http.Request) {
-	username := r.PostFormValue("username")
-	password := r.PostFormValue("password")
-	registerResult := RegiserResult{UserName: username, Password: password}
-	result := ApiResult{Success: true, Message: "ok", Data: registerResult}
+func (p *UserController) Register(request *RegiserRequest) ApiResult {
 
-	//jsons,_ := json.Marshal(result)
-	//
-	//_, _ = w.Write(jsons)
-	JSON(w, result)
-
+	result := ApiResult{Success: true, Message: "ok", Data: request}
+	return result
 }
 
-func (p *UserController) GetInfo(w http.ResponseWriter, r *http.Request) {
-	result := ApiResult{Success: true, Message: "ok"}
-	JSON(w, result)
+func (p *UserController) GetInfo() ApiResult {
+	return ApiResult{Success: true, Message: "ok"}
 }
