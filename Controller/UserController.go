@@ -1,15 +1,13 @@
 package Controller
 
 type UserController struct {
-	//*ApiController
-}
-
-func (c *UserController) GetView() string {
-	return ""
+	*ApiController
+	Name string
+	//
 }
 
 func NewUserController() *UserController {
-	return &UserController{}
+	return &UserController{Name: "www"}
 }
 
 type RegiserRequest struct {
@@ -18,7 +16,7 @@ type RegiserRequest struct {
 	Password string
 }
 
-func (p *UserController) Register(request *RegiserRequest) ApiResult {
+func (p *UserController) Register(u string, request *RegiserRequest) ApiResult {
 
 	result := ApiResult{Success: true, Message: "ok", Data: request}
 	return result

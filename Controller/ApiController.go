@@ -1,12 +1,11 @@
 package Controller
 
-//type ApiController struct {
-//
-//}
-//
-//func (c *ApiController) GetView() string {
-//	return ""
-//}
+type ApiController struct {
+}
+
+func (c *ApiController) GetView() string {
+	return ""
+}
 
 type IController interface {
 	GetView() string

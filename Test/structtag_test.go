@@ -56,7 +56,7 @@ func reflectCall(ctype interface{}, funcName string, params ...interface{}) inte
 }
 
 func Test_MethodCallerCall(t *testing.T) {
-	utype := new(UserInfo)
+	utype := &UserInfo{}
 	method := Utils.NewMethodCaller(utype, "Hello")
 	results := method.Invoke(&Context.HttpContext{}, "hello world!")
 

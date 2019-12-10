@@ -1,7 +1,7 @@
 package DependencyInjection
 
 import (
-	"github.com/maxzhang1985/inject"
+	"github.com/defval/inject/v2"
 )
 
 func (sc ServiceCollection) Build() IServiceProvider {
@@ -16,20 +16,14 @@ func (sc ServiceCollection) Build() IServiceProvider {
 			providerOptions = append(providerOptions, inject.WithName(desc.Name))
 		}
 		if desc.Lifetime == Singleton {
-			providerOptions = append(providerOptions, inject.Lifetime(0))
-		} else {
-			providerOptions = append(providerOptions, inject.Lifetime(2))
+			providerOptions = append(providerOptions, inject.Prototype())
 		}
 
 		provider := inject.Provide(desc.Provider, providerOptions...)
 		providers = append(providers, provider)
 
 	}
-	container, err := inject.New(providers...)
-	if err != nil {
-		panic(err)
-		return nil
-	}
+	container := inject.New(providers...)
 
 	return &DefaultServiceProvider{container}
 }
