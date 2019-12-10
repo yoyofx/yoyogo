@@ -5,6 +5,7 @@ import (
 	"github.com/maxzhang1985/yoyogo/Context"
 	"github.com/maxzhang1985/yoyogo/Controller"
 	"github.com/maxzhang1985/yoyogo/DependencyInjection"
+	"github.com/maxzhang1985/yoyogo/Examples/SimpleWeb/contollers"
 	"github.com/maxzhang1985/yoyogo/Examples/SimpleWeb/models"
 	"github.com/maxzhang1985/yoyogo/Framework"
 	"github.com/maxzhang1985/yoyogo/Router"
@@ -25,12 +26,12 @@ func CreateCustomBuilder() *YoyoGo.HostBuilder {
 		//UseServer(YoyoGo.DefaultHttps(":8080", "./Certificate/server.pem", "./Certificate/server.key")).
 		Configure(func(app *YoyoGo.ApplicationBuilder) {
 			//app.SetEnvironment(Context.Prod)
-			app.UseMvc()
+			//app.UseMvc()
 			app.UseStatic("Static")
 		}).
 		UseRouter(RegisterRouterConfigFunc).
 		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
-			serviceCollection.AddSingletonByNameAndImplements("usercontroller", Controller.NewUserController, new(Controller.IController))
+			serviceCollection.AddSingletonByNameAndImplements("usercontroller", contollers.NewUserController, new(Controller.IController))
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
 		}).
 		OnApplicationLifeEvent(getApplicationLifeEvent)
