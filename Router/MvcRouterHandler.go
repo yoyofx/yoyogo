@@ -31,6 +31,23 @@ func (handler *MvcRouterHandler) Invoke(ctx *Context.HttpContext, pathComponents
 }
 
 func getParamValues(paramTypes []reflect.Type, ctx *Context.HttpContext) []reflect.Value {
-	//_= types[0].Field(0).
+	//paramTypes[1].Elem()
+	for _, paramType := range paramTypes {
+		var ptype reflect.Type
+		if paramType.Kind() == reflect.Ptr {
+			ptype = paramType.Elem()
+		}
+
+		if ptype.Kind() == reflect.Struct {
+
+			ptype.Name()
+
+		}
+
+	}
+
+	type1 := paramTypes[1].Elem()
+	d := reflect.New(type1).Interface()
+	_ = ctx.Bind(d)
 	return nil
 }

@@ -136,7 +136,7 @@ func (ctx *HttpContext) PostJsonForm() url.Values {
 }
 
 func (ctx *HttpContext) GetAllParam() url.Values {
-	var form url.Values
+	form := url.Values{}
 	content_type := ctx.Req.Header.Get("Content-Type")
 
 	if strings.HasPrefix(content_type, Std.MIMEApplicationForm) {
