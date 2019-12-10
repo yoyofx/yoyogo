@@ -1,4 +1,4 @@
-package ResponseRender
+package ActionResult
 
 import (
 	"gopkg.in/yaml.v2"

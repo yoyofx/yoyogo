@@ -1,4 +1,4 @@
-package ResponseRender
+package ActionResult
 
 import (
 	"html/template"
@@ -16,7 +16,7 @@ type Delims struct {
 // HTMLRender interface is to be implemented by HTMLProduction and HTMLDebug.
 type HTMLRender interface {
 	// Instance returns an HTML instance.
-	Instance(string, interface{}) ResponseRender
+	Instance(string, interface{}) IActionResult
 }
 
 // HTMLProduction contains template reference and its delims.
@@ -43,7 +43,7 @@ type HTML struct {
 var htmlContentType = []string{"text/html; charset=utf-8"}
 
 // Instance (HTMLProduction) returns an HTML instance which it realizes Render interface.
-func (r HTMLProduction) Instance(name string, data interface{}) ResponseRender {
+func (r HTMLProduction) Instance(name string, data interface{}) IActionResult {
 	return HTML{
 		Template: r.Template,
 		Name:     name,
@@ -52,7 +52,7 @@ func (r HTMLProduction) Instance(name string, data interface{}) ResponseRender {
 }
 
 // Instance (HTMLDebug) returns an HTML instance which it realizes Render interface.
-func (r HTMLDebug) Instance(name string, data interface{}) ResponseRender {
+func (r HTMLDebug) Instance(name string, data interface{}) IActionResult {
 	return HTML{
 		Template: r.loadTemplate(),
 		Name:     name,
