@@ -1,10 +1,10 @@
-package ResponseRender
+package ActionResult
 
 import "net/http"
 
-// ResponseRender interface is to be implemented by JSON, XML, HTML, YAML and so on.
-type ResponseRender interface {
-	// ResponseRender writes data with custom ContentType.
+// ActionResult interface is to be implemented by JSON, XML, HTML, YAML and so on.
+type IActionResult interface {
+	// ActionResult writes data with custom ContentType.
 	Render(http.ResponseWriter) error
 	// WriteContentType writes custom ContentType.
 	WriteContentType(w http.ResponseWriter)

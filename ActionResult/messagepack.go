@@ -1,4 +1,4 @@
-package ResponseRender
+package ActionResult
 
 import (
 	"github.com/ugorji/go/codec"

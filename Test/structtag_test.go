@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/maxzhang1985/yoyogo/Context"
 	_ "github.com/maxzhang1985/yoyogo/Context"
+	"github.com/maxzhang1985/yoyogo/Controller"
 	"github.com/maxzhang1985/yoyogo/Utils"
 	"reflect"
 	"testing"
@@ -56,7 +57,7 @@ func reflectCall(ctype interface{}, funcName string, params ...interface{}) inte
 }
 
 func Test_MethodCallerCall(t *testing.T) {
-	utype := new(UserInfo)
+	utype := &UserInfo{}
 	method := Utils.NewMethodCaller(utype, "Hello")
 	results := method.Invoke(&Context.HttpContext{}, "hello world!")
 
@@ -74,4 +75,10 @@ func Test_StructGetFieldTag(t *testing.T) {
 		fmt.Printf("%d: %s %s %s \n", i,
 			f.Name, f.Type, f.Tag.Get("json"))
 	}
+}
+
+func Test_RecCreateStruct(t *testing.T) {
+	yourtype := reflect.TypeOf(Controller.RequestParam{})
+	dd := reflect.New(yourtype).Elem().Interface()
+	_ = dd
 }

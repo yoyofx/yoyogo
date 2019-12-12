@@ -7,7 +7,7 @@ import (
 
 type RouterGroup struct {
 	Name          string
-	RouterHandler IRouterHandler
+	RouterHandler IRouterBuilder
 }
 
 func (group *RouterGroup) Map(method string, path string, handler func(ctx *Context.HttpContext)) {

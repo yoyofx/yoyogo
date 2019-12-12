@@ -6,8 +6,8 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"github.com/maxzhang1985/yoyogo/ActionResult"
 	"github.com/maxzhang1985/yoyogo/DependencyInjection"
-	"github.com/maxzhang1985/yoyogo/ResponseRender"
 	"github.com/maxzhang1985/yoyogo/Standard"
 	"github.com/maxzhang1985/yoyogo/Utils"
 	"io"
@@ -136,7 +136,7 @@ func (ctx *HttpContext) PostJsonForm() url.Values {
 }
 
 func (ctx *HttpContext) GetAllParam() url.Values {
-	var form url.Values
+	form := url.Values{}
 	content_type := ctx.Req.Header.Get("Content-Type")
 
 	if strings.HasPrefix(content_type, Std.MIMEApplicationForm) {
@@ -383,8 +383,8 @@ func bodyAllowedForStatus(status int) bool {
 	return true
 }
 
-// ResponseRender writes the response headers and calls render.ResponseRender to render data.
-func (c *HttpContext) Render(code int, r ResponseRender.ResponseRender) {
+// ActionResult writes the response headers and calls render.ActionResult to render data.
+func (c *HttpContext) Render(code int, r ActionResult.IActionResult) {
 	c.Status(code)
 
 	if !bodyAllowedForStatus(code) {

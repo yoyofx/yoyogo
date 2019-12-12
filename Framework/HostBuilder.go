@@ -97,7 +97,7 @@ func (self *HostBuilder) Build() WebHost {
 	}
 
 	for _, configure := range self.routeconfigures {
-		configure(builder)
+		configure(builder.routerBuilder)
 	}
 
 	self.context.RequestDelegate = builder.Build() // ServeHTTP(w http.ResponseWriter, r *http.Request)
@@ -107,8 +107,8 @@ func (self *HostBuilder) Build() WebHost {
 }
 
 func configures(hostContext *HostBuildContext, serviceCollection *DependencyInjection.ServiceCollection) {
-	serviceCollection.AddSingleton(hostContext.ApplicationCycle)
-	serviceCollection.AddSingleton(hostContext.hostingEnvironment)
+	serviceCollection.AddSingleton(func() *ApplicationLife { return hostContext.ApplicationCycle })
+	serviceCollection.AddSingleton(func() *Context.HostEnvironment { return hostContext.hostingEnvironment })
 }
 
 func NewWebHostBuilder() *HostBuilder {
