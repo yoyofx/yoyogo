@@ -15,7 +15,8 @@ func (sc ServiceCollection) Build() IServiceProvider {
 		if desc.Name != "" {
 			providerOptions = append(providerOptions, inject.WithName(desc.Name))
 		}
-		if desc.Lifetime == Singleton {
+		//prototype is create a new instance on each call.
+		if desc.Lifetime != Singleton {
 			providerOptions = append(providerOptions, inject.Prototype())
 		}
 
