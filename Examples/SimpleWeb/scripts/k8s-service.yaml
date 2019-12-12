@@ -13,3 +13,8 @@ spec:
       protocol: TCP
   selector:
     app: yoyogodemo
+status:
+  loadBalancer:
+    ingress:
+      - hostname: localhost
+

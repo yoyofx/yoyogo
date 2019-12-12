@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: yoyogodemo
-          image: yoyogodemo:v1
+          image: yoyogodemo-dev:v0.0.2
           imagePullPolicy: Never #just for minikube,do not use this in production!!!
           ports:
             - containerPort: 8080
