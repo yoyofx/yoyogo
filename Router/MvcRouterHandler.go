@@ -11,6 +11,11 @@ type MvcRouterHandler struct {
 }
 
 func (handler *MvcRouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []string) func(ctx *Context.HttpContext) {
+
+	if pathComponents == nil || len(pathComponents) < 2 {
+		return nil
+	}
+
 	controllerName := pathComponents[0]
 	actionName := pathComponents[1]
 
