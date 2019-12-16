@@ -6,16 +6,25 @@ import (
 	"strings"
 )
 
-// Trie node.
-type Trie struct {
-	children  []*Trie
+// EndPointRouterHandler node.
+type EndPointRouterHandler struct {
+	children  []*EndPointRouterHandler
 	param     byte
 	Component string
 	Methods   map[string]func(ctx *Context.HttpContext)
 }
 
+func (endPoint *EndPointRouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []string) func(ctx *Context.HttpContext) {
+	var handler func(ctx *Context.HttpContext) = nil
+	node := endPoint.Search(pathComponents, ctx.RouterData)
+	if node != nil && node.Methods[ctx.Req.Method] != nil {
+		handler = node.Methods[ctx.Req.Method]
+	}
+	return handler
+}
+
 // Insert a node into the tree.
-func (t *Trie) Insert(method, path string, handler func(ctx *Context.HttpContext)) {
+func (t *EndPointRouterHandler) Insert(method, path string, handler func(ctx *Context.HttpContext)) {
 	components := strings.Split(path, "/")[1:]
 Next:
 	for _, component := range components {
@@ -25,7 +34,7 @@ Next:
 				continue Next
 			}
 		}
-		newNode := &Trie{Component: component,
+		newNode := &EndPointRouterHandler{Component: component,
 			Methods: make(map[string]func(ctx *Context.HttpContext))}
 		if len(component) > 0 {
 			if component[0] == ':' || component[0] == '*' {
@@ -39,7 +48,7 @@ Next:
 }
 
 // Search the tree.
-func (t *Trie) Search(components []string, params url.Values) *Trie {
+func (t *EndPointRouterHandler) Search(components []string, params url.Values) *EndPointRouterHandler {
 Next:
 	for _, component := range components {
 		for _, child := range t.children {

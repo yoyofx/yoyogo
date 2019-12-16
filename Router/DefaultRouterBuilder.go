@@ -8,8 +8,19 @@ import (
 )
 
 type DefaultRouterBuilder struct {
-	mvcRouterHandler *MvcRouterHandler
-	routerTree       *Trie
+	mvcRouterHandler      *MvcRouterHandler
+	endPointRouterHandler *EndPointRouterHandler
+}
+
+func NewRouterBuilder() IRouterBuilder {
+	endpoint := &EndPointRouterHandler{
+		Component: "/",
+		Methods:   make(map[string]func(ctx *Context.HttpContext)),
+	}
+
+	defaultRouterHandler := &DefaultRouterBuilder{endPointRouterHandler: endpoint}
+
+	return defaultRouterHandler
 }
 
 func (router *DefaultRouterBuilder) SetMvc(used bool) {
@@ -25,20 +36,17 @@ func (router *DefaultRouterBuilder) IsMvc() bool {
 }
 
 func (router *DefaultRouterBuilder) Search(ctx *Context.HttpContext, components []string, params url.Values) func(ctx *Context.HttpContext) {
-	var handler func(ctx *Context.HttpContext)
+	var handler func(ctx *Context.HttpContext) = nil
 	if router.IsMvc() {
 		handler = router.mvcRouterHandler.Invoke(ctx, strings.Split(ctx.Req.URL.Path, "/")[1:])
 	} else {
-		node := router.routerTree.Search(strings.Split(ctx.Req.URL.Path, "/")[1:], ctx.RouterData)
-		if node != nil && node.Methods[ctx.Req.Method] != nil {
-			handler = node.Methods[ctx.Req.Method]
-		}
+		handler = router.endPointRouterHandler.Invoke(ctx, strings.Split(ctx.Req.URL.Path, "/")[1:])
 	}
 	return handler
 }
 
 func (router *DefaultRouterBuilder) MapSet(method, path string, handler func(ctx *Context.HttpContext)) {
-	router.routerTree.Insert(method, path, handler)
+	router.endPointRouterHandler.Insert(method, path, handler)
 }
 
 func (router *DefaultRouterBuilder) Map(method string, path string, handler func(ctx *Context.HttpContext)) {
