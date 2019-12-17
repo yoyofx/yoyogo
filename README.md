@@ -6,7 +6,6 @@ YoyoGo is a simple, light and fast Web framework written in Go.
 [![Report](https://goreportcard.com/badge/github.com/maxzhang1985/yoyogo)](https://goreportcard.com/report/github.com/maxzhang1985/yoyogo)
 [![Documentation](https://img.shields.io/badge/godoc-reference-blue.svg?color=24B898&logo=go&logoColor=ffffff)](https://godoc.org/github.com/maxzhang1985/yoyogo)
 ![GoVersion](https://img.shields.io/github/go-mod/go-version/maxzhang1985/yoyogo)
-
 ![DockerPull](https://img.shields.io/docker/pulls/maxzhang1985/yoyogo)
 ![Contributors](https://img.shields.io/github/contributors/maxzhang1985/yoyogo.svg)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
@@ -29,39 +28,117 @@ YoyoGo is a simple, light and fast Web framework written in Go.
 `go get github.com/maxzhang1985/yoyogo`
 
 
-# Example
+# Simple Example
 ```golang
 package main
-
 import ...
 
+func main() {
+    webHost := YoyoGo.CreateDefaultBuilder(func(router Router.IRouterBuilder) {
+        router.GET("/info",func (ctx *Context.HttpContext) {
+            ctx.JSON(200, Context.M{"info": "ok"})
+        })
+    }).Build().Run()       //default port :8080
+}
+```
+![](./yoyorun.jpg)
+
+
+# ToDo
+## Standard
+* [X] Print Logo (YoyoGo)
+* [X] Unified program entry (YoyoGo)
+* [X] Simple router binded handle func
+* [X] HttpContext (request,response)
+* [X] Static File EndPoint（Static File Server）
+* [X] JSON Serialization Struct （Std.M）
+* [X] Get Request File And Save
+* [X] Unite Get Post Data Away (form-data , x-www-form-urlencoded)
+* [X] Binding Model for Http Request ( From, JSON ) 
+### Response Render
+* [X] Render Interface
+* [X] JSON Render
+* [X] JSONP Render
+* [X] Indented Json Render
+* [X] Secure Json Render
+* [X] Ascii Json Render
+* [X] Pure Json Render
+* [X] Binary Data Render
+* [X] TEXT
+* [X] Protobuf
+* [X] MessagePack
+* [X] XML
+* [X] YAML
+* [X] File
+* [X] Image
+* [X] Template
+* [ ] Auto formater Render
+
+## Middleware
+* [X] Logger
+* [X] StaticFile
+* [X] Router
+* [X] Router Middleware
+* [ ] Session
+* [ ] CORS
+* [X] Binding
+* [ ] GZip	
+
+
+## Router
+* [x] GET、POST、HEAD、PUT、DELETE Method Support
+* [x] Router Tree
+* [x] Router Expression
+* [x] RouteData (var)
+* [x] Router Support Struct Refect Func Binded.
+* [x] Router Support Prefix and Group Such as "/api/v1/endpoint"
+* [X] Controller Router And Router Tempalte (Default)
+* [ ] Router Filter
+
+## Dependency injection
+* [X] Dependency injection Framework
+* [X] Dependency injection Integration
+
+## Features
+* [ ] swagger
+* [ ] configtion
+* [ ] WebSocket
+* [ ] GRpc
+* [ ] JWT 
+* [ ] OAuth2	 
+* [ ] Prometheus 
+* [ ] Secure
+* [ ] JWT 
+
+# Advanced Example
+```golang
+package main
+import ...
 
 func main() {
-	//webHost := YoyoGo.CreateDefaultWebHostBuilder(os.Args,RouterConfigFunc).Build()
-	webHost := CreateCustomWebHostBuilder(os.Args).Build()
+	webHost := CreateCustomWebHostBuilder().Build()
 	webHost.Run()
 }
 
-//* Create the builder of Web host
-func CreateCustomWebHostBuilder(args []string) *YoyoGo.HostBuilder {
+func CreateCustomBuilder() *YoyoGo.HostBuilder {
 	return YoyoGo.NewWebHostBuilder().
-		UseFastHttp().   //default port:8080
+		UseFastHttp().
 		//UseServer(YoyoGo.DefaultHttps(":8080", "./Certificate/server.pem", "./Certificate/server.key")).
 		Configure(func(app *YoyoGo.ApplicationBuilder) {
-            app.SetEnvironment(Context.Prod)   //set prod to environment
+			// app.SetEnvironment(Context.Prod)
+			app.UseMvc()
 			app.UseStatic("Static")
 		}).
-		UseRouter(RouterConfigFunc).
+		UseEndpoints(registerEndpointRouterConfig).
 		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
+			serviceCollection.AddSingletonByNameAndImplements("usercontroller", contollers.NewUserController, new(Controller.IController))
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
 		}).
-        OnApplicationLifeEvent(fireApplicationLifeEvent)
+		OnApplicationLifeEvent(getApplicationLifeEvent)
 }
 
-//*/
-
-//region router config function
-func RouterConfigFunc(router Router.IRouterBuilder) {
+//region endpoint router config function
+func registerEndpoints(router Router.IRouterBuilder) {
 	router.GET("/error", func(ctx *Context.HttpContext) {
 		panic("http get error")
 	})
@@ -79,7 +156,6 @@ func RouterConfigFunc(router Router.IRouterBuilder) {
 //endregion
 
 //region Http Request Methods
-
 type UserInfo struct {
 	UserName string `param:"username"`
 	Number   string `param:"q1"`
@@ -125,72 +201,31 @@ func fireApplicationLifeEvent(life *YoyoGo.ApplicationLife) {
 		}
 	}
 }
+
+// Mvc 
+type UserController struct {
+	*Controller.ApiController
+	Name string
+	//
+}
+
+func NewUserController() *UserController {
+	return &UserController{Name: "www"}
+}
+
+type RegiserRequest struct {
+	Controller.RequestParam
+	UserName string `param:"username"`
+	Password string `param:"password"`
+}
+
+func (p *UserController) Register(ctx *Context.HttpContext, request *RegiserRequest) Controller.ApiResult {
+	result := Controller.ApiResult{Success: true, Message: "ok", Data: request}
+	return result
+}
+
+func (p *UserController) GetInfo() Controller.ApiResult {
+	return Controller.ApiResult{Success: true, Message: "ok"}
+}
+
 ```
-![](./yoyorun.jpg)
-
-
-# ToDo
-## Standard
-* [X] Print Logo (YoyoGo)
-* [X] Unified program entry (YoyoGo)
-* [X] Simple router binded handle func
-* [X] HttpContext (request,response)
-* [X] Static File EndPoint（Static File Server）
-* [X] JSON Serialization Struct （Std.M）
-* [X] Get Request File And Save
-* [X] Unite Get Post Data Away (form-data , x-www-form-urlencoded)
-* [X] Binding Model for Http Request ( From, JSON ) 
-### Response Render
-* [X] Render Interface
-* [X] JSON Render
-* [X] JSONP Render
-* [X] Indented Json Render
-* [X] Secure Json Render
-* [X] Ascii Json Render
-* [X] Pure Json Render
-* [X] Binary Data Render
-* [X] TEXT
-* [X] Protobuf
-* [X] MessagePack
-* [X] XML
-* [X] YAML
-* [X] File
-* [X] Image
-* [ ] Template
-* [ ] Auto formater Render
-
-## Middleware
-* [X] Logger
-* [X] StaticFile
-* [X] Router
-* [X] Router Middleware
-* [ ] Session
-* [ ] CORS
-* [X] Binding
-* [ ] GZip	
-
-
-## Router
-* [x] GET、POST、HEAD、PUT、DELETE Method Support
-* [x] Router Tree
-* [x] Router Expression
-* [x] RouteData (var)
-* [x] Router Support Struct Refect Func Binded.
-* [x] Router Support Prefix and Group Such as "/api/v1/endpoint"
-* [ ] Router Filter
-* [ ] Controller Router And Router Tempalte (Default)
-
-## Dependency injection
-* [X] Dependency injection Framework
-* [X] Dependency injection Integration
-
-## Features
-* [ ] swagger
-* [ ] configtion
-* [ ] WebSocket
-* [ ] GRpc
-* [ ] JWT 
-* [ ] OAuth2	 
-* [ ] Prometheus 
-* [ ] Secure
-* [ ] JWT 

@@ -1,0 +1,116 @@
+{
+	"id": "389f20be-d2f8-b845-d7a9-1f59f70a7880",
+	"name": "yoyogo tests",
+	"description": "",
+	"order": [
+		"431a63da-2e8d-e946-59d5-5fb96cef7559",
+		"1ab1ad70-4f1c-df87-84f2-c7514eff51d4",
+		"d7053b04-46c3-28b2-6a8c-35c341733084"
+	],
+	"folders": [],
+	"folders_order": [],
+	"timestamp": 1576554457088,
+	"owner": "5959537",
+	"public": false,
+	"requests": [
+		{
+			"id": "1ab1ad70-4f1c-df87-84f2-c7514eff51d4",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8080/v1/api/info",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "389f20be-d2f8-b845-d7a9-1f59f70a7880",
+			"data": null,
+			"dataMode": "params",
+			"name": "get /v1/api/info (group)",
+			"description": "group by /v1/api/info",
+			"descriptionFormat": "html",
+			"time": 1576554471503,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {}
+		},
+		{
+			"id": "431a63da-2e8d-e946-59d5-5fb96cef7559",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/info/1?q1=123123",
+			"queryParams": [
+				{
+					"key": "q1",
+					"value": "123123",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "389f20be-d2f8-b845-d7a9-1f59f70a7880",
+			"data": [],
+			"dataMode": "raw",
+			"name": "post /info/:id  (params binding)",
+			"description": "Post /info/:id querystring is q1  body { username: \"xxx\"  }",
+			"descriptionFormat": "html",
+			"time": 1576554462936,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"rawModeData": "{\n\t\"username\":\"zl\"\n}"
+		},
+		{
+			"id": "d7053b04-46c3-28b2-6a8c-35c341733084",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8080/usercontroller/Register?username=max&password=123",
+			"queryParams": [
+				{
+					"key": "username",
+					"value": "max",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "password",
+					"value": "123",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1576554478861,
+			"name": "get c:user/a:register (MVC)",
+			"description": "",
+			"collectionId": "389f20be-d2f8-b845-d7a9-1f59f70a7880",
+			"responses": []
+		}
+	]
+}

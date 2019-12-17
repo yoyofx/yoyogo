@@ -1,6 +1,4 @@
-package Std
-
-type M = map[string]string
+package Utils
 
 func PadLeft(s string, pad string, plength int) string {
 	for i := len(s); i < plength; i++ {
@@ -8,5 +6,3 @@ func PadLeft(s string, pad string, plength int) string {
 	}
 	return s
 }
-
-//

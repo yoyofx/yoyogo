@@ -22,7 +22,6 @@ type RegiserRequest struct {
 }
 
 func (p *UserController) Register(ctx *Context.HttpContext, request *RegiserRequest) Controller.ApiResult {
-
 	result := Controller.ApiResult{Success: true, Message: "ok", Data: request}
 	return result
 }

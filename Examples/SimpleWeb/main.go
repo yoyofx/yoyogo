@@ -9,12 +9,11 @@ import (
 	"github.com/maxzhang1985/yoyogo/Examples/SimpleWeb/models"
 	"github.com/maxzhang1985/yoyogo/Framework"
 	"github.com/maxzhang1985/yoyogo/Router"
-	"github.com/maxzhang1985/yoyogo/Standard"
 )
 
 func main() {
 
-	//webHost := YoyoGo.CreateDefaultBuilder(RegisterRouterConfigFunc).Build()
+	//webHost := YoyoGo.CreateDefaultBuilder(registerEndpointRouterConfig).Build()
 	webHost := CreateCustomBuilder().Build()
 	webHost.Run()
 }
@@ -29,7 +28,7 @@ func CreateCustomBuilder() *YoyoGo.HostBuilder {
 			app.UseMvc()
 			app.UseStatic("Static")
 		}).
-		UseEndpoints(RegisterRouterConfigFunc).
+		UseEndpoints(registerEndpointRouterConfig).
 		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
 			serviceCollection.AddSingletonByNameAndImplements("usercontroller", contollers.NewUserController, new(Controller.IController))
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
@@ -40,7 +39,7 @@ func CreateCustomBuilder() *YoyoGo.HostBuilder {
 //*/
 
 //region router config function
-func RegisterRouterConfigFunc(router Router.IRouterBuilder) {
+func registerEndpointRouterConfig(router Router.IRouterBuilder) {
 	router.GET("/error", func(ctx *Context.HttpContext) {
 		panic("http get error")
 	})
@@ -68,13 +67,13 @@ type UserInfo struct {
 //HttpGet request: /info  or /v1/api/info
 //bind UserInfo for id,q1,username
 func GetInfo(ctx *Context.HttpContext) {
-	ctx.JSON(200, Std.M{"info": "ok"})
+	ctx.JSON(200, Context.M{"info": "ok"})
 }
 
 func GetInfoByIOC(ctx *Context.HttpContext) {
 	var userAction models.IUserAction
 	_ = ctx.RequiredServices.GetService(&userAction)
-	ctx.JSON(200, Std.M{"info": "ok " + userAction.Login("zhang")})
+	ctx.JSON(200, Context.M{"info": "ok " + userAction.Login("zhang")})
 }
 
 //HttpPost request: /info/:id ?q1=abc&username=123
@@ -87,7 +86,7 @@ func PostInfo(ctx *Context.HttpContext) {
 
 	strResult := fmt.Sprintf("Name:%s , Q1:%s , bind: %s", pd_name, qs_q1, userInfo)
 
-	ctx.JSON(200, Std.M{"info": "hello world", "result": strResult})
+	ctx.JSON(200, Context.M{"info": "hello world", "result": strResult})
 }
 
 func getApplicationLifeEvent(life *YoyoGo.ApplicationLife) {
