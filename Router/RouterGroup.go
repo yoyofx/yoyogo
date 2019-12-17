@@ -2,7 +2,6 @@ package Router
 
 import (
 	"github.com/maxzhang1985/yoyogo/Context"
-	"github.com/maxzhang1985/yoyogo/Standard"
 )
 
 type RouterGroup struct {
@@ -22,52 +21,52 @@ func (group *RouterGroup) Map(method string, path string, handler func(ctx *Cont
 
 // GET register GET request handler
 func (group *RouterGroup) GET(path string, handler func(ctx *Context.HttpContext)) {
-	group.Map(Std.GET, path, handler)
+	group.Map(Context.GET, path, handler)
 }
 
 // HEAD register HEAD request handler
 func (group *RouterGroup) HEAD(path string, handler func(ctx *Context.HttpContext)) {
-	group.Map(Std.HEAD, path, handler)
+	group.Map(Context.HEAD, path, handler)
 }
 
 // OPTIONS register OPTIONS request handler
 func (group *RouterGroup) OPTIONS(path string, handler func(ctx *Context.HttpContext)) {
-	group.Map(Std.OPTIONS, path, handler)
+	group.Map(Context.OPTIONS, path, handler)
 }
 
 // POST register POST request handler
 func (group *RouterGroup) POST(path string, handler func(ctx *Context.HttpContext)) {
-	group.Map(Std.POST, path, handler)
+	group.Map(Context.POST, path, handler)
 }
 
 // PUT register PUT request handler
 func (group *RouterGroup) PUT(path string, handler func(ctx *Context.HttpContext)) {
-	group.Map(Std.PUT, path, handler)
+	group.Map(Context.PUT, path, handler)
 }
 
 // PATCH register PATCH request HandlerFunc
 func (group *RouterGroup) PATCH(path string, handler func(ctx *Context.HttpContext)) {
-	group.Map(Std.PATCH, path, handler)
+	group.Map(Context.PATCH, path, handler)
 }
 
 // DELETE register DELETE request handler
 func (group *RouterGroup) DELETE(path string, handler func(ctx *Context.HttpContext)) {
-	group.Map(Std.DELETE, path, handler)
+	group.Map(Context.DELETE, path, handler)
 }
 
 // CONNECT register CONNECT request handler
 func (group *RouterGroup) CONNECT(path string, handler func(ctx *Context.HttpContext)) {
-	group.Map(Std.CONNECT, path, handler)
+	group.Map(Context.CONNECT, path, handler)
 }
 
 // TRACE register TRACE request handler
 func (group *RouterGroup) TRACE(path string, handler func(ctx *Context.HttpContext)) {
-	group.Map(Std.TRACE, path, handler)
+	group.Map(Context.TRACE, path, handler)
 }
 
 // Any register any method handler
 func (group *RouterGroup) Any(path string, handler func(ctx *Context.HttpContext)) {
-	for _, m := range Std.Methods {
+	for _, m := range Context.Methods {
 		group.Map(m, path, handler)
 	}
 }

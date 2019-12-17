@@ -2,7 +2,6 @@ package Router
 
 import (
 	"github.com/maxzhang1985/yoyogo/Context"
-	Std "github.com/maxzhang1985/yoyogo/Standard"
 	"net/url"
 	"strings"
 )
@@ -60,52 +59,52 @@ func (router *DefaultRouterBuilder) Map(method string, path string, handler func
 
 // GET register GET request handler
 func (router *DefaultRouterBuilder) GET(path string, handler func(ctx *Context.HttpContext)) {
-	router.Map(Std.GET, path, handler)
+	router.Map(Context.GET, path, handler)
 }
 
 // HEAD register HEAD request handler
 func (router *DefaultRouterBuilder) HEAD(path string, handler func(ctx *Context.HttpContext)) {
-	router.Map(Std.HEAD, path, handler)
+	router.Map(Context.HEAD, path, handler)
 }
 
 // OPTIONS register OPTIONS request handler
 func (router *DefaultRouterBuilder) OPTIONS(path string, handler func(ctx *Context.HttpContext)) {
-	router.Map(Std.OPTIONS, path, handler)
+	router.Map(Context.OPTIONS, path, handler)
 }
 
 // POST register POST request handler
 func (router *DefaultRouterBuilder) POST(path string, handler func(ctx *Context.HttpContext)) {
-	router.Map(Std.POST, path, handler)
+	router.Map(Context.POST, path, handler)
 }
 
 // PUT register PUT request handler
 func (router *DefaultRouterBuilder) PUT(path string, handler func(ctx *Context.HttpContext)) {
-	router.Map(Std.PUT, path, handler)
+	router.Map(Context.PUT, path, handler)
 }
 
 // PATCH register PATCH request HandlerFunc
 func (router *DefaultRouterBuilder) PATCH(path string, handler func(ctx *Context.HttpContext)) {
-	router.Map(Std.PATCH, path, handler)
+	router.Map(Context.PATCH, path, handler)
 }
 
 // DELETE register DELETE request handler
 func (router *DefaultRouterBuilder) DELETE(path string, handler func(ctx *Context.HttpContext)) {
-	router.Map(Std.DELETE, path, handler)
+	router.Map(Context.DELETE, path, handler)
 }
 
 // CONNECT register CONNECT request handler
 func (router *DefaultRouterBuilder) CONNECT(path string, handler func(ctx *Context.HttpContext)) {
-	router.Map(Std.CONNECT, path, handler)
+	router.Map(Context.CONNECT, path, handler)
 }
 
 // TRACE register TRACE request handler
 func (router *DefaultRouterBuilder) TRACE(path string, handler func(ctx *Context.HttpContext)) {
-	router.Map(Std.TRACE, path, handler)
+	router.Map(Context.TRACE, path, handler)
 }
 
 // Any register any method handler
 func (router *DefaultRouterBuilder) Any(path string, handler func(ctx *Context.HttpContext)) {
-	for _, m := range Std.Methods {
+	for _, m := range Context.Methods {
 		router.Map(m, path, handler)
 	}
 }

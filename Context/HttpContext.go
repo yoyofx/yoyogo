@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"github.com/maxzhang1985/yoyogo/ActionResult"
 	"github.com/maxzhang1985/yoyogo/DependencyInjection"
-	"github.com/maxzhang1985/yoyogo/Standard"
 	"github.com/maxzhang1985/yoyogo/Utils"
 	"io"
 	"io/ioutil"
@@ -27,6 +26,8 @@ const (
 	defaultTagName = "param"
 	jsonTagName    = "json"
 )
+
+type M = map[string]string
 
 type HttpContext struct {
 	Req              *http.Request
@@ -139,11 +140,11 @@ func (ctx *HttpContext) GetAllParam() url.Values {
 	form := url.Values{}
 	content_type := ctx.Req.Header.Get("Content-Type")
 
-	if strings.HasPrefix(content_type, Std.MIMEApplicationForm) {
+	if strings.HasPrefix(content_type, MIMEApplicationForm) {
 		form = ctx.PostForm()
-	} else if strings.HasPrefix(content_type, Std.MIMEMultipartForm) {
+	} else if strings.HasPrefix(content_type, MIMEMultipartForm) {
 		form = ctx.PostMultipartForm()
-	} else if strings.HasPrefix(content_type, Std.MIMEApplicationJSON) {
+	} else if strings.HasPrefix(content_type, MIMEApplicationJSON) {
 		form = ctx.PostJsonForm()
 	}
 
@@ -174,7 +175,7 @@ func (ctx *HttpContext) PostBody() []byte {
 
 func (ctx *HttpContext) Bind(i interface{}) (err error) {
 	req := ctx.Req
-	ctype := req.Header.Get(Std.HeaderContentType)
+	ctype := req.Header.Get(HeaderContentType)
 	if req.Body == nil {
 		err = errors.New("request body can't be empty")
 		return err
@@ -182,9 +183,9 @@ func (ctx *HttpContext) Bind(i interface{}) (err error) {
 	err = errors.New("request unsupported MediaType -> " + ctype)
 	tagName := defaultTagName
 	switch {
-	case strings.HasPrefix(ctype, Std.MIMEApplicationXML):
+	case strings.HasPrefix(ctype, MIMEApplicationXML):
 		err = xml.Unmarshal(ctx.PostBody(), i)
-	case strings.HasPrefix(ctype, Std.MIMEApplicationJSON):
+	case strings.HasPrefix(ctype, MIMEApplicationJSON):
 		//tagName = jsonTagName
 	default:
 		// check is use json tag, fixed for issue #91
@@ -192,7 +193,7 @@ func (ctx *HttpContext) Bind(i interface{}) (err error) {
 		// no check content type for fixed issue #6
 
 	}
-	err = Std.ConvertMapToStruct(tagName, i, ctx.GetAllParam())
+	err = ConvertMapToStruct(tagName, i, ctx.GetAllParam())
 	return err
 }
 
@@ -206,10 +207,10 @@ func (ctx *HttpContext) RemoteIP() string {
 // if not exists data, returns request.RemoteAddr
 // fixed for #164
 func (ctx *HttpContext) RealIP() string {
-	if ip := ctx.Req.Header.Get(Std.HeaderXForwardedFor); ip != "" {
+	if ip := ctx.Req.Header.Get(HeaderXForwardedFor); ip != "" {
 		return strings.Split(ip, ", ")[0]
 	}
-	if ip := ctx.Req.Header.Get(Std.HeaderXRealIP); ip != "" {
+	if ip := ctx.Req.Header.Get(HeaderXRealIP); ip != "" {
 		return ip
 	}
 	host, _, _ := net.SplitHostPort(ctx.Req.RemoteAddr)
@@ -224,7 +225,7 @@ func (ctx *HttpContext) FullRemoteIP() string {
 
 // IsAJAX returns if it is a ajax request
 func (ctx *HttpContext) IsAJAX() bool {
-	return strings.Contains(ctx.Req.Header.Get(Std.HeaderXRequestedWith), "XMLHttpRequest")
+	return strings.Contains(ctx.Req.Header.Get(HeaderXRequestedWith), "XMLHttpRequest")
 }
 
 func (ctx *HttpContext) IsWebsocket() bool {
