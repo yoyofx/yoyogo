@@ -70,7 +70,7 @@ func buildingHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
 	// build each configuration by init , such as file or env or args ...
 	hostEnv.Args = os.Args
 	hostEnv.ApplicationName = "app"
-	hostEnv.Version = "v1.0.0"
+	hostEnv.Version = Version
 	if hostEnv.Profile == "" {
 		hostEnv.Profile = Context.Dev
 	}
@@ -90,17 +90,17 @@ func (self *HostBuilder) Build() WebHost {
 
 	self.context.applicationServices = services.Build() //serviceProvider
 
-	builder := NewApplicationBuilder(self.context)
+	applicationBuilder := NewApplicationBuilder(self.context)
 
 	for _, configure := range self.configures {
-		configure(builder)
+		configure(applicationBuilder)
 	}
 
 	for _, configure := range self.routeconfigures {
-		configure(builder.routerBuilder)
+		configure(applicationBuilder.routerBuilder)
 	}
 
-	self.context.RequestDelegate = builder.Build() // ServeHTTP(w http.ResponseWriter, r *http.Request)
+	self.context.RequestDelegate = applicationBuilder.Build() // ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	go self.lifeConfigure(self.context.ApplicationCycle)
 	return NewWebHost(self.server, self.context)

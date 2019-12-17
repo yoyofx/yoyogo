@@ -7,12 +7,10 @@ import (
 
 type UserController struct {
 	*Controller.ApiController
-	Name string
-	//
 }
 
 func NewUserController() *UserController {
-	return &UserController{Name: "www"}
+	return &UserController{}
 }
 
 type RegiserRequest struct {
