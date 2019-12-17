@@ -5,7 +5,8 @@
 	"order": [
 		"431a63da-2e8d-e946-59d5-5fb96cef7559",
 		"1ab1ad70-4f1c-df87-84f2-c7514eff51d4",
-		"d7053b04-46c3-28b2-6a8c-35c341733084"
+		"d7053b04-46c3-28b2-6a8c-35c341733084",
+		"b342b42b-32dc-0695-8e42-d10055f1c2f1"
 	],
 	"folders": [],
 	"folders_order": [],
@@ -74,6 +75,29 @@
 			"currentHelper": "normal",
 			"helperAttributes": {},
 			"rawModeData": "{\n\t\"username\":\"zl\"\n}"
+		},
+		{
+			"id": "b342b42b-32dc-0695-8e42-d10055f1c2f1",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8080/info",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "389f20be-d2f8-b845-d7a9-1f59f70a7880",
+			"data": null,
+			"dataMode": "params",
+			"name": "get /info",
+			"description": "get /info",
+			"descriptionFormat": "html",
+			"time": 1576555356196,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {}
 		},
 		{
 			"id": "d7053b04-46c3-28b2-6a8c-35c341733084",
