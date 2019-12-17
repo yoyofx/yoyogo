@@ -29,7 +29,7 @@ func CreateCustomBuilder() *YoyoGo.HostBuilder {
 			app.UseMvc()
 			app.UseStatic("Static")
 		}).
-		UseRouter(RegisterRouterConfigFunc).
+		UseEndpoints(RegisterRouterConfigFunc).
 		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
 			serviceCollection.AddSingletonByNameAndImplements("usercontroller", contollers.NewUserController, new(Controller.IController))
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
