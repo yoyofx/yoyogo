@@ -33,7 +33,7 @@ func CreateDefaultBuilder(routerConfig func(router Router.IRouterBuilder)) *Host
 		Configure(func(app *ApplicationBuilder) {
 			app.UseStatic("Static")
 		}).
-		UseRouter(routerConfig)
+		UseEndpoints(routerConfig)
 }
 
 // create new application builder

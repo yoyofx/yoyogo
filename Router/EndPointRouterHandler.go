@@ -16,7 +16,7 @@ type EndPointRouterHandler struct {
 
 func (endPoint *EndPointRouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []string) func(ctx *Context.HttpContext) {
 	var handler func(ctx *Context.HttpContext) = nil
-	node := endPoint.Search(pathComponents, ctx.RouterData)
+	node := endPoint.search(pathComponents, ctx.RouterData)
 	if node != nil && node.Methods[ctx.Req.Method] != nil {
 		handler = node.Methods[ctx.Req.Method]
 	}
@@ -48,7 +48,7 @@ Next:
 }
 
 // Search the tree.
-func (t *EndPointRouterHandler) Search(components []string, params url.Values) *EndPointRouterHandler {
+func (t *EndPointRouterHandler) search(components []string, params url.Values) *EndPointRouterHandler {
 Next:
 	for _, component := range components {
 		for _, child := range t.children {

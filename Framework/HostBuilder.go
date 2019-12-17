@@ -21,7 +21,7 @@ func (self *HostBuilder) Configure(configure func(*ApplicationBuilder)) *HostBui
 	return self
 }
 
-func (self *HostBuilder) UseRouter(configure func(Router.IRouterBuilder)) *HostBuilder {
+func (self *HostBuilder) UseEndpoints(configure func(Router.IRouterBuilder)) *HostBuilder {
 	self.routeconfigures = append(self.routeconfigures, configure)
 	return self
 }
