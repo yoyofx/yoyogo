@@ -2,7 +2,7 @@ FROM golang
 
 ENV GO111MODULE=on
 ENV CGO_ENABLED 0
-ENV GOPROXY https://goproxy.cn
+ENV GOPROXY https://goproxy.cn,direct
 
 RUN mkdir -p /root/gopath
 RUN mkdir -p /root/gopath/src
