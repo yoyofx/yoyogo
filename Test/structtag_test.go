@@ -2,9 +2,11 @@ package Test
 
 import (
 	"fmt"
+	"github.com/magiconair/properties/assert"
 	"github.com/maxzhang1985/yoyogo/Context"
 	_ "github.com/maxzhang1985/yoyogo/Context"
 	"github.com/maxzhang1985/yoyogo/Controller"
+	"github.com/maxzhang1985/yoyogo/Examples/SimpleWeb/contollers"
 	"github.com/maxzhang1985/yoyogo/Utils"
 	"reflect"
 	"testing"
@@ -81,4 +83,11 @@ func Test_RecCreateStruct(t *testing.T) {
 	yourtype := reflect.TypeOf(Controller.RequestParam{})
 	dd := reflect.New(yourtype).Elem().Interface()
 	_ = dd
+}
+
+func Test_GetCtorFuncTypeName(t *testing.T) {
+	ctorFunc := contollers.NewUserController
+	name := Utils.GetCtorFuncName(ctorFunc)
+	name = Utils.LowercaseFirst(name)
+	assert.Equal(t, name, "userController")
 }

@@ -2,17 +2,19 @@ package Controller
 
 import (
 	"github.com/maxzhang1985/yoyogo/DependencyInjection"
+	"github.com/maxzhang1985/yoyogo/Utils"
 )
 
 type ControllerBuilder struct {
-	services DependencyInjection.ServiceCollection
+	services *DependencyInjection.ServiceCollection
 }
 
-func NewControllerBuilder(sc DependencyInjection.ServiceCollection) *ControllerBuilder {
+func NewControllerBuilder(sc *DependencyInjection.ServiceCollection) *ControllerBuilder {
 	return &ControllerBuilder{services: sc}
 }
 
 func (builder *ControllerBuilder) AddController(controllerCtor interface{}) {
-	//"usercontroller", contollers.NewUserController, new(Controller.IController)
-	builder.services.AddSingletonByNameAndImplements("usercontroller", controllerCtor, new(IController))
+	controllerName := Utils.GetCtorFuncName(controllerCtor)
+	controllerName = Utils.LowercaseFirst(controllerName)
+	builder.services.AddSingletonByNameAndImplements(controllerName, controllerCtor, new(IController))
 }
