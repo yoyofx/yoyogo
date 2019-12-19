@@ -1,6 +1,7 @@
 package Test
 
 import (
+	"github.com/magiconair/properties/assert"
 	"github.com/maxzhang1985/yoyogo/Context"
 	"github.com/maxzhang1985/yoyogo/DependencyInjection"
 	"testing"
@@ -11,9 +12,13 @@ func Test_DI_Register(t *testing.T) {
 	he2 := &Context.HostEnvironment{ApplicationName: "h2"}
 	services := DependencyInjection.NewServiceCollection()
 	services.AddSingleton(func() *Context.HostEnvironment { return he1 })
-	services.AddSingleton(func() *Context.HostEnvironment { return he2 })
+	services.AddTransient(func() *Context.HostEnvironment { return he2 })
 
 	serviceProvier := services.Build()
 
-	_ = serviceProvier
+	var env *Context.HostEnvironment
+
+	serviceProvier.GetService(&env)
+
+	assert.Equal(t, env.ApplicationName, "h2")
 }

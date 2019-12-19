@@ -1,18 +1,29 @@
 package DependencyInjection
 
+import "github.com/maxzhang1985/yoyogo/Utils"
+
 type ServiceCollection struct {
-	serviceDescriptors []ServiceDescriptor
+	serviceDescriptors    []*ServiceDescriptor
+	serviceDescriptorMaps map[string]int
 }
 
 func NewServiceCollection() *ServiceCollection {
-	return &ServiceCollection{}
+	return &ServiceCollection{serviceDescriptorMaps: make(map[string]int)}
 }
 
 //Singleton
 //Scoped
 //Transient
-func (sc *ServiceCollection) AddServiceDescriptor(sd ServiceDescriptor) {
-	sc.serviceDescriptors = append(sc.serviceDescriptors, sd)
+func (sc *ServiceCollection) AddServiceDescriptor(sd *ServiceDescriptor) {
+	typeName := Utils.GetCtorFuncName(sd.Provider)
+	index := len(sc.serviceDescriptors)
+	defIndex, exist := sc.serviceDescriptorMaps[typeName]
+	if exist {
+		sc.serviceDescriptors[defIndex] = sd
+	} else {
+		sc.serviceDescriptorMaps[typeName] = index
+		sc.serviceDescriptors = append(sc.serviceDescriptors, sd)
+	}
 }
 
 func (sc *ServiceCollection) AddSingleton(provider interface{}) {
