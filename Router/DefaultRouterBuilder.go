@@ -36,11 +36,11 @@ func (router *DefaultRouterBuilder) IsMvc() bool {
 
 func (router *DefaultRouterBuilder) Search(ctx *Context.HttpContext, components []string, params url.Values) func(ctx *Context.HttpContext) {
 	var handler func(ctx *Context.HttpContext) = nil
-
-	handler = router.endPointRouterHandler.Invoke(ctx, strings.Split(ctx.Req.URL.Path, "/")[1:])
+	pathComponents := strings.Split(ctx.Req.URL.Path, "/")[1:]
+	handler = router.endPointRouterHandler.Invoke(ctx, pathComponents)
 
 	if handler == nil && router.IsMvc() {
-		handler = router.mvcRouterHandler.Invoke(ctx, strings.Split(ctx.Req.URL.Path, "/")[1:])
+		handler = router.mvcRouterHandler.Invoke(ctx, pathComponents)
 	}
 
 	return handler

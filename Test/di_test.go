@@ -14,11 +14,11 @@ func Test_DI_Register(t *testing.T) {
 	services.AddSingleton(func() *Context.HostEnvironment { return he1 })
 	services.AddTransient(func() *Context.HostEnvironment { return he2 })
 
-	serviceProvier := services.Build()
+	serviceProvider := services.Build()
 
 	var env *Context.HostEnvironment
 
-	serviceProvier.GetService(&env)
+	serviceProvider.GetService(&env)
 
 	assert.Equal(t, env.ApplicationName, "h2")
 }

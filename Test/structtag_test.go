@@ -80,7 +80,7 @@ func Test_StructGetFieldTag(t *testing.T) {
 }
 
 func Test_RecCreateStruct(t *testing.T) {
-	yourtype := reflect.TypeOf(Controller.RequestParam{})
+	yourtype := reflect.TypeOf(Controller.RequestBody{})
 	dd := reflect.New(yourtype).Elem().Interface()
 	_ = dd
 }

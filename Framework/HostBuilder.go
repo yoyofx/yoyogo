@@ -2,6 +2,7 @@ package YoyoGo
 
 import (
 	"github.com/maxzhang1985/yoyogo/Context"
+	"github.com/maxzhang1985/yoyogo/Controller"
 	"github.com/maxzhang1985/yoyogo/DependencyInjection"
 	"github.com/maxzhang1985/yoyogo/Router"
 	"os"
@@ -13,6 +14,7 @@ type HostBuilder struct {
 	configures         []func(*ApplicationBuilder)
 	routeconfigures    []func(Router.IRouterBuilder)
 	servicesconfigures []func(*DependencyInjection.ServiceCollection)
+	mvcconfigures      []func(builder *Controller.ControllerBuilder)
 	lifeConfigure      func(*ApplicationLife)
 }
 
@@ -28,6 +30,11 @@ func (self *HostBuilder) UseEndpoints(configure func(Router.IRouterBuilder)) *Ho
 
 func (self *HostBuilder) ConfigureServices(configure func(*DependencyInjection.ServiceCollection)) *HostBuilder {
 	self.servicesconfigures = append(self.servicesconfigures, configure)
+	return self
+}
+
+func (self *HostBuilder) ConfigureMvcParts(configure func(builder *Controller.ControllerBuilder)) *HostBuilder {
+	self.mvcconfigures = append(self.mvcconfigures, configure)
 	return self
 }
 
@@ -86,6 +93,11 @@ func (self *HostBuilder) Build() WebHost {
 	configures(self.context, services)
 	for _, configure := range self.servicesconfigures {
 		configure(services)
+	}
+
+	controllerBuilder := Controller.NewControllerBuilder(services)
+	for _, configure := range self.mvcconfigures {
+		configure(controllerBuilder)
 	}
 
 	self.context.applicationServices = services.Build() //serviceProvider

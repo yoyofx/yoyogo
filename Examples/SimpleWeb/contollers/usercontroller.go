@@ -14,7 +14,7 @@ func NewUserController() *UserController {
 }
 
 type RegiserRequest struct {
-	Controller.RequestParam
+	Controller.RequestBody
 	UserName string `param:"username"`
 	Password string `param:"password"`
 }
