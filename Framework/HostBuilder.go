@@ -2,6 +2,7 @@ package YoyoGo
 
 import (
 	"github.com/maxzhang1985/yoyogo/Context"
+	"github.com/maxzhang1985/yoyogo/Controller"
 	"github.com/maxzhang1985/yoyogo/DependencyInjection"
 	"github.com/maxzhang1985/yoyogo/Router"
 	"os"
@@ -13,6 +14,7 @@ type HostBuilder struct {
 	configures         []func(*ApplicationBuilder)
 	routeconfigures    []func(Router.IRouterBuilder)
 	servicesconfigures []func(*DependencyInjection.ServiceCollection)
+	mvcconfigures      []func(builder *Controller.ControllerBuilder)
 	lifeConfigure      func(*ApplicationLife)
 }
 
@@ -28,6 +30,11 @@ func (self *HostBuilder) UseEndpoints(configure func(Router.IRouterBuilder)) *Ho
 
 func (self *HostBuilder) ConfigureServices(configure func(*DependencyInjection.ServiceCollection)) *HostBuilder {
 	self.servicesconfigures = append(self.servicesconfigures, configure)
+	return self
+}
+
+func (self *HostBuilder) ConfigureMvcParts(configure func(builder *Controller.ControllerBuilder)) *HostBuilder {
+	self.mvcconfigures = append(self.mvcconfigures, configure)
 	return self
 }
 
@@ -70,7 +77,7 @@ func buildingHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
 	// build each configuration by init , such as file or env or args ...
 	hostEnv.Args = os.Args
 	hostEnv.ApplicationName = "app"
-	hostEnv.Version = "v1.0.0"
+	hostEnv.Version = Version
 	if hostEnv.Profile == "" {
 		hostEnv.Profile = Context.Dev
 	}
@@ -88,19 +95,24 @@ func (self *HostBuilder) Build() WebHost {
 		configure(services)
 	}
 
+	controllerBuilder := Controller.NewControllerBuilder(services)
+	for _, configure := range self.mvcconfigures {
+		configure(controllerBuilder)
+	}
+
 	self.context.applicationServices = services.Build() //serviceProvider
 
-	builder := NewApplicationBuilder(self.context)
+	applicationBuilder := NewApplicationBuilder(self.context)
 
 	for _, configure := range self.configures {
-		configure(builder)
+		configure(applicationBuilder)
 	}
 
 	for _, configure := range self.routeconfigures {
-		configure(builder.routerBuilder)
+		configure(applicationBuilder.routerBuilder)
 	}
 
-	self.context.RequestDelegate = builder.Build() // ServeHTTP(w http.ResponseWriter, r *http.Request)
+	self.context.RequestDelegate = applicationBuilder.Build() // ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	go self.lifeConfigure(self.context.ApplicationCycle)
 	return NewWebHost(self.server, self.context)

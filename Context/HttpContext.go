@@ -30,12 +30,13 @@ const (
 type M = map[string]string
 
 type HttpContext struct {
-	Req              *http.Request
-	Resp             *responseWriter
+	Request          *http.Request
+	Response         *responseWriter
 	RouterData       url.Values
 	RequiredServices DependencyInjection.IServiceProvider
 	store            map[string]interface{}
 	storeMutex       *sync.RWMutex
+	Result           interface{}
 }
 
 func NewContext(w http.ResponseWriter, r *http.Request, sp DependencyInjection.IServiceProvider) *HttpContext {
@@ -46,8 +47,8 @@ func NewContext(w http.ResponseWriter, r *http.Request, sp DependencyInjection.I
 
 func (ctx *HttpContext) init(w http.ResponseWriter, r *http.Request, sp DependencyInjection.IServiceProvider) {
 	ctx.storeMutex = new(sync.RWMutex)
-	ctx.Resp = &responseWriter{w, 0, 0, nil}
-	ctx.Req = r
+	ctx.Response = &responseWriter{w, 0, 0, nil}
+	ctx.Request = r
 	ctx.RouterData = url.Values{}
 	ctx.RequiredServices = sp
 	ctx.storeMutex.Lock()
@@ -82,12 +83,12 @@ func (ctx *HttpContext) SetCookie(name, value string) {
 		MaxAge:   0,
 		HttpOnly: true,
 	}
-	ctx.Resp.Header().Add("Set-Cookie", cookie.String())
+	ctx.Response.Header().Add("Set-Cookie", cookie.String())
 }
 
 //Get Cookie by Name
 func (ctx *HttpContext) GetCookie(name string) string {
-	cookie, err := ctx.Req.Cookie(name)
+	cookie, err := ctx.Request.Cookie(name)
 	if err != nil {
 		return ""
 	}
@@ -96,21 +97,21 @@ func (ctx *HttpContext) GetCookie(name string) string {
 
 func (c *HttpContext) Header(key, value string) {
 	if value == "" {
-		c.Resp.Header().Del(key)
+		c.Response.Header().Del(key)
 		return
 	}
-	c.Resp.Header().Set(key, value)
+	c.Response.Header().Set(key, value)
 }
 
 //Get Post Params
 func (ctx *HttpContext) PostForm() url.Values {
-	_ = ctx.Req.ParseForm()
-	return ctx.Req.PostForm
+	_ = ctx.Request.ParseForm()
+	return ctx.Request.PostForm
 }
 
 func (ctx *HttpContext) PostMultipartForm() url.Values {
-	_ = ctx.Req.ParseMultipartForm(32 << 20)
-	return ctx.Req.MultipartForm.Value
+	_ = ctx.Request.ParseMultipartForm(32 << 20)
+	return ctx.Request.MultipartForm.Value
 }
 
 func (ctx *HttpContext) PostJsonForm() url.Values {
@@ -138,7 +139,7 @@ func (ctx *HttpContext) PostJsonForm() url.Values {
 
 func (ctx *HttpContext) GetAllParam() url.Values {
 	form := url.Values{}
-	content_type := ctx.Req.Header.Get("Content-Type")
+	content_type := ctx.Request.Header.Get("Content-Type")
 
 	if strings.HasPrefix(content_type, MIMEApplicationForm) {
 		form = ctx.PostForm()
@@ -164,8 +165,8 @@ func (ctx *HttpContext) Param(name string) string {
 
 // PostBody returns data from the POST or PUT request body
 func (ctx *HttpContext) PostBody() []byte {
-	bts, err := ioutil.ReadAll(ctx.Req.Body)
-	ctx.Req.Body = ioutil.NopCloser(bytes.NewBuffer(bts))
+	bts, err := ioutil.ReadAll(ctx.Request.Body)
+	ctx.Request.Body = ioutil.NopCloser(bytes.NewBuffer(bts))
 	if err != nil {
 		return []byte{}
 	}
@@ -174,7 +175,7 @@ func (ctx *HttpContext) PostBody() []byte {
 }
 
 func (ctx *HttpContext) Bind(i interface{}) (err error) {
-	req := ctx.Req
+	req := ctx.Request
 	ctype := req.Header.Get(HeaderContentType)
 	if req.Body == nil {
 		err = errors.New("request body can't be empty")
@@ -199,7 +200,7 @@ func (ctx *HttpContext) Bind(i interface{}) (err error) {
 
 // RemoteIP RemoteAddr to an "IP" address
 func (ctx *HttpContext) RemoteIP() string {
-	host, _, _ := net.SplitHostPort(ctx.Req.RemoteAddr)
+	host, _, _ := net.SplitHostPort(ctx.Request.RemoteAddr)
 	return host
 }
 
@@ -207,30 +208,30 @@ func (ctx *HttpContext) RemoteIP() string {
 // if not exists data, returns request.RemoteAddr
 // fixed for #164
 func (ctx *HttpContext) RealIP() string {
-	if ip := ctx.Req.Header.Get(HeaderXForwardedFor); ip != "" {
+	if ip := ctx.Request.Header.Get(HeaderXForwardedFor); ip != "" {
 		return strings.Split(ip, ", ")[0]
 	}
-	if ip := ctx.Req.Header.Get(HeaderXRealIP); ip != "" {
+	if ip := ctx.Request.Header.Get(HeaderXRealIP); ip != "" {
 		return ip
 	}
-	host, _, _ := net.SplitHostPort(ctx.Req.RemoteAddr)
+	host, _, _ := net.SplitHostPort(ctx.Request.RemoteAddr)
 	return host
 }
 
 // FullRemoteIP RemoteAddr to an "IP:port" address
 func (ctx *HttpContext) FullRemoteIP() string {
-	fullIp := ctx.Req.RemoteAddr
+	fullIp := ctx.Request.RemoteAddr
 	return fullIp
 }
 
 // IsAJAX returns if it is a ajax request
 func (ctx *HttpContext) IsAJAX() bool {
-	return strings.Contains(ctx.Req.Header.Get(HeaderXRequestedWith), "XMLHttpRequest")
+	return strings.Contains(ctx.Request.Header.Get(HeaderXRequestedWith), "XMLHttpRequest")
 }
 
 func (ctx *HttpContext) IsWebsocket() bool {
-	if strings.Contains(strings.ToLower(ctx.Req.Header.Get("Connection")), "upgrade") &&
-		strings.EqualFold(ctx.Req.Header.Get("Upgrade"), "websocket") {
+	if strings.Contains(strings.ToLower(ctx.Request.Header.Get("Connection")), "upgrade") &&
+		strings.EqualFold(ctx.Request.Header.Get("Upgrade"), "websocket") {
 		return true
 	}
 	return false
@@ -238,13 +239,13 @@ func (ctx *HttpContext) IsWebsocket() bool {
 
 // Url get request url
 func (ctx *HttpContext) Url() string {
-	return ctx.Req.URL.String()
+	return ctx.Request.URL.String()
 }
 
 // Get Query string
 func (ctx *HttpContext) QueryStrings() url.Values {
 
-	queryForm, err := url.ParseQuery(ctx.Req.URL.RawQuery)
+	queryForm, err := url.ParseQuery(ctx.Request.URL.RawQuery)
 	if err == nil {
 		return queryForm
 	}
@@ -271,42 +272,42 @@ func (ctx *HttpContext) QueryStringOrDefault(key string, defaultval string) stri
 
 // Redirect redirects the request
 func (ctx *HttpContext) Redirect(code int, url string) {
-	http.Redirect(ctx.Resp, ctx.Req, url, code)
+	http.Redirect(ctx.Response, ctx.Request, url, code)
 }
 
 // Path returns URL Path string.
 func (ctx *HttpContext) Path() string {
-	return ctx.Req.URL.Path
+	return ctx.Request.URL.Path
 }
 
 // Referer returns request referer.
 func (ctx *HttpContext) Referer() string {
-	return ctx.Req.Header.Get("Referer")
+	return ctx.Request.Header.Get("Referer")
 }
 
 // UserAgent returns http request UserAgent
 func (ctx *HttpContext) UserAgent() string {
-	return ctx.Req.Header.Get("User-Agent")
+	return ctx.Request.Header.Get("User-Agent")
 }
 
 //Get Http Method.
 func (ctx *HttpContext) Method() string {
-	return ctx.Req.Method
+	return ctx.Request.Method
 }
 
 //Get Http Status Code.
 func (ctx *HttpContext) GetStatus() int {
-	return ctx.Resp.status
+	return ctx.Response.status
 }
 
 // Status sets the HTTP response code.
 func (ctx *HttpContext) Status(code int) {
-	ctx.Resp.WriteHeader(code)
+	ctx.Response.WriteHeader(code)
 }
 
 // FormFile gets file from request.
 func (ctx *HttpContext) FormFile(key string) (multipart.File, *multipart.FileHeader, error) {
-	return ctx.Req.FormFile(key)
+	return ctx.Request.FormFile(key)
 }
 
 // SaveFile saves the form file and
@@ -329,48 +330,13 @@ func (ctx *HttpContext) SaveFile(name, saveDir string) (string, error) {
 
 // Write Error Response.
 func (ctx *HttpContext) Error(code int, error string) {
-	http.Error(ctx.Resp, error, code)
+	http.Error(ctx.Response, error, code)
 }
 
 // Write Byte[] Response.
 func (ctx *HttpContext) Write(data []byte) (n int, err error) {
-	return ctx.Resp.Write(data)
+	return ctx.Response.Write(data)
 }
-
-// Text response text format data .
-//func (ctx *HttpContext) String(code int, format string, datas ...interface{}) error {
-//	text := fmt.Sprintf(format, datas)
-//	return ctx.Text(code, text)
-//}
-
-// Text response text data.
-//func (ctx *HttpContext) Text(code int, body string) error {
-//	ctx.Resp.Header().Set("Content-Type", "text/plain; charset=utf-8")
-//	ctx.Resp.WriteHeader(code)
-//	_, err := ctx.Resp.Write([]byte(body))
-//	return err
-//}
-
-// Write Json Response.
-//func (ctx *HttpContext) JSON(code int, data interface{}) {
-//	ctx.Resp.Header().Set("Content-Type", "application/json")
-//	jsons, _ := json.Marshal(data)
-//	_, _ = ctx.Resp.Write(jsons)
-//}
-//
-//// JSONP return JSONP data.
-//func (ctx *HttpContext) JSONP(code int, callback string, data interface{}) error {
-//	j, err := json.Marshal(data)
-//	if err != nil {
-//		return err
-//	}
-//	ctx.Resp.Header().Set("Content-Type", "application/javascript; charset=utf-8")
-//	ctx.Resp.WriteHeader(code)
-//	_, _ = ctx.Resp.Write([]byte(callback + "("))
-//	_, _ = ctx.Resp.Write(j)
-//	_, _ = ctx.Resp.Write([]byte(");"))
-//	return nil
-//}
 
 func bodyAllowedForStatus(status int) bool {
 	switch {
@@ -389,12 +355,12 @@ func (c *HttpContext) Render(code int, r ActionResult.IActionResult) {
 	c.Status(code)
 
 	if !bodyAllowedForStatus(code) {
-		r.WriteContentType(c.Resp)
-		c.Resp.WriteHeaderNow()
+		r.WriteContentType(c.Response)
+		c.Response.WriteHeaderNow()
 		return
 	}
 
-	if err := r.Render(c.Resp); err != nil {
+	if err := r.Render(c.Response); err != nil {
 		panic(err)
 	}
 }

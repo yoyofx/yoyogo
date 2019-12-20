@@ -1,29 +1,29 @@
 package contollers
 
 import (
+	"github.com/maxzhang1985/yoyogo/ActionResult"
 	"github.com/maxzhang1985/yoyogo/Context"
 	"github.com/maxzhang1985/yoyogo/Controller"
 )
 
 type UserController struct {
 	*Controller.ApiController
-	Name string
-	//
 }
 
 func NewUserController() *UserController {
-	return &UserController{Name: "www"}
+	return &UserController{}
 }
 
 type RegiserRequest struct {
-	Controller.RequestParam
+	Controller.RequestBody
 	UserName string `param:"username"`
 	Password string `param:"password"`
 }
 
-func (p *UserController) Register(ctx *Context.HttpContext, request *RegiserRequest) Controller.ApiResult {
+func (p *UserController) Register(ctx *Context.HttpContext, request *RegiserRequest) ActionResult.IActionResult {
 	result := Controller.ApiResult{Success: true, Message: "ok", Data: request}
-	return result
+
+	return ActionResult.Json{Data: result}
 }
 
 func (p *UserController) GetInfo() Controller.ApiResult {

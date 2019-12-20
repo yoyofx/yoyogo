@@ -14,6 +14,7 @@ const (
 	MIMEApplicationJavaScript            = "application/javascript"
 	MIMEApplicationJavaScriptCharsetUTF8 = MIMEApplicationJavaScript + "; " + CharsetUTF8
 	MIMEApplicationXML                   = "application/xml"
+	MIMEApplicationYAML                  = "application/x-yaml"
 	MIMEApplicationXMLCharsetUTF8        = MIMEApplicationXML + "; " + CharsetUTF8
 	MIMEApplicationForm                  = "application/x-www-form-urlencoded"
 	MIMEApplicationProtobuf              = "application/protobuf"

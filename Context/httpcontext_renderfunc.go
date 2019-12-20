@@ -12,7 +12,7 @@ func (ctx *HttpContext) HTML(code int, name string, obj interface{}) {
 		FuncMap: nil,
 	}
 	instance := htmlRender.Instance(name, obj)
-	_ = instance.Render(ctx.Resp)
+	_ = instance.Render(ctx.Response)
 }
 
 func (ctx *HttpContext) IndentedJSON(code int, obj interface{}) {
@@ -70,7 +70,7 @@ func (c *HttpContext) Text(code int, format string, values ...interface{}) {
 }
 
 func (c *HttpContext) File(filepath string) {
-	http.ServeFile(c.Resp, c.Req, filepath)
+	http.ServeFile(c.Response, c.Request, filepath)
 }
 
 func (c *HttpContext) FileStream(code int, bytes []byte) {
