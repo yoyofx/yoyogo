@@ -163,7 +163,7 @@ func (rec *Recovery) Inovke(ctx *Context.HttpContext, next func(ctx *Context.Htt
 		if err := recover(); err != nil {
 			var hostEnv *Context.HostEnvironment
 			envErr := ctx.RequiredServices.GetService(&hostEnv)
-			ctx.Resp.WriteHeader(http.StatusInternalServerError)
+			ctx.Response.WriteHeader(http.StatusInternalServerError)
 			if envErr == nil && hostEnv.IsDevelopment() {
 				rec.PrintStack = true
 				rec.LogStack = true
@@ -172,18 +172,18 @@ func (rec *Recovery) Inovke(ctx *Context.HttpContext, next func(ctx *Context.Htt
 			}
 			stack := make([]byte, rec.StackSize)
 			stack = stack[:runtime.Stack(stack, rec.StackAll)]
-			infos := &PanicInformation{RecoveredPanic: err, Request: ctx.Req}
+			infos := &PanicInformation{RecoveredPanic: err, Request: ctx.Request}
 
 			// PrintStack will write stack trace info to the ResponseWriter if set to true!
 			// If set to false it will respond with the standard response documented here https://httpstat.us/500
 			if rec.PrintStack {
 				infos.Stack = stack
-				rec.Formatter.FormatPanicError(ctx.Resp, ctx.Req, infos)
+				rec.Formatter.FormatPanicError(ctx.Response, ctx.Request, infos)
 			} else {
-				if ctx.Resp.Header().Get("Content-Type") == "" {
-					ctx.Resp.Header().Set("Content-Type", "text/plain; charset=utf-8")
+				if ctx.Response.Header().Get("Content-Type") == "" {
+					ctx.Response.Header().Set("Content-Type", "text/plain; charset=utf-8")
 				}
-				_, _ = fmt.Fprint(ctx.Resp, NoPrintStackBodyString)
+				_, _ = fmt.Fprint(ctx.Response, NoPrintStackBodyString)
 			}
 
 			if rec.LogStack {

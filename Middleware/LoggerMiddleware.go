@@ -108,16 +108,16 @@ func NewLogger() *Logger {
 func (l *Logger) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 	start := time.Now()
 	next(ctx)
-	res := ctx.Resp
+	res := ctx.Response
 
 	loginfo := LoggerInfo{
 		StartTime: start.Format(l.dateFormat),
 		Status:    res.Status(),
 		Duration:  time.Since(start).String(),
-		HostName:  ctx.Req.Host,
-		Method:    ctx.Req.Method,
-		Path:      ctx.Req.URL.Path,
-		Request:   ctx.Req,
+		HostName:  ctx.Request.Host,
+		Method:    ctx.Request.Method,
+		Path:      ctx.Request.URL.Path,
+		Request:   ctx.Request,
 	}
 
 	//buff := &bytes.Buffer{}

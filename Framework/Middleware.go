@@ -37,14 +37,14 @@ func (m middleware) Invoke(ctx *Context.HttpContext) {
 
 func wrap(handler http.Handler) Handler {
 	return HandlerFunc(func(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
-		handler.ServeHTTP(ctx.Resp, ctx.Req)
+		handler.ServeHTTP(ctx.Response, ctx.Request)
 		next(ctx)
 	})
 }
 
 func wrapFunc(handlerFunc http.HandlerFunc) Handler {
 	return HandlerFunc(func(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
-		handlerFunc(ctx.Resp, ctx.Req)
+		handlerFunc(ctx.Response, ctx.Request)
 		next(ctx)
 	})
 }

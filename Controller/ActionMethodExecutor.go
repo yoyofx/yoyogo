@@ -15,16 +15,18 @@ func NewActionMethodExecutor() ActionMethodExecutor {
 
 func (actionExecutor ActionMethodExecutor) Execute(ctx *ActionExecutorContext) interface{} {
 	if ctx.Controller != nil {
-		caller := Utils.NewMethodCaller(ctx.Controller, ctx.ActionName)
-		if caller != nil {
-			ctx.In.ActionParamTypes = caller.GetParamTypes()
-			values := getParamValues(ctx.In.ActionParamTypes, ctx.Context)
-			returns := caller.Invoke(values...)
-			if len(returns) > 0 {
-				responseData := returns[0]
-				return responseData
-			}
+		if ctx.In.MethodInovker == nil {
+			ctx.In.MethodInovker = Utils.NewMethodCaller(ctx.Controller, ctx.ActionName)
+			ctx.In.ActionParamTypes = ctx.In.MethodInovker.GetParamTypes()
 		}
+
+		values := getParamValues(ctx.In.ActionParamTypes, ctx.Context)
+		returns := ctx.In.MethodInovker.Invoke(values...)
+		if len(returns) > 0 {
+			responseData := returns[0]
+			return responseData
+		}
+
 	}
 
 	return nil
@@ -54,4 +56,8 @@ func getParamValues(paramTypes []reflect.Type, ctx *Context.HttpContext) []inter
 	}
 
 	return values
+}
+
+func RequestParamTypeConvertFunc(index int, paramType reflect.Type, ctx *Context.HttpContext) {
+
 }
