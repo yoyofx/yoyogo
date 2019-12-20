@@ -3,7 +3,7 @@ module github.com/maxzhang1985/yoyogo
 go 1.13
 
 require (
-	github.com/defval/inject/v2 v2.1.0
+	github.com/defval/inject/v2 v2.2.1
 	github.com/golang/protobuf v1.3.2
 	github.com/magiconair/properties v1.8.1
 	github.com/spf13/viper v1.5.0

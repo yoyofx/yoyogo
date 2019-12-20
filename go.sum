@@ -18,8 +18,8 @@ github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/defval/inject/v2 v2.1.0 h1:yO+G67/5fJHqlt6QAmzGnLpzNb2Svone1BRw+GaLN6k=
-github.com/defval/inject/v2 v2.1.0/go.mod h1:jYiKxHTLD4fZvHY3r4dKW73IKL9Cn/f0+piDMDPlA6k=
+github.com/defval/inject/v2 v2.2.1 h1:RsGPgaf/QoOOU289FpqiLqD5knMKD6G2gfXSHYwWvKs=
+github.com/defval/inject/v2 v2.2.1/go.mod h1:jYiKxHTLD4fZvHY3r4dKW73IKL9Cn/f0+piDMDPlA6k=
 github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
 github.com/dgryski/go-sip13 v0.0.0-20181026042036-e10d5fee7954/go.mod h1:vAd38F8PWV+bWy6jNmig1y/TA+kYO4g3RSRF0IAv0no=
 github.com/emicklei/dot v0.10.1 h1:bkzvwgIhhw/cuxxnJy5/5+ZL3GnhFxFfv0eolHtWE2w=
