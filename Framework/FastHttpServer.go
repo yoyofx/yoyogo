@@ -37,7 +37,7 @@ func (server FastHttpServer) Run(context *HostBuildContext) (e error) {
 
 	// 创建系统信号接收器
 	quit := make(chan os.Signal)
-	signal.Notify(quit, os.Interrupt)
+	signal.Notify(quit, os.Interrupt, os.Kill)
 	go func() {
 		<-quit
 		context.ApplicationCycle.StopApplication()
