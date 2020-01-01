@@ -33,7 +33,6 @@ func CreateCustomBuilder() *YoyoGo.HostBuilder {
 			builder.AddController(contollers.NewUserController)
 		}).
 		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
-			//serviceCollection.AddSingletonByNameAndImplements("usercontroller", contollers.NewUserController, new(Controller.IController))
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
 		}).
 		OnApplicationLifeEvent(getApplicationLifeEvent)
