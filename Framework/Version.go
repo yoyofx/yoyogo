@@ -1,5 +1,5 @@
 package YoyoGo
 
 const (
-	Version = "v1.4.6"
+	Version = "v1.4.8"
 )

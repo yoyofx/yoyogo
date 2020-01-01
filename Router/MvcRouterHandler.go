@@ -16,6 +16,9 @@ func (handler *MvcRouterHandler) Invoke(ctx *Context.HttpContext, pathComponents
 		return nil
 	}
 	controllerName := strings.ToLower(pathComponents[0])
+	if !strings.Contains(controllerName, "controller") {
+		controllerName += "controller"
+	}
 	actionName := pathComponents[1]
 
 	controller := Controller.ActivateController(ctx.RequiredServices, controllerName)
