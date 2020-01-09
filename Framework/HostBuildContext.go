@@ -6,8 +6,9 @@ import (
 )
 
 type HostBuildContext struct {
-	RequestDelegate     IRequestDelegate
-	ApplicationCycle    *ApplicationLife
-	hostingEnvironment  *Context.HostEnvironment
-	applicationServices DependencyInjection.IServiceProvider
+	RequestDelegate        IRequestDelegate
+	ApplicationCycle       *ApplicationLife
+	hostingEnvironment     *Context.HostEnvironment
+	applicationServicesDef *DependencyInjection.ServiceCollection
+	applicationServices    DependencyInjection.IServiceProvider
 }
