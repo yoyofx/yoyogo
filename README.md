@@ -126,15 +126,16 @@ func main() {
 func CreateCustomBuilder() *YoyoGo.HostBuilder {
 	return YoyoGo.NewWebHostBuilder().
 		UseFastHttp().
-		//UseServer(YoyoGo.DefaultHttps(":8080", "./Certificate/server.pem", "./Certificate/server.key")).
 		Configure(func(app *YoyoGo.ApplicationBuilder) {
-			// app.SetEnvironment(Context.Prod)
-			app.UseMvc()
+			//app.SetEnvironment(Context.Prod)
 			app.UseStatic("Static")
+			app.UseMvc()
+			app.ConfigureMvcParts(func(builder *Controller.ControllerBuilder) {
+				builder.AddController(contollers.NewUserController)
+			})
 		}).
-		UseEndpoints(registerEndpoints).
+		UseEndpoints(registerEndpointRouterConfig).
 		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
-			serviceCollection.AddSingletonByNameAndImplements("usercontroller", contollers.NewUserController, new(Controller.IController))
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
 		}).
 		OnApplicationLifeEvent(getApplicationLifeEvent)
@@ -208,27 +209,30 @@ func fireApplicationLifeEvent(life *YoyoGo.ApplicationLife) {
 // Mvc 
 type UserController struct {
 	*Controller.ApiController
-	Name string
-	//
+	userAction models.IUserAction    // IOC
 }
 
-func NewUserController() *UserController {
-	return &UserController{Name: "www"}
+// ctor for ioc
+func NewUserController(userAction models.IUserAction) *UserController {
+	return &UserController{userAction: userAction}
 }
 
+// reuqest param binder
 type RegiserRequest struct {
 	Controller.RequestParam
 	UserName string `param:"username"`
 	Password string `param:"password"`
 }
 
-func (p *UserController) Register(ctx *Context.HttpContext, request *RegiserRequest) Controller.ApiResult {
+// auto bind action param by ioc
+func (this *UserController) Register(ctx *Context.HttpContext, request *RegiserRequest) ActionResult.IActionResult {
 	result := Controller.ApiResult{Success: true, Message: "ok", Data: request}
-	return result
+	return ActionResult.Json{Data: result}
 }
 
-func (p *UserController) GetInfo() Controller.ApiResult {
-	return Controller.ApiResult{Success: true, Message: "ok"}
+// use userAction interface by ioc  
+func (this *UserController) GetInfo() Controller.ApiResult {
+	return this.OK(this.userAction.Login("zhang"))
 }
 
 ```

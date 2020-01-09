@@ -33,10 +33,10 @@ func (self *HostBuilder) ConfigureServices(configure func(*DependencyInjection.S
 	return self
 }
 
-func (self *HostBuilder) ConfigureMvcParts(configure func(builder *Controller.ControllerBuilder)) *HostBuilder {
-	self.mvcconfigures = append(self.mvcconfigures, configure)
-	return self
-}
+//func (self *HostBuilder) ConfigureMvcParts(configure func(builder *Controller.ControllerBuilder)) *HostBuilder {
+//	self.mvcconfigures = append(self.mvcconfigures, configure)
+//	return self
+//}
 
 func (self *HostBuilder) OnApplicationLifeEvent(lifeConfigure func(*ApplicationLife)) *HostBuilder {
 	self.lifeConfigure = lifeConfigure
@@ -95,14 +95,7 @@ func (self *HostBuilder) Build() WebHost {
 		configure(services)
 	}
 
-	controllerBuilder := Controller.NewControllerBuilder(services)
-	for _, configure := range self.mvcconfigures {
-		configure(controllerBuilder)
-	}
-
-	self.context.applicationServices = services.Build() //serviceProvider
-
-	applicationBuilder := NewApplicationBuilder(self.context)
+	applicationBuilder := NewApplicationBuilder()
 
 	for _, configure := range self.configures {
 		configure(applicationBuilder)
@@ -112,7 +105,10 @@ func (self *HostBuilder) Build() WebHost {
 		configure(applicationBuilder.routerBuilder)
 	}
 
+	self.context.applicationServicesDef = services
+	applicationBuilder.SetHostBuildContext(self.context)
 	self.context.RequestDelegate = applicationBuilder.Build() // ServeHTTP(w http.ResponseWriter, r *http.Request)
+	self.context.applicationServices = services.Build()       //serviceProvider
 
 	go self.lifeConfigure(self.context.ApplicationCycle)
 	return NewWebHost(self.server, self.context)
