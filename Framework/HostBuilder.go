@@ -2,9 +2,7 @@ package YoyoGo
 
 import (
 	"github.com/maxzhang1985/yoyogo/Context"
-	"github.com/maxzhang1985/yoyogo/Controller"
 	"github.com/maxzhang1985/yoyogo/DependencyInjection"
-	"github.com/maxzhang1985/yoyogo/Router"
 	"os"
 )
 
@@ -12,9 +10,7 @@ type HostBuilder struct {
 	server             IServer
 	context            *HostBuildContext
 	configures         []func(*ApplicationBuilder)
-	routeconfigures    []func(Router.IRouterBuilder)
-	servicesconfigures []func(*DependencyInjection.ServiceCollection)
-	mvcconfigures      []func(builder *Controller.ControllerBuilder)
+	servicesConfigures []func(*DependencyInjection.ServiceCollection)
 	lifeConfigure      func(*ApplicationLife)
 }
 
@@ -23,20 +19,10 @@ func (self *HostBuilder) Configure(configure func(*ApplicationBuilder)) *HostBui
 	return self
 }
 
-func (self *HostBuilder) UseEndpoints(configure func(Router.IRouterBuilder)) *HostBuilder {
-	self.routeconfigures = append(self.routeconfigures, configure)
-	return self
-}
-
 func (self *HostBuilder) ConfigureServices(configure func(*DependencyInjection.ServiceCollection)) *HostBuilder {
-	self.servicesconfigures = append(self.servicesconfigures, configure)
+	self.servicesConfigures = append(self.servicesConfigures, configure)
 	return self
 }
-
-//func (self *HostBuilder) ConfigureMvcParts(configure func(builder *Controller.ControllerBuilder)) *HostBuilder {
-//	self.mvcconfigures = append(self.mvcconfigures, configure)
-//	return self
-//}
 
 func (self *HostBuilder) OnApplicationLifeEvent(lifeConfigure func(*ApplicationLife)) *HostBuilder {
 	self.lifeConfigure = lifeConfigure
@@ -45,26 +31,6 @@ func (self *HostBuilder) OnApplicationLifeEvent(lifeConfigure func(*ApplicationL
 
 func (self *HostBuilder) UseServer(server IServer) *HostBuilder {
 	self.server = server
-	return self
-}
-
-func (self *HostBuilder) UseFastHttpByAddr(addr string) *HostBuilder {
-	self.server = NewFastHttp(addr)
-	return self
-}
-
-func (self *HostBuilder) UseFastHttp() *HostBuilder {
-	self.server = NewFastHttp("")
-	return self
-}
-
-func (self *HostBuilder) UseHttpByAddr(addr string) *HostBuilder {
-	self.server = DefaultHttpServer(addr)
-	return self
-}
-
-func (self *HostBuilder) UseHttp() *HostBuilder {
-	self.server = DefaultHttpServer("")
 	return self
 }
 
@@ -91,7 +57,7 @@ func (self *HostBuilder) Build() WebHost {
 	self.context.ApplicationCycle = NewApplicationLife()
 
 	configures(self.context, services)
-	for _, configure := range self.servicesconfigures {
+	for _, configure := range self.servicesConfigures {
 		configure(services)
 	}
 
@@ -99,10 +65,6 @@ func (self *HostBuilder) Build() WebHost {
 
 	for _, configure := range self.configures {
 		configure(applicationBuilder)
-	}
-
-	for _, configure := range self.routeconfigures {
-		configure(applicationBuilder.routerBuilder)
 	}
 
 	self.context.applicationServicesDef = services

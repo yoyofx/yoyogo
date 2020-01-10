@@ -17,12 +17,13 @@ const (
 
 //application builder struct
 type ApplicationBuilder struct {
-	hostContext   *HostBuildContext
-	routerBuilder Router.IRouterBuilder
-	middleware    middleware
-	handlers      []Handler
-	Profile       string
-	mvcConfigures []func(builder *Controller.ControllerBuilder)
+	hostContext     *HostBuildContext
+	routerBuilder   Router.IRouterBuilder
+	middleware      middleware
+	handlers        []Handler
+	Profile         string
+	routeConfigures []func(Router.IRouterBuilder)
+	mvcConfigures   []func(builder *Controller.ControllerBuilder)
 }
 
 // create classic application builder
@@ -36,8 +37,16 @@ func CreateDefaultBuilder(routerConfig func(router Router.IRouterBuilder)) *Host
 		UseServer(DefaultHttpServer(DefaultAddress)).
 		Configure(func(app *ApplicationBuilder) {
 			app.UseStatic("Static")
-		}).
-		UseEndpoints(routerConfig)
+			app.UseEndpoints(routerConfig)
+		})
+}
+
+// create application builder when combo all handlers to middleware
+func New(handlers ...Handler) *ApplicationBuilder {
+	return &ApplicationBuilder{
+		handlers:   handlers,
+		middleware: build(handlers),
+	}
 }
 
 // create new application builder
@@ -57,13 +66,20 @@ func (self *ApplicationBuilder) UseMvc() *ApplicationBuilder {
 	return self
 }
 
-func (this *ApplicationBuilder) SetHostBuildContext(context *HostBuildContext) {
-	this.hostContext = context
+func (self *ApplicationBuilder) UseEndpoints(configure func(Router.IRouterBuilder)) *ApplicationBuilder {
+	self.routeConfigures = append(self.routeConfigures, configure)
+	return self
 }
 
 func (this *ApplicationBuilder) ConfigureMvcParts(configure func(builder *Controller.ControllerBuilder)) *ApplicationBuilder {
 	this.mvcConfigures = append(this.mvcConfigures, configure)
 	return this
+}
+
+func (this *ApplicationBuilder) buildEndPoints() {
+	for _, configure := range this.routeConfigures {
+		configure(this.routerBuilder)
+	}
 }
 
 func (this *ApplicationBuilder) buildMvc(services *DependencyInjection.ServiceCollection) {
@@ -75,22 +91,6 @@ func (this *ApplicationBuilder) buildMvc(services *DependencyInjection.ServiceCo
 	}
 }
 
-// create application builder when combo all handlers to middleware
-func New(handlers ...Handler) *ApplicationBuilder {
-	return &ApplicationBuilder{
-		handlers:   handlers,
-		middleware: build(handlers),
-	}
-}
-
-// apply middleware in builder
-func (app *ApplicationBuilder) UseMiddleware(handler Handler) {
-	if handler == nil {
-		panic("handler cannot be nil")
-	}
-	app.handlers = append(app.handlers, handler)
-}
-
 // build and combo all middleware to request delegate (ServeHTTP(w http.ResponseWriter, r *http.Request))
 func (this *ApplicationBuilder) Build() IRequestDelegate {
 	if this.hostContext == nil {
@@ -99,12 +99,25 @@ func (this *ApplicationBuilder) Build() IRequestDelegate {
 
 	this.hostContext.hostingEnvironment.Profile = this.Profile
 	this.middleware = build(this.handlers)
+	this.buildEndPoints()
 	this.buildMvc(this.hostContext.applicationServicesDef)
 	return this
 }
 
+func (this *ApplicationBuilder) SetHostBuildContext(context *HostBuildContext) {
+	this.hostContext = context
+}
+
 func (app *ApplicationBuilder) SetEnvironment(mode string) {
 	app.Profile = mode
+}
+
+// apply middleware in builder
+func (app *ApplicationBuilder) UseMiddleware(handler Handler) {
+	if handler == nil {
+		panic("handler cannot be nil")
+	}
+	app.handlers = append(app.handlers, handler)
 }
 
 // apply static middleware in builder
