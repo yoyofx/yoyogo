@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/maxzhang1985/yoyogo/Context"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -73,6 +74,7 @@ type LoggerInfo struct {
 	HostName  string
 	Method    string
 	Path      string
+	Body      string
 	Request   *http.Request
 }
 
@@ -110,30 +112,37 @@ func (l *Logger) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpCon
 	next(ctx)
 	res := ctx.Response
 
-	loginfo := LoggerInfo{
+	strBody := ""
+	bodyFormat := "%s"
+	if ctx.Request.Method == "POST" {
+		body, _ := ioutil.ReadAll(ctx.Request.Body)
+		strBody = string(body[:])
+		bodyFormat = "\n%s"
+	}
+
+	logInfo := LoggerInfo{
 		StartTime: start.Format(l.dateFormat),
 		Status:    res.Status(),
 		Duration:  time.Since(start).String(),
 		HostName:  ctx.Request.Host,
 		Method:    ctx.Request.Method,
-		Path:      ctx.Request.URL.Path,
-		Request:   ctx.Request,
+		Path:      ctx.Request.URL.RequestURI(),
+		Body:      strBody,
 	}
 
-	//buff := &bytes.Buffer{}
-	//_ = l.template.Execute(buff, log)
-	statusColor := loginfo.StatusCodeColor()
-	methodColor := loginfo.MethodColor()
-	resetColor := loginfo.ResetColor()
-	outlog := fmt.Sprintf("[yoyogo] %v |%s %3d %s| %10v | %15s |%s %5s %s %s",
-		loginfo.StartTime,
-		statusColor, loginfo.Status, resetColor,
-		loginfo.Duration,
-		loginfo.HostName,
-		methodColor, loginfo.Method, resetColor,
-		loginfo.Path,
+	statusColor := logInfo.StatusCodeColor()
+	methodColor := logInfo.MethodColor()
+	resetColor := logInfo.ResetColor()
+	outLog := fmt.Sprintf("[yoyogo] %v |%s %3d %s| %10v | %15s |%s %5s %s %s "+bodyFormat,
+		logInfo.StartTime,
+		statusColor, logInfo.Status, resetColor,
+		logInfo.Duration,
+		logInfo.HostName,
+		methodColor, logInfo.Method, resetColor,
+		logInfo.Path,
+		logInfo.Body,
 	)
 
-	l.ALogger.Println(outlog)
+	l.ALogger.Println(outLog)
 
 }
