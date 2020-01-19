@@ -13,6 +13,7 @@ type HostEnvironment struct {
 	Args            []string
 	Addr            string
 	Port            string
+	Host            string
 	PID             int
 }
 

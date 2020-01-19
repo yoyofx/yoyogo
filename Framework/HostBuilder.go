@@ -1,8 +1,10 @@
 package YoyoGo
 
 import (
+	"fmt"
 	"github.com/maxzhang1985/yoyogo/Context"
 	"github.com/maxzhang1985/yoyogo/DependencyInjection"
+	"net"
 	"os"
 )
 
@@ -34,20 +36,42 @@ func (self *HostBuilder) UseServer(server IServer) *HostBuilder {
 	return self
 }
 
+func getLocalIP() string {
+	var localIp string
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		fmt.Println(err)
+	}
+	for _, address := range addrs {
+		// 检查ip地址判断是否回环地址
+		if ipnet, ok := address.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+			if ipnet.IP.To4() != nil {
+				localIp = ipnet.IP.String()
+				break
+			}
+		}
+	}
+	return localIp
+}
+
 func runningHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
+	hostEnv.Host = getLocalIP()
 	hostEnv.Port = detectAddress(hostEnv.Addr)
 	hostEnv.PID = os.Getpid()
 }
 
 func buildingHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
 	// build each configuration by init , such as file or env or args ...
-	hostEnv.Args = os.Args
 	hostEnv.ApplicationName = "app"
 	hostEnv.Version = Version
+	hostEnv.Addr = ":8080"
+
+	hostEnv.Args = os.Args
+
 	if hostEnv.Profile == "" {
 		hostEnv.Profile = Context.Dev
 	}
-	hostEnv.Addr = ":8080"
+
 }
 
 func (self *HostBuilder) Build() WebHost {
