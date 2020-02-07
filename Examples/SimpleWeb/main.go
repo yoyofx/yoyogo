@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/maxzhang1985/yoyogo/Context"
+	"github.com/maxzhang1985/yoyogo/Controller"
 	"github.com/maxzhang1985/yoyogo/DependencyInjection"
+	"github.com/maxzhang1985/yoyogo/Examples/SimpleWeb/contollers"
 	"github.com/maxzhang1985/yoyogo/Examples/SimpleWeb/models"
 	"github.com/maxzhang1985/yoyogo/Framework"
 	"github.com/maxzhang1985/yoyogo/Router"
@@ -24,11 +26,12 @@ func CreateCustomBuilder() *YoyoGo.HostBuilder {
 		Configure(func(app *YoyoGo.ApplicationBuilder) {
 			//app.SetEnvironment(Context.Prod)
 			app.UseStatic("Static")
-			//app.UseMvc()
 			app.UseEndpoints(registerEndpointRouterConfig)
-			//app.ConfigureMvcParts(func(builder *Controller.ControllerBuilder) {
-			//	builder.AddController(contollers.NewUserController)
-			//})
+
+			app.UseMvc()
+			app.ConfigureMvcParts(func(builder *Controller.ControllerBuilder) {
+				builder.AddController(contollers.NewUserController)
+			})
 		}).
 		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
