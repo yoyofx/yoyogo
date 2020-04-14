@@ -51,7 +51,11 @@ func wrapFunc(handlerFunc http.HandlerFunc) Handler {
 
 func voidMiddleware() middleware {
 	return newMiddleware(
-		HandlerFunc(func(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) { ctx.Response.WriteHeader(400) }),
+		HandlerFunc(func(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
+			if ctx.Response.Status() < 200 {
+				ctx.Response.WriteHeader(400)
+			}
+		}),
 		&middleware{},
 	)
 }

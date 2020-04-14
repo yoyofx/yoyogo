@@ -4,6 +4,7 @@ import (
 	"github.com/maxzhang1985/yoyogo/ActionResult"
 	"github.com/maxzhang1985/yoyogo/Context"
 	"github.com/maxzhang1985/yoyogo/Controller"
+	"net/http"
 	"strings"
 )
 
@@ -21,7 +22,11 @@ func (handler *MvcRouterHandler) Invoke(ctx *Context.HttpContext, pathComponents
 	}
 	actionName := pathComponents[1]
 
-	controller := Controller.ActivateController(ctx.RequiredServices, controllerName)
+	controller, err := Controller.ActivateController(ctx.RequiredServices, controllerName)
+	if err != nil {
+		ctx.Response.WriteHeader(http.StatusNotFound)
+		panic(controllerName + " controller is not found! " + err.Error())
+	}
 
 	executorContext := &Controller.ActionExecutorContext{
 		ControllerName: controllerName,

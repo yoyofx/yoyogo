@@ -15,11 +15,7 @@ const (
 	// NoPrintStackBodyString is the body content returned when HTTP stack printing is suppressed
 	NoPrintStackBodyString = "500 Internal Server Error"
 
-	panicText = `{
-	 Result:0,
-	 Data: 'error',
-	 Message:'%s'
-}`
+	panicText = `{ "Result": -1 , "Data": "error", "Message": "%s" }`
 
 	panicHTML = `<html>
 <head><title>PANIC: {{.RecoveredPanic}}</title></head>
@@ -159,35 +155,41 @@ func NewRecovery() *Recovery {
 }
 
 func (rec *Recovery) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
+
 	defer func() {
 		if err := recover(); err != nil {
 			var hostEnv *Context.HostEnvironment
 			envErr := ctx.RequiredServices.GetService(&hostEnv)
-			ctx.Response.WriteHeader(http.StatusInternalServerError)
+
 			if envErr == nil && hostEnv.IsDevelopment() {
 				rec.PrintStack = true
 				rec.LogStack = true
 				rec.StackAll = true
 				rec.Formatter = &HTMLPanicFormatter{}
 			}
+			if ctx.Response.Status() != http.StatusNotFound {
+				ctx.Response.WriteHeader(http.StatusInternalServerError)
+			}
 			stack := make([]byte, rec.StackSize)
-			stack = stack[:runtime.Stack(stack, rec.StackAll)]
+			if rec.StackAll {
+				stack = stack[:runtime.Stack(stack, rec.StackAll)]
+			}
 			infos := &PanicInformation{RecoveredPanic: err, Request: ctx.Request}
 
 			// PrintStack will write stack trace info to the ResponseWriter if set to true!
-			// If set to false it will respond with the standard response documented here https://httpstat.us/500
-			if rec.PrintStack {
+			if rec.LogStack {
 				infos.Stack = stack
+				//print console stack errors
+				rec.Logger.Printf(panicText, err, string(stack))
+			}
+
+			if rec.PrintStack {
 				rec.Formatter.FormatPanicError(ctx.Response, ctx.Request, infos)
 			} else {
 				if ctx.Response.Header().Get("Content-Type") == "" {
 					ctx.Response.Header().Set("Content-Type", "text/plain; charset=utf-8")
 				}
 				_, _ = fmt.Fprint(ctx.Response, NoPrintStackBodyString)
-			}
-
-			if rec.LogStack {
-				rec.Logger.Printf(panicText, err, string(stack))
 			}
 
 			if rec.PanicHandlerFunc != nil {
