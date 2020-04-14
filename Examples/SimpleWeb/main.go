@@ -24,10 +24,11 @@ func CreateCustomBuilder() *YoyoGo.HostBuilder {
 		UseFastHttp().
 		//UseServer(YoyoGo.DefaultHttps(":8080", "./Certificate/server.pem", "./Certificate/server.key")).
 		Configure(func(app *YoyoGo.ApplicationBuilder) {
-			//app.SetEnvironment(Context.Prod)
+			app.SetEnvironment(Context.Dev)
 			app.UseStatic("Static")
-			app.UseMvc()
 			app.UseEndpoints(registerEndpointRouterConfig)
+
+			app.UseMvc()
 			app.ConfigureMvcParts(func(builder *Controller.ControllerBuilder) {
 				builder.AddController(contollers.NewUserController)
 			})

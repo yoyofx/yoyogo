@@ -3,6 +3,7 @@ package Controller
 import (
 	"github.com/maxzhang1985/yoyogo/Context"
 	"github.com/maxzhang1985/yoyogo/Utils"
+	"net/http"
 	"reflect"
 )
 
@@ -17,6 +18,10 @@ func (actionExecutor ActionMethodExecutor) Execute(ctx *ActionExecutorContext) i
 	if ctx.Controller != nil {
 		if ctx.In.MethodInovker == nil {
 			ctx.In.MethodInovker = Utils.NewMethodCaller(ctx.Controller, ctx.ActionName)
+			if ctx.In.MethodInovker == nil {
+				ctx.Context.Response.WriteHeader(http.StatusNotFound)
+				panic(ctx.ActionName + " action is not found! at " + ctx.ControllerName)
+			}
 			ctx.In.ActionParamTypes = ctx.In.MethodInovker.GetParamTypes()
 		}
 
