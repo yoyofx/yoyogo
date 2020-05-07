@@ -62,7 +62,7 @@ func NewApplicationBuilder() *ApplicationBuilder {
 
 // after create builder , apply router and logger and recovery middleware
 func (self *ApplicationBuilder) UseMvc() *ApplicationBuilder {
-	self.routerBuilder.(*Router.DefaultRouterBuilder).SetMvc(true)
+	self.routerBuilder.(*Router.DefaultRouterBuilder).UseMvc(true)
 	return self
 }
 
