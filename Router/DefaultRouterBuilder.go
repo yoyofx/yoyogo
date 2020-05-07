@@ -22,7 +22,7 @@ func NewRouterBuilder() IRouterBuilder {
 	return defaultRouterHandler
 }
 
-func (router *DefaultRouterBuilder) SetMvc(used bool) {
+func (router *DefaultRouterBuilder) UseMvc(used bool) {
 	if used {
 		router.mvcRouterHandler = &MvcRouterHandler{}
 	} else {

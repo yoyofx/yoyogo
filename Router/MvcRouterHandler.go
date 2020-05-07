@@ -9,6 +9,7 @@ import (
 )
 
 type MvcRouterHandler struct {
+	actionFilters []Controller.IActionFilter
 }
 
 func (handler *MvcRouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []string) func(ctx *Context.HttpContext) {
