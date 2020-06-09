@@ -5,11 +5,13 @@ import (
 	"github.com/maxzhang1985/yoyogo/Context"
 	"github.com/maxzhang1985/yoyogo/Controller"
 	"net/http"
+	"reflect"
 	"strings"
 )
 
 type MvcRouterHandler struct {
 	actionFilters []Controller.IActionFilter
+	actionList    map[string]map[string]string
 }
 
 func (handler *MvcRouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []string) func(ctx *Context.HttpContext) {
@@ -29,15 +31,18 @@ func (handler *MvcRouterHandler) Invoke(ctx *Context.HttpContext, pathComponents
 		panic(controllerName + " controller is not found! " + err.Error())
 	}
 
+	actionMethodExecutor := Controller.NewActionMethodExecutor()
 	executorContext := &Controller.ActionExecutorContext{
 		ControllerName: controllerName,
 		Controller:     controller,
 		ActionName:     actionName,
 		Context:        ctx,
-		In:             &Controller.ActionExecutorInParam{},
+		In:             nil,
 	}
-	actionMethodExecutor := Controller.NewActionMethodExecutor()
+	executorContext.In = &Controller.ActionExecutorInParam{}
+
 	actionResult := actionMethodExecutor.Execute(executorContext)
+
 	ctx.SetItem("actionResult", actionResult)
 
 	return func(ctx *Context.HttpContext) {
@@ -63,4 +68,12 @@ func (handler *MvcRouterHandler) Invoke(ctx *Context.HttpContext, pathComponents
 
 	}
 
+}
+
+func findControllerAction() {
+	t := reflect.ValueOf(method.Object)
+	method.methodInfo = t.MethodByName(method.MethodName)
+	if !method.methodInfo.IsValid() {
+		return false
+	}
 }
