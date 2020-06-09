@@ -23,7 +23,25 @@ YoyoGo 是一个用 Go 编写的简单，轻便，快速的 Web 框架。
 ```bash
 go get github.com/maxzhang1985/yoyogo
 ```
+# 安装依赖 (由于某些原因国内下载不了依赖)
+##  go version < 1.13
+```bash
+window 下在 cmd 中执行：
+set GO111MODULE=on
+set  GOPROXY=https://goproxy.cn
 
+linux  下执行：
+export GO111MODULE=on
+export GOPROXY=https://goproxy.cn
+```
+##  go version >= 1.13
+```
+go env -w GOPROXY=https://goproxy.cn,direct
+```
+### vendor
+```
+go mod vendor       // 将依赖包拷贝到项目目录中去
+```
 # 简单的例子
 ```golang
 package main
