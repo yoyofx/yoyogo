@@ -5,7 +5,6 @@ import (
 	"github.com/maxzhang1985/yoyogo/Context"
 	"github.com/maxzhang1985/yoyogo/Controller"
 	"net/http"
-	"reflect"
 	"strings"
 )
 
@@ -70,10 +69,10 @@ func (handler *MvcRouterHandler) Invoke(ctx *Context.HttpContext, pathComponents
 
 }
 
-func findControllerAction() {
-	t := reflect.ValueOf(method.Object)
-	method.methodInfo = t.MethodByName(method.MethodName)
-	if !method.methodInfo.IsValid() {
-		return false
-	}
-}
+//func findControllerAction() {
+//	t := reflect.ValueOf(method.Object)
+//	method.methodInfo = t.MethodByName(method.MethodName)
+//	if !method.methodInfo.IsValid() {
+//		return false
+//	}
+//}
