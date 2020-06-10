@@ -352,15 +352,14 @@ func bodyAllowedForStatus(status int) bool {
 
 // ActionResult writes the response headers and calls render.ActionResult to render data.
 func (c *HttpContext) Render(code int, r ActionResult.IActionResult) {
-	c.Status(code)
-
 	if !bodyAllowedForStatus(code) {
 		r.WriteContentType(c.Response)
 		c.Response.WriteHeaderNow()
 		return
 	}
 
-	if err := r.Render(c.Response); err != nil {
+	if err := r.Render(c.Response.ResponseWriter); err != nil {
 		panic(err)
 	}
+	c.Status(code)
 }
