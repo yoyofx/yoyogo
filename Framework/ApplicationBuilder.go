@@ -2,9 +2,9 @@ package YoyoGo
 
 import (
 	"github.com/maxzhang1985/yoyogo/Context"
-	"github.com/maxzhang1985/yoyogo/Controller"
 	"github.com/maxzhang1985/yoyogo/DependencyInjection"
 	"github.com/maxzhang1985/yoyogo/Middleware"
+	"github.com/maxzhang1985/yoyogo/Mvc"
 	"github.com/maxzhang1985/yoyogo/Router"
 	"net/http"
 )
@@ -23,7 +23,7 @@ type ApplicationBuilder struct {
 	handlers        []Handler
 	Profile         string
 	routeConfigures []func(Router.IRouterBuilder)
-	mvcConfigures   []func(builder *Controller.ControllerBuilder)
+	mvcConfigures   []func(builder *Mvc.ControllerBuilder)
 }
 
 // create classic application builder
@@ -71,7 +71,7 @@ func (self *ApplicationBuilder) UseEndpoints(configure func(Router.IRouterBuilde
 	return self
 }
 
-func (this *ApplicationBuilder) ConfigureMvcParts(configure func(builder *Controller.ControllerBuilder)) *ApplicationBuilder {
+func (this *ApplicationBuilder) ConfigureMvcParts(configure func(builder *Mvc.ControllerBuilder)) *ApplicationBuilder {
 	this.mvcConfigures = append(this.mvcConfigures, configure)
 	return this
 }
@@ -84,9 +84,14 @@ func (this *ApplicationBuilder) buildEndPoints() {
 
 func (this *ApplicationBuilder) buildMvc(services *DependencyInjection.ServiceCollection) {
 	if this.routerBuilder.IsMvc() {
-		controllerBuilder := Controller.NewControllerBuilder(services)
+		controllerBuilder := Mvc.NewControllerBuilder()
 		for _, configure := range this.mvcConfigures {
 			configure(controllerBuilder)
+		}
+		// add controllers to application services
+		controllerDescriptorList := controllerBuilder.GetControllerDescriptorList()
+		for _, descriptor := range controllerDescriptorList {
+			services.AddSingletonByNameAndImplements(descriptor.ControllerName, descriptor.ControllerType, new(Mvc.IController))
 		}
 	}
 }

@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/maxzhang1985/yoyogo/Context"
-	"github.com/maxzhang1985/yoyogo/Controller"
 	"github.com/maxzhang1985/yoyogo/DependencyInjection"
 	"github.com/maxzhang1985/yoyogo/Examples/SimpleWeb/contollers"
 	"github.com/maxzhang1985/yoyogo/Examples/SimpleWeb/models"
 	"github.com/maxzhang1985/yoyogo/Framework"
+	"github.com/maxzhang1985/yoyogo/Mvc"
 	"github.com/maxzhang1985/yoyogo/Router"
 )
 
@@ -30,7 +30,7 @@ func CreateCustomBuilder() *YoyoGo.HostBuilder {
 			app.UseEndpoints(registerEndpointRouterConfig)
 
 			app.UseMvc()
-			app.ConfigureMvcParts(func(builder *Controller.ControllerBuilder) {
+			app.ConfigureMvcParts(func(builder *Mvc.ControllerBuilder) {
 				builder.AddController(contollers.NewUserController)
 			})
 		}).

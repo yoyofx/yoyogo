@@ -1,4 +1,4 @@
-package Controller
+package Mvc
 
 type IActionFilter interface {
 	OnActionExecuting(context ActionExecutorContext) bool

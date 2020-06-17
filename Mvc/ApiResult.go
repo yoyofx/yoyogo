@@ -1,4 +1,4 @@
-package Controller
+package Mvc
 
 import (
 	"encoding/json"

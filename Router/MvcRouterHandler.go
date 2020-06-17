@@ -3,13 +3,13 @@ package Router
 import (
 	"github.com/maxzhang1985/yoyogo/ActionResult"
 	"github.com/maxzhang1985/yoyogo/Context"
-	"github.com/maxzhang1985/yoyogo/Controller"
+	"github.com/maxzhang1985/yoyogo/Mvc"
 	"net/http"
 	"strings"
 )
 
 type MvcRouterHandler struct {
-	actionFilters []Controller.IActionFilter
+	actionFilters []Mvc.IActionFilter
 	actionList    map[string]map[string]string
 }
 
@@ -24,21 +24,21 @@ func (handler *MvcRouterHandler) Invoke(ctx *Context.HttpContext, pathComponents
 	}
 	actionName := pathComponents[1]
 
-	controller, err := Controller.ActivateController(ctx.RequiredServices, controllerName)
+	controller, err := Mvc.ActivateController(ctx.RequiredServices, controllerName)
 	if err != nil {
 		ctx.Response.WriteHeader(http.StatusNotFound)
 		panic(controllerName + " controller is not found! " + err.Error())
 	}
 
-	actionMethodExecutor := Controller.NewActionMethodExecutor()
-	executorContext := &Controller.ActionExecutorContext{
+	actionMethodExecutor := Mvc.NewActionMethodExecutor()
+	executorContext := &Mvc.ActionExecutorContext{
 		ControllerName: controllerName,
 		Controller:     controller,
 		ActionName:     actionName,
 		Context:        ctx,
 		In:             nil,
 	}
-	executorContext.In = &Controller.ActionExecutorInParam{}
+	executorContext.In = &Mvc.ActionExecutorInParam{}
 
 	actionResult := actionMethodExecutor.Execute(executorContext)
 

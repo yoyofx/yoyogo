@@ -5,8 +5,8 @@ import (
 	"github.com/magiconair/properties/assert"
 	"github.com/maxzhang1985/yoyogo/Context"
 	_ "github.com/maxzhang1985/yoyogo/Context"
-	"github.com/maxzhang1985/yoyogo/Controller"
 	"github.com/maxzhang1985/yoyogo/Examples/SimpleWeb/contollers"
+	"github.com/maxzhang1985/yoyogo/Mvc"
 	"github.com/maxzhang1985/yoyogo/Utils"
 	"reflect"
 	"testing"
@@ -80,7 +80,7 @@ func Test_StructGetFieldTag(t *testing.T) {
 }
 
 func Test_RecCreateStruct(t *testing.T) {
-	yourtype := reflect.TypeOf(Controller.RequestBody{})
+	yourtype := reflect.TypeOf(Mvc.RequestBody{})
 	dd := reflect.New(yourtype).Elem().Interface()
 	_ = dd
 }

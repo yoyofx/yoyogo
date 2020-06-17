@@ -1,4 +1,4 @@
-package Controller
+package Mvc
 
 import "github.com/maxzhang1985/yoyogo/DependencyInjection"
 
