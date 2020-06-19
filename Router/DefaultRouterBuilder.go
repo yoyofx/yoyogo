@@ -2,12 +2,13 @@ package Router
 
 import (
 	"github.com/maxzhang1985/yoyogo/Context"
+	"github.com/maxzhang1985/yoyogo/Mvc"
 	"net/url"
 	"strings"
 )
 
 type DefaultRouterBuilder struct {
-	mvcRouterHandler      *MvcRouterHandler
+	mvcControllerBuilder  *Mvc.ControllerBuilder
 	endPointRouterHandler *EndPointRouterHandler
 }
 
@@ -24,14 +25,18 @@ func NewRouterBuilder() IRouterBuilder {
 
 func (router *DefaultRouterBuilder) UseMvc(used bool) {
 	if used {
-		router.mvcRouterHandler = &MvcRouterHandler{}
+		router.mvcControllerBuilder = Mvc.NewControllerBuilder()
 	} else {
-		router.mvcRouterHandler = nil
+		router.mvcControllerBuilder = nil
 	}
 }
 
 func (router *DefaultRouterBuilder) IsMvc() bool {
-	return router.mvcRouterHandler != nil
+	return router.mvcControllerBuilder != nil
+}
+
+func (router *DefaultRouterBuilder) GetMvcBuilder() *Mvc.ControllerBuilder {
+	return router.mvcControllerBuilder
 }
 
 func (router *DefaultRouterBuilder) Search(ctx *Context.HttpContext, components []string, params url.Values) func(ctx *Context.HttpContext) {
@@ -40,7 +45,7 @@ func (router *DefaultRouterBuilder) Search(ctx *Context.HttpContext, components 
 	handler = router.endPointRouterHandler.Invoke(ctx, pathComponents)
 
 	if handler == nil && router.IsMvc() {
-		handler = router.mvcRouterHandler.Invoke(ctx, pathComponents)
+		handler = router.mvcControllerBuilder.GetRouterHandler().Invoke(ctx, pathComponents)
 	}
 
 	return handler

@@ -7,17 +7,24 @@ import (
 
 type ControllerBuilder struct {
 	controllerDescriptors []ControllerDescriptor
+	mvcRouterHandler      *RouterHandler
 	options               MvcOptions
 }
 
+// NewControllerBuilder new controller builder
 func NewControllerBuilder() *ControllerBuilder {
-	return &ControllerBuilder{options: MvcOptions{}}
+	return &ControllerBuilder{
+		options:          MvcOptions{},
+		mvcRouterHandler: &RouterHandler{},
+	}
 }
 
+// SetupOptions , setup mvc builder options
 func (builder *ControllerBuilder) SetupOptions() {
 
 }
 
+// AddController add controller (ctor) to ioc.
 func (builder *ControllerBuilder) AddController(controllerCtor interface{}) {
 	controllerName := Utils.GetCtorFuncName(controllerCtor)
 	controllerName = strings.ToLower(controllerName)
@@ -25,6 +32,12 @@ func (builder *ControllerBuilder) AddController(controllerCtor interface{}) {
 	builder.controllerDescriptors = append(builder.controllerDescriptors, descriptor)
 }
 
+// GetControllerDescriptorList is get controller descriptor array
 func (builder *ControllerBuilder) GetControllerDescriptorList() []ControllerDescriptor {
 	return builder.controllerDescriptors
+}
+
+// GetRouterHandler is get mvc router handler.
+func (builder *ControllerBuilder) GetRouterHandler() *RouterHandler {
+	return builder.mvcRouterHandler
 }

@@ -17,13 +17,13 @@ const (
 
 //application builder struct
 type ApplicationBuilder struct {
-	hostContext     *HostBuildContext
-	routerBuilder   Router.IRouterBuilder
+	hostContext     *HostBuildContext     // host build 's context
+	routerBuilder   Router.IRouterBuilder // route builder of interface
 	middleware      middleware
 	handlers        []Handler
 	Profile         string
-	routeConfigures []func(Router.IRouterBuilder)
-	mvcConfigures   []func(builder *Mvc.ControllerBuilder)
+	routeConfigures []func(Router.IRouterBuilder)          // endpoints router configure functions
+	mvcConfigures   []func(builder *Mvc.ControllerBuilder) // mvc router configure functions
 }
 
 // create classic application builder
@@ -61,8 +61,11 @@ func NewApplicationBuilder() *ApplicationBuilder {
 }
 
 // after create builder , apply router and logger and recovery middleware
-func (self *ApplicationBuilder) UseMvc() *ApplicationBuilder {
-	self.routerBuilder.(*Router.DefaultRouterBuilder).UseMvc(true)
+func (self *ApplicationBuilder) UseMvc(configure func(builder *Mvc.ControllerBuilder)) *ApplicationBuilder {
+	if !self.routerBuilder.IsMvc() {
+		self.routerBuilder.UseMvc(true)
+	}
+	self.mvcConfigures = append(self.mvcConfigures, configure)
 	return self
 }
 
@@ -72,7 +75,7 @@ func (self *ApplicationBuilder) UseEndpoints(configure func(Router.IRouterBuilde
 }
 
 func (this *ApplicationBuilder) ConfigureMvcParts(configure func(builder *Mvc.ControllerBuilder)) *ApplicationBuilder {
-	this.mvcConfigures = append(this.mvcConfigures, configure)
+
 	return this
 }
 
@@ -84,7 +87,7 @@ func (this *ApplicationBuilder) buildEndPoints() {
 
 func (this *ApplicationBuilder) buildMvc(services *DependencyInjection.ServiceCollection) {
 	if this.routerBuilder.IsMvc() {
-		controllerBuilder := Mvc.NewControllerBuilder()
+		controllerBuilder := this.routerBuilder.GetMvcBuilder()
 		for _, configure := range this.mvcConfigures {
 			configure(controllerBuilder)
 		}

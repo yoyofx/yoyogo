@@ -1,19 +1,16 @@
-package Router
+package Mvc
 
 import (
 	"github.com/maxzhang1985/yoyogo/ActionResult"
 	"github.com/maxzhang1985/yoyogo/Context"
-	"github.com/maxzhang1985/yoyogo/Mvc"
 	"net/http"
 	"strings"
 )
 
-type MvcRouterHandler struct {
-	actionFilters []Mvc.IActionFilter
-	actionList    map[string]map[string]string
+type RouterHandler struct {
 }
 
-func (handler *MvcRouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []string) func(ctx *Context.HttpContext) {
+func (handler *RouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []string) func(ctx *Context.HttpContext) {
 
 	if pathComponents == nil || len(pathComponents) < 2 {
 		return nil
@@ -24,21 +21,21 @@ func (handler *MvcRouterHandler) Invoke(ctx *Context.HttpContext, pathComponents
 	}
 	actionName := pathComponents[1]
 
-	controller, err := Mvc.ActivateController(ctx.RequiredServices, controllerName)
+	controller, err := ActivateController(ctx.RequiredServices, controllerName)
 	if err != nil {
 		ctx.Response.WriteHeader(http.StatusNotFound)
 		panic(controllerName + " controller is not found! " + err.Error())
 	}
 
-	actionMethodExecutor := Mvc.NewActionMethodExecutor()
-	executorContext := &Mvc.ActionExecutorContext{
+	actionMethodExecutor := NewActionMethodExecutor()
+	executorContext := &ActionExecutorContext{
 		ControllerName: controllerName,
 		Controller:     controller,
 		ActionName:     actionName,
 		Context:        ctx,
 		In:             nil,
 	}
-	executorContext.In = &Mvc.ActionExecutorInParam{}
+	executorContext.In = &ActionExecutorInParam{}
 
 	actionResult := actionMethodExecutor.Execute(executorContext)
 
