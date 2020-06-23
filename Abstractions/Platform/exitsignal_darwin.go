@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func HookSignals(host Abstract.IServiceHost) {
+func HookSignals(host Abstractions.IServiceHost) {
 	quitSig := make(chan os.Signal)
 	signal.Notify(
 		quitSig,
