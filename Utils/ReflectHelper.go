@@ -12,7 +12,7 @@ func GetCtorFuncName(ctorFunc interface{}) string {
 		}
 		controllerType := ctorType.Out(0)
 		if controllerType.Kind() != reflect.Ptr {
-			panic("Controller type must be Ptr ! ")
+			panic("Mvc type must be Ptr ! ")
 		}
 		controllerName := controllerType.Elem().Name()
 		return controllerName

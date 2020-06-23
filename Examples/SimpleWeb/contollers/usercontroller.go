@@ -1,14 +1,14 @@
 package contollers
 
 import (
-	"github.com/maxzhang1985/yoyogo/ActionResult"
-	"github.com/maxzhang1985/yoyogo/Context"
-	"github.com/maxzhang1985/yoyogo/Controller"
 	"github.com/maxzhang1985/yoyogo/Examples/SimpleWeb/models"
+	"github.com/maxzhang1985/yoyogo/WebFramework/ActionResult"
+	"github.com/maxzhang1985/yoyogo/WebFramework/Context"
+	"github.com/maxzhang1985/yoyogo/WebFramework/Mvc"
 )
 
 type UserController struct {
-	*Controller.ApiController
+	*Mvc.ApiController
 	userAction models.IUserAction
 }
 
@@ -17,18 +17,18 @@ func NewUserController(userAction models.IUserAction) *UserController {
 }
 
 type RegiserRequest struct {
-	Controller.RequestBody
+	Mvc.RequestBody
 	UserName string `param:"username"`
 	Password string `param:"password"`
 }
 
 func (this *UserController) Register(ctx *Context.HttpContext, request *RegiserRequest) ActionResult.IActionResult {
-	result := Controller.ApiResult{Success: true, Message: "ok", Data: request}
+	result := Mvc.ApiResult{Success: true, Message: "ok", Data: request}
 
 	return ActionResult.Json{Data: result}
 }
 
-func (this *UserController) GetInfo() Controller.ApiResult {
+func (this *UserController) GetInfo() Mvc.ApiResult {
 
 	return this.OK(this.userAction.Login("zhang"))
 }
