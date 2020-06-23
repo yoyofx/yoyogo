@@ -3,11 +3,11 @@ package Test
 import (
 	"fmt"
 	"github.com/magiconair/properties/assert"
-	"github.com/maxzhang1985/yoyogo/Context"
-	_ "github.com/maxzhang1985/yoyogo/Context"
 	"github.com/maxzhang1985/yoyogo/Examples/SimpleWeb/contollers"
-	"github.com/maxzhang1985/yoyogo/Mvc"
 	"github.com/maxzhang1985/yoyogo/Utils"
+	"github.com/maxzhang1985/yoyogo/WebFramework/Context"
+	_ "github.com/maxzhang1985/yoyogo/WebFramework/Context"
+	"github.com/maxzhang1985/yoyogo/WebFramework/Mvc"
 	"reflect"
 	"testing"
 )

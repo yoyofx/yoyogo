@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/maxzhang1985/yoyogo/Context"
+	"github.com/maxzhang1985/yoyogo/Abstract"
 	"github.com/maxzhang1985/yoyogo/DependencyInjection"
 	"github.com/maxzhang1985/yoyogo/Examples/SimpleWeb/contollers"
 	"github.com/maxzhang1985/yoyogo/Examples/SimpleWeb/models"
-	"github.com/maxzhang1985/yoyogo/Framework"
-	"github.com/maxzhang1985/yoyogo/Mvc"
-	"github.com/maxzhang1985/yoyogo/Router"
+	"github.com/maxzhang1985/yoyogo/WebFramework"
+	"github.com/maxzhang1985/yoyogo/WebFramework/Context"
+	"github.com/maxzhang1985/yoyogo/WebFramework/Mvc"
+	"github.com/maxzhang1985/yoyogo/WebFramework/Router"
 )
 
 func main() {
@@ -19,7 +20,7 @@ func main() {
 }
 
 //* Create the builder of Web host
-func CreateCustomBuilder() *YoyoGo.HostBuilder {
+func CreateCustomBuilder() *YoyoGo.WebHostBuilder {
 	return YoyoGo.NewWebHostBuilder().
 		//UseHttp().
 		UseFastHttp().
@@ -93,8 +94,8 @@ func PostInfo(ctx *Context.HttpContext) {
 	ctx.JSON(200, Context.M{"info": "hello world", "result": strResult})
 }
 
-func getApplicationLifeEvent(life *YoyoGo.ApplicationLife) {
-	printDataEvent := func(event YoyoGo.ApplicationEvent) {
+func getApplicationLifeEvent(life *Abstract.ApplicationLife) {
+	printDataEvent := func(event Abstract.ApplicationEvent) {
 		fmt.Printf("[yoyogo] Topic: %s; Event: %v\n", event.Topic, event.Data)
 	}
 
