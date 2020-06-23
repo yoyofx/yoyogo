@@ -1,8 +1,8 @@
 package contollers
 
 import (
-	"github.com/maxzhang1985/yoyogo/ActionResult"
 	"github.com/maxzhang1985/yoyogo/Examples/SimpleWeb/models"
+	"github.com/maxzhang1985/yoyogo/WebFramework/ActionResult"
 	"github.com/maxzhang1985/yoyogo/WebFramework/Context"
 	"github.com/maxzhang1985/yoyogo/WebFramework/Mvc"
 )

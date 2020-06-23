@@ -2,6 +2,7 @@ package YoyoGo
 
 import (
 	"fmt"
+	Yoyo "github.com/maxzhang1985/yoyogo"
 	"github.com/maxzhang1985/yoyogo/Abstract"
 	"github.com/maxzhang1985/yoyogo/DependencyInjection"
 	"github.com/maxzhang1985/yoyogo/WebFramework/Context"
@@ -64,7 +65,7 @@ func runningHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
 func buildingHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
 	// build each configuration by init , such as file or env or args ...
 	hostEnv.ApplicationName = "app"
-	hostEnv.Version = Abstract.Version
+	hostEnv.Version = Yoyo.Version
 	hostEnv.Addr = ":8080"
 
 	hostEnv.Args = os.Args
