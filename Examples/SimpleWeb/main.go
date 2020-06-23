@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/maxzhang1985/yoyogo/Abstract"
+	"github.com/maxzhang1985/yoyogo/Abstractions"
 	"github.com/maxzhang1985/yoyogo/DependencyInjection"
 	"github.com/maxzhang1985/yoyogo/Examples/SimpleWeb/contollers"
 	"github.com/maxzhang1985/yoyogo/Examples/SimpleWeb/models"
@@ -20,7 +20,7 @@ func main() {
 }
 
 //* Create the builder of Web host
-func CreateCustomBuilder() *YoyoGo.WebHostBuilder {
+func CreateCustomBuilder() *Abstractions.HostBuilder {
 	return YoyoGo.NewWebHostBuilder().
 		//UseHttp().
 		UseFastHttp().
@@ -94,8 +94,8 @@ func PostInfo(ctx *Context.HttpContext) {
 	ctx.JSON(200, Context.M{"info": "hello world", "result": strResult})
 }
 
-func getApplicationLifeEvent(life *Abstract.ApplicationLife) {
-	printDataEvent := func(event Abstract.ApplicationEvent) {
+func getApplicationLifeEvent(life *Abstractions.ApplicationLife) {
+	printDataEvent := func(event Abstractions.ApplicationEvent) {
 		fmt.Printf("[yoyogo] Topic: %s; Event: %v\n", event.Topic, event.Data)
 	}
 

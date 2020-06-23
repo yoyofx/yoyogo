@@ -1,4 +1,4 @@
-package Abstract
+package Abstractions
 
 type IServiceHost interface {
 	Run()

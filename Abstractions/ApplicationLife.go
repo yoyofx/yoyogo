@@ -1,4 +1,4 @@
-package Abstract
+package Abstractions
 
 const (
 	APPLICATION_LIFE_START = "APPLICATION_LIFE_START"

@@ -1,4 +1,4 @@
-package Abstract
+package Abstractions
 
 import (
 	"github.com/maxzhang1985/yoyogo/DependencyInjection"
@@ -6,7 +6,7 @@ import (
 )
 
 type HostBuildContext struct {
-	RequestDelegate        IRequestDelegate
+	RequestDelegate        interface{}
 	ApplicationCycle       *ApplicationLife
 	HostingEnvironment     *Context.HostEnvironment
 	ApplicationServicesDef *DependencyInjection.ServiceCollection

@@ -98,4 +98,4 @@
 //		}
 //
 
-package main
+package YoyoGo

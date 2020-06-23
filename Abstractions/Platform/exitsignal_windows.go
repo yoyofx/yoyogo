@@ -2,14 +2,14 @@ package Platform
 
 import (
 	"fmt"
-	"github.com/maxzhang1985/yoyogo/Abstract"
+	"github.com/maxzhang1985/yoyogo/Abstractions"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 )
 
-func HookSignals(host Abstract.IServiceHost) {
+func HookSignals(host Abstractions.IServiceHost) {
 	quitSig := make(chan os.Signal)
 	signal.Notify(
 		quitSig,

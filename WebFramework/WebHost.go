@@ -3,19 +3,19 @@ package YoyoGo
 import (
 	"encoding/base64"
 	"fmt"
-	"github.com/maxzhang1985/yoyogo/Abstract"
-	"github.com/maxzhang1985/yoyogo/Abstract/Platform"
+	"github.com/maxzhang1985/yoyogo/Abstractions"
+	"github.com/maxzhang1985/yoyogo/Abstractions/Platform"
 	"github.com/maxzhang1985/yoyogo/WebFramework/Context"
 	"log"
 	"os"
 )
 
 type WebHost struct {
-	HostContext *Abstract.HostBuildContext
-	webServer   Abstract.IServer
+	HostContext *Abstractions.HostBuildContext
+	webServer   Abstractions.IServer
 }
 
-func NewWebHost(server Abstract.IServer, hostContext *Abstract.HostBuildContext) WebHost {
+func NewWebHost(server Abstractions.IServer, hostContext *Abstractions.HostBuildContext) WebHost {
 	return WebHost{webServer: server, HostContext: hostContext}
 }
 
@@ -23,7 +23,7 @@ func (host WebHost) Run() {
 	hostEnv := host.HostContext.HostingEnvironment
 	vlog := log.New(os.Stdout, "[yoyogo] ", 0)
 
-	runningHostEnvironmentSetting(hostEnv)
+	Abstractions.RunningHostEnvironmentSetting(hostEnv)
 
 	printLogo(vlog, hostEnv)
 

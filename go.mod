@@ -1,6 +1,6 @@
 module github.com/maxzhang1985/yoyogo
 
-go 1.13
+go 1.14
 
 require (
 	github.com/defval/inject/v2 v2.2.1

@@ -1,7 +1,7 @@
 package YoyoGo
 
 import (
-	"github.com/maxzhang1985/yoyogo/Abstract"
+	"github.com/maxzhang1985/yoyogo/Abstractions"
 	"github.com/valyala/fasthttp"
 	"github.com/valyala/fasthttp/fasthttpadaptor"
 	"log"
@@ -26,9 +26,9 @@ func (server *FastHttpServer) GetAddr() string {
 	return server.Addr
 }
 
-func (server *FastHttpServer) Run(context *Abstract.HostBuildContext) (e error) {
+func (server *FastHttpServer) Run(context *Abstractions.HostBuildContext) (e error) {
 
-	fastHttpHandler := fasthttpadaptor.NewFastHTTPHandler(context.RequestDelegate)
+	fastHttpHandler := fasthttpadaptor.NewFastHTTPHandler(context.RequestDelegate.(Abstractions.IRequestDelegate))
 
 	server.webserver = &fasthttp.Server{
 		Handler: fastHttpHandler,

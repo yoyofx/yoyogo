@@ -1,4 +1,4 @@
-package Abstract
+package Abstractions
 
 import (
 	"github.com/spf13/viper"

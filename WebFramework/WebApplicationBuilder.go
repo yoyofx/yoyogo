@@ -1,7 +1,7 @@
 package YoyoGo
 
 import (
-	"github.com/maxzhang1985/yoyogo/Abstract"
+	"github.com/maxzhang1985/yoyogo/Abstractions"
 	"github.com/maxzhang1985/yoyogo/DependencyInjection"
 	"github.com/maxzhang1985/yoyogo/WebFramework/Context"
 	"github.com/maxzhang1985/yoyogo/WebFramework/Middleware"
@@ -14,8 +14,8 @@ import (
 
 //application builder struct
 type WebApplicationBuilder struct {
-	hostContext     *Abstract.HostBuildContext // host build 's context
-	routerBuilder   Router.IRouterBuilder      // route builder of interface
+	hostContext     *Abstractions.HostBuildContext // host build 's context
+	routerBuilder   Router.IRouterBuilder          // route builder of interface
 	middleware      middleware
 	handlers        []Handler
 	Profile         string
@@ -29,9 +29,9 @@ func UseClassic() *WebApplicationBuilder {
 }
 
 //region Create the builder of Web host
-func CreateDefaultBuilder(routerConfig func(router Router.IRouterBuilder)) *WebHostBuilder {
+func CreateDefaultBuilder(routerConfig func(router Router.IRouterBuilder)) *Abstractions.HostBuilder {
 	return NewWebHostBuilder().
-		UseServer(DefaultHttpServer(Abstract.DefaultAddress)).
+		UseServer(DefaultHttpServer(Abstractions.DefaultAddress)).
 		Configure(func(app *WebApplicationBuilder) {
 			app.UseStatic("Static")
 			app.UseEndpoints(routerConfig)
@@ -97,7 +97,8 @@ func (this *WebApplicationBuilder) buildMvc(services *DependencyInjection.Servic
 }
 
 // build and combo all middleware to request delegate (ServeHTTP(w http.ResponseWriter, r *http.Request))
-func (this *WebApplicationBuilder) Build() Abstract.IRequestDelegate {
+// return Abstractions.IRequestDelegate type
+func (this *WebApplicationBuilder) Build() interface{} {
 	if this.hostContext == nil {
 		panic("hostContext is nil! please set.")
 	}
@@ -109,7 +110,7 @@ func (this *WebApplicationBuilder) Build() Abstract.IRequestDelegate {
 	return this
 }
 
-func (this *WebApplicationBuilder) SetHostBuildContext(context *Abstract.HostBuildContext) {
+func (this *WebApplicationBuilder) SetHostBuildContext(context *Abstractions.HostBuildContext) {
 	this.hostContext = context
 }
 

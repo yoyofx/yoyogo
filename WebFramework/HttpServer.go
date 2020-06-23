@@ -1,7 +1,7 @@
 package YoyoGo
 
 import (
-	"github.com/maxzhang1985/yoyogo/Abstract"
+	"github.com/maxzhang1985/yoyogo/Abstractions"
 	"golang.org/x/net/context"
 	"log"
 	"net/http"
@@ -25,7 +25,7 @@ func (server *HttpServer) GetAddr() string {
 	return server.Addr
 }
 
-func (server *HttpServer) Run(context *Abstract.HostBuildContext) (e error) {
+func (server *HttpServer) Run(context *Abstractions.HostBuildContext) (e error) {
 	addr := server.Addr
 	if server.Addr == "" {
 		addr = context.HostingEnvironment.Addr
@@ -33,7 +33,7 @@ func (server *HttpServer) Run(context *Abstract.HostBuildContext) (e error) {
 
 	server.webserver = &http.Server{
 		Addr:    addr,
-		Handler: context.RequestDelegate,
+		Handler: context.RequestDelegate.(Abstractions.IRequestDelegate),
 	}
 
 	context.ApplicationCycle.StartApplication()
