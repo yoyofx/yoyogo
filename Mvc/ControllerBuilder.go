@@ -8,13 +8,13 @@ import (
 type ControllerBuilder struct {
 	controllerDescriptors []ControllerDescriptor
 	mvcRouterHandler      *RouterHandler
-	options               MvcOptions
+	Options               MvcOptions
 }
 
 // NewControllerBuilder new controller builder
 func NewControllerBuilder() *ControllerBuilder {
 	return &ControllerBuilder{
-		options:          MvcOptions{},
+		Options:          MvcOptions{},
 		mvcRouterHandler: &RouterHandler{},
 	}
 }

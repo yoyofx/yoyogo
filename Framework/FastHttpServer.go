@@ -5,8 +5,6 @@ import (
 	"github.com/valyala/fasthttp/fasthttpadaptor"
 	"log"
 	"net/http"
-	"os"
-	"os/signal"
 )
 
 type FastHttpServer struct {
@@ -23,26 +21,17 @@ func NewFastHttps(addr string, cert string, key string) FastHttpServer {
 	return FastHttpServer{IsTLS: true, Addr: addr, CertFile: cert, KeyFile: key}
 }
 
-func (server FastHttpServer) GetAddr() string {
+func (server *FastHttpServer) GetAddr() string {
 	return server.Addr
 }
 
-func (server FastHttpServer) Run(context *HostBuildContext) (e error) {
+func (server *FastHttpServer) Run(context *HostBuildContext) (e error) {
 
 	fastHttpHandler := fasthttpadaptor.NewFastHTTPHandler(context.RequestDelegate)
 
 	server.webserver = &fasthttp.Server{
 		Handler: fastHttpHandler,
 	}
-
-	// 创建系统信号接收器
-	quit := make(chan os.Signal)
-	signal.Notify(quit, os.Interrupt, os.Kill)
-	go func() {
-		<-quit
-		context.ApplicationCycle.StopApplication()
-		server.Shutdown()
-	}()
 
 	addr := server.Addr
 	if server.Addr == "" {
@@ -65,7 +54,7 @@ func (server FastHttpServer) Run(context *HostBuildContext) (e error) {
 	return e
 }
 
-func (server FastHttpServer) Shutdown() {
+func (server *FastHttpServer) Shutdown() {
 	log.Println("Shutdown HTTP server...")
 	if err := server.webserver.Shutdown(); err != nil {
 		log.Fatal("Shutdown server:", err)

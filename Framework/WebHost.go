@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"github.com/maxzhang1985/yoyogo/Context"
+	"github.com/maxzhang1985/yoyogo/Framework/Platform"
 	"log"
 	"os"
 )
@@ -24,10 +25,36 @@ func (host WebHost) Run() {
 	runningHostEnvironmentSetting(hostEnv)
 
 	printLogo(vlog, hostEnv)
-	vlog.Fatal(host.webServer.Run(host.HostContext))
+
+	// 创建系统信号接收器
+	//quit := make(chan os.Signal)
+	//signal.Notify(quit, os.Interrupt, os.Kill, syscall.SIG, syscall.SIGUSR2)
+	//signal.Notify(
+	//	quit,
+	//	syscall.SIGHUP,
+	//	syscall.SIGINT,
+	//	syscall.SIGTERM,
+	//	syscall.SIGQUIT,
+	//	syscall.SIGSTOP,
+	//	syscall.SIGUSR1,
+	//	syscall.SIGUSR2,
+	//	syscall.SIGKILL,
+	//)
+	//go func() {
+	//	<-quit
+	//	host.StopApplicationNotify()
+	//	host.Shutdown()
+	//}()
+	Platform.HookSignals(host)
+	_ = host.webServer.Run(host.HostContext)
 
 }
 
+func (host WebHost) StopApplicationNotify() {
+	host.HostContext.ApplicationCycle.StopApplication()
+}
+
+// Shutdown is Graceful stop application
 func (host WebHost) Shutdown() {
 	host.webServer.Shutdown()
 }

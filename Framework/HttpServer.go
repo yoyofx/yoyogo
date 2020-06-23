@@ -4,8 +4,6 @@ import (
 	"golang.org/x/net/context"
 	"log"
 	"net/http"
-	"os"
-	"os/signal"
 )
 
 type HttpServer struct {
@@ -14,19 +12,19 @@ type HttpServer struct {
 	webserver               *http.Server
 }
 
-func DefaultHttpServer(addr string) HttpServer {
-	return HttpServer{IsTLS: false, Addr: addr}
+func DefaultHttpServer(addr string) *HttpServer {
+	return &HttpServer{IsTLS: false, Addr: addr}
 }
 
-func DefaultHttps(addr string, cert string, key string) HttpServer {
-	return HttpServer{IsTLS: true, Addr: addr, CertFile: cert, KeyFile: key}
+func DefaultHttps(addr string, cert string, key string) *HttpServer {
+	return &HttpServer{IsTLS: true, Addr: addr, CertFile: cert, KeyFile: key}
 }
 
-func (server HttpServer) GetAddr() string {
+func (server *HttpServer) GetAddr() string {
 	return server.Addr
 }
 
-func (server HttpServer) Run(context *HostBuildContext) (e error) {
+func (server *HttpServer) Run(context *HostBuildContext) (e error) {
 	addr := server.Addr
 	if server.Addr == "" {
 		addr = context.hostingEnvironment.Addr
@@ -36,14 +34,6 @@ func (server HttpServer) Run(context *HostBuildContext) (e error) {
 		Addr:    addr,
 		Handler: context.RequestDelegate,
 	}
-	// 创建系统信号接收器
-	quit := make(chan os.Signal)
-	signal.Notify(quit, os.Interrupt, os.Kill)
-	go func() {
-		<-quit
-		context.ApplicationCycle.StopApplication()
-		server.Shutdown()
-	}()
 
 	context.ApplicationCycle.StartApplication()
 
@@ -63,7 +53,7 @@ func (server HttpServer) Run(context *HostBuildContext) (e error) {
 	return nil
 }
 
-func (server HttpServer) Shutdown() {
+func (server *HttpServer) Shutdown() {
 	if err := server.webserver.Shutdown(context.Background()); err != nil {
 		log.Fatal("Shutdown server:", err)
 	}

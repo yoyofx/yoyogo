@@ -11,12 +11,12 @@ import (
 type HostBuilder struct {
 	server             IServer
 	context            *HostBuildContext
-	configures         []func(*ApplicationBuilder)
+	configures         []func(*WebApplicationBuilder)
 	servicesConfigures []func(*DependencyInjection.ServiceCollection)
 	lifeConfigure      func(*ApplicationLife)
 }
 
-func (self *HostBuilder) Configure(configure func(*ApplicationBuilder)) *HostBuilder {
+func (self *HostBuilder) Configure(configure func(*WebApplicationBuilder)) *HostBuilder {
 	self.configures = append(self.configures, configure)
 	return self
 }
@@ -85,7 +85,7 @@ func (self *HostBuilder) Build() WebHost {
 		configure(services)
 	}
 
-	applicationBuilder := NewApplicationBuilder()
+	applicationBuilder := NewWebApplicationBuilder()
 
 	for _, configure := range self.configures {
 		configure(applicationBuilder)

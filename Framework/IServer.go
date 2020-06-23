@@ -1,6 +1,8 @@
 package YoyoGo
 
-import "os"
+import (
+	"os"
+)
 
 type IServer interface {
 	GetAddr() string

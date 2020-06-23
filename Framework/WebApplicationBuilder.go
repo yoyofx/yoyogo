@@ -16,7 +16,7 @@ const (
 )
 
 //application builder struct
-type ApplicationBuilder struct {
+type WebApplicationBuilder struct {
 	hostContext     *HostBuildContext     // host build 's context
 	routerBuilder   Router.IRouterBuilder // route builder of interface
 	middleware      middleware
@@ -27,30 +27,30 @@ type ApplicationBuilder struct {
 }
 
 // create classic application builder
-func UseClassic() *ApplicationBuilder {
-	return &ApplicationBuilder{}
+func UseClassic() *WebApplicationBuilder {
+	return &WebApplicationBuilder{}
 }
 
 //region Create the builder of Web host
 func CreateDefaultBuilder(routerConfig func(router Router.IRouterBuilder)) *HostBuilder {
 	return NewWebHostBuilder().
 		UseServer(DefaultHttpServer(DefaultAddress)).
-		Configure(func(app *ApplicationBuilder) {
+		Configure(func(app *WebApplicationBuilder) {
 			app.UseStatic("Static")
 			app.UseEndpoints(routerConfig)
 		})
 }
 
 // create application builder when combo all handlers to middleware
-func New(handlers ...Handler) *ApplicationBuilder {
-	return &ApplicationBuilder{
+func New(handlers ...Handler) *WebApplicationBuilder {
+	return &WebApplicationBuilder{
 		handlers:   handlers,
 		middleware: build(handlers),
 	}
 }
 
-// create new application builder
-func NewApplicationBuilder() *ApplicationBuilder {
+// create new web application builder
+func NewWebApplicationBuilder() *WebApplicationBuilder {
 	routerBuilder := Router.NewRouterBuilder()
 	recovery := Middleware.NewRecovery()
 	logger := Middleware.NewLogger()
@@ -60,8 +60,8 @@ func NewApplicationBuilder() *ApplicationBuilder {
 	return self
 }
 
-// after create builder , apply router and logger and recovery middleware
-func (self *ApplicationBuilder) UseMvc(configure func(builder *Mvc.ControllerBuilder)) *ApplicationBuilder {
+// UseMvc after create builder , apply router and logger and recovery middleware
+func (self *WebApplicationBuilder) UseMvc(configure func(builder *Mvc.ControllerBuilder)) *WebApplicationBuilder {
 	if !self.routerBuilder.IsMvc() {
 		self.routerBuilder.UseMvc(true)
 	}
@@ -69,23 +69,23 @@ func (self *ApplicationBuilder) UseMvc(configure func(builder *Mvc.ControllerBui
 	return self
 }
 
-func (self *ApplicationBuilder) UseEndpoints(configure func(Router.IRouterBuilder)) *ApplicationBuilder {
+func (self *WebApplicationBuilder) UseEndpoints(configure func(Router.IRouterBuilder)) *WebApplicationBuilder {
 	self.routeConfigures = append(self.routeConfigures, configure)
 	return self
 }
 
-func (this *ApplicationBuilder) ConfigureMvcParts(configure func(builder *Mvc.ControllerBuilder)) *ApplicationBuilder {
+func (this *WebApplicationBuilder) ConfigureMvcParts(configure func(builder *Mvc.ControllerBuilder)) *WebApplicationBuilder {
 
 	return this
 }
 
-func (this *ApplicationBuilder) buildEndPoints() {
+func (this *WebApplicationBuilder) buildEndPoints() {
 	for _, configure := range this.routeConfigures {
 		configure(this.routerBuilder)
 	}
 }
 
-func (this *ApplicationBuilder) buildMvc(services *DependencyInjection.ServiceCollection) {
+func (this *WebApplicationBuilder) buildMvc(services *DependencyInjection.ServiceCollection) {
 	if this.routerBuilder.IsMvc() {
 		controllerBuilder := this.routerBuilder.GetMvcBuilder()
 		for _, configure := range this.mvcConfigures {
@@ -100,7 +100,7 @@ func (this *ApplicationBuilder) buildMvc(services *DependencyInjection.ServiceCo
 }
 
 // build and combo all middleware to request delegate (ServeHTTP(w http.ResponseWriter, r *http.Request))
-func (this *ApplicationBuilder) Build() IRequestDelegate {
+func (this *WebApplicationBuilder) Build() IRequestDelegate {
 	if this.hostContext == nil {
 		panic("hostContext is nil! please set.")
 	}
@@ -112,16 +112,16 @@ func (this *ApplicationBuilder) Build() IRequestDelegate {
 	return this
 }
 
-func (this *ApplicationBuilder) SetHostBuildContext(context *HostBuildContext) {
+func (this *WebApplicationBuilder) SetHostBuildContext(context *HostBuildContext) {
 	this.hostContext = context
 }
 
-func (app *ApplicationBuilder) SetEnvironment(mode string) {
+func (app *WebApplicationBuilder) SetEnvironment(mode string) {
 	app.Profile = mode
 }
 
 // apply middleware in builder
-func (app *ApplicationBuilder) UseMiddleware(handler Handler) {
+func (app *WebApplicationBuilder) UseMiddleware(handler Handler) {
 	if handler == nil {
 		panic("handler cannot be nil")
 	}
@@ -129,28 +129,28 @@ func (app *ApplicationBuilder) UseMiddleware(handler Handler) {
 }
 
 // apply static middleware in builder
-func (app *ApplicationBuilder) UseStatic(path string) {
+func (app *WebApplicationBuilder) UseStatic(path string) {
 	app.UseMiddleware(Middleware.NewStatic("Static"))
 }
 
 // apply handler middleware in builder
-func (app *ApplicationBuilder) UseHandler(handler http.Handler) {
+func (app *WebApplicationBuilder) UseHandler(handler http.Handler) {
 	app.UseMiddleware(wrap(handler))
 }
 
 // apply handler func middleware in builder
-func (app *ApplicationBuilder) UseHandlerFunc(handlerFunc func(rw http.ResponseWriter, r *http.Request)) {
+func (app *WebApplicationBuilder) UseHandlerFunc(handlerFunc func(rw http.ResponseWriter, r *http.Request)) {
 	app.UseMiddleware(wrapFunc(handlerFunc))
 }
 
 // apply handler func middleware in builder
-func (app *ApplicationBuilder) UseFunc(handlerFunc HandlerFunc) {
+func (app *WebApplicationBuilder) UseFunc(handlerFunc HandlerFunc) {
 	app.UseMiddleware(handlerFunc)
 }
 
 /*
 Middleware of Server Handler , request port.
 */
-func (app *ApplicationBuilder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (app *WebApplicationBuilder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	app.middleware.Invoke(Context.NewContext(w, r, app.hostContext.applicationServices))
 }
