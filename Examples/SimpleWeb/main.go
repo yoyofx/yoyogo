@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/maxzhang1985/yoyogo/Abstractions"
-	"github.com/maxzhang1985/yoyogo/DependencyInjection"
-	"github.com/maxzhang1985/yoyogo/Examples/SimpleWeb/contollers"
-	"github.com/maxzhang1985/yoyogo/Examples/SimpleWeb/models"
-	"github.com/maxzhang1985/yoyogo/WebFramework"
-	"github.com/maxzhang1985/yoyogo/WebFramework/Context"
-	"github.com/maxzhang1985/yoyogo/WebFramework/Mvc"
-	"github.com/maxzhang1985/yoyogo/WebFramework/Router"
+	"github.com/yoyofx/yoyogo/Abstractions"
+	"github.com/yoyofx/yoyogo/DependencyInjection"
+	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/contollers"
+	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/models"
+	"github.com/yoyofx/yoyogo/WebFramework"
+	"github.com/yoyofx/yoyogo/WebFramework/Context"
+	"github.com/yoyofx/yoyogo/WebFramework/Mvc"
+	"github.com/yoyofx/yoyogo/WebFramework/Router"
 )
 
 func main() {

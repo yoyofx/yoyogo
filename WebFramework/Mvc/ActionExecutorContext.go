@@ -1,8 +1,8 @@
 package Mvc
 
 import (
-	"github.com/maxzhang1985/yoyogo/Utils"
-	"github.com/maxzhang1985/yoyogo/WebFramework/Context"
+	"github.com/yoyofx/yoyogo/Utils"
+	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"reflect"
 )
 

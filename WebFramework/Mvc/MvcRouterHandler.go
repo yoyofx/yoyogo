@@ -1,8 +1,8 @@
 package Mvc
 
 import (
-	"github.com/maxzhang1985/yoyogo/WebFramework/ActionResult"
-	"github.com/maxzhang1985/yoyogo/WebFramework/Context"
+	"github.com/yoyofx/yoyogo/WebFramework/ActionResult"
+	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"net/http"
 	"strings"
 )

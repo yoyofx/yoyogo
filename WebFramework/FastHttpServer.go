@@ -1,9 +1,9 @@
 package YoyoGo
 
 import (
-	"github.com/maxzhang1985/yoyogo/Abstractions"
 	"github.com/valyala/fasthttp"
 	"github.com/valyala/fasthttp/fasthttpadaptor"
+	"github.com/yoyofx/yoyogo/Abstractions"
 	"log"
 	"net/http"
 )

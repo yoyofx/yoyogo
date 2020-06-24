@@ -3,9 +3,9 @@ package Abstractions
 import (
 	"encoding/base64"
 	"fmt"
-	"github.com/maxzhang1985/yoyogo"
-	"github.com/maxzhang1985/yoyogo/Abstractions/Platform/ConsoleColors"
-	"github.com/maxzhang1985/yoyogo/WebFramework/Context"
+	"github.com/yoyofx/yoyogo"
+	"github.com/yoyofx/yoyogo/Abstractions/Platform/ConsoleColors"
+	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"log"
 )
 

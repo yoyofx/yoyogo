@@ -2,7 +2,7 @@ package Middleware
 
 import (
 	"fmt"
-	"github.com/maxzhang1985/yoyogo/WebFramework/Context"
+	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"html/template"
 	"io/ioutil"
 	"log"

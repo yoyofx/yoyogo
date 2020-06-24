@@ -1,7 +1,7 @@
 package YoyoGo
 
 import (
-	"github.com/maxzhang1985/yoyogo/Abstractions"
+	"github.com/yoyofx/yoyogo/Abstractions"
 	"golang.org/x/net/context"
 	"log"
 	"net/http"
