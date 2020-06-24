@@ -1,4 +1,4 @@
-package Platform
+package ExitHookSignals
 
 import (
 	"fmt"
@@ -17,9 +17,6 @@ func HookSignals(host Abstractions.IServiceHost) {
 		syscall.SIGINT,
 		syscall.SIGTERM,
 		syscall.SIGQUIT,
-		syscall.SIGSTOP,
-		syscall.SIGUSR1,
-		syscall.SIGUSR2,
 		syscall.SIGKILL,
 	)
 
