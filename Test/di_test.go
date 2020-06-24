@@ -2,8 +2,8 @@ package Test
 
 import (
 	"github.com/magiconair/properties/assert"
-	"github.com/maxzhang1985/yoyogo/DependencyInjection"
-	"github.com/maxzhang1985/yoyogo/WebFramework/Context"
+	"github.com/yoyofx/yoyogo/DependencyInjection"
+	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"testing"
 )
 
