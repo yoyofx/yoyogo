@@ -1,14 +1,14 @@
 # YoyoGo [中文介绍](https://github.com/maxzhang1985/yoyogo/blob/master/README-ZHCN.md "中文介绍")
 YoyoGo is a simple, light and fast Web framework written in Go. 
 
-![Release](https://img.shields.io/github/v/tag/maxzhang1985/yoyogo.svg?color=24B898&label=release&logo=github&sort=semver)
+![Release](https://img.shields.io/github/v/tag/yoyofx/yoyogo.svg?color=24B898&label=release&logo=github&sort=semver)
 [![Build Status](https://img.shields.io/travis/maxzhang1985/yoyogo.svg)](https://travis-ci.org/maxzhang1985/yoyogo)
-[![Goproxy](https://goproxy.cn/stats/github.com/maxzhang1985/yoyogo/badges/download-count.svg)](https://goproxy.cn/stats/github.com/maxzhang1985/yoyogo)
+[![Goproxy](https://goproxy.cn/stats/github.com/yoyofx/yoyogo/badges/download-count.svg)](https://goproxy.cn/stats/github.com/yoyofx/yoyogo)
 ![GoVersion](https://img.shields.io/github/go-mod/go-version/maxzhang1985/yoyogo)
 ![DockerPull](https://img.shields.io/docker/pulls/maxzhang1985/yoyogo)
-[![Report](https://goreportcard.com/badge/github.com/maxzhang1985/yoyogo)](https://goreportcard.com/report/github.com/maxzhang1985/yoyogo)
-[![Documentation](https://img.shields.io/badge/godoc-reference-blue.svg?color=24B898&logo=go&logoColor=ffffff)](https://godoc.org/github.com/maxzhang1985/yoyogo)
-![Contributors](https://img.shields.io/github/contributors/maxzhang1985/yoyogo.svg)
+[![Report](https://goreportcard.com/badge/github.com/yoyofx/yoyogo)](https://goreportcard.com/report/github.com/maxzhang1985/yoyogo)
+[![Documentation](https://img.shields.io/badge/godoc-reference-blue.svg?color=24B898&logo=go&logoColor=ffffff)](https://godoc.org/github.com/yoyofx/yoyogo)
+![Contributors](https://img.shields.io/github/contributors/yoyofx/yoyogo.svg)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 # Features
@@ -18,16 +18,10 @@ YoyoGo is a simple, light and fast Web framework written in Go.
 - No regexp or reflect
 - Inspired by many excellent Go Web framework
 
-## Contributing
-> I will be glad if you contribute to this library. I don't know much
-> English, so contributing to the documentation is very meaningful to me.
-> If you found a bug and create an issue, it will be fixed in one day.
+[![](https://avatars3.githubusercontent.com/u/4504853?v=4)](https://sourcerer.io/yoyofx)
 
-[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/0)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/0)[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/1)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/1)[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/2)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/2)[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/3)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/3)[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/4)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/4)[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/5)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/5)[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/6)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/6)[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/7)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/7)
 # Installation
-
-`go get github.com/maxzhang1985/yoyogo`
-
+`go get github.com/yoyofx/yoyogo`
 
 # Simple Example
 ```golang

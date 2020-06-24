@@ -1,6 +1,6 @@
 package YoyoGo
 
-import "github.com/maxzhang1985/yoyogo/Abstractions"
+import "github.com/yoyofx/yoyogo/Abstractions"
 
 type WebHostBuilderDecorator struct {
 }

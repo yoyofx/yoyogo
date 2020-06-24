@@ -1,8 +1,8 @@
 package YoyoGo
 
 import (
-	"github.com/maxzhang1985/yoyogo/Abstractions"
-	"github.com/maxzhang1985/yoyogo/Abstractions/Platform/ExitHookSignals"
+	"github.com/yoyofx/yoyogo/Abstractions"
+	"github.com/yoyofx/yoyogo/Abstractions/Platform/ExitHookSignals"
 	"log"
 	"os"
 )

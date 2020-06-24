@@ -1,12 +1,12 @@
 package YoyoGo
 
 import (
-	"github.com/maxzhang1985/yoyogo/Abstractions"
-	"github.com/maxzhang1985/yoyogo/DependencyInjection"
-	"github.com/maxzhang1985/yoyogo/WebFramework/Context"
-	"github.com/maxzhang1985/yoyogo/WebFramework/Middleware"
-	"github.com/maxzhang1985/yoyogo/WebFramework/Mvc"
-	"github.com/maxzhang1985/yoyogo/WebFramework/Router"
+	"github.com/yoyofx/yoyogo/Abstractions"
+	"github.com/yoyofx/yoyogo/DependencyInjection"
+	"github.com/yoyofx/yoyogo/WebFramework/Context"
+	"github.com/yoyofx/yoyogo/WebFramework/Middleware"
+	"github.com/yoyofx/yoyogo/WebFramework/Mvc"
+	"github.com/yoyofx/yoyogo/WebFramework/Router"
 	"net/http"
 )
 

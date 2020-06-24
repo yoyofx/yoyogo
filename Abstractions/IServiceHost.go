@@ -3,9 +3,9 @@ package Abstractions
 import (
 	"encoding/base64"
 	"fmt"
-	"github.com/maxzhang1985/yoyogo"
-	"github.com/maxzhang1985/yoyogo/Abstractions/Platform/ConsoleColors"
-	"github.com/maxzhang1985/yoyogo/WebFramework/Context"
+	"github.com/yoyofx/yoyogo"
+	"github.com/yoyofx/yoyogo/Abstractions/Platform/ConsoleColors"
+	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"log"
 )
 
@@ -20,7 +20,7 @@ func PrintLogo(l *log.Logger, env *Context.HostEnvironment) {
 	logo, _ := base64.StdEncoding.DecodeString(YoyoGo.Logo)
 
 	fmt.Println(ConsoleColors.Blue(string(logo)))
-	fmt.Println("")
+	fmt.Println(" ")
 	l.Println("Welcome to YoyoGo, starting application ...")
 	l.Printf("version: %s", env.Version)
 	l.Printf("listening on %s", env.Port)

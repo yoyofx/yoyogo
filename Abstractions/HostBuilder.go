@@ -2,9 +2,9 @@ package Abstractions
 
 import (
 	"fmt"
-	"github.com/maxzhang1985/yoyogo"
-	"github.com/maxzhang1985/yoyogo/DependencyInjection"
-	"github.com/maxzhang1985/yoyogo/WebFramework/Context"
+	"github.com/yoyofx/yoyogo"
+	"github.com/yoyofx/yoyogo/DependencyInjection"
+	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"net"
 	"os"
 )

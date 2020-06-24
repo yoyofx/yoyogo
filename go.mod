@@ -1,4 +1,4 @@
-module github.com/maxzhang1985/yoyogo
+module github.com/yoyofx/yoyogo
 
 go 1.14
 
@@ -6,6 +6,7 @@ require (
 	github.com/defval/inject/v2 v2.2.1
 	github.com/golang/protobuf v1.3.2
 	github.com/magiconair/properties v1.8.1
+	github.com/maxzhang1985/yoyogo v1.4.9
 	github.com/spf13/viper v1.5.0
 	github.com/stretchr/testify v1.4.0
 	github.com/ugorji/go/codec v1.1.7

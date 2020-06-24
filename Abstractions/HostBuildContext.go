@@ -1,8 +1,8 @@
 package Abstractions
 
 import (
-	"github.com/maxzhang1985/yoyogo/DependencyInjection"
-	"github.com/maxzhang1985/yoyogo/WebFramework/Context"
+	"github.com/yoyofx/yoyogo/DependencyInjection"
+	"github.com/yoyofx/yoyogo/WebFramework/Context"
 )
 
 type HostBuildContext struct {

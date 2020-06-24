@@ -1,14 +1,15 @@
 # YoyoGo
 YoyoGo 是一个用 Go 编写的简单，轻便，快速的 Web 框架。
 
-![Release](https://img.shields.io/github/v/tag/maxzhang1985/yoyogo.svg?color=24B898&label=release&logo=github&sort=semver)
+![Release](https://img.shields.io/github/v/tag/yoyofx/yoyogo.svg?color=24B898&label=release&logo=github&sort=semver)
 [![Build Status](https://img.shields.io/travis/maxzhang1985/yoyogo.svg)](https://travis-ci.org/maxzhang1985/yoyogo)
-[![Goproxy](https://goproxy.cn/stats/github.com/maxzhang1985/yoyogo/badges/download-count.svg)](https://goproxy.cn/stats/github.com/maxzhang1985/yoyogo)
+[![Goproxy](https://goproxy.cn/stats/github.com/yoyofx/yoyogo/badges/download-count.svg)](https://goproxy.cn/stats/github.com/yoyofx/yoyogo)
 ![GoVersion](https://img.shields.io/github/go-mod/go-version/maxzhang1985/yoyogo)
+[![GoBadge](https://img.shields.io/badge/Go-197%20commits-orange.svg)](https://sourcerer.io/yoyofx)
 ![DockerPull](https://img.shields.io/docker/pulls/maxzhang1985/yoyogo)
-[![Report](https://goreportcard.com/badge/github.com/maxzhang1985/yoyogo)](https://goreportcard.com/report/github.com/maxzhang1985/yoyogo)
-[![Documentation](https://img.shields.io/badge/godoc-reference-blue.svg?color=24B898&logo=go&logoColor=ffffff)](https://godoc.org/github.com/maxzhang1985/yoyogo)
-![Contributors](https://img.shields.io/github/contributors/maxzhang1985/yoyogo.svg)
+[![Report](https://goreportcard.com/badge/github.com/yoyofx/yoyogo)](https://goreportcard.com/report/github.com/maxzhang1985/yoyogo)
+[![Documentation](https://img.shields.io/badge/godoc-reference-blue.svg?color=24B898&logo=go&logoColor=ffffff)](https://godoc.org/github.com/yoyofx/yoyogo)
+![Contributors](https://img.shields.io/github/contributors/yoyofx/yoyogo.svg)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 # 特色
@@ -18,11 +19,10 @@ YoyoGo 是一个用 Go 编写的简单，轻便，快速的 Web 框架。
 - 没有正则表达式
 - 受到许多出色的 Go Web 框架的启发
 
-[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/0)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/0)[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/1)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/1)[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/2)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/2)[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/3)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/3)[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/4)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/4)[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/5)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/5)[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/6)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/6)[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/7)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/7)
-
+[![](https://avatars3.githubusercontent.com/u/4504853?v=4)](https://sourcerer.io/yoyofx)
 # 框架安装
 ```bash
-go get github.com/maxzhang1985/yoyogo
+go get github.com/yoyofx/yoyogo
 ```
 # 安装依赖 (由于某些原因国内下载不了依赖)
 ##  go version < 1.13

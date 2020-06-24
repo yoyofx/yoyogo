@@ -1,8 +1,8 @@
 package Router
 
 import (
-	"github.com/maxzhang1985/yoyogo/WebFramework/Context"
-	"github.com/maxzhang1985/yoyogo/WebFramework/Mvc"
+	"github.com/yoyofx/yoyogo/WebFramework/Context"
+	"github.com/yoyofx/yoyogo/WebFramework/Mvc"
 	"net/url"
 	"strings"
 )
