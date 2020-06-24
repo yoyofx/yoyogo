@@ -18,16 +18,10 @@ YoyoGo is a simple, light and fast Web framework written in Go.
 - No regexp or reflect
 - Inspired by many excellent Go Web framework
 
-## Contributing
-> I will be glad if you contribute to this library. I don't know much
-> English, so contributing to the documentation is very meaningful to me.
-> If you found a bug and create an issue, it will be fixed in one day.
+[![](https://avatars3.githubusercontent.com/u/4504853?v=4)](https://sourcerer.io/yoyofx)
 
-[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/0)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/0)[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/1)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/1)[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/2)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/2)[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/3)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/3)[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/4)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/4)[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/5)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/5)[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/6)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/6)[![](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/images/7)](https://sourcerer.io/fame/maxzhang1985/maxzhang1985/yoyogo/links/7)
 # Installation
-
-`go get github.com/maxzhang1985/yoyogo`
-
+`go get github.com/yoyofx/yoyogo`
 
 # Simple Example
 ```golang
