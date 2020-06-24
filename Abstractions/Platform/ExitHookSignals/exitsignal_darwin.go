@@ -1,4 +1,4 @@
-package Platform
+package ExitHookSignals
 
 import (
 	"fmt"
