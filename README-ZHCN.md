@@ -2,7 +2,7 @@
 YoyoGo 是一个用 Go 编写的简单，轻便，快速的 Web 框架。
 
 ![Release](https://img.shields.io/github/v/tag/yoyofx/yoyogo.svg?color=24B898&label=release&logo=github&sort=semver)
-[![Build Status](https://img.shields.io/travis/maxzhang1985/yoyogo.svg)](https://travis-ci.org/maxzhang1985/yoyogo)
+[![Build Status](https://img.shields.io/travis/yoyofx/yoyogo.svg)](https://travis-ci.org/yoyofx/yoyogo)
 [![Goproxy](https://goproxy.cn/stats/github.com/yoyofx/yoyogo/badges/download-count.svg)](https://goproxy.cn/stats/github.com/yoyofx/yoyogo)
 ![GoVersion](https://img.shields.io/github/go-mod/go-version/maxzhang1985/yoyogo)
 [![GoBadge](https://img.shields.io/badge/Go-197%20commits-orange.svg)](https://sourcerer.io/yoyofx)
