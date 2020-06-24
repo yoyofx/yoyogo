@@ -20,7 +20,7 @@ func PrintLogo(l *log.Logger, env *Context.HostEnvironment) {
 	logo, _ := base64.StdEncoding.DecodeString(YoyoGo.Logo)
 
 	fmt.Println(ConsoleColors.Blue(string(logo)))
-	fmt.Println("")
+	fmt.Println(" ")
 	l.Println("Welcome to YoyoGo, starting application ...")
 	l.Printf("version: %s", env.Version)
 	l.Printf("listening on %s", env.Port)
