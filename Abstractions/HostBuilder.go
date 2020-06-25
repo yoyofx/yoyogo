@@ -79,7 +79,7 @@ func RunningHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
 func buildingHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
 	hostEnv.ApplicationName = "app"
 	hostEnv.Version = YoyoGo.Version
-	hostEnv.Addr = DetectAddress(DefaultAddress)
+	hostEnv.Addr = DetectAddress("")
 	hostEnv.Port = strings.Replace(hostEnv.Addr, ":", "", -1)
 	hostEnv.Args = os.Args
 
