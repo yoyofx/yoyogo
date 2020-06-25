@@ -2,6 +2,7 @@ package YoyoGo
 
 import (
 	"github.com/yoyofx/yoyogo/Abstractions"
+	"github.com/yoyofx/yoyogo/Abstractions/Platform/ConsoleColors"
 	"github.com/yoyofx/yoyogo/Abstractions/Platform/ExitHookSignals"
 	"log"
 	"os"
@@ -18,7 +19,7 @@ func NewWebHost(server Abstractions.IServer, hostContext *Abstractions.HostBuild
 
 func (host WebHost) Run() {
 	hostEnv := host.HostContext.HostingEnvironment
-	xlog := log.New(os.Stdout, "[yoyogo] ", 0)
+	xlog := log.New(os.Stdout, ConsoleColors.Yellow("[yoyogo] "), 1)
 
 	Abstractions.RunningHostEnvironmentSetting(hostEnv)
 

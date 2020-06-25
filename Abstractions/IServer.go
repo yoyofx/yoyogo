@@ -6,7 +6,7 @@ import (
 
 const (
 	// DefaultAddress is used if no other is specified.
-	DefaultAddress = ":8080"
+	DefaultAddress = ":18087"
 )
 
 type IServer interface {

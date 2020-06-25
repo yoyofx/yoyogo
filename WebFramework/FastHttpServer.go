@@ -46,9 +46,9 @@ func (server *FastHttpServer) Run(context *Abstractions.HostBuildContext) (e err
 	}
 	if e != nil {
 		if e == http.ErrServerClosed {
-			log.Print("Server closed under request")
+			log.Println("Server closed under request")
 		} else {
-			log.Fatal("Server closed unexpected")
+			log.Fatal("Server closed unexpected", e)
 		}
 	}
 

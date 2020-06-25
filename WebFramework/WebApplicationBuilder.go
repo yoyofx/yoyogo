@@ -18,7 +18,6 @@ type WebApplicationBuilder struct {
 	routerBuilder   Router.IRouterBuilder          // route builder of interface
 	middleware      middleware
 	handlers        []Handler
-	Profile         string
 	routeConfigures []func(Router.IRouterBuilder)          // endpoints router configure functions
 	mvcConfigures   []func(builder *Mvc.ControllerBuilder) // mvc router configure functions
 }
@@ -103,7 +102,6 @@ func (this *WebApplicationBuilder) Build() interface{} {
 		panic("hostContext is nil! please set.")
 	}
 
-	this.hostContext.HostingEnvironment.Profile = this.Profile
 	this.middleware = build(this.handlers)
 	this.buildEndPoints()
 	this.buildMvc(this.hostContext.ApplicationServicesDef)
@@ -114,9 +112,9 @@ func (this *WebApplicationBuilder) SetHostBuildContext(context *Abstractions.Hos
 	this.hostContext = context
 }
 
-func (app *WebApplicationBuilder) SetEnvironment(mode string) {
-	app.Profile = mode
-}
+//func (app *WebApplicationBuilder) SetEnvironment(mode string) {
+//	app.Profile = mode
+//}
 
 // apply middleware in builder
 func (app *WebApplicationBuilder) UseMiddleware(handler Handler) {

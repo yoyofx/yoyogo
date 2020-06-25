@@ -2,6 +2,7 @@ package Middleware
 
 import (
 	"fmt"
+	"github.com/yoyofx/yoyogo/Abstractions/Platform/ConsoleColors"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"html/template"
 	"io/ioutil"
@@ -133,7 +134,7 @@ func (l *Logger) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpCon
 	statusColor := logInfo.StatusCodeColor()
 	methodColor := logInfo.MethodColor()
 	resetColor := logInfo.ResetColor()
-	outLog := fmt.Sprintf("[yoyogo] %v |%s %3d %s| %10v | %15s |%s %5s %s %s "+bodyFormat,
+	outLog := fmt.Sprintf(ConsoleColors.Yellow("[yoyogo] ")+"%v |%s %3d %s| %10v | %15s |%s %5s %s %s "+bodyFormat,
 		logInfo.StartTime,
 		statusColor, logInfo.Status, resetColor,
 		logInfo.Duration,
