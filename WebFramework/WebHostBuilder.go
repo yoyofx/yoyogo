@@ -18,6 +18,12 @@ func NewWebHostBuilder() *WebHostBuilder {
 	}
 }
 
+// SetEnvironment set value(Dev,Test,Prod) by environment
+func (host *WebHostBuilder) SetEnvironment(mode string) *WebHostBuilder {
+	host.HostBuilder.SetEnvironment(mode)
+	return host
+}
+
 func (host *WebHostBuilder) UseFastHttpByAddr(addr string) *WebHostBuilder {
 	host.Server = NewFastHttp(addr)
 	return host

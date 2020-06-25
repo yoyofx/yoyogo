@@ -7,6 +7,7 @@ import (
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"net"
 	"os"
+	"strings"
 )
 
 // host builder
@@ -17,6 +18,12 @@ type HostBuilder struct {
 	configures         []interface{}                                  // []func(IApplicationBuilder), configure function by application builder.
 	servicesConfigures []func(*DependencyInjection.ServiceCollection) // configure function by ServiceCollection of DI.
 	lifeConfigure      func(*ApplicationLife)                         // on application life event
+}
+
+// SetEnvironment set value(Dev,Test,Prod) by environment
+func (host *HostBuilder) SetEnvironment(mode string) *HostBuilder {
+	host.Context.HostingEnvironment.Profile = mode
+	return host
 }
 
 // Configure function func(IApplicationBuilder)
@@ -65,7 +72,6 @@ func getLocalIP() string {
 // RunningHostEnvironmentSetting ,get running env setting.
 func RunningHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
 	hostEnv.Host = getLocalIP()
-	hostEnv.Port = DetectAddress(hostEnv.Addr)
 	hostEnv.PID = os.Getpid()
 }
 
@@ -73,8 +79,8 @@ func RunningHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
 func buildingHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
 	hostEnv.ApplicationName = "app"
 	hostEnv.Version = YoyoGo.Version
-	hostEnv.Addr = ":8080"
-
+	hostEnv.Addr = DetectAddress(DefaultAddress)
+	hostEnv.Port = strings.Replace(hostEnv.Addr, ":", "", -1)
 	hostEnv.Args = os.Args
 
 	if hostEnv.Profile == "" {
