@@ -22,6 +22,8 @@ func PrintLogo(l *log.Logger, env *Context.HostEnvironment) {
 	logo, _ := base64.StdEncoding.DecodeString(YoyoGo.Logo)
 
 	fmt.Println(ConsoleColors.Blue(string(logo)))
+	fmt.Printf("%s                   (%s)", ConsoleColors.Green(":: YoyoGo ::"), ConsoleColors.Blue(env.Version))
+	fmt.Println(" ")
 	fmt.Println(" ")
 	l.Println(ConsoleColors.Green("Welcome to YoyoGo, starting application ..."))
 	l.Printf("yoyogo framework version :  %s", ConsoleColors.Blue(env.Version))

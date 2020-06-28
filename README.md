@@ -18,7 +18,7 @@ YoyoGo is a simple, light and fast Web framework written in Go.
 - No regexp or reflect
 - Inspired by many excellent Go Web framework
 
-[![](https://avatars3.githubusercontent.com/u/4504853?v=4)](https://sourcerer.io/yoyofx)
+[![](Resources/dingdingQR.jpg)](https://sourcerer.io/yoyofx)
 
 # Installation
 `go get github.com/yoyofx/yoyogo`
@@ -36,7 +36,7 @@ func main() {
     }).Build().Run()       //default port :8080
 }
 ```
-![](./yoyorun.jpg)
+![](Resources/yoyorun.jpg)
 
 
 # ToDo

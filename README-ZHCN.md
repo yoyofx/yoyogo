@@ -19,7 +19,8 @@ YoyoGo 是一个用 Go 编写的简单，轻便，快速的 Web 框架。
 - 没有正则表达式
 - 受到许多出色的 Go Web 框架的启发
 
-[![](https://avatars3.githubusercontent.com/u/4504853?v=4)](https://sourcerer.io/yoyofx)
+[![](Resources/dingdingQR.jpg)](https://sourcerer.io/yoyofx)
+
 # 框架安装
 ```bash
 go get github.com/yoyofx/yoyogo
@@ -56,7 +57,7 @@ func main() {
     }).Build().Run()       //默认端口号 :8080
 }
 ```
-![](./yoyorun.jpg)
+![](Resources/yoyorun.jpg)
 
 
 # 实现进度
