@@ -10,6 +10,10 @@ import (
 type RouterHandler struct {
 }
 
+func NewMvcRouterHandler() *RouterHandler {
+	return &RouterHandler{}
+}
+
 func (handler *RouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []string) func(ctx *Context.HttpContext) {
 
 	if pathComponents == nil || len(pathComponents) < 2 {

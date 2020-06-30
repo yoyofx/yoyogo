@@ -1,7 +1,7 @@
 package Mvc
 
 import (
-	"github.com/yoyofx/yoyogo/Utils"
+	"github.com/yoyofx/yoyogo/Utils/Reflect"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"net/http"
 	"reflect"
@@ -17,7 +17,7 @@ func NewActionMethodExecutor() ActionMethodExecutor {
 func (actionExecutor ActionMethodExecutor) Execute(ctx *ActionExecutorContext) interface{} {
 	if ctx.Controller != nil {
 		if ctx.In.MethodInovker == nil {
-			ctx.In.MethodInovker = Utils.NewMethodCaller(ctx.Controller, ctx.ActionName)
+			ctx.In.MethodInovker = Reflect.NewMethodCaller(ctx.Controller, ctx.ActionName)
 			if ctx.In.MethodInovker == nil {
 				ctx.Context.Response.WriteHeader(http.StatusNotFound)
 				panic(ctx.ActionName + " action is not found! at " + ctx.ControllerName)

@@ -1,4 +1,4 @@
-package Utils
+package Reflect
 
 import "reflect"
 
