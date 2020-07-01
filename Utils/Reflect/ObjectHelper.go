@@ -6,18 +6,24 @@ import (
 
 // GetCtorFuncOutTypeName get ctor function return type's name.
 func GetCtorFuncOutTypeName(ctorFunc interface{}) (string, reflect.Type) {
+	var controllerType reflect.Type
+	var controllerName string
 	ctorVal := reflect.ValueOf(ctorFunc)
 	if ctorVal.Kind() == reflect.Func {
 		ctorType := ctorVal.Type()
 		if ctorType.NumOut() < 1 {
 			panic("not return controller type in ctor func !")
 		}
-		controllerType := ctorType.Out(0)
-		if controllerType.Kind() != reflect.Ptr {
-			panic("Mvc type must be Ptr ! ")
+		outType := ctorType.Out(0)
+		if outType.Kind() != reflect.Ptr {
+			controllerName = outType.Name()
+			controllerType = outType
+		} else {
+			controllerName = outType.Elem().Name()
+			controllerType = outType.Elem()
 		}
-		controllerName := controllerType.Elem().Name()
-		return controllerName, controllerType.Elem()
+
+		return controllerName, controllerType
 	}
 	return "", nil
 }

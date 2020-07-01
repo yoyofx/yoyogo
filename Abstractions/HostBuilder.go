@@ -113,7 +113,10 @@ func (host *HostBuilder) Build() IServiceHost {
 	host.Context.RequestDelegate = applicationBuilder.Build() // ServeHTTP(w http.ResponseWriter, r *http.Request)
 	host.Context.ApplicationServices = services.Build()       //serviceProvider
 
-	go host.lifeConfigure(host.Context.ApplicationCycle)
+	if host.lifeConfigure != nil {
+		go host.lifeConfigure(host.Context.ApplicationCycle)
+	}
+
 	return host.Decorator.OverrideNewHost(host.Server, host.Context)
 }
 
