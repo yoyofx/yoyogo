@@ -5,6 +5,7 @@ import (
 	"github.com/magiconair/properties/assert"
 	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/contollers"
 	"github.com/yoyofx/yoyogo/Utils"
+	"github.com/yoyofx/yoyogo/Utils/Reflect"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	_ "github.com/yoyofx/yoyogo/WebFramework/Context"
 	"github.com/yoyofx/yoyogo/WebFramework/Mvc"
@@ -60,12 +61,14 @@ func reflectCall(ctype interface{}, funcName string, params ...interface{}) inte
 
 func Test_MethodCallerCall(t *testing.T) {
 	utype := &UserInfo{}
-	method := Utils.NewMethodCaller(utype, "Hello")
+	method := Reflect.NewMethodCaller(utype, "Hello")
 	results := method.Invoke(&Context.HttpContext{}, "hello world!")
 
 	fmt.Println()
 	fmt.Printf("Result: %s", results)
 	fmt.Println()
+
+	assert.Equal(t, results[0].(string), "hello world!")
 }
 
 func Test_StructGetFieldTag(t *testing.T) {
@@ -87,7 +90,7 @@ func Test_RecCreateStruct(t *testing.T) {
 
 func Test_GetCtorFuncTypeName(t *testing.T) {
 	ctorFunc := contollers.NewUserController
-	name := Utils.GetCtorFuncName(ctorFunc)
+	name, _ := Reflect.GetCtorFuncOutTypeName(ctorFunc)
 	name = Utils.LowercaseFirst(name)
 	assert.Equal(t, name, "userController")
 }

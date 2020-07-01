@@ -179,8 +179,16 @@ func (rec *Recovery) Inovke(ctx *Context.HttpContext, next func(ctx *Context.Htt
 			// PrintStack will write stack trace info to the ResponseWriter if set to true!
 			if rec.LogStack {
 				infos.Stack = stack
+				var msg string
 				//print console stack errors
-				rec.Logger.Printf(panicText, err, string(stack))
+				if !rec.StackAll {
+					infos.Stack = nil
+					msg = string(stack)
+					rec.Logger.Printf(panicText, err)
+				} else {
+					rec.Logger.Printf(panicText, err, msg)
+				}
+
 			}
 
 			if rec.PrintStack {

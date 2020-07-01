@@ -1,14 +1,14 @@
 package Mvc
 
 import (
-	"github.com/yoyofx/yoyogo/Utils"
+	"github.com/yoyofx/yoyogo/Utils/Reflect"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"reflect"
 )
 
 type ActionExecutorInParam struct {
 	ActionParamTypes []reflect.Type
-	MethodInovker    *Utils.MethodCaller
+	MethodInovker    *Reflect.MethodCaller
 }
 
 type ActionExecutorContext struct {
