@@ -302,7 +302,7 @@ func (ctx *HttpContext) GetStatus() int {
 
 // Status sets the HTTP response code.
 func (ctx *HttpContext) Status(code int) {
-	ctx.Response.WriteHeader(code)
+	ctx.Response.SetStatus(code)
 }
 
 // FormFile gets file from request.
@@ -352,6 +352,7 @@ func bodyAllowedForStatus(status int) bool {
 
 // ActionResult writes the response headers and calls render.ActionResult to render data.
 func (c *HttpContext) Render(code int, r ActionResult.IActionResult) {
+
 	if !bodyAllowedForStatus(code) {
 		r.WriteContentType(c.Response)
 		c.Response.WriteHeaderNow()
@@ -361,5 +362,6 @@ func (c *HttpContext) Render(code int, r ActionResult.IActionResult) {
 	if err := r.Render(c.Response.ResponseWriter); err != nil {
 		panic(err)
 	}
+
 	c.Status(code)
 }

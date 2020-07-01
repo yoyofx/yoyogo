@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -124,7 +125,7 @@ func (l *Logger) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpCon
 	logInfo := LoggerInfo{
 		StartTime: start.Format(l.dateFormat),
 		Status:    res.Status(),
-		Duration:  time.Since(start).String(),
+		Duration:  strconv.FormatInt(time.Since(start).Milliseconds(), 10),
 		HostName:  ctx.Request.Host,
 		Method:    ctx.Request.Method,
 		Path:      ctx.Request.URL.RequestURI(),
@@ -134,7 +135,7 @@ func (l *Logger) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpCon
 	statusColor := logInfo.StatusCodeColor()
 	methodColor := logInfo.MethodColor()
 	resetColor := logInfo.ResetColor()
-	outLog := fmt.Sprintf(ConsoleColors.Yellow("[yoyogo] ")+"%v |%s %3d %s| %10v | %15s |%s %5s %s %s "+bodyFormat,
+	outLog := fmt.Sprintf(ConsoleColors.Yellow("[yoyogo] ")+"%v |%s %3d %s| %7v ms| %15s |%s %5s %s %s "+bodyFormat,
 		logInfo.StartTime,
 		statusColor, logInfo.Status, resetColor,
 		logInfo.Duration,
