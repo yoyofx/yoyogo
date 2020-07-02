@@ -118,22 +118,22 @@ func main() {
 	webHost.Run()
 }
 
-func CreateCustomBuilder() *YoyoGo.HostBuilder {
-	return YoyoGo.NewWebHostBuilder().
-		UseFastHttp().
-		Configure(func(app *YoyoGo.ApplicationBuilder) {
-			//app.SetEnvironment(Context.Prod)
-			app.UseStatic("Static")
-			app.UseMvc()
-			app.ConfigureMvcParts(func(builder *Controller.ControllerBuilder) {
-				builder.AddController(contollers.NewUserController)
-			})
-		}).
-		UseEndpoints(registerEndpointRouterConfig).
-		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
-			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
-		}).
-		OnApplicationLifeEvent(getApplicationLifeEvent)
+func CreateCustomBuilder() *Abstractions.HostBuilder {
+    return YoyoGo.NewWebHostBuilder().
+        SetEnvironment(Context.Prod).
+        UseFastHttp().
+        //UseServer(YoyoGo.DefaultHttps(":8080", "./Certificate/server.pem", "./Certificate/server.key")).
+        Configure(func(app *YoyoGo.WebApplicationBuilder) {
+            app.UseStatic("Static")
+            app.UseEndpoints(registerEndpointRouterConfig)
+            app.UseMvc(func(builder *Mvc.ControllerBuilder) {
+                builder.AddController(contollers.NewUserController)
+            })
+        }).
+        ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
+            serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
+        }).
+        OnApplicationLifeEvent(getApplicationLifeEvent)
 }
 
 //region endpoint router config function
