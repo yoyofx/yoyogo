@@ -8,7 +8,7 @@ import (
 )
 
 type UserController struct {
-	*Mvc.ApiController
+	Mvc.ApiController
 	userAction models.IUserAction
 }
 

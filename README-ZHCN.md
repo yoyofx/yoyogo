@@ -15,9 +15,8 @@ YoyoGo 是一个用 Go 编写的简单，轻便，快速的 Web 框架。
 # 特色
 - 漂亮又快速的路由器
 - 中间件支持 (handler func & custom middleware)
-- 对 REST API 友好
-- 没有正则表达式
-- 受到许多出色的 Go Web 框架的启发
+- 微服务框架抽象了分层，在一个框架体系兼容各种server实现，如 rest,grpc等
+- 受到许多出色的 Go Web 框架的启发，server可替换，目前实现了 fasthttp 和 net.http
 
 [![](Resources/dingdingQR.jpg)](https://sourcerer.io/yoyofx)
 
@@ -143,23 +142,22 @@ func main() {
 }
 
 // 自定义HostBuilder并支持 MVC 和 自动参数绑定功能，简单情况也可以直接使用CreateDefaultBuilder 。
-func CreateCustomBuilder() *YoyoGo.HostBuilder {
-	return YoyoGo.NewWebHostBuilder().
-		UseFastHttp().         //Server可以指定多种，这里使用FastHttp作为Server，后期也会实现gRPC和WebSocket
-		                       //使用默认Server并指定协议和端口 UseServer(YoyoGo.DefaultHttps(":8080", "./Certificate/server.pem", "./Certificate/server.key")).
-		Configure(func(app *YoyoGo.ApplicationBuilder) {
-			app.SetEnvironment(Context.Dev)
-			app.UseStatic("Static")
-			app.UseEndpoints(registerEndpoints)             // endpoint 路由绑定函数
-			app.UseMvc()                                    // 开启MVC功能
-			app.ConfigureMvcParts(func(builder *Controller.ControllerBuilder) {
-				builder.AddController(contollers.NewUserController)
-			})
-		}).
-		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {      // 依赖注入方法
-			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
-		}).
-		OnApplicationLifeEvent(getApplicationLifeEvent)
+func CreateCustomBuilder() *Abstractions.HostBuilder {
+    return YoyoGo.NewWebHostBuilder().
+        SetEnvironment(Context.Prod).
+        UseFastHttp().
+        //UseServer(YoyoGo.DefaultHttps(":8080", "./Certificate/server.pem", "./Certificate/server.key")).
+        Configure(func(app *YoyoGo.WebApplicationBuilder) {
+            app.UseStatic("Static")
+            app.UseEndpoints(registerEndpointRouterConfig)
+            app.UseMvc(func(builder *Mvc.ControllerBuilder) {
+                builder.AddController(contollers.NewUserController)
+            })
+        }).
+        ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
+            serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
+        }).
+        OnApplicationLifeEvent(getApplicationLifeEvent)
 }
 
 //region endpoint 路由绑定函数
