@@ -4,6 +4,19 @@ import (
 	"reflect"
 )
 
+// CreateInstance create new instance by type
+func CreateInstance(objectType reflect.Type) interface{} {
+	var ins reflect.Value
+
+	ins = reflect.New(objectType)
+
+	if objectType.Kind() == reflect.Struct {
+		ins = ins.Elem()
+	}
+
+	return ins.Interface()
+}
+
 // GetCtorFuncOutTypeName get ctor function return type's name.
 func GetCtorFuncOutTypeName(ctorFunc interface{}) (string, reflect.Type) {
 	typeInfo, err := GetTypeInfo(ctorFunc)
@@ -33,21 +46,27 @@ func getMehtodInfo(method reflect.Method, methodValue reflect.Value) MethodInfo 
 func GetObjectMehtodInfoList(object interface{}) []MethodInfo {
 	objectType := reflect.TypeOf(object)
 	objValue := reflect.ValueOf(object)
+	return GetObjectMehtodInfoListWithType(objectType, objValue)
+}
 
+func GetObjectMehtodInfoListWithType(objectType reflect.Type, objValue reflect.Value) []MethodInfo {
 	methodCount := objValue.NumMethod()
 	methodInfos := make([]MethodInfo, methodCount)
 	for idx := 0; idx < methodCount; idx++ {
 		methodInfo := getMehtodInfo(objectType.Method(idx), objValue.Method(idx))
 		methodInfos[idx] = methodInfo
 	}
-
 	return methodInfos
 }
 
 func GetObjectMehtodInfoByName(object interface{}, methodName string) MethodInfo {
 	objType := reflect.TypeOf(object)
 	objValue := reflect.ValueOf(object)
-	methodType, _ := objType.MethodByName(methodName)
+	return GetObjectMehtodInfoByNameWithType(objType, objValue, methodName)
+}
+
+func GetObjectMehtodInfoByNameWithType(objectType reflect.Type, objValue reflect.Value, methodName string) MethodInfo {
+	methodType, _ := objectType.MethodByName(methodName)
 	methodInfo := getMehtodInfo(methodType, objValue.MethodByName(methodName))
 	return methodInfo
 }
