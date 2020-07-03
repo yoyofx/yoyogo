@@ -6,30 +6,11 @@ import (
 
 // GetCtorFuncOutTypeName get ctor function return type's name.
 func GetCtorFuncOutTypeName(ctorFunc interface{}) (string, reflect.Type) {
-	var controllerType reflect.Type
-	var controllerName string
-	ctorVal := reflect.ValueOf(ctorFunc)
-	if ctorVal.Kind() == reflect.Func {
-		ctorType := ctorVal.Type()
-		if ctorType.NumOut() < 1 {
-			panic("not return controller type in ctor func !")
-		}
-		outType := ctorType.Out(0)
-		if outType.Kind() != reflect.Ptr {
-			controllerName = outType.Name()
-			controllerType = outType
-		} else {
-			controllerName = outType.Elem().Name()
-			controllerType = outType.Elem()
-		}
-
-		return controllerName, controllerType
+	typeInfo, err := GetTypeInfo(ctorFunc)
+	if err != nil {
+		panic(err.Error())
 	}
-	return "", nil
-}
-
-func CreateInstance(objectType reflect.Type) interface{} {
-	return reflect.New(objectType).Interface()
+	return typeInfo.Name, typeInfo.Type
 }
 
 // getMehtodInfo get method info

@@ -83,9 +83,12 @@ func Test_StructGetFieldTag(t *testing.T) {
 }
 
 func Test_RecCreateStruct(t *testing.T) {
-	yourtype := reflect.TypeOf(Mvc.RequestBody{})
-	dd := reflect.New(yourtype).Elem().Interface()
-	_ = dd
+	//yourtype := reflect.TypeOf(Mvc.RequestBody{})
+	//dd := Reflect.CreateInstance(yourtype)
+	//_ = dd
+	typeInfo, _ := Reflect.GetTypeInfo(Mvc.RequestBody{})
+	ins := typeInfo.CreateInstance()
+	assert.Equal(t, ins != nil, true)
 }
 
 func Test_GetCtorFuncTypeName(t *testing.T) {
