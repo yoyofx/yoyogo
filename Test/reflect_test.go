@@ -17,6 +17,14 @@ type Student struct {
 	Grade int    `json:"grade"`
 }
 
+func (typeInfo Student) Hello() string {
+	return "hello"
+}
+
+func (typeInfo Student) Say(hi string) string {
+	return "Hello " + hi
+}
+
 func Test_MethodCallerCall2(t *testing.T) {
 	utype := &UserInfo{}
 
@@ -47,12 +55,19 @@ func Test_GetCtorFuncTypeName(t *testing.T) {
 }
 
 func Test_ReflectStructFields(t *testing.T) {
-	//student := Student{
-	//	Name:  "json",
-	//	Age:   18,
-	//	Grade: 9,
-	//}
+	student := &Student{
+		Name:  "json",
+		Age:   18,
+		Grade: 9,
+	}
 
-	//typeInfo,_ := Reflect.GetTypeInfo(student)
+	typeInfo, _ := Reflect.GetTypeInfo(student)
+	_ = typeInfo
+	typeInfo.GetFieldByName("Grade").SetValue(11)
+
+	assert.Equal(t, student.Grade, 11)
+	assert.Equal(t, typeInfo.HasMethods(), true)
+	sayRet := typeInfo.GetMethodByName("Say").Invoke("World!")[0].(string)
+	assert.Equal(t, sayRet, "Hello World!")
 
 }

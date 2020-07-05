@@ -38,18 +38,21 @@ func getMehtodInfo(method reflect.Method, methodValue reflect.Value) MethodInfo 
 	for idx := 0; idx < paramsCount; idx++ {
 		methodInfo.Parameters[idx].ParameterType = methodInfo.MethodInfoType.In(idx)
 		methodInfo.Parameters[idx].Name = methodInfo.Parameters[idx].ParameterType.Name()
+		if methodInfo.MethodInfoType.NumMethod() > 0 {
+			methodInfo.OutType = methodInfo.MethodInfoType.Out(0)
+		}
 	}
 
 	return methodInfo
 }
 
-func GetObjectMehtodInfoList(object interface{}) []MethodInfo {
+func GetObjectMethodInfoList(object interface{}) []MethodInfo {
 	objectType := reflect.TypeOf(object)
 	objValue := reflect.ValueOf(object)
-	return GetObjectMehtodInfoListWithType(objectType, objValue)
+	return GetObjectMethodInfoListWithValueType(objectType, objValue)
 }
 
-func GetObjectMehtodInfoListWithType(objectType reflect.Type, objValue reflect.Value) []MethodInfo {
+func GetObjectMethodInfoListWithValueType(objectType reflect.Type, objValue reflect.Value) []MethodInfo {
 	methodCount := objValue.NumMethod()
 	methodInfos := make([]MethodInfo, methodCount)
 	for idx := 0; idx < methodCount; idx++ {

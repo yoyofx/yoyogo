@@ -1,12 +1,15 @@
 package Reflect
 
-import "reflect"
+import (
+	"reflect"
+)
 
 type MethodInfo struct {
 	Name           string
 	MethodInfoVal  reflect.Value
 	MethodInfoType reflect.Type
 	Parameters     []ParameterInfo
+	OutType        reflect.Type
 }
 
 func (method MethodInfo) IsValid() bool {
@@ -29,4 +32,8 @@ func (method MethodInfo) Invoke(params ...interface{}) []interface{} {
 		}
 	}
 	return results
+}
+
+func (method MethodInfo) AsTypeInfo() (TypeInfo, error) {
+	return GetTypeInfoWithValueType(method.MethodInfoVal, method.MethodInfoType)
 }

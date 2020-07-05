@@ -17,7 +17,7 @@ type ControllerDescriptor struct {
 func NewControllerDescriptor(name string, cType reflect.Type, controllerCtor interface{}) ControllerDescriptor {
 
 	instance := Reflect.CreateInstance(cType)
-	actionList := Reflect.GetObjectMehtodInfoList(instance)
+	actionList := Reflect.GetObjectMethodInfoList(instance)
 
 	actionDescriptors := make(map[string]ActionDescriptor, len(actionList))
 
