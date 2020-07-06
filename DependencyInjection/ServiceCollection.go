@@ -1,6 +1,9 @@
 package DependencyInjection
 
-import "github.com/maxzhang1985/yoyogo/Utils"
+import (
+	"github.com/yoyofx/yoyogo/Utils/Reflect"
+	"strings"
+)
 
 type ServiceCollection struct {
 	serviceDescriptors    []*ServiceDescriptor
@@ -15,7 +18,8 @@ func NewServiceCollection() *ServiceCollection {
 //Scoped
 //Transient
 func (sc *ServiceCollection) AddServiceDescriptor(sd *ServiceDescriptor) {
-	typeName := Utils.GetCtorFuncName(sd.Provider)
+	typeName, _ := Reflect.GetCtorFuncOutTypeName(sd.Provider)
+	typeName = strings.ToLower(typeName)
 	index := len(sc.serviceDescriptors)
 	defIndex, exist := sc.serviceDescriptorMaps[typeName]
 	if exist {

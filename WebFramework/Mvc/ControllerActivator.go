@@ -1,6 +1,6 @@
 package Mvc
 
-import "github.com/maxzhang1985/yoyogo/DependencyInjection"
+import "github.com/yoyofx/yoyogo/DependencyInjection"
 
 func ActivateController(serviceProvider DependencyInjection.IServiceProvider, controllerName string) (IController, error) {
 	var controller IController

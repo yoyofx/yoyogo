@@ -8,10 +8,15 @@ import (
 )
 
 type RouterHandler struct {
+	ControllerDescriptors map[string]ControllerDescriptor
+	Options               Options
 }
 
 func NewMvcRouterHandler() *RouterHandler {
-	return &RouterHandler{}
+	return &RouterHandler{
+		Options:               NewMvcOptions(),
+		ControllerDescriptors: make(map[string]ControllerDescriptor),
+	}
 }
 
 func (handler *RouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []string) func(ctx *Context.HttpContext) {
@@ -25,6 +30,9 @@ func (handler *RouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []
 	}
 	actionName := pathComponents[1]
 
+	controllerDescriptor := handler.ControllerDescriptors[controllerName]
+
+	_ = controllerDescriptor
 	controller, err := ActivateController(ctx.RequiredServices, controllerName)
 	if err != nil {
 		ctx.Response.WriteHeader(http.StatusNotFound)
