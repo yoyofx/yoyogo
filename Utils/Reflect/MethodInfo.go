@@ -1,18 +1,24 @@
 package Reflect
 
-import "reflect"
+import (
+	"reflect"
+)
 
+// Method Info
 type MethodInfo struct {
-	Name           string
-	MethodInfoVal  reflect.Value
-	MethodInfoType reflect.Type
-	Parameters     []ParameterInfo
+	Name           string          //Method Name
+	MethodInfoVal  reflect.Value   //method value
+	MethodInfoType reflect.Type    //method type
+	Parameters     []ParameterInfo //method's Parameters
+	OutType        reflect.Type    //function's return type.
 }
 
+// IsValid : method is valid
 func (method MethodInfo) IsValid() bool {
 	return method.MethodInfoVal.IsValid()
 }
 
+// Invoke : invoke the method by params.
 func (method MethodInfo) Invoke(params ...interface{}) []interface{} {
 	paramsCount := len(method.Parameters)
 	paramsValues := make([]reflect.Value, paramsCount)
@@ -29,4 +35,9 @@ func (method MethodInfo) Invoke(params ...interface{}) []interface{} {
 		}
 	}
 	return results
+}
+
+// AsTypeInfo : convert method to TypeInfo
+func (method MethodInfo) AsTypeInfo() (TypeInfo, error) {
+	return GetTypeInfoWithValueType(method.MethodInfoVal, method.MethodInfoType)
 }
