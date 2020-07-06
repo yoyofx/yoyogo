@@ -54,8 +54,10 @@ func GetTypeInfoWithValueType(ctorVal reflect.Value, ctorType reflect.Type) (Typ
 	if ctorVal.CanSet() {
 		typeInfo.CanSet = true
 	}
-	typeInfo.lazyLoadFields()
-	typeInfo.LazyLoadMethods()
+	if typeInfo.Kind != reflect.Func {
+		typeInfo.lazyLoadFields()
+		typeInfo.LazyLoadMethods()
+	}
 	return typeInfo, errorInfo
 }
 
