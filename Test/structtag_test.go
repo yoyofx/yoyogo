@@ -3,12 +3,8 @@ package Test
 import (
 	"fmt"
 	"github.com/magiconair/properties/assert"
-	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/contollers"
-	"github.com/yoyofx/yoyogo/Utils"
 	"github.com/yoyofx/yoyogo/Utils/Reflect"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
-	_ "github.com/yoyofx/yoyogo/WebFramework/Context"
-	"github.com/yoyofx/yoyogo/WebFramework/Mvc"
 	"reflect"
 	"testing"
 )
@@ -80,17 +76,4 @@ func Test_StructGetFieldTag(t *testing.T) {
 		fmt.Printf("%d: %s %s %s \n", i,
 			f.Name, f.Type, f.Tag.Get("json"))
 	}
-}
-
-func Test_RecCreateStruct(t *testing.T) {
-	yourtype := reflect.TypeOf(Mvc.RequestBody{})
-	dd := reflect.New(yourtype).Elem().Interface()
-	_ = dd
-}
-
-func Test_GetCtorFuncTypeName(t *testing.T) {
-	ctorFunc := contollers.NewUserController
-	name, _ := Reflect.GetCtorFuncOutTypeName(ctorFunc)
-	name = Utils.LowercaseFirst(name)
-	assert.Equal(t, name, "userController")
 }
