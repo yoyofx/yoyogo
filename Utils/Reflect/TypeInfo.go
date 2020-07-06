@@ -7,15 +7,15 @@ import (
 
 // TypeInfo
 type TypeInfo struct {
-	Name                string
-	ValueType           reflect.Value
-	Type                reflect.Type
-	Kind                reflect.Kind
-	IsPtr               bool
-	CanSet              bool
-	IsValidation        bool
-	fieldInfoListCache  map[string]FieldInfo
-	methodInfoListCache map[string]MethodInfo
+	Name                string                //TypeInfo Name
+	ValueType           reflect.Value         //TypeInfo value
+	Type                reflect.Type          //TypeInfo type
+	Kind                reflect.Kind          //TypeInfo Kind
+	IsPtr               bool                  //TypeInfo is Ptr of Kind
+	CanSet              bool                  //TypeInfo is Ptr and field can set
+	IsValidation        bool                  //TypeInfo Is valida
+	fieldInfoListCache  map[string]FieldInfo  //cache for fieldInfo list
+	methodInfoListCache map[string]MethodInfo //cache for methodInfo list
 }
 
 // GetTypeInfo: get TypeInfo from instance
@@ -24,6 +24,7 @@ func GetTypeInfo(ctorFunc interface{}) (TypeInfo, error) {
 	return GetTypeInfoWithValueType(ctorVal, ctorVal.Type())
 }
 
+// GetTypeInfoWithValueType: get TypeInfo by reflect value and type
 func GetTypeInfoWithValueType(ctorVal reflect.Value, ctorType reflect.Type) (TypeInfo, error) {
 	var typeInfo TypeInfo
 	typeInfo.IsValidation = true
@@ -44,6 +45,7 @@ func GetTypeInfoWithValueType(ctorVal reflect.Value, ctorType reflect.Type) (Typ
 		typeInfo.Name, typeInfo.Type, typeInfo.IsPtr = getStructOrPtrType(ctorType)
 		if typeInfo.Kind == reflect.Ptr {
 			typeInfo.ValueType = typeInfo.ValueType.Elem()
+			typeInfo.Kind = typeInfo.ValueType.Kind()
 		}
 	} else {
 		errorInfo = errors.New("It's not ctor func or object instance !")
@@ -67,6 +69,7 @@ func (typeInfo TypeInfo) HasMethods() bool {
 	return len(typeInfo.methodInfoListCache) > 0
 }
 
+// GetFields: get all fields of TypeInfo
 func (typeInfo TypeInfo) GetFields() []FieldInfo {
 	values := make([]FieldInfo, 0, len(typeInfo.fieldInfoListCache))
 	for _, value := range typeInfo.fieldInfoListCache {
@@ -75,6 +78,7 @@ func (typeInfo TypeInfo) GetFields() []FieldInfo {
 	return nil
 }
 
+// GetFieldByName: get a field of TypeInfo by field name
 func (typeInfo TypeInfo) GetFieldByName(fieldName string) FieldInfo {
 	if typeInfo.HasFields() {
 		return typeInfo.fieldInfoListCache[fieldName]
@@ -82,6 +86,7 @@ func (typeInfo TypeInfo) GetFieldByName(fieldName string) FieldInfo {
 	panic("the TypeInfo is not fields")
 }
 
+// GetMethods: get all methods of TypeInfo
 func (typeInfo TypeInfo) GetMethods() []MethodInfo {
 	values := make([]MethodInfo, 0, len(typeInfo.fieldInfoListCache))
 	for _, value := range typeInfo.methodInfoListCache {
@@ -90,6 +95,7 @@ func (typeInfo TypeInfo) GetMethods() []MethodInfo {
 	return nil
 }
 
+// GetMethodByName: get a method of TypeInfo by method name
 func (typeInfo TypeInfo) GetMethodByName(methodName string) MethodInfo {
 	if typeInfo.HasMethods() {
 		return typeInfo.methodInfoListCache[methodName]
@@ -102,6 +108,7 @@ func (typeInfo TypeInfo) CreateInstance() interface{} {
 	return CreateInstance(typeInfo.Type)
 }
 
+// lazyLoadFields: lazy load all fields of TypeInfo
 func (typeInfo *TypeInfo) lazyLoadFields() {
 	if len(typeInfo.fieldInfoListCache) == 0 {
 		fieldNum := typeInfo.Type.NumField()
@@ -121,6 +128,7 @@ func (typeInfo *TypeInfo) lazyLoadFields() {
 	}
 }
 
+//LazyLoadMethods: lazy load all methods of TypeInfo
 func (typeInfo *TypeInfo) LazyLoadMethods() {
 	if len(typeInfo.methodInfoListCache) == 0 {
 		methodList := GetObjectMethodInfoListWithValueType(typeInfo.Type, typeInfo.ValueType)

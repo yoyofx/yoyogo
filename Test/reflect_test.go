@@ -11,6 +11,11 @@ import (
 	"testing"
 )
 
+type Person struct {
+	Name    string
+	Student *Student
+}
+
 type Student struct {
 	Name  string `json:"name"`
 	Age   int    `json:"age"`
@@ -60,11 +65,19 @@ func Test_ReflectStructFields(t *testing.T) {
 		Age:   18,
 		Grade: 9,
 	}
+	p := Person{
+		Name:    "Json",
+		Student: student,
+	}
 
-	typeInfo, _ := Reflect.GetTypeInfo(student)
-	_ = typeInfo
+	ptype, _ := Reflect.GetTypeInfo(p)
+	pf1 := ptype.GetFieldByName("Name")
+	assert.Equal(t, pf1.GetValue(), "Json")
+	pf2 := ptype.GetFieldByName("Student")
+	assert.Equal(t, pf2.GetValue(), student)
+	typeInfo, _ := pf2.AsTypeInfo()
+
 	typeInfo.GetFieldByName("Grade").SetValue(11)
-
 	assert.Equal(t, student.Grade, 11)
 	assert.Equal(t, typeInfo.HasMethods(), true)
 	sayRet := typeInfo.GetMethodByName("Say").Invoke("World!")[0].(string)
