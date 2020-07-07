@@ -26,8 +26,8 @@ func GetCtorFuncOutTypeName(ctorFunc interface{}) (string, reflect.Type) {
 	return typeInfo.Name, typeInfo.Type
 }
 
-// getMehtodInfo get method info
-func getMehtodInfo(method reflect.Method, methodValue reflect.Value) MethodInfo {
+// getMethodInfo get method info
+func getMethodInfo(method reflect.Method, methodValue reflect.Value) MethodInfo {
 	methodInfo := MethodInfo{}
 	methodInfo.MethodInfoVal = methodValue
 	methodInfo.MethodInfoType = methodValue.Type()
@@ -56,20 +56,23 @@ func GetObjectMethodInfoListWithValueType(objectType reflect.Type, objValue refl
 	methodCount := objValue.NumMethod()
 	methodInfos := make([]MethodInfo, methodCount)
 	for idx := 0; idx < methodCount; idx++ {
-		methodInfo := getMehtodInfo(objectType.Method(idx), objValue.Method(idx))
+		methodInfo := getMethodInfo(objectType.Method(idx), objValue.Method(idx))
 		methodInfos[idx] = methodInfo
 	}
 	return methodInfos
 }
 
-func GetObjectMehtodInfoByName(object interface{}, methodName string) MethodInfo {
+func GetObjectMethodInfoByName(object interface{}, methodName string) (MethodInfo, bool) {
 	objType := reflect.TypeOf(object)
 	objValue := reflect.ValueOf(object)
-	return GetObjectMehtodInfoByNameWithType(objType, objValue, methodName)
+	return GetObjectMethodInfoByNameWithType(objType, objValue, methodName)
 }
 
-func GetObjectMehtodInfoByNameWithType(objectType reflect.Type, objValue reflect.Value, methodName string) MethodInfo {
-	methodType, _ := objectType.MethodByName(methodName)
-	methodInfo := getMehtodInfo(methodType, objValue.MethodByName(methodName))
-	return methodInfo
+func GetObjectMethodInfoByNameWithType(objectType reflect.Type, objValue reflect.Value, methodName string) (MethodInfo, bool) {
+	var methodInfo MethodInfo
+	methodType, rbl := objectType.MethodByName(methodName)
+	if rbl {
+		methodInfo = getMethodInfo(methodType, objValue.MethodByName(methodName))
+	}
+	return methodInfo, rbl
 }
