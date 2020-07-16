@@ -14,8 +14,6 @@ type ActionExecutorInParam struct {
 type ActionExecutorContext struct {
 	ControllerName string
 	ActionName     string
-
-	Controller IController
-	Context    *Context.HttpContext
-	In         *ActionExecutorInParam
+	Controller     IController
+	Context        *Context.HttpContext
 }

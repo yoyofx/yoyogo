@@ -33,7 +33,7 @@ func (typeInfo Student) Say(hi string) string {
 func Test_MethodCallerCall2(t *testing.T) {
 	utype := &UserInfo{}
 
-	methodInfo := Reflect.GetObjectMehtodInfoByName(utype, "Hello")
+	methodInfo, _ := Reflect.GetObjectMethodInfoByName(utype, "Hello")
 	results := methodInfo.Invoke(&Context.HttpContext{}, "hello world!")
 
 	fmt.Println()

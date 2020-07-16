@@ -30,9 +30,8 @@ func (handler *RouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []
 	}
 	actionName := pathComponents[1]
 
-	controllerDescriptor := handler.ControllerDescriptors[controllerName]
+	//controllerDescriptor := handler.ControllerDescriptors[controllerName]
 
-	_ = controllerDescriptor
 	controller, err := ActivateController(ctx.RequiredServices, controllerName)
 	if err != nil {
 		ctx.Response.WriteHeader(http.StatusNotFound)
@@ -45,9 +44,7 @@ func (handler *RouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []
 		Controller:     controller,
 		ActionName:     actionName,
 		Context:        ctx,
-		In:             nil,
 	}
-	executorContext.In = &ActionExecutorInParam{}
 
 	actionResult := actionMethodExecutor.Execute(executorContext)
 
