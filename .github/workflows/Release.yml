@@ -37,8 +37,7 @@ jobs:
         fi
     - name: Build
       run: 
-          chmod 777 build.sh
-          ./build.sh ${{ github.event.inputs.version }}
+          make build VERSION=${{ github.event.inputs.version }}
     - name: Create a Release
       id: create_release
       uses: actions/create-release@v1
