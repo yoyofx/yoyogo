@@ -8,6 +8,7 @@ build() {
   os=$1
   arch=$2
 
+  go env -w GOPROXY=https://goproxy.cn,direct
   GOOS=$os GOARCH=$arch go build -o "${out_file}" Cli.go
   tgzName="${out_file}_${version}_${os}_${arch}.tar.gz"
   rm -f "${tgzName}"
