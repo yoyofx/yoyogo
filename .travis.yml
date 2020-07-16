@@ -1,6 +1,6 @@
-go_import_path: github.com/maxzhang1985/yoyogo
+go_import_path: github.com/yoyofx/yoyogo
 language: go
-sudo: false
+sudo: true
 
 matrix:
   include:
