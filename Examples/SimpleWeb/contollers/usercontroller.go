@@ -16,19 +16,19 @@ func NewUserController(userAction models.IUserAction) *UserController {
 	return &UserController{userAction: userAction}
 }
 
-type RegiserRequest struct {
+type RegisterRequest struct {
 	Mvc.RequestBody
 	UserName string `param:"username"`
 	Password string `param:"password"`
 }
 
-func (this *UserController) Register(ctx *Context.HttpContext, request *RegiserRequest) ActionResult.IActionResult {
+func (controller UserController) Register(ctx *Context.HttpContext, request *RegisterRequest) ActionResult.IActionResult {
 	result := Mvc.ApiResult{Success: true, Message: "ok", Data: request}
 
 	return ActionResult.Json{Data: result}
 }
 
-func (this *UserController) GetInfo() Mvc.ApiResult {
+func (controller UserController) GetInfo() Mvc.ApiResult {
 
-	return this.OK(this.userAction.Login("zhang"))
+	return controller.OK(controller.userAction.Login("zhang"))
 }

@@ -1,6 +1,7 @@
 package Mvc
 
 import (
+	"errors"
 	"github.com/yoyofx/yoyogo/Utils/Reflect"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"net/http"
@@ -16,28 +17,39 @@ func NewActionMethodExecutor() ActionMethodExecutor {
 
 func (actionExecutor ActionMethodExecutor) Execute(ctx *ActionExecutorContext) interface{} {
 	if ctx.Controller != nil {
-		if ctx.In.MethodInovker == nil {
-			ctx.In.MethodInovker = Reflect.NewMethodCaller(ctx.Controller, ctx.ActionName)
-			if ctx.In.MethodInovker == nil {
-				ctx.Context.Response.WriteHeader(http.StatusNotFound)
-				panic(ctx.ActionName + " action is not found! at " + ctx.ControllerName)
+		methodInfo, methodFounded := Reflect.GetObjectMethodInfoByName(ctx.Controller, ctx.ActionName)
+		if methodFounded {
+			values := getParamValues(methodInfo.Parameters, ctx.Context)
+			returns := methodInfo.InvokeWithValue(values...)
+			if len(returns) > 0 {
+				responseData := returns[0]
+				return responseData
 			}
-			ctx.In.ActionParamTypes = ctx.In.MethodInovker.GetParamTypes()
+		} else {
+			ctx.Context.Response.WriteHeader(http.StatusNotFound)
+			panic(ctx.ActionName + " action is not found! at " + ctx.ControllerName)
 		}
-
-		values := getParamValues(ctx.In.ActionParamTypes, ctx.Context)
-		returns := ctx.In.MethodInovker.Invoke(values...)
-		if len(returns) > 0 {
-			responseData := returns[0]
-			return responseData
-		}
-
 	}
 
 	return nil
 }
 
-func getParamValues(paramTypes []reflect.Type, ctx *Context.HttpContext) []interface{} {
+func getParamValues(paramList []Reflect.ParameterInfo, ctx *Context.HttpContext) []reflect.Value {
+	if len(paramList) == 0 {
+		return nil
+	}
+	values := make([]reflect.Value, len(paramList))
+	for index, param := range paramList {
+		val, err := requestParamTypeConvertFunc(index, param, ctx)
+		if err == nil {
+			values[index] = val
+		}
+	}
+
+	return values
+}
+
+func getParamValues1(paramTypes []reflect.Type, ctx *Context.HttpContext) []interface{} {
 	if len(paramTypes) == 0 {
 		return nil
 	}
@@ -63,6 +75,25 @@ func getParamValues(paramTypes []reflect.Type, ctx *Context.HttpContext) []inter
 	return values
 }
 
-func RequestParamTypeConvertFunc(index int, paramType reflect.Type, ctx *Context.HttpContext) {
-
+func requestParamTypeConvertFunc(index int, parameter Reflect.ParameterInfo, ctx *Context.HttpContext) (reflect.Value, error) {
+	var value reflect.Value
+	var err error = nil
+	paramType := parameter.ParameterType
+	if paramType.Kind() == reflect.Ptr {
+		paramType = paramType.Elem()
+	}
+	if paramType.Kind() == reflect.Struct {
+		switch paramType.Name() {
+		case "HttpContext":
+			value = reflect.ValueOf(ctx)
+		default:
+			if paramType.NumField() > 0 && paramType.Field(0).Name == "RequestBody" {
+				reqBindingData := reflect.New(paramType).Interface()
+				_ = ctx.Bind(reqBindingData)
+				value = reflect.ValueOf(reqBindingData)
+			}
+		}
+		return value, err
+	}
+	return value, errors.New("the type not support")
 }

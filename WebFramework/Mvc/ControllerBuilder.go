@@ -5,25 +5,19 @@ import (
 	"strings"
 )
 
+// ControllerBuilder: controller builder
 type ControllerBuilder struct {
-	controllerDescriptors map[string]ControllerDescriptor
-	//controllerDescriptors []ControllerDescriptor
 	mvcRouterHandler *RouterHandler
-	Options          Options
 }
 
 // NewControllerBuilder new controller builder
 func NewControllerBuilder() *ControllerBuilder {
-	return &ControllerBuilder{
-		Options:               NewMvcOptions(),
-		mvcRouterHandler:      NewMvcRouterHandler(),
-		controllerDescriptors: make(map[string]ControllerDescriptor),
-	}
+	return &ControllerBuilder{mvcRouterHandler: NewMvcRouterHandler()}
 }
 
 // SetupOptions , setup mvc builder options
 func (builder *ControllerBuilder) SetupOptions(configOption func(options Options)) {
-	configOption(builder.Options)
+	configOption(builder.mvcRouterHandler.Options)
 }
 
 // AddController add controller (ctor) to ioc.
@@ -32,13 +26,13 @@ func (builder *ControllerBuilder) AddController(controllerCtor interface{}) {
 	controllerName = strings.ToLower(controllerName)
 	// Create Controller and Action descriptors
 	descriptor := NewControllerDescriptor(controllerName, controllerType, controllerCtor)
-	builder.controllerDescriptors[controllerName] = descriptor
+	builder.mvcRouterHandler.ControllerDescriptors[controllerName] = descriptor
 }
 
 // GetControllerDescriptorList is get controller descriptor array
 func (builder *ControllerBuilder) GetControllerDescriptorList() []ControllerDescriptor {
-	values := make([]ControllerDescriptor, 0, len(builder.controllerDescriptors))
-	for _, value := range builder.controllerDescriptors {
+	values := make([]ControllerDescriptor, 0, len(builder.mvcRouterHandler.ControllerDescriptors))
+	for _, value := range builder.mvcRouterHandler.ControllerDescriptors {
 		values = append(values, value)
 	}
 	return values
@@ -46,12 +40,12 @@ func (builder *ControllerBuilder) GetControllerDescriptorList() []ControllerDesc
 
 // GetControllerDescriptorByName get controller descriptor by controller name
 func (builder *ControllerBuilder) GetControllerDescriptorByName(name string) ControllerDescriptor {
-	return builder.controllerDescriptors[name]
+	return builder.mvcRouterHandler.ControllerDescriptors[name]
 }
 
 // GetMvcOptions get mvc options
 func (builder *ControllerBuilder) GetMvcOptions() Options {
-	return builder.Options
+	return builder.mvcRouterHandler.Options
 }
 
 // GetRouterHandler is get mvc router handler.
