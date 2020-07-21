@@ -1,6 +1,6 @@
 package Mvc
 
 type IActionFilter interface {
-	OnActionExecuting(context ActionExecutorContext) bool
-	OnActionExecuted(context ActionExecutorContext)
+	OnActionExecuting(context ActionFilterContext) bool
+	OnActionExecuted(context ActionFilterContext)
 }

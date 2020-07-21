@@ -8,6 +8,7 @@ import (
 )
 
 type RouterHandler struct {
+	ControllerFilters     []ActionFilterChain
 	ControllerDescriptors map[string]ControllerDescriptor
 	Options               Options
 }
