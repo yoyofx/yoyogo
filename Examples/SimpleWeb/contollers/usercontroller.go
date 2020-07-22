@@ -28,6 +28,12 @@ func (controller UserController) Register(ctx *Context.HttpContext, request *Reg
 	return ActionResult.Json{Data: result}
 }
 
+func (controller UserController) GetUserName(ctx *Context.HttpContext, request *RegisterRequest) ActionResult.IActionResult {
+	result := Mvc.ApiResult{Success: true, Message: "ok", Data: request}
+
+	return ActionResult.Json{Data: result}
+}
+
 func (controller UserController) GetInfo() Mvc.ApiResult {
 
 	return controller.OK(controller.userAction.Login("zhang"))

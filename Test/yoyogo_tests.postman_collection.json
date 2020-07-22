@@ -1,44 +1,37 @@
 {
-	"id": "389f20be-d2f8-b845-d7a9-1f59f70a7880",
+	"id": "5487971b-3ddd-4a84-d6b6-b23d3591ce8b",
 	"name": "yoyogo tests",
 	"description": "",
 	"order": [
-		"431a63da-2e8d-e946-59d5-5fb96cef7559",
-		"1ab1ad70-4f1c-df87-84f2-c7514eff51d4",
-		"d7053b04-46c3-28b2-6a8c-35c341733084",
-		"b342b42b-32dc-0695-8e42-d10055f1c2f1"
+		"227012c2-8e71-eb7a-9880-23084f5e9d00",
+		"e1f59685-61a4-b46b-6223-ba44793d518e",
+		"35fe21aa-e471-312a-a17e-178a254d4193"
 	],
-	"folders": [],
-	"folders_order": [],
+	"folders": [
+		{
+			"name": "Mvc",
+			"description": "",
+			"collectionId": "5487971b-3ddd-4a84-d6b6-b23d3591ce8b",
+			"order": [
+				"c846e43f-889c-842f-5418-e939755675b1",
+				"5cca23a4-3731-e656-3eff-06e0f41ed4ed",
+				"69884fda-1355-e242-1153-6066510a30da",
+				"f7e7b06a-9e95-43df-7a05-ec28fe943548"
+			],
+			"owner": "5959537",
+			"folders_order": [],
+			"id": "9cd2afdb-c74f-c541-11b6-b93fd3d6e398"
+		}
+	],
+	"folders_order": [
+		"9cd2afdb-c74f-c541-11b6-b93fd3d6e398"
+	],
 	"timestamp": 1576554457088,
 	"owner": "5959537",
 	"public": false,
 	"requests": [
 		{
-			"id": "1ab1ad70-4f1c-df87-84f2-c7514eff51d4",
-			"headers": "",
-			"headerData": [],
-			"url": "http://localhost:8080/v1/api/info",
-			"queryParams": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"preRequestScript": null,
-			"method": "GET",
-			"collectionId": "389f20be-d2f8-b845-d7a9-1f59f70a7880",
-			"data": null,
-			"dataMode": "params",
-			"name": "get /v1/api/info (group)",
-			"description": "group by /v1/api/info",
-			"descriptionFormat": "html",
-			"time": 1576554471503,
-			"version": 2,
-			"responses": [],
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {}
-		},
-		{
-			"id": "431a63da-2e8d-e946-59d5-5fb96cef7559",
+			"id": "227012c2-8e71-eb7a-9880-23084f5e9d00",
 			"headers": "Content-Type: application/json\n",
 			"headerData": [
 				{
@@ -62,7 +55,7 @@
 			"pathVariableData": [],
 			"preRequestScript": null,
 			"method": "POST",
-			"collectionId": "389f20be-d2f8-b845-d7a9-1f59f70a7880",
+			"collectionId": "5487971b-3ddd-4a84-d6b6-b23d3591ce8b",
 			"data": [],
 			"dataMode": "raw",
 			"name": "post /info/:id  (params binding)",
@@ -74,10 +67,11 @@
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"rawModeData": "{\n\t\"username\":\"zl\"\n}"
+			"rawModeData": "{\n\t\"username\":\"zl\"\n}",
+			"collection_id": "5487971b-3ddd-4a84-d6b6-b23d3591ce8b"
 		},
 		{
-			"id": "b342b42b-32dc-0695-8e42-d10055f1c2f1",
+			"id": "35fe21aa-e471-312a-a17e-178a254d4193",
 			"headers": "",
 			"headerData": [],
 			"url": "http://localhost:8080/info",
@@ -86,7 +80,7 @@
 			"pathVariableData": [],
 			"preRequestScript": null,
 			"method": "GET",
-			"collectionId": "389f20be-d2f8-b845-d7a9-1f59f70a7880",
+			"collectionId": "5487971b-3ddd-4a84-d6b6-b23d3591ce8b",
 			"data": null,
 			"dataMode": "params",
 			"name": "get /info",
@@ -97,13 +91,59 @@
 			"responses": [],
 			"tests": null,
 			"currentHelper": "normal",
-			"helperAttributes": {}
+			"helperAttributes": {},
+			"collection_id": "5487971b-3ddd-4a84-d6b6-b23d3591ce8b"
 		},
 		{
-			"id": "d7053b04-46c3-28b2-6a8c-35c341733084",
+			"id": "5cca23a4-3731-e656-3eff-06e0f41ed4ed",
 			"headers": "",
 			"headerData": [],
-			"url": "http://localhost:8080/usercontroller/Register?username=max&password=123",
+			"url": "http://localhost:8080/v1/user/GetInfo",
+			"folder": "9cd2afdb-c74f-c541-11b6-b93fd3d6e398",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1595401401008,
+			"name": "http://localhost:8080/user/GetInfo",
+			"description": "",
+			"collectionId": "5487971b-3ddd-4a84-d6b6-b23d3591ce8b",
+			"responses": []
+		},
+		{
+			"id": "69884fda-1355-e242-1153-6066510a30da",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8080/v1/user/info",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1595401446978,
+			"name": "http://localhost:8080/v1/user/info",
+			"description": "",
+			"collectionId": "5487971b-3ddd-4a84-d6b6-b23d3591ce8b",
+			"responses": []
+		},
+		{
+			"id": "c846e43f-889c-842f-5418-e939755675b1",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8080/v1/usercontroller/Register?username=max&password=123",
+			"folder": "9cd2afdb-c74f-c541-11b6-b93fd3d6e398",
 			"queryParams": [
 				{
 					"key": "username",
@@ -130,10 +170,70 @@
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1576554478861,
+			"time": 1595401343825,
 			"name": "get c:user/a:register (MVC)",
 			"description": "",
-			"collectionId": "389f20be-d2f8-b845-d7a9-1f59f70a7880",
+			"collectionId": "5487971b-3ddd-4a84-d6b6-b23d3591ce8b",
+			"responses": []
+		},
+		{
+			"id": "e1f59685-61a4-b46b-6223-ba44793d518e",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8080/v1/api/info",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "5487971b-3ddd-4a84-d6b6-b23d3591ce8b",
+			"data": null,
+			"dataMode": "params",
+			"name": "get /v1/api/info (group)",
+			"description": "group by /v1/api/info",
+			"descriptionFormat": "html",
+			"time": 1576554471503,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"collection_id": "5487971b-3ddd-4a84-d6b6-b23d3591ce8b"
+		},
+		{
+			"id": "f7e7b06a-9e95-43df-7a05-ec28fe943548",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8080/v1/user/username?username=max&password=123",
+			"queryParams": [
+				{
+					"key": "username",
+					"value": "max",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "password",
+					"value": "123",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1595401513140,
+			"name": "http://localhost:8080/v1/user/username?username=max&password=123",
+			"description": "",
+			"collectionId": "5487971b-3ddd-4a84-d6b6-b23d3591ce8b",
 			"responses": []
 		}
 	]

@@ -30,6 +30,7 @@ func CreateCustomBuilder() *Abstractions.HostBuilder {
 			app.UseEndpoints(registerEndpointRouterConfig)
 			app.UseMvc(func(builder *Mvc.ControllerBuilder) {
 				builder.AddController(contollers.NewUserController)
+				builder.AddFilter("v1/user/info", &contollers.TestActionFilter{})
 			})
 		}).
 		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
