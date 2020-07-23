@@ -24,13 +24,12 @@ func CreateCustomBuilder() *Abstractions.HostBuilder {
 	return YoyoGo.NewWebHostBuilder().
 		SetEnvironment(Context.Prod).
 		UseFastHttp().
-		//UseServer(YoyoGo.DefaultHttps(":8080", "./Certificate/server.pem", "./Certificate/server.key")).
 		Configure(func(app *YoyoGo.WebApplicationBuilder) {
 			app.UseStatic("Static")
 			app.UseEndpoints(registerEndpointRouterConfig)
 			app.UseMvc(func(builder *Mvc.ControllerBuilder) {
 				builder.AddController(contollers.NewUserController)
-				builder.AddFilter("v1/user/info", &contollers.TestActionFilter{})
+				builder.AddFilter("/v1/user/info", &contollers.TestActionFilter{})
 			})
 		}).
 		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {

@@ -9,6 +9,7 @@ import (
 // ActionFilter Context
 type ActionFilterContext struct {
 	ActionExecutorContext
+	Result interface{}
 }
 
 // ActionFilter Chain

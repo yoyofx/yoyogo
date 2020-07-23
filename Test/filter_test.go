@@ -36,4 +36,8 @@ func Test_Filter(t *testing.T) {
 	c := Mvc.ActionFilterContext{}
 	assert.Equal(t, filter.OnActionExecuting(c), true)
 	filter.OnActionExecuted(c)
+
+	chain1 := Mvc.NewActionFilterChain("v1/user/info", &TestActionFilter{})
+	assert.Equal(t, chain1.MatchPath("v1/user/info"), true)
+
 }

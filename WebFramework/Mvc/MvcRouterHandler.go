@@ -21,7 +21,6 @@ func NewMvcRouterHandler() *RouterHandler {
 }
 
 func (handler *RouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []string) func(ctx *Context.HttpContext) {
-
 	if !handler.Options.Template.Match(pathComponents) {
 		return nil
 	}
@@ -57,9 +56,30 @@ func (handler *RouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []
 		Context:        ctx,
 	}
 
-	//actionFilters := handler.MatchFilters(ctx)
+	actionFilterContext := ActionFilterContext{*executorContext, nil}
+	filterPassed := true
+	actionFilters := handler.MatchFilters(ctx)
+	if len(actionFilters) > 0 {
+	FilterLoop:
+		for _, filter := range actionFilters {
+			filterPassed = filter.OnActionExecuting(actionFilterContext)
+			if !filterPassed {
+				break FilterLoop
+			}
+		}
+	}
 
-	actionResult := actionMethodExecutor.Execute(executorContext)
+	var actionResult interface{}
+	if filterPassed {
+		//Execute Action
+		actionResult = actionMethodExecutor.Execute(executorContext)
+		actionFilterContext.Result = actionResult
+		for _, filter := range actionFilters {
+			filter.OnActionExecuted(actionFilterContext)
+		}
+	} else {
+		ctx.JSON(http.StatusUnauthorized, Context.M{"Message": "Unauthorized"})
+	}
 
 	response := &RouterHandlerResponse{Result: actionResult}
 	return response.Callback

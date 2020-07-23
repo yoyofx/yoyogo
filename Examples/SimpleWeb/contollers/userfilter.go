@@ -9,8 +9,8 @@ type TestActionFilter struct {
 }
 
 func (f *TestActionFilter) OnActionExecuting(context Mvc.ActionFilterContext) bool {
-	fmt.Println("TestActionFilter OnActionExecuted")
-	return true
+	fmt.Println("TestActionFilter OnActionExecuting")
+	return false
 }
 
 func (f *TestActionFilter) OnActionExecuted(context Mvc.ActionFilterContext) {
