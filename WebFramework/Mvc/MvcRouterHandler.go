@@ -1,13 +1,14 @@
 package Mvc
 
 import (
-	"github.com/yoyofx/yoyogo/WebFramework/ActionResult"
+	"fmt"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"net/http"
 	"strings"
 )
 
 type RouterHandler struct {
+	ControllerFilters     []ActionFilterChain
 	ControllerDescriptors map[string]ControllerDescriptor
 	Options               Options
 }
@@ -20,22 +21,31 @@ func NewMvcRouterHandler() *RouterHandler {
 }
 
 func (handler *RouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []string) func(ctx *Context.HttpContext) {
-
-	if pathComponents == nil || len(pathComponents) < 2 {
+	if !handler.Options.Template.Match(pathComponents) {
 		return nil
 	}
-	controllerName := strings.ToLower(pathComponents[0])
-	if !strings.Contains(controllerName, "controller") {
-		controllerName += "controller"
-	}
-	actionName := pathComponents[1]
 
-	//controllerDescriptor := handler.ControllerDescriptors[controllerName]
-
+	controllerName := handler.Options.Template.ControllerName
 	controller, err := ActivateController(ctx.RequiredServices, controllerName)
 	if err != nil {
 		ctx.Response.WriteHeader(http.StatusNotFound)
 		panic(controllerName + " controller is not found! " + err.Error())
+		return nil
+	}
+
+	actionName := handler.Options.Template.ActionName
+	controllerDescriptor := handler.ControllerDescriptors[controllerName]
+	actionDescriptor, foundAction := controllerDescriptor.GetActionDescriptorByName(actionName)
+	if !foundAction {
+		actionName = fmt.Sprintf("%s%s", strings.ToLower(ctx.Request.Method), actionName)
+		actionDescriptor, foundAction = controllerDescriptor.GetActionDescriptorByName(actionName)
+	}
+	if foundAction {
+		actionName = actionDescriptor.ActionName
+	} else {
+		ctx.Response.WriteHeader(http.StatusNotFound)
+		panic(actionName + " action is not found! ")
+		return nil
 	}
 
 	actionMethodExecutor := NewActionMethodExecutor()
@@ -46,39 +56,43 @@ func (handler *RouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []
 		Context:        ctx,
 	}
 
-	actionResult := actionMethodExecutor.Execute(executorContext)
-
-	ctx.SetItem("actionResult", actionResult)
-
-	return func(ctx *Context.HttpContext) {
-		result := ctx.GetItem("actionResult")
-
-		if actionResult, ok := result.(ActionResult.IActionResult); ok {
-			ctx.Render(200, actionResult)
-		} else {
-			contentType := ctx.Request.Header.Get(Context.HeaderContentType)
-			switch {
-			case strings.HasPrefix(contentType, Context.MIMEApplicationXML):
-				ctx.XML(200, result)
-			case strings.HasPrefix(contentType, Context.MIMEApplicationYAML):
-				ctx.YAML(200, result)
-			case strings.HasPrefix(contentType, Context.MIMEApplicationJSON):
-				fallthrough
-			default:
-				ctx.JSON(200, result)
-
+	actionFilterContext := ActionFilterContext{*executorContext, nil}
+	filterPassed := true
+	actionFilters := handler.MatchFilters(ctx)
+	if len(actionFilters) > 0 {
+	FilterLoop:
+		for _, filter := range actionFilters {
+			filterPassed = filter.OnActionExecuting(actionFilterContext)
+			if !filterPassed {
+				break FilterLoop
 			}
-
 		}
-
 	}
+
+	var actionResult interface{}
+	if filterPassed {
+		//Execute Action
+		actionResult = actionMethodExecutor.Execute(executorContext)
+		actionFilterContext.Result = actionResult
+		for _, filter := range actionFilters {
+			filter.OnActionExecuted(actionFilterContext)
+		}
+	} else {
+		ctx.JSON(http.StatusUnauthorized, Context.M{"Message": "Unauthorized"})
+	}
+
+	response := &RouterHandlerResponse{Result: actionResult}
+	return response.Callback
 
 }
 
-//func findControllerAction() {
-//	t := reflect.ValueOf(method.Object)
-//	method.methodInfo = t.MethodByName(method.MethodName)
-//	if !method.methodInfo.IsValid() {
-//		return false
-//	}
-//}
+func (handler RouterHandler) MatchFilters(ctx *Context.HttpContext) []IActionFilter {
+	var filterList []IActionFilter
+	for _, filterChain := range handler.ControllerFilters {
+		actionFilter := filterChain.MatchFilter(ctx.Request.URL.Path)
+		if actionFilter != nil {
+			filterList = append(filterList, actionFilter)
+		}
+	}
+	return filterList
+}
