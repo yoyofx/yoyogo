@@ -53,7 +53,7 @@ func voidMiddleware() middleware {
 	return newMiddleware(
 		HandlerFunc(func(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 			if ctx.Response.Status() == 0 {
-				ctx.Response.WriteHeader(400)
+				ctx.Response.WriteHeader(404)
 			}
 		}),
 		&middleware{},

@@ -22,8 +22,9 @@ func NewControllerDescriptor(name string, cType reflect.Type, controllerCtor int
 	actionDescriptors := make(map[string]ActionDescriptor, len(actionList))
 
 	for _, action := range actionList {
-		actionDescriptors[action.Name] = ActionDescriptor{
-			ActionName: strings.ToLower(action.Name),
+		actionName := strings.ToLower(action.Name)
+		actionDescriptors[actionName] = ActionDescriptor{
+			ActionName: action.Name,
 			MethodInfo: action,
 		}
 	}
@@ -42,6 +43,7 @@ func (controllerDescriptor ControllerDescriptor) GetActionDescriptors() []Action
 }
 
 // GetActionDescriptorByName get action descriptor by name
-func (controllerDescriptor ControllerDescriptor) GetActionDescriptorByName(actionName string) ActionDescriptor {
-	return controllerDescriptor.actionDescriptors[actionName]
+func (controllerDescriptor ControllerDescriptor) GetActionDescriptorByName(actionName string) (ActionDescriptor, bool) {
+	actionDescriptor, ok := controllerDescriptor.actionDescriptors[actionName]
+	return actionDescriptor, ok
 }

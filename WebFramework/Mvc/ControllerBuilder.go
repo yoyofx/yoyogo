@@ -15,6 +15,12 @@ func NewControllerBuilder() *ControllerBuilder {
 	return &ControllerBuilder{mvcRouterHandler: NewMvcRouterHandler()}
 }
 
+// add filter to mvc
+func (builder *ControllerBuilder) AddFilter(pattern string, actionFilter IActionFilter) {
+	chain := NewActionFilterChain(pattern, actionFilter)
+	builder.mvcRouterHandler.ControllerFilters = append(builder.mvcRouterHandler.ControllerFilters, chain)
+}
+
 // SetupOptions , setup mvc builder options
 func (builder *ControllerBuilder) SetupOptions(configOption func(options Options)) {
 	configOption(builder.mvcRouterHandler.Options)
