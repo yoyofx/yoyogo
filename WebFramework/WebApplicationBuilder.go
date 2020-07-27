@@ -71,11 +71,6 @@ func (self *WebApplicationBuilder) UseEndpoints(configure func(Router.IRouterBui
 	return self
 }
 
-func (this *WebApplicationBuilder) ConfigureMvcParts(configure func(builder *Mvc.ControllerBuilder)) *WebApplicationBuilder {
-
-	return this
-}
-
 func (this *WebApplicationBuilder) buildEndPoints() {
 	for _, configure := range this.routeConfigures {
 		configure(this.routerBuilder)
@@ -112,10 +107,6 @@ func (this *WebApplicationBuilder) Build() interface{} {
 func (this *WebApplicationBuilder) SetHostBuildContext(context *Abstractions.HostBuildContext) {
 	this.hostContext = context
 }
-
-//func (app *WebApplicationBuilder) SetEnvironment(mode string) {
-//	app.Profile = mode
-//}
 
 // apply middleware in builder
 func (app *WebApplicationBuilder) UseMiddleware(handler Handler) {
