@@ -8,6 +8,7 @@ import (
 	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/models"
 	"github.com/yoyofx/yoyogo/WebFramework"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
+	"github.com/yoyofx/yoyogo/WebFramework/Endpoints"
 	"github.com/yoyofx/yoyogo/WebFramework/Mvc"
 	"github.com/yoyofx/yoyogo/WebFramework/Router"
 )
@@ -42,6 +43,9 @@ func CreateCustomBuilder() *Abstractions.HostBuilder {
 
 //region router config function
 func registerEndpointRouterConfig(router Router.IRouterBuilder) {
+	Endpoints.UseHealth(router)
+	Endpoints.UseViz(router)
+
 	router.GET("/error", func(ctx *Context.HttpContext) {
 		panic("http get error")
 	})
