@@ -31,4 +31,4 @@ jobs:
       uses: joelwmale/webhook-action@1.0.0
       env:
         WEBHOOK_URL: ${{ secrets.Dingding_WEBHOOK_URL }}
-        data: "{'deployment': 'finished', 'project': 'actions'}"
+        data: "{'msgtype': 'text', 'text': { 'content': 'build complated' } }"
