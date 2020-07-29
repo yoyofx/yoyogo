@@ -26,7 +26,7 @@ jobs:
 
     - name: Build
       run: go test -v ./Test/
-    
+
     - name: Invoke deployment hook
       uses: joelwmale/webhook-action@1.0.0
       env:
