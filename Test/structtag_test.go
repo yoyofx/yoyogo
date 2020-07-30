@@ -2,8 +2,6 @@ package Test
 
 import (
 	"fmt"
-	"github.com/magiconair/properties/assert"
-	"github.com/yoyofx/yoyogo/Utils/Reflect"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"reflect"
 	"testing"
@@ -53,18 +51,6 @@ func reflectCall(ctype interface{}, funcName string, params ...interface{}) inte
 		return rets[0].Interface()
 	}
 	return nil
-}
-
-func Test_MethodCallerCall(t *testing.T) {
-	utype := &UserInfo{}
-	method := Reflect.NewMethodCaller(utype, "Hello")
-	results := method.Invoke(&Context.HttpContext{}, "hello world!")
-
-	fmt.Println()
-	fmt.Printf("Result: %s", results)
-	fmt.Println()
-
-	assert.Equal(t, results[0].(string), "hello world!")
 }
 
 func Test_StructGetFieldTag(t *testing.T) {

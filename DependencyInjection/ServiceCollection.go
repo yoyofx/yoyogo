@@ -1,7 +1,7 @@
 package DependencyInjection
 
 import (
-	"github.com/yoyofx/yoyogo/Utils/Reflect"
+	"github.com/yoyofxteam/reflectx"
 	"strings"
 )
 
@@ -18,7 +18,7 @@ func NewServiceCollection() *ServiceCollection {
 //Scoped
 //Transient
 func (sc *ServiceCollection) AddServiceDescriptor(sd *ServiceDescriptor) {
-	typeName, _ := Reflect.GetCtorFuncOutTypeName(sd.Provider)
+	typeName, _ := reflectx.GetCtorFuncOutTypeName(sd.Provider)
 	typeName = strings.ToLower(typeName)
 	index := len(sc.serviceDescriptors)
 	defIndex, exist := sc.serviceDescriptorMaps[typeName]

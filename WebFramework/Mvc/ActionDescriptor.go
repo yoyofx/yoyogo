@@ -1,8 +1,8 @@
 package Mvc
 
-import "github.com/yoyofx/yoyogo/Utils/Reflect"
+import "github.com/yoyofxteam/reflectx"
 
 type ActionDescriptor struct {
 	ActionName string
-	MethodInfo Reflect.MethodInfo
+	MethodInfo reflectx.MethodInfo
 }

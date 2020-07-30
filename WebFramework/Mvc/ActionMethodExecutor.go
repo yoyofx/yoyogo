@@ -2,8 +2,8 @@ package Mvc
 
 import (
 	"errors"
-	"github.com/yoyofx/yoyogo/Utils/Reflect"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
+	"github.com/yoyofxteam/reflectx"
 	"net/http"
 	"reflect"
 )
@@ -17,10 +17,10 @@ func NewActionMethodExecutor() ActionMethodExecutor {
 
 func (actionExecutor ActionMethodExecutor) Execute(ctx *ActionExecutorContext) interface{} {
 	if ctx.Controller != nil {
-		methodInfo, methodFounded := Reflect.GetObjectMethodInfoByName(ctx.Controller, ctx.ActionName)
+		methodInfo, methodFounded := reflectx.GetObjectMethodInfoByName(ctx.Controller, ctx.ActionName)
 		if methodFounded {
 			values := getParamValues(methodInfo.Parameters, ctx.Context)
-			returns := methodInfo.InvokeWithValue(values...)
+			returns := methodInfo.InvokeWithValue(reflect.ValueOf(ctx.Controller), values...)
 			if len(returns) > 0 {
 				responseData := returns[0]
 				return responseData
@@ -34,7 +34,7 @@ func (actionExecutor ActionMethodExecutor) Execute(ctx *ActionExecutorContext) i
 	return nil
 }
 
-func getParamValues(paramList []Reflect.ParameterInfo, ctx *Context.HttpContext) []reflect.Value {
+func getParamValues(paramList []reflectx.MethodParameterInfo, ctx *Context.HttpContext) []reflect.Value {
 	if len(paramList) == 0 {
 		return nil
 	}
@@ -75,7 +75,7 @@ func getParamValues1(paramTypes []reflect.Type, ctx *Context.HttpContext) []inte
 	return values
 }
 
-func requestParamTypeConvertFunc(index int, parameter Reflect.ParameterInfo, ctx *Context.HttpContext) (reflect.Value, error) {
+func requestParamTypeConvertFunc(index int, parameter reflectx.MethodParameterInfo, ctx *Context.HttpContext) (reflect.Value, error) {
 	var value reflect.Value
 	var err error = nil
 	paramType := parameter.ParameterType

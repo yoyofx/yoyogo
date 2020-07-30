@@ -1,7 +1,7 @@
 package Mvc
 
 import (
-	"github.com/yoyofx/yoyogo/Utils/Reflect"
+	"github.com/yoyofxteam/reflectx"
 	"strings"
 )
 
@@ -28,7 +28,7 @@ func (builder *ControllerBuilder) SetupOptions(configOption func(options Options
 
 // AddController add controller (ctor) to ioc.
 func (builder *ControllerBuilder) AddController(controllerCtor interface{}) {
-	controllerName, controllerType := Reflect.GetCtorFuncOutTypeName(controllerCtor)
+	controllerName, controllerType := reflectx.GetCtorFuncOutTypeName(controllerCtor)
 	controllerName = strings.ToLower(controllerName)
 	// Create Controller and Action descriptors
 	descriptor := NewControllerDescriptor(controllerName, controllerType, controllerCtor)
