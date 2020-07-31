@@ -1,7 +1,7 @@
 package Mvc
 
 import (
-	"github.com/yoyofx/yoyogo/Utils/Reflect"
+	"github.com/yoyofxteam/reflectx"
 	"reflect"
 	"strings"
 )
@@ -14,10 +14,10 @@ type ControllerDescriptor struct {
 }
 
 // NewControllerDescriptor create new controller descriptor
-func NewControllerDescriptor(name string, cType reflect.Type, controllerCtor interface{}) ControllerDescriptor {
+func NewControllerDescriptor(name string, controllerType reflect.Type, controllerCtor interface{}) ControllerDescriptor {
 
-	instance := Reflect.CreateInstance(cType)
-	actionList := Reflect.GetObjectMethodInfoList(instance)
+	instance := reflect.New(controllerType).Interface()
+	actionList := reflectx.GetObjectMethodInfoList(instance)
 
 	actionDescriptors := make(map[string]ActionDescriptor, len(actionList))
 
