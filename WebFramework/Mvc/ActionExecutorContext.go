@@ -5,8 +5,9 @@ import (
 )
 
 type ActionExecutorContext struct {
-	ControllerName string
-	ActionName     string
-	Controller     IController
-	Context        *Context.HttpContext
+	ControllerName   string
+	ActionName       string
+	Controller       IController
+	ActionDescriptor ActionDescriptor
+	Context          *Context.HttpContext
 }

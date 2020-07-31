@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"github.com/yoyofxteam/reflectx"
-	"net/http"
 	"reflect"
 )
 
@@ -17,17 +16,12 @@ func NewActionMethodExecutor() ActionMethodExecutor {
 
 func (actionExecutor ActionMethodExecutor) Execute(ctx *ActionExecutorContext) interface{} {
 	if ctx.Controller != nil {
-		methodInfo, methodFounded := reflectx.GetObjectMethodInfoByName(ctx.Controller, ctx.ActionName)
-		if methodFounded {
-			values := getParamValues(methodInfo.Parameters, ctx.Context)
-			returns := methodInfo.InvokeWithValue(reflect.ValueOf(ctx.Controller), values...)
-			if len(returns) > 0 {
-				responseData := returns[0]
-				return responseData
-			}
-		} else {
-			ctx.Context.Response.WriteHeader(http.StatusNotFound)
-			panic(ctx.ActionName + " action is not found! at " + ctx.ControllerName)
+		methodInfo := ctx.ActionDescriptor.MethodInfo
+		values := getParamValues(methodInfo.Parameters, ctx.Context)
+		returns := methodInfo.InvokeWithValue(reflect.ValueOf(ctx.Controller), values...)
+		if len(returns) > 0 {
+			responseData := returns[0]
+			return responseData
 		}
 	}
 
@@ -38,37 +32,14 @@ func getParamValues(paramList []reflectx.MethodParameterInfo, ctx *Context.HttpC
 	if len(paramList) == 0 {
 		return nil
 	}
-	values := make([]reflect.Value, len(paramList))
+	values := make([]reflect.Value, len(paramList)-1)
 	for index, param := range paramList {
+		if index == 0 {
+			continue
+		}
 		val, err := requestParamTypeConvertFunc(index, param, ctx)
 		if err == nil {
-			values[index] = val
-		}
-	}
-
-	return values
-}
-
-func getParamValues1(paramTypes []reflect.Type, ctx *Context.HttpContext) []interface{} {
-	if len(paramTypes) == 0 {
-		return nil
-	}
-	values := make([]interface{}, len(paramTypes))
-	for index, paramType := range paramTypes {
-		if paramType.Kind() == reflect.Ptr {
-			paramType = paramType.Elem()
-		}
-		if paramType.Kind() == reflect.Struct {
-			switch paramType.Name() {
-			case "HttpContext":
-				values[index] = ctx
-			default:
-				if paramType.NumField() > 0 && paramType.Field(0).Name == "RequestBody" {
-					reqBindingData := reflect.New(paramType).Interface()
-					_ = ctx.Bind(reqBindingData)
-					values[index] = reqBindingData
-				}
-			}
+			values[index-1] = val
 		}
 	}
 

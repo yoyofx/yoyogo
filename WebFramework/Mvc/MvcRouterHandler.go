@@ -50,10 +50,11 @@ func (handler *RouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []
 
 	actionMethodExecutor := NewActionMethodExecutor()
 	executorContext := &ActionExecutorContext{
-		ControllerName: controllerName,
-		Controller:     controller,
-		ActionName:     actionName,
-		Context:        ctx,
+		ControllerName:   controllerName,
+		Controller:       controller,
+		ActionName:       actionName,
+		ActionDescriptor: actionDescriptor,
+		Context:          ctx,
 	}
 
 	actionFilterContext := ActionFilterContext{*executorContext, nil}

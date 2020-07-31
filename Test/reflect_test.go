@@ -1,5 +1,17 @@
 package Test
 
+import (
+	"fmt"
+	"github.com/stretchr/testify/assert"
+	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/contollers"
+	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/models"
+	"github.com/yoyofx/yoyogo/WebFramework/Context"
+	"github.com/yoyofxteam/reflectx"
+	"reflect"
+	"strings"
+	"testing"
+)
+
 //
 //import (
 //	"fmt"
@@ -86,3 +98,77 @@ package Test
 //	assert.Equal(t, sayRet, "Hello World!")
 //
 //}
+
+type Person struct {
+	Name    string
+	Student *Student
+}
+
+type Student struct {
+	Name  string `json:"name"`
+	Age   int    `json:"age"`
+	Grade int    `json:"grade"`
+}
+
+func (typeInfo Student) Hello() string {
+	fmt.Println("hello ")
+	return "hello"
+}
+
+func (typeInfo Student) Say(hi string) string {
+	fmt.Println("Hello " + hi)
+	return "Hello " + hi
+}
+
+func Test_GetStructMethodList(t *testing.T) {
+	userInfo := &UserInfo{}
+	userMethodList := reflectx.GetObjectMethodInfoList(userInfo)
+	assert.Equal(t, len(userMethodList), 2)
+	assert.Equal(t, getMehtodInfoByName(userMethodList, "Hello").Invoke(userInfo, &Context.HttpContext{}, "UserInfo Func Call:Hello,")[0],
+		"UserInfo Func Call:Hello,")
+	//---------------------------------------------------------------------------------------------
+	student := Student{}
+	studentMethodList := reflectx.GetObjectMethodInfoList(student)
+	assert.Equal(t, len(studentMethodList), 2)
+	assert.Equal(t, studentMethodList[0].Name, "Hello")
+	assert.Equal(t, studentMethodList[1].Name, "Say")
+
+	assert.Equal(t, getMehtodInfoByName(studentMethodList, "Hello").Invoke(student)[0], "hello")
+	assert.Equal(t, getMehtodInfoByName(studentMethodList, "Say").Invoke(student, "Say: Student")[0], "Hello Say: Student")
+}
+
+func getMehtodInfoByName(infos []reflectx.MethodInfo, name string) reflectx.MethodInfo {
+	for _, m := range infos {
+		if m.Name == name {
+			return m
+		}
+	}
+	return infos[0]
+}
+
+func Test_UserController(t *testing.T) {
+	controllerCtor := contollers.NewUserController
+	controllerName, controllerType := reflectx.GetCtorFuncOutTypeName(controllerCtor)
+	controllerName = strings.ToLower(controllerName)
+	// Create Controller and Action descriptors
+
+	instance := reflect.New(controllerType).Interface()
+	actionList := reflectx.GetObjectMethodInfoList(instance)
+	mi := getMehtodInfoByName(actionList, "GetUserName")
+	_ = mi.Parameters[0].ParameterType.Elem().Name()
+	rets := mi.Invoke(instance, &Context.HttpContext{}, &contollers.RegisterRequest{
+		UserName: "he",
+		Password: "123",
+	})
+	assert.Equal(t, len(rets), 1)
+
+	instance1 := contollers.NewUserController(models.NewUserAction())
+	_ = instance1
+	//actionList = reflectx.GetObjectMethodInfoList(instance)
+	//_ = actionList
+	//mi = getMehtodInfoByName(actionList,"GetUserName")
+	//mi.Invoke(instance,&Context.HttpContext{}, &contollers.RegisterRequest{
+	//	 UserName: "he",
+	//	 Password: "123",
+	//})
+}
