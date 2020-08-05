@@ -110,7 +110,8 @@ func (ctx *HttpContext) PostForm() url.Values {
 }
 
 func (ctx *HttpContext) PostMultipartForm() url.Values {
-	_ = ctx.Request.ParseMultipartForm(32 << 20)
+	_ = ctx.Request.ParseMultipartForm(1024)
+
 	return ctx.Request.MultipartForm.Value
 }
 
@@ -145,8 +146,6 @@ func (ctx *HttpContext) GetAllParam() url.Values {
 		form = ctx.PostForm()
 	} else if strings.HasPrefix(content_type, MIMEMultipartForm) {
 		form = ctx.PostMultipartForm()
-	} else if strings.HasPrefix(content_type, MIMEApplicationJSON) {
-		form = ctx.PostJsonForm()
 	}
 
 	Utils.MergeMap(form, ctx.QueryStrings())
@@ -176,18 +175,18 @@ func (ctx *HttpContext) PostBody() []byte {
 
 func (ctx *HttpContext) Bind(i interface{}) (err error) {
 	req := ctx.Request
-	ctype := req.Header.Get(HeaderContentType)
+	contentType := req.Header.Get(HeaderContentType)
 	if req.Body == nil {
 		err = errors.New("request body can't be empty")
 		return err
 	}
-	err = errors.New("request unsupported MediaType -> " + ctype)
+	err = errors.New("request unsupported MediaType -> " + contentType)
 	tagName := defaultTagName
 	switch {
-	case strings.HasPrefix(ctype, MIMEApplicationXML):
+	case strings.HasPrefix(contentType, MIMEApplicationXML):
 		err = xml.Unmarshal(ctx.PostBody(), i)
-	case strings.HasPrefix(ctype, MIMEApplicationJSON):
-		//tagName = jsonTagName
+	case strings.HasPrefix(contentType, MIMEApplicationJSON):
+		err = json.Unmarshal(ctx.PostBody(), i)
 	default:
 		// check is use json tag, fixed for issue #91
 		//tagName = defaultTagName
