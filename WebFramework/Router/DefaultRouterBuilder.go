@@ -41,7 +41,7 @@ func (router *DefaultRouterBuilder) GetMvcBuilder() *Mvc.ControllerBuilder {
 
 func (router *DefaultRouterBuilder) Search(ctx *Context.HttpContext, components []string, params url.Values) func(ctx *Context.HttpContext) {
 	var handler func(ctx *Context.HttpContext) = nil
-	pathComponents := strings.Split(ctx.Request.URL.Path, "/")[1:]
+	pathComponents := strings.Split(ctx.Input.Request.URL.Path, "/")[1:]
 	handler = router.endPointRouterHandler.Invoke(ctx, pathComponents)
 
 	if handler == nil && router.IsMvc() {

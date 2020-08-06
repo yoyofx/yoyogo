@@ -14,7 +14,7 @@ func (response *RouterHandlerResponse) Callback(ctx *Context.HttpContext) {
 	if actionResult, ok := response.Result.(ActionResult.IActionResult); ok {
 		ctx.Render(200, actionResult)
 	} else {
-		contentType := ctx.Request.Header.Get(Context.HeaderContentType)
+		contentType := ctx.Input.Request.Header.Get(Context.HeaderContentType)
 		switch {
 		case strings.HasPrefix(contentType, Context.MIMEApplicationXML):
 			ctx.XML(200, response.Result)

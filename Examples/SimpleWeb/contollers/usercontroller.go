@@ -18,8 +18,8 @@ func NewUserController(userAction models.IUserAction) *UserController {
 
 type RegisterRequest struct {
 	Mvc.RequestBody
-	UserName string `param:"username"`
-	Password string `param:"password"`
+	UserName string `param:"UserName"`
+	Password string `param:"Password"`
 }
 
 func (controller UserController) Register(ctx *Context.HttpContext, request *RegisterRequest) ActionResult.IActionResult {
@@ -32,6 +32,11 @@ func (controller UserController) GetUserName(ctx *Context.HttpContext, request *
 	result := Mvc.ApiResult{Success: true, Message: "ok", Data: request}
 
 	return ActionResult.Json{Data: result}
+}
+
+func (controller UserController) PostUserInfo(request *RegisterRequest) ActionResult.IActionResult {
+
+	return ActionResult.Json{Data: Mvc.ApiResult{Success: true, Message: "ok", Data: request}}
 }
 
 func (controller UserController) GetInfo() Mvc.ApiResult {

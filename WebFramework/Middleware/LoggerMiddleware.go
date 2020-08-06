@@ -112,12 +112,12 @@ func NewLogger() *Logger {
 func (l *Logger) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 	start := time.Now()
 	next(ctx)
-	res := ctx.Response
+	res := ctx.Output.GetWriter()
 
 	strBody := ""
 	bodyFormat := "%s"
-	if ctx.Request.Method == "POST" {
-		body, _ := ioutil.ReadAll(ctx.Request.Body)
+	if ctx.Input.Request.Method == "POST" {
+		body, _ := ioutil.ReadAll(ctx.Input.Request.Body)
 		strBody = string(body[:])
 		bodyFormat = "\n%s"
 	}
@@ -126,9 +126,9 @@ func (l *Logger) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpCon
 		StartTime: start.Format(l.dateFormat),
 		Status:    res.Status(),
 		Duration:  strconv.FormatInt(time.Since(start).Milliseconds(), 10),
-		HostName:  ctx.Request.Host,
-		Method:    ctx.Request.Method,
-		Path:      ctx.Request.URL.RequestURI(),
+		HostName:  ctx.Input.Request.Host,
+		Method:    ctx.Input.Request.Method,
+		Path:      ctx.Input.Request.URL.RequestURI(),
 		Body:      strBody,
 	}
 

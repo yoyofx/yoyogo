@@ -1,6 +1,7 @@
 package Mvc
 
 import (
+	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"github.com/yoyofxteam/reflectx"
 	"reflect"
 	"strings"
@@ -24,8 +25,9 @@ func NewControllerDescriptor(name string, controllerType reflect.Type, controlle
 	for _, action := range actionList {
 		actionName := strings.ToLower(action.Name)
 		actionDescriptors[actionName] = ActionDescriptor{
-			ActionName: action.Name,
-			MethodInfo: action,
+			ActionName:   action.Name,
+			ActionMethod: getHttpMethodByActionName(actionName),
+			MethodInfo:   action,
 		}
 	}
 
@@ -46,4 +48,16 @@ func (controllerDescriptor ControllerDescriptor) GetActionDescriptors() []Action
 func (controllerDescriptor ControllerDescriptor) GetActionDescriptorByName(actionName string) (ActionDescriptor, bool) {
 	actionDescriptor, ok := controllerDescriptor.actionDescriptors[actionName]
 	return actionDescriptor, ok
+}
+
+func getHttpMethodByActionName(actionNameLower string) string {
+	methodName := "any"
+	for _, m := range Context.Methods {
+		method := strings.ToLower(m)
+		if strings.HasPrefix(actionNameLower, method) {
+			methodName = method
+			break
+		}
+	}
+	return methodName
 }
