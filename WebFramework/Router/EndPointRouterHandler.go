@@ -16,9 +16,9 @@ type EndPointRouterHandler struct {
 
 func (endPoint *EndPointRouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []string) func(ctx *Context.HttpContext) {
 	var handler func(ctx *Context.HttpContext) = nil
-	node := endPoint.search(pathComponents, ctx.RouterData)
-	if node != nil && node.Methods[ctx.Request.Method] != nil {
-		handler = node.Methods[ctx.Request.Method]
+	node := endPoint.search(pathComponents, ctx.Input.RouterData)
+	if node != nil && node.Methods[ctx.Input.Method()] != nil {
+		handler = node.Methods[ctx.Input.Method()]
 	}
 	return handler
 }

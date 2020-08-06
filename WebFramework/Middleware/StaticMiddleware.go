@@ -21,14 +21,14 @@ func (s *Static) SetPrefix() {
 }
 
 func (s *Static) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
-	if (ctx.Request.Method != "GET" && ctx.Request.Method != "HEAD") || (s.IsPrefix && !strings.Contains(ctx.Request.URL.Path, s.VirualPath)) {
+	if (ctx.Input.Request.Method != "GET" && ctx.Input.Request.Method != "HEAD") || (s.IsPrefix && !strings.Contains(ctx.Input.Request.URL.Path, s.VirualPath)) {
 		next(ctx)
 		return
 	}
 
 	prefixPath := "/" + s.VirualPath
 	webrootPath := "." + "/" + s.VirualPath
-	requestFilePath := webrootPath + ctx.Request.URL.Path
+	requestFilePath := webrootPath + ctx.Input.Request.URL.Path
 
 	exist, err := pathExists(requestFilePath)
 	if !exist || err != nil {
@@ -38,13 +38,13 @@ func (s *Static) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpCon
 
 	staticHandle := http.FileServer(http.Dir(webrootPath))
 
-	if ctx.Request.URL.Path != "/favicon.ico" {
+	if ctx.Input.Request.URL.Path != "/favicon.ico" {
 		if s.IsPrefix {
 			staticHandle = http.StripPrefix(prefixPath, staticHandle)
 		}
 	}
 
-	staticHandle.ServeHTTP(ctx.Response, ctx.Request)
+	staticHandle.ServeHTTP(ctx.Output.GetWriter(), ctx.Input.GetReader())
 }
 
 func pathExists(path string) (bool, error) {

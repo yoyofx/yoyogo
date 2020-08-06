@@ -34,15 +34,15 @@ var panicHTMLTemplate = template.Must(template.New("PanicPage").Parse(panicText)
 
 func UseViz(router Router.IRouterBuilder) {
 	router.GET("/actuator/graph", func(ctx *Context.HttpContext) {
-		graphType := ctx.QueryStringOrDefault("type", "data")
+		graphType := ctx.Input.QueryDefault("type", "data")
 		graphString := ctx.RequiredServices.GetGraph()
 
 		if graphType == "data" {
 			ctx.Text(200, graphString)
 		} else {
-			ctx.Header(Context.HeaderContentType, Context.MIMETextHTMLCharsetUTF8)
-			ctx.Response.WriteHeader(200)
-			_ = panicHTMLTemplate.Execute(ctx.Response.ResponseWriter, template.HTML(graphString))
+			ctx.Output.Header(Context.HeaderContentType, Context.MIMETextHTMLCharsetUTF8)
+			ctx.Output.SetStatus(200)
+			_ = panicHTMLTemplate.Execute(ctx.Output.GetWriter(), template.HTML(graphString))
 		}
 	})
 }

@@ -167,14 +167,14 @@ func (rec *Recovery) Inovke(ctx *Context.HttpContext, next func(ctx *Context.Htt
 				rec.StackAll = true
 				rec.Formatter = &HTMLPanicFormatter{}
 			}
-			if ctx.Response.Status() != http.StatusNotFound {
-				ctx.Response.WriteHeader(http.StatusInternalServerError)
+			if ctx.Output.Status() != http.StatusNotFound {
+				ctx.Output.SetStatus(http.StatusInternalServerError)
 			}
 			stack := make([]byte, rec.StackSize)
 			if rec.StackAll {
 				stack = stack[:runtime.Stack(stack, rec.StackAll)]
 			}
-			infos := &PanicInformation{RecoveredPanic: err, Request: ctx.Request}
+			infos := &PanicInformation{RecoveredPanic: err, Request: ctx.Input.Request}
 
 			// PrintStack will write stack trace info to the ResponseWriter if set to true!
 			if rec.LogStack {
@@ -192,12 +192,12 @@ func (rec *Recovery) Inovke(ctx *Context.HttpContext, next func(ctx *Context.Htt
 			}
 
 			if rec.PrintStack {
-				rec.Formatter.FormatPanicError(ctx.Response, ctx.Request, infos)
+				rec.Formatter.FormatPanicError(ctx.Output.GetWriter(), ctx.Input.GetReader(), infos)
 			} else {
-				if ctx.Response.Header().Get("Content-Type") == "" {
-					ctx.Response.Header().Set("Content-Type", "text/plain; charset=utf-8")
+				if ctx.Input.Header("Content-Type") == "" {
+					ctx.Output.Header("Content-Type", "text/plain; charset=utf-8")
 				}
-				_, _ = fmt.Fprint(ctx.Response, NoPrintStackBodyString)
+				_, _ = fmt.Fprint(ctx.Output.GetWriter(), NoPrintStackBodyString)
 			}
 
 			if rec.PanicHandlerFunc != nil {

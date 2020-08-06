@@ -28,7 +28,7 @@ func (handler *RouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []
 	controllerName := handler.Options.Template.ControllerName
 	controller, err := ActivateController(ctx.RequiredServices, controllerName)
 	if err != nil {
-		ctx.Response.WriteHeader(http.StatusNotFound)
+		ctx.Output.SetStatus(http.StatusNotFound)
 		panic(controllerName + " controller is not found! " + err.Error())
 		return nil
 	}
@@ -37,9 +37,9 @@ func (handler *RouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []
 	controllerDescriptor := handler.ControllerDescriptors[controllerName]
 	actionDescriptor, foundAction := controllerDescriptor.GetActionDescriptorByName(actionName)
 
-	if foundAction && actionDescriptor.ActionMethod != "any" && strings.ToLower(ctx.Request.Method) != actionDescriptor.ActionMethod {
-		ctx.Response.WriteHeader(http.StatusMethodNotAllowed)
-		panic(fmt.Sprintf("Status method not allowed ! Request method is %s ,that define with %s .", ctx.Request.Method,
+	if foundAction && actionDescriptor.ActionMethod != "any" && strings.ToLower(ctx.Input.Method()) != actionDescriptor.ActionMethod {
+		ctx.Output.SetStatus(http.StatusMethodNotAllowed)
+		panic(fmt.Sprintf("Status method not allowed ! Request method is %s ,that define with %s .", ctx.Input.Method(),
 			strings.ToUpper(actionDescriptor.ActionMethod)))
 		return nil
 	}
@@ -47,7 +47,7 @@ func (handler *RouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []
 	if foundAction {
 		actionName = actionDescriptor.ActionName
 	} else {
-		ctx.Response.WriteHeader(http.StatusMethodNotAllowed)
+		ctx.Output.SetStatus(http.StatusMethodNotAllowed)
 		panic(actionName + " action is not found! ")
 		return nil
 	}
@@ -94,7 +94,7 @@ func (handler *RouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []
 func (handler RouterHandler) MatchFilters(ctx *Context.HttpContext) []IActionFilter {
 	var filterList []IActionFilter
 	for _, filterChain := range handler.ControllerFilters {
-		actionFilter := filterChain.MatchFilter(ctx.Request.URL.Path)
+		actionFilter := filterChain.MatchFilter(ctx.Input.Request.URL.Path)
 		if actionFilter != nil {
 			filterList = append(filterList, actionFilter)
 		}
