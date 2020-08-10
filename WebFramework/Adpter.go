@@ -12,3 +12,9 @@ func WarpHandlerFunc(h func(w http.ResponseWriter, r *http.Request)) HandlerFunc
 		h(c.Output.GetWriter(), c.Input.GetReader())
 	}
 }
+
+func WarpHttpHandlerFunc(h http.Handler) HandlerFunc {
+	return func(c *Context.HttpContext) {
+		h.ServeHTTP(c.Output.GetWriter(), c.Input.GetReader())
+	}
+}

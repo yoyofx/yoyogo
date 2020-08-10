@@ -7,6 +7,7 @@ require (
 	github.com/golang/protobuf v1.4.2
 	github.com/magiconair/properties v1.8.1
 	github.com/pkg/errors v0.8.1
+	github.com/prometheus/client_golang v0.9.3
 	github.com/spf13/viper v1.7.0
 	github.com/stretchr/testify v1.6.1
 	github.com/ugorji/go/codec v1.1.7
