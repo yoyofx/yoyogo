@@ -4,6 +4,7 @@ import "strings"
 
 type RouteTemplate struct {
 	Template        string
+	TemplateSplits  []string
 	ControllerName  string
 	ActionName      string
 	controllerIndex int
@@ -19,6 +20,7 @@ func NewRouteTemplate(temp string) RouteTemplate {
 		controllerIndex: findIndex("{controller}", templateSplits),
 		actionIndex:     findIndex("{action}", templateSplits),
 		pathLen:         len(templateSplits),
+		TemplateSplits:  templateSplits,
 	}
 }
 
@@ -31,6 +33,15 @@ func (template *RouteTemplate) Match(pathComponents []string) bool {
 		}
 
 		template.ActionName = strings.ToLower(pathComponents[template.GetActionIndex()])
+
+		for index, item := range pathComponents {
+			if index != template.GetControllerIndex() && index != template.GetActionIndex() {
+				if item != template.TemplateSplits[index] {
+					return false
+				}
+			}
+		}
+
 		return true
 	}
 	return false

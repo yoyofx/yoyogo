@@ -132,7 +132,7 @@ func (app *WebApplicationBuilder) UseHandlerFunc(handlerFunc func(rw http.Respon
 }
 
 // apply handler func middleware in builder
-func (app *WebApplicationBuilder) UseFunc(handlerFunc HandlerFunc) {
+func (app *WebApplicationBuilder) UseFunc(handlerFunc MiddlewareHandlerFunc) {
 	app.UseMiddleware(handlerFunc)
 }
 

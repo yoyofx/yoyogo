@@ -11,9 +11,9 @@ type Handler interface {
 
 type NextFunc func(ctx *Context.HttpContext)
 
-type HandlerFunc func(ctx *Context.HttpContext, next func(ctx *Context.HttpContext))
+type MiddlewareHandlerFunc func(ctx *Context.HttpContext, next func(ctx *Context.HttpContext))
 
-func (h HandlerFunc) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
+func (h MiddlewareHandlerFunc) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 	h(ctx, next)
 }
 
@@ -36,14 +36,14 @@ func (m middleware) Invoke(ctx *Context.HttpContext) {
 }
 
 func wrap(handler http.Handler) Handler {
-	return HandlerFunc(func(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
+	return MiddlewareHandlerFunc(func(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 		handler.ServeHTTP(ctx.Output.GetWriter(), ctx.Input.GetReader())
 		next(ctx)
 	})
 }
 
 func wrapFunc(handlerFunc http.HandlerFunc) Handler {
-	return HandlerFunc(func(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
+	return MiddlewareHandlerFunc(func(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 		handlerFunc(ctx.Output.GetWriter(), ctx.Input.GetReader())
 		next(ctx)
 	})
@@ -51,7 +51,7 @@ func wrapFunc(handlerFunc http.HandlerFunc) Handler {
 
 func voidMiddleware() middleware {
 	return newMiddleware(
-		HandlerFunc(func(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
+		MiddlewareHandlerFunc(func(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 			if ctx.Output.Status() == 0 {
 				ctx.Output.SetStatus(404)
 			}

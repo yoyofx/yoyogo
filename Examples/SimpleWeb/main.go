@@ -45,6 +45,7 @@ func CreateCustomBuilder() *Abstractions.HostBuilder {
 func registerEndpointRouterConfig(router Router.IRouterBuilder) {
 	Endpoints.UseHealth(router)
 	Endpoints.UseViz(router)
+	//Endpoints.UsePprof(router)
 
 	router.GET("/error", func(ctx *Context.HttpContext) {
 		panic("http get error")
