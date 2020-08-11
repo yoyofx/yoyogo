@@ -32,6 +32,11 @@ func (host *HostBuilder) Configure(configure interface{}) *HostBuilder {
 	return host
 }
 
+func (host *HostBuilder) UseConfiguration(configuration IConfiguration) *HostBuilder {
+	host.Context.HostConfiguration = configuration
+	return host
+}
+
 // ConfigureServices configure function by ServiceCollection of DI.
 func (host *HostBuilder) ConfigureServices(configure func(*DependencyInjection.ServiceCollection)) *HostBuilder {
 	host.servicesConfigures = append(host.servicesConfigures, configure)
@@ -101,7 +106,7 @@ func (host *HostBuilder) Build() IServiceHost {
 		configure(services)
 	}
 
-	applicationBuilder := host.Decorator.OverrideNewApplicationBuilder()
+	applicationBuilder := host.Decorator.OverrideNewApplicationBuilder(host.Context)
 
 	for _, configure := range host.configures {
 		//configure(applicationBuilder)
@@ -110,6 +115,7 @@ func (host *HostBuilder) Build() IServiceHost {
 
 	host.Context.ApplicationServicesDef = services
 	applicationBuilder.SetHostBuildContext(host.Context)
+	host.Context.HostServices = services.Build()              //serviceProvider
 	host.Context.RequestDelegate = applicationBuilder.Build() // ServeHTTP(w http.ResponseWriter, r *http.Request)
 	host.Context.ApplicationServices = services.Build()       //serviceProvider
 

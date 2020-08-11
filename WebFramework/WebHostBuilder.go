@@ -10,12 +10,14 @@ type WebHostBuilder struct {
 }
 
 func NewWebHostBuilder() *WebHostBuilder {
-	return &WebHostBuilder{
+	builder := &WebHostBuilder{
 		Abstractions.HostBuilder{
 			Context:   &Abstractions.HostBuildContext{HostingEnvironment: &Context.HostEnvironment{}},
 			Decorator: NewWebHostBuilderDecorator(),
 		},
 	}
+
+	return builder
 }
 
 // SetEnvironment set value(Dev,Test,Prod) by environment
