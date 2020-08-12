@@ -11,20 +11,35 @@ type Configuration struct {
 }
 
 func NewConfiguration(configContext *ConfigurationContext) *Configuration {
-	v := viper.New()
+	defaultConfig := viper.New()
+	defaultConfig.AddConfigPath(".")
+	defaultConfig.SetConfigName(configContext.configName)
+	defaultConfig.SetConfigType(configContext.configType)
+	if err := defaultConfig.ReadInConfig(); err != nil {
+		return nil
+	}
 
-	//设置配置文件的名字
-	v.SetConfigName(configContext.configName)
-	v.AddConfigPath("./")
-	v.SetConfigType(configContext.configType)
+	profile := defaultConfig.Get("application.profile")
+	var profileConfig *viper.Viper
+	if profile != nil {
+		profileConfig = viper.New()
+		profileConfig.AddConfigPath(".")
+		profileConfig.SetConfigName(configContext.configName + "_" + profile.(string))
+		profileConfig.SetConfigType(configContext.configType)
+		configs := defaultConfig.AllSettings()
+		// 将default中的配置全部以默认配置写入
+		for k, v := range configs {
+			profileConfig.Set(k, v)
+		}
 
-	if err := v.ReadInConfig(); err != nil {
-
+		if err := profileConfig.ReadInConfig(); err != nil {
+			profileConfig = defaultConfig
+		}
 	}
 
 	return &Configuration{
 		context: configContext,
-		config:  v,
+		config:  profileConfig,
 	}
 }
 
@@ -34,6 +49,13 @@ func (c *Configuration) Get(name string) interface{} {
 
 func (c *Configuration) GetSection(name string) IConfiguration {
 	section := c.config.Sub(name)
+
+	configs := c.config.AllSettings()
+	// 将default中的配置全部以默认配置写入
+	for k, v := range configs {
+		section.Set(k, v)
+	}
+
 	if section != nil {
 		return &Configuration{config: section}
 	}
