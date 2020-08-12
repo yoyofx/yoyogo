@@ -24,7 +24,8 @@ func NewConfiguration(configContext *ConfigurationContext) *Configuration {
 	if profile != nil {
 		profileConfig = viper.New()
 		profileConfig.AddConfigPath(".")
-		profileConfig.SetConfigName(configContext.configName + "_" + profile.(string))
+		configContext.profile = profile.(string)
+		profileConfig.SetConfigName(configContext.configName + "_" + configContext.profile)
 		profileConfig.SetConfigType(configContext.configType)
 		configs := defaultConfig.AllSettings()
 		// 将default中的配置全部以默认配置写入
@@ -49,7 +50,7 @@ func (c *Configuration) Get(name string) interface{} {
 
 func (c *Configuration) GetSection(name string) IConfiguration {
 	section := c.config.Sub(name)
-
+	section.SetConfigName(c.context.configName + "_" + c.context.profile)
 	configs := c.config.AllSettings()
 	// 将default中的配置全部以默认配置写入
 	for k, v := range configs {

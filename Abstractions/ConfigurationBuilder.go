@@ -5,6 +5,7 @@ type ConfigurationContext struct {
 	enableEnv  bool
 	configType string
 	configName string
+	profile    string
 }
 
 type ConfigurationBuilder struct {
