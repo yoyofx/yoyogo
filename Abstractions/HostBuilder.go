@@ -91,21 +91,23 @@ func RunningHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
 func buildingHostEnvironmentSetting(context *HostBuildContext) {
 	hostEnv := context.HostingEnvironment
 	hostEnv.Version = YoyoGo.Version
+	hostEnv.Addr = DetectAddress("")
 	config := context.HostConfiguration
-	hostEnv.ApplicationName = config.Name
-	if config.Server.Address != "" {
-		hostEnv.Addr = config.Server.Address
-	} else {
-		hostEnv.Addr = DetectAddress("")
+	if config != nil {
+		hostEnv.ApplicationName = config.Name
+		if config.Server.Address != "" {
+			hostEnv.Addr = config.Server.Address
+		}
+		if config.Profile != "" {
+			hostEnv.Profile = config.Profile
+		}
 	}
+
 	hostEnv.Port = strings.Replace(hostEnv.Addr, ":", "", -1)
 	hostEnv.Args = os.Args
 
 	if hostEnv.Profile == "" {
 		hostEnv.Profile = Context.Dev
-	}
-	if config.Profile != "" {
-		hostEnv.Profile = config.Profile
 	}
 
 }

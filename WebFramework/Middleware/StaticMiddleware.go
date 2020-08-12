@@ -32,10 +32,14 @@ func NewStatic(patten string, path string) *Static {
 }
 
 func NewStaticWithConfig(configuration Abstractions.IConfiguration) *Static {
-	config := configuration.GetSection("application.server.static")
-	patten := config.Get("patten").(string)
-	path := config.Get("webroot").(string)
-	return NewStatic(patten, path)
+	if configuration != nil {
+		config := configuration.GetSection("application.server.static")
+		patten := config.Get("patten").(string)
+		path := config.Get("webroot").(string)
+		return NewStatic(patten, path)
+	} else {
+		return NewStatic("/", "./Static")
+	}
 }
 
 func (s *Static) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {

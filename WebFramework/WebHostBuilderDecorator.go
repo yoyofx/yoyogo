@@ -1,6 +1,9 @@
 package YoyoGo
 
-import "github.com/yoyofx/yoyogo/Abstractions"
+import (
+	YoyoGo "github.com/yoyofx/yoyogo"
+	"github.com/yoyofx/yoyogo/Abstractions"
+)
 
 type WebHostBuilderDecorator struct {
 }
@@ -31,6 +34,8 @@ func (decorator WebHostBuilderDecorator) OverrideNewHost(server Abstractions.ISe
 				server = DefaultHttpServer(address)
 			}
 		}
+	} else {
+		server = NewFastHttp(YoyoGo.DefaultAddress)
 	}
 	return NewWebHost(server, context)
 }
