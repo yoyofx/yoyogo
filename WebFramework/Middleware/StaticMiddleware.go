@@ -32,7 +32,7 @@ func NewStatic(patten string, path string) *Static {
 }
 
 func NewStaticWithConfig(configuration Abstractions.IConfiguration) *Static {
-	config := configuration.GetSection("application.server.web.static")
+	config := configuration.GetSection("application.server.static")
 	patten := config.Get("patten").(string)
 	path := config.Get("webroot").(string)
 	return NewStatic(patten, path)

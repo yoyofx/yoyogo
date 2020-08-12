@@ -1,6 +1,7 @@
 package Abstractions
 
 import (
+	"fmt"
 	"github.com/spf13/viper"
 )
 
@@ -37,4 +38,11 @@ func (c *Configuration) GetSection(name string) IConfiguration {
 		return &Configuration{config: section}
 	}
 	return nil
+}
+
+func (c *Configuration) Unmarshal(obj interface{}) {
+	err := c.config.Unmarshal(obj)
+	if err != nil {
+		fmt.Println("unmarshal config is failed, err:", err)
+	}
 }

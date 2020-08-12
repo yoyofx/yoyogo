@@ -35,11 +35,8 @@ func CreateCustomBuilder() *Abstractions.HostBuilder {
 	configuration := Abstractions.NewConfigurationBuilder().AddYamlFile("config").Build()
 
 	return YoyoGo.NewWebHostBuilder().
-		SetEnvironment(Context.Prod).
-		//UseFastHttp().
 		UseConfiguration(configuration).
 		Configure(func(app *YoyoGo.WebApplicationBuilder) {
-			//app.UseStatic("/","./Static")
 			app.UseStaticAssets()
 			app.UseEndpoints(registerEndpointRouterConfig)
 			app.UseMvc(func(builder *Mvc.ControllerBuilder) {

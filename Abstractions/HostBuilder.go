@@ -2,7 +2,8 @@ package Abstractions
 
 import (
 	"fmt"
-	"github.com/yoyofx/yoyogo"
+	YoyoGo "github.com/yoyofx/yoyogo"
+	"github.com/yoyofx/yoyogo/Abstractions/configs"
 	"github.com/yoyofx/yoyogo/DependencyInjection"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"net"
@@ -33,7 +34,13 @@ func (host *HostBuilder) Configure(configure interface{}) *HostBuilder {
 }
 
 func (host *HostBuilder) UseConfiguration(configuration IConfiguration) *HostBuilder {
-	host.Context.HostConfiguration = configuration
+	host.Context.Configuration = configuration
+	section := host.Context.Configuration.GetSection("application")
+	if section != nil {
+		config := &configs.HostConfig{}
+		section.Unmarshal(config)
+		host.Context.HostConfiguration = config
+	}
 	return host
 }
 
@@ -81,15 +88,24 @@ func RunningHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
 }
 
 //buildingHostEnvironmentSetting  build each configuration by init , such as file or env or args ...
-func buildingHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
-	hostEnv.ApplicationName = "app"
+func buildingHostEnvironmentSetting(context *HostBuildContext) {
+	hostEnv := context.HostingEnvironment
 	hostEnv.Version = YoyoGo.Version
-	hostEnv.Addr = DetectAddress("")
+	config := context.HostConfiguration
+	hostEnv.ApplicationName = config.Name
+	if config.Server.Address != "" {
+		hostEnv.Addr = config.Server.Address
+	} else {
+		hostEnv.Addr = DetectAddress("")
+	}
 	hostEnv.Port = strings.Replace(hostEnv.Addr, ":", "", -1)
 	hostEnv.Args = os.Args
 
 	if hostEnv.Profile == "" {
 		hostEnv.Profile = Context.Dev
+	}
+	if config.Profile != "" {
+		hostEnv.Profile = config.Profile
 	}
 
 }
@@ -98,7 +114,7 @@ func buildingHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
 func (host *HostBuilder) Build() IServiceHost {
 	services := DependencyInjection.NewServiceCollection()
 
-	buildingHostEnvironmentSetting(host.Context.HostingEnvironment)
+	buildingHostEnvironmentSetting(host.Context)
 	host.Context.ApplicationCycle = NewApplicationLife()
 
 	innerConfigures(host.Context, services)

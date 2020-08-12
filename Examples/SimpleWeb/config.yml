@@ -3,10 +3,9 @@ application:
   metadata: "hello world"
   profile: "Dev"
   server:
-    web:
       type: "fasthttp"
-      address: ":8081"
-      maxBody: 2096157
+      address: ":8080"
+      max_request_size: 2096157
       static:
         patten: "/"
         webroot: "./Static"

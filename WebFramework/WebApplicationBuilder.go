@@ -126,7 +126,7 @@ func (app *WebApplicationBuilder) UseStatic(patten string, path string) {
 }
 
 func (app *WebApplicationBuilder) UseStaticAssets() {
-	app.UseMiddleware(Middleware.NewStaticWithConfig(app.hostContext.HostConfiguration))
+	app.UseMiddleware(Middleware.NewStaticWithConfig(app.hostContext.Configuration))
 }
 
 // apply handler middleware in builder
