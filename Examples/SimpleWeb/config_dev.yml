@@ -1,0 +1,4 @@
+application:
+  name: demo_dev
+  server:
+    address: ":8080"

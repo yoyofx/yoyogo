@@ -2,7 +2,8 @@ package Abstractions
 
 import (
 	"fmt"
-	"github.com/yoyofx/yoyogo"
+	YoyoGo "github.com/yoyofx/yoyogo"
+	"github.com/yoyofx/yoyogo/Abstractions/configs"
 	"github.com/yoyofx/yoyogo/DependencyInjection"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"net"
@@ -29,6 +30,17 @@ func (host *HostBuilder) SetEnvironment(mode string) *HostBuilder {
 // Configure function func(IApplicationBuilder)
 func (host *HostBuilder) Configure(configure interface{}) *HostBuilder {
 	host.configures = append(host.configures, configure)
+	return host
+}
+
+func (host *HostBuilder) UseConfiguration(configuration IConfiguration) *HostBuilder {
+	host.Context.Configuration = configuration
+	section := host.Context.Configuration.GetSection("application")
+	if section != nil {
+		config := &configs.HostConfig{}
+		section.Unmarshal(config)
+		host.Context.HostConfiguration = config
+	}
 	return host
 }
 
@@ -76,10 +88,21 @@ func RunningHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
 }
 
 //buildingHostEnvironmentSetting  build each configuration by init , such as file or env or args ...
-func buildingHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
-	hostEnv.ApplicationName = "app"
+func buildingHostEnvironmentSetting(context *HostBuildContext) {
+	hostEnv := context.HostingEnvironment
 	hostEnv.Version = YoyoGo.Version
 	hostEnv.Addr = DetectAddress("")
+	config := context.HostConfiguration
+	if config != nil {
+		hostEnv.ApplicationName = config.Name
+		if config.Server.Address != "" {
+			hostEnv.Addr = config.Server.Address
+		}
+		if config.Profile != "" {
+			hostEnv.Profile = config.Profile
+		}
+	}
+
 	hostEnv.Port = strings.Replace(hostEnv.Addr, ":", "", -1)
 	hostEnv.Args = os.Args
 
@@ -93,7 +116,7 @@ func buildingHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
 func (host *HostBuilder) Build() IServiceHost {
 	services := DependencyInjection.NewServiceCollection()
 
-	buildingHostEnvironmentSetting(host.Context.HostingEnvironment)
+	buildingHostEnvironmentSetting(host.Context)
 	host.Context.ApplicationCycle = NewApplicationLife()
 
 	innerConfigures(host.Context, services)
@@ -101,7 +124,7 @@ func (host *HostBuilder) Build() IServiceHost {
 		configure(services)
 	}
 
-	applicationBuilder := host.Decorator.OverrideNewApplicationBuilder()
+	applicationBuilder := host.Decorator.OverrideNewApplicationBuilder(host.Context)
 
 	for _, configure := range host.configures {
 		//configure(applicationBuilder)
@@ -110,6 +133,7 @@ func (host *HostBuilder) Build() IServiceHost {
 
 	host.Context.ApplicationServicesDef = services
 	applicationBuilder.SetHostBuildContext(host.Context)
+	host.Context.HostServices = services.Build()              //serviceProvider
 	host.Context.RequestDelegate = applicationBuilder.Build() // ServeHTTP(w http.ResponseWriter, r *http.Request)
 	host.Context.ApplicationServices = services.Build()       //serviceProvider
 

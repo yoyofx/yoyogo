@@ -13,8 +13,18 @@ import (
 	"github.com/yoyofx/yoyogo/WebFramework/Router"
 )
 
-func main() {
+func SimpleDemo() {
+	YoyoGo.CreateDefaultBuilder(func(router Router.IRouterBuilder) {
+		Endpoints.UsePrometheus(router)
 
+		router.GET("/info", func(ctx *Context.HttpContext) {
+			ctx.JSON(200, Context.M{"info": "ok"})
+		})
+	}).Build().Run()
+}
+
+func main() {
+	//SimpleDemo()
 	//webHost := YoyoGo.CreateDefaultBuilder(registerEndpointRouterConfig).Build()
 	webHost := CreateCustomBuilder().Build()
 	webHost.Run()
@@ -22,11 +32,12 @@ func main() {
 
 //* Create the builder of Web host
 func CreateCustomBuilder() *Abstractions.HostBuilder {
+	configuration := Abstractions.NewConfigurationBuilder().AddYamlFile("config").Build()
+
 	return YoyoGo.NewWebHostBuilder().
-		SetEnvironment(Context.Prod).
-		UseFastHttp().
+		UseConfiguration(configuration).
 		Configure(func(app *YoyoGo.WebApplicationBuilder) {
-			app.UseStatic("Static")
+			app.UseStaticAssets()
 			app.UseEndpoints(registerEndpointRouterConfig)
 			app.UseMvc(func(builder *Mvc.ControllerBuilder) {
 				builder.AddController(contollers.NewUserController)
@@ -45,6 +56,8 @@ func CreateCustomBuilder() *Abstractions.HostBuilder {
 func registerEndpointRouterConfig(router Router.IRouterBuilder) {
 	Endpoints.UseHealth(router)
 	Endpoints.UseViz(router)
+	Endpoints.UsePrometheus(router)
+	//Endpoints.UsePprof(router)
 
 	router.GET("/error", func(ctx *Context.HttpContext) {
 		panic("http get error")

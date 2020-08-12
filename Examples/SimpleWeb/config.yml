@@ -1,0 +1,11 @@
+application:
+  name: demo1
+  metadata: "hello world"
+  profile: "dev"
+  server:
+      type: "fasthttp"
+      address: ":8080"
+      max_request_size: 2096157
+      static:
+        patten: "/"
+        webroot: "./Static"

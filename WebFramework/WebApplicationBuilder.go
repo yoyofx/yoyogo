@@ -33,16 +33,20 @@ func CreateDefaultBuilder(routerConfig func(router Router.IRouterBuilder)) *Abst
 	return NewWebHostBuilder().
 		UseServer(DefaultHttpServer(YoyoGo.DefaultAddress)).
 		Configure(func(app *WebApplicationBuilder) {
-			app.UseStatic("Static")
+			app.UseStatic("/Static", "./Static")
 			app.UseEndpoints(routerConfig)
 		})
+}
+
+func CreateBlankWebBuilder() *WebHostBuilder {
+	return NewWebHostBuilder()
 }
 
 // create application builder when combo all handlers to middleware
 func New(handlers ...Handler) *WebApplicationBuilder {
 	return &WebApplicationBuilder{
-		handlers:   handlers,
-		middleware: build(handlers),
+		handlers: handlers,
+		//middleware: build(handlers),
 	}
 }
 
@@ -97,7 +101,7 @@ func (this *WebApplicationBuilder) Build() interface{} {
 	if this.hostContext == nil {
 		panic("hostContext is nil! please set.")
 	}
-
+	//this.hostContext.HostingEnvironment
 	this.middleware = build(this.handlers)
 	this.buildEndPoints()
 	this.buildMvc(this.hostContext.ApplicationServicesDef)
@@ -117,8 +121,12 @@ func (app *WebApplicationBuilder) UseMiddleware(handler Handler) {
 }
 
 // apply static middleware in builder
-func (app *WebApplicationBuilder) UseStatic(path string) {
-	app.UseMiddleware(Middleware.NewStatic("Static"))
+func (app *WebApplicationBuilder) UseStatic(patten string, path string) {
+	app.UseMiddleware(Middleware.NewStatic(patten, path))
+}
+
+func (app *WebApplicationBuilder) UseStaticAssets() {
+	app.UseMiddleware(Middleware.NewStaticWithConfig(app.hostContext.Configuration))
 }
 
 // apply handler middleware in builder
@@ -132,7 +140,7 @@ func (app *WebApplicationBuilder) UseHandlerFunc(handlerFunc func(rw http.Respon
 }
 
 // apply handler func middleware in builder
-func (app *WebApplicationBuilder) UseFunc(handlerFunc HandlerFunc) {
+func (app *WebApplicationBuilder) UseFunc(handlerFunc MiddlewareHandlerFunc) {
 	app.UseMiddleware(handlerFunc)
 }
 

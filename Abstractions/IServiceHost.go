@@ -30,6 +30,7 @@ func PrintLogo(l *log.Logger, env *Context.HostEnvironment) {
 	l.Printf("machine host ip          :  %s", ConsoleColors.Blue(env.Host))
 	l.Printf("listening on port        :  %s", ConsoleColors.Blue(env.Port))
 	l.Printf("application running pid  :  %s", ConsoleColors.Blue(strconv.Itoa(env.PID)))
+	l.Printf("application name         :  %s", ConsoleColors.Blue(env.ApplicationName))
 	l.Printf("application environment  :  %s", ConsoleColors.Blue(env.Profile))
 	l.Printf("application exec path    :  %s", ConsoleColors.Yellow(Utils.GetCurrentDirectory()))
 	l.Printf("running in %s mode , change (Dev,Test,Prod) mode by HostBuilder.SetEnvironment .", ConsoleColors.Blue(env.Profile))
