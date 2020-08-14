@@ -2,7 +2,8 @@ package Abstractions
 
 import (
 	"fmt"
-	YoyoGo "github.com/yoyofx/yoyogo"
+	"github.com/yoyofx/yoyogo"
+	"github.com/yoyofx/yoyogo/Abstractions/Env"
 	"github.com/yoyofx/yoyogo/Abstractions/configs"
 	"github.com/yoyofx/yoyogo/DependencyInjection"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
@@ -35,6 +36,7 @@ func (host *HostBuilder) Configure(configure interface{}) *HostBuilder {
 
 func (host *HostBuilder) UseConfiguration(configuration IConfiguration) *HostBuilder {
 	host.Context.Configuration = configuration
+	host.Context.HostingEnvironment.Profile = configuration.GetProfile()
 	section := host.Context.Configuration.GetSection("application")
 	if section != nil {
 		config := &configs.HostConfig{}
@@ -81,13 +83,13 @@ func getLocalIP() string {
 	return localIp
 }
 
-// RunningHostEnvironmentSetting ,get running env setting.
+// RunningHostEnvironmentSetting ,get running Env setting.
 func RunningHostEnvironmentSetting(hostEnv *Context.HostEnvironment) {
 	hostEnv.Host = getLocalIP()
 	hostEnv.PID = os.Getpid()
 }
 
-//buildingHostEnvironmentSetting  build each configuration by init , such as file or env or args ...
+//buildingHostEnvironmentSetting  build each configuration by init , such as file or Env or args ...
 func buildingHostEnvironmentSetting(context *HostBuildContext) {
 	hostEnv := context.HostingEnvironment
 	hostEnv.Version = YoyoGo.Version
@@ -98,16 +100,13 @@ func buildingHostEnvironmentSetting(context *HostBuildContext) {
 		if config.Server.Address != "" {
 			hostEnv.Addr = config.Server.Address
 		}
-		if config.Profile != "" {
-			hostEnv.Profile = config.Profile
-		}
 	}
 
 	hostEnv.Port = strings.Replace(hostEnv.Addr, ":", "", -1)
 	hostEnv.Args = os.Args
 
 	if hostEnv.Profile == "" {
-		hostEnv.Profile = Context.Dev
+		hostEnv.Profile = Env.Dev
 	}
 
 }

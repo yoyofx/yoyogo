@@ -1,11 +1,11 @@
 package YoyoGo
 
 import (
+	"fmt"
 	"github.com/yoyofx/yoyogo/Abstractions"
 	"github.com/yoyofx/yoyogo/Abstractions/Platform/ConsoleColors"
 	"github.com/yoyofx/yoyogo/Abstractions/Platform/ExitHookSignals"
-	"log"
-	"os"
+	"github.com/yoyofx/yoyogo/Abstractions/xlog"
 )
 
 type WebHost struct {
@@ -19,15 +19,21 @@ func NewWebHost(server Abstractions.IServer, hostContext *Abstractions.HostBuild
 
 func (host WebHost) Run() {
 	hostEnv := host.HostContext.HostingEnvironment
-	xlog := log.New(os.Stdout, ConsoleColors.Yellow("[yoyogo] "), 1)
-
+	logger := xlog.GetXLogger("Application")
+	logger.SetCustomLogFormat(logFormater)
 	Abstractions.RunningHostEnvironmentSetting(hostEnv)
 
-	Abstractions.PrintLogo(xlog, hostEnv)
+	Abstractions.PrintLogo(logger, hostEnv)
 
 	ExitHookSignals.HookSignals(host)
 	_ = host.webServer.Run(host.HostContext)
 
+}
+
+func logFormater(logInfo xlog.LogInfo) string {
+	outLog := fmt.Sprintf(ConsoleColors.Yellow("[yoyogo] ")+"[%s] %s",
+		logInfo.StartTime, logInfo.Message)
+	return outLog
 }
 
 func (host WebHost) StopApplicationNotify() {
