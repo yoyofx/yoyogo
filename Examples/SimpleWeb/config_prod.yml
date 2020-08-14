@@ -1,4 +1,10 @@
 application:
   name: demo_prod
+  metadata: "prod Env"
   server:
-    address: ":8081"
+    type: "fasthttp"
+    address: ":8080"
+    max_request_size: 2096157
+    static:
+      patten: "/"
+      webroot: "./Static"

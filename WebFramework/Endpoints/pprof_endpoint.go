@@ -1,6 +1,7 @@
 package Endpoints
 
 import (
+	"github.com/yoyofx/yoyogo/Abstractions/xlog"
 	"github.com/yoyofx/yoyogo/WebFramework"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"github.com/yoyofx/yoyogo/WebFramework/Router"
@@ -32,6 +33,8 @@ func WarpHandlerFunc(h func(w http.ResponseWriter, r *http.Request)) YoyoGo.Hand
 }
 
 func UsePprof(router Router.IRouterBuilder) {
+	xlog.GetXLogger("Endpoint").Debug("loaded pprof endpoint.")
+
 	for _, item := range debupApi {
 		router.GET(item.Path, item.HandlerFunc)
 	}

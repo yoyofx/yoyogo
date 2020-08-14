@@ -5,7 +5,6 @@ import (
 	"github.com/yoyofx/yoyogo/Abstractions/Platform/ConsoleColors"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"html/template"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -117,7 +116,7 @@ func (l *Logger) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpCon
 	strBody := ""
 	bodyFormat := "%s"
 	if ctx.Input.Request.Method == "POST" {
-		body, _ := ioutil.ReadAll(ctx.Input.Request.Body)
+		body := ctx.Input.FormBody
 		strBody = string(body[:])
 		bodyFormat = "\n%s"
 	}
