@@ -1,4 +1,4 @@
-# YoyoGo
+# YoyoGo [英文介绍](https://github.com/yoyofx/yoyogo/blob/master/README_En.md "中文介绍")
 YoyoGo 一个简单、轻量、快速、基于依赖注入的微服务框架
 
 ![Release](https://img.shields.io/github/v/tag/yoyofx/yoyogo.svg?color=24B898&label=release&logo=github&sort=semver)

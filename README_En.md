@@ -1,4 +1,4 @@
-# YoyoGo [中文介绍](https://github.com/maxzhang1985/yoyogo/blob/master/README-ZHCN.md "中文介绍")
+# YoyoGo [中文介绍](https://github.com/yoyofx/yoyogo/blob/master/README-ZHCN.md "中文介绍")
 YoyoGo is a simple, light and fast Web framework written in Go. 
 
 ![Release](https://img.shields.io/github/v/tag/yoyofx/yoyogo.svg?color=24B898&label=release&logo=github&sort=semver)
