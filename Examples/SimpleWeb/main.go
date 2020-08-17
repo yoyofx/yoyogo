@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/yoyofx/yoyogo/Abstractions"
-	"github.com/yoyofx/yoyogo/Abstractions/Env"
 	"github.com/yoyofx/yoyogo/Abstractions/xlog"
 	"github.com/yoyofx/yoyogo/DependencyInjection"
 	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/contollers"
@@ -34,7 +33,7 @@ func main() {
 
 //* Create the builder of Web host
 func CreateCustomBuilder() *Abstractions.HostBuilder {
-	configuration := Abstractions.NewConfigurationBuilder().AddYamlFile("config").Build(Env.Prod)
+	configuration := Abstractions.NewConfigurationBuilder().AddYamlFile("config").Build()
 	return YoyoGo.NewWebHostBuilder().
 		UseConfiguration(configuration).
 		Configure(func(app *YoyoGo.WebApplicationBuilder) {
