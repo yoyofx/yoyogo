@@ -2,6 +2,7 @@ package Mvc
 
 import (
 	"github.com/yoyofx/yoyogo/Abstractions/xlog"
+	"github.com/yoyofx/yoyogo/WebFramework/ActionResult"
 	"github.com/yoyofxteam/reflectx"
 	"strings"
 )
@@ -14,6 +15,16 @@ type ControllerBuilder struct {
 // NewControllerBuilder new controller builder
 func NewControllerBuilder() *ControllerBuilder {
 	return &ControllerBuilder{mvcRouterHandler: NewMvcRouterHandler()}
+}
+
+// add views to mvc
+func (builder *ControllerBuilder) AddViews(option ViewOption) {
+	xlog.GetXLogger("ControllerBuilder").Debug("add mvc views: %s", option.Pattern)
+	builder.mvcRouterHandler.ViewEngine = &ActionResult.HTMLDebug{Files: option.Files,
+		Glob:    option.Pattern,
+		Delims:  ActionResult.Delims{Left: "{[{", Right: "}]}"},
+		FuncMap: option.FuncMap,
+	}
 }
 
 // add filter to mvc

@@ -39,6 +39,18 @@ func (controller UserController) PostUserInfo(request *RegisterRequest) ActionRe
 	return ActionResult.Json{Data: Mvc.ApiResult{Success: true, Message: "ok", Data: request}}
 }
 
+func (controller UserController) GetHtmlHello() ActionResult.IActionResult {
+	return controller.View("hello.tmpl", map[string]interface{}{
+		"name": "hello world!",
+	})
+}
+
+func (controller UserController) GetHtmlBody() ActionResult.IActionResult {
+	return controller.View("raw.tmpl", map[string]interface{}{
+		"body": "raw.htm hello world!",
+	})
+}
+
 func (controller UserController) GetInfo() Mvc.ApiResult {
 
 	return controller.OK(controller.userAction.Login("zhang"))
