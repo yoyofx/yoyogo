@@ -1,7 +1,6 @@
 package YoyoGo
 
 import (
-	"github.com/yoyofx/yoyogo"
 	"github.com/yoyofx/yoyogo/Abstractions"
 	"github.com/yoyofx/yoyogo/DependencyInjection"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
@@ -31,7 +30,7 @@ func UseClassic() *WebApplicationBuilder {
 //region Create the builder of Web host
 func CreateDefaultBuilder(routerConfig func(router Router.IRouterBuilder)) *Abstractions.HostBuilder {
 	return NewWebHostBuilder().
-		UseServer(DefaultHttpServer(YoyoGo.DefaultAddress)).
+		UseServer(DefaultHttpServer(DefaultAddress)).
 		Configure(func(app *WebApplicationBuilder) {
 			app.UseStatic("/Static", "./Static")
 			app.UseEndpoints(routerConfig)

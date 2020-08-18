@@ -1,8 +1,12 @@
 package YoyoGo
 
 import (
-	YoyoGo "github.com/yoyofx/yoyogo"
 	"github.com/yoyofx/yoyogo/Abstractions"
+)
+
+const (
+	// DefaultAddress is used if no other is specified.
+	DefaultAddress = ":8080"
 )
 
 type WebHostBuilderDecorator struct {
@@ -35,7 +39,7 @@ func (decorator WebHostBuilderDecorator) OverrideNewHost(server Abstractions.ISe
 			}
 		}
 	} else {
-		server = NewFastHttp(YoyoGo.DefaultAddress)
+		server = NewFastHttp(DefaultAddress)
 	}
 	return NewWebHost(server, context)
 }
