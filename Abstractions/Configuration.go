@@ -1,7 +1,9 @@
 package Abstractions
 
 import (
+	"flag"
 	"fmt"
+	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"github.com/yoyofx/yoyogo/Utils"
 )
@@ -12,6 +14,13 @@ type Configuration struct {
 }
 
 func NewConfiguration(configContext *ConfigurationContext) *Configuration {
+
+	flag.String("profile", configContext.profile, "application profile")
+	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
+	pflag.Parse()
+	_ = viper.BindPFlags(pflag.CommandLine)
+
+	configContext.profile = viper.GetString("profile")
 
 	configName := configContext.configName + "_" + configContext.profile
 	exists, _ := Utils.PathExists("./" + configName + "." + configContext.configType)

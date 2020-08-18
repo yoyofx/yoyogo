@@ -2,6 +2,7 @@ package Mvc
 
 import (
 	"fmt"
+	"github.com/yoyofx/yoyogo/WebFramework/ActionResult"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"net/http"
 	"strings"
@@ -11,6 +12,7 @@ type RouterHandler struct {
 	ControllerFilters     []ActionFilterChain
 	ControllerDescriptors map[string]ControllerDescriptor
 	Options               Options
+	ViewEngine            *ActionResult.HTMLDebug
 }
 
 func NewMvcRouterHandler() *RouterHandler {
@@ -50,6 +52,10 @@ func (handler *RouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []
 		ctx.Output.SetStatus(http.StatusMethodNotAllowed)
 		panic(actionName + " action is not found! ")
 		return nil
+	}
+
+	if handler.ViewEngine != nil {
+		controller.SetViewEngine(handler.ViewEngine)
 	}
 
 	actionMethodExecutor := NewActionMethodExecutor()
