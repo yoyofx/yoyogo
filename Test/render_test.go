@@ -429,12 +429,12 @@ func TestRenderHTMLTemplateEmptyName(t *testing.T) {
 
 func TestRenderHTMLDebugFiles(t *testing.T) {
 	w := httptest.NewRecorder()
-	htmlRender := ActionResult.HTMLDebug{Files: []string{"testdata/template/hello.htm"},
+	htmlRender := ActionResult.HTMLDebug{Files: []string{"testdata/template/hello.tmpl"},
 		Glob:    "",
 		Delims:  ActionResult.Delims{Left: "{[{", Right: "}]}"},
 		FuncMap: nil,
 	}
-	instance := htmlRender.Instance("hello.htm", map[string]interface{}{
+	instance := htmlRender.Instance("hello.tmpl", map[string]interface{}{
 		"name": "thinkerou",
 	})
 
@@ -452,7 +452,7 @@ func TestRenderHTMLDebugGlob(t *testing.T) {
 		Delims:  ActionResult.Delims{Left: "{[{", Right: "}]}"},
 		FuncMap: nil,
 	}
-	instance := htmlRender.Instance("hello.htm", map[string]interface{}{
+	instance := htmlRender.Instance("hello.tmpl", map[string]interface{}{
 		"name": "thinkerou",
 	})
 
