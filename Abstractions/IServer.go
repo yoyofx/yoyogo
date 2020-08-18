@@ -1,8 +1,12 @@
 package Abstractions
 
 import (
-	"github.com/yoyofx/yoyogo"
 	"os"
+)
+
+const (
+	// DefaultAddress is used if no other is specified.
+	DefaultAddress = ":8080"
 )
 
 type IServer interface {
@@ -18,5 +22,5 @@ func DetectAddress(addr ...string) string {
 	if port := os.Getenv("PORT"); port != "" {
 		return ":" + port
 	}
-	return YoyoGo.DefaultAddress
+	return DefaultAddress
 }
