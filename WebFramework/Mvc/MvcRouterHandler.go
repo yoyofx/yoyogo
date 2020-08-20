@@ -89,7 +89,7 @@ func (handler *RouterHandler) Invoke(ctx *Context.HttpContext, pathComponents []
 			filter.OnActionExecuted(actionFilterContext)
 		}
 	} else {
-		ctx.JSON(http.StatusUnauthorized, Context.M{"Message": "Unauthorized"})
+		ctx.JSON(http.StatusUnauthorized, Context.H{"Message": "Unauthorized"})
 	}
 
 	response := &RouterHandlerResponse{Result: actionResult}

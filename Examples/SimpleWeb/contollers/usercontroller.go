@@ -34,9 +34,12 @@ func (controller UserController) GetUserName(ctx *Context.HttpContext, request *
 	return ActionResult.Json{Data: result}
 }
 
-func (controller UserController) PostUserInfo(request *RegisterRequest) ActionResult.IActionResult {
+func (controller UserController) PostUserInfo(ctx *Context.HttpContext, request *RegisterRequest) ActionResult.IActionResult {
 
-	return ActionResult.Json{Data: Mvc.ApiResult{Success: true, Message: "ok", Data: request}}
+	return ActionResult.Json{Data: Mvc.ApiResult{Success: true, Message: "ok", Data: Context.H{
+		"user":    ctx.GetUser(),
+		"request": request,
+	}}}
 }
 
 func (controller UserController) GetHtmlHello() ActionResult.IActionResult {

@@ -3,7 +3,7 @@ package Context
 import "net/http"
 
 type Output struct {
-	Response *responseWriter
+	Response IResponseWriter
 }
 
 //Set Cookie value
@@ -22,7 +22,7 @@ func (output Output) Status() int {
 	return output.Response.Status()
 }
 
-func (output Output) GetWriter() *responseWriter {
+func (output Output) GetWriter() IResponseWriter {
 	return output.Response
 }
 
@@ -31,11 +31,10 @@ func (output Output) SetStatus(status int) {
 }
 
 func (output Output) SetStatusCode(status int) {
-	output.Response.SetStatus(status)
+	output.Response.WriteHeader(status)
 }
 
 func (output Output) SetStatusCodeNow() {
-	output.Response.WriteHeaderNow()
 }
 
 // Write Byte[] Response.

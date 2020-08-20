@@ -69,9 +69,7 @@ func GetXLogger(class string) ILogger {
 func (log *XLogger) log(level LogLevel, format string, a ...interface{}) {
 	hostName, _ := os.Hostname()
 	message := format
-	if len(a[0].([]interface{})) > 0 {
-		message = fmt.Sprintf(format, a...)
-	}
+	message = fmt.Sprintf(format, a...)
 
 	start := time.Now()
 	info := LogInfo{
@@ -85,17 +83,17 @@ func (log *XLogger) log(level LogLevel, format string, a ...interface{}) {
 }
 
 func (log *XLogger) Debug(format string, a ...interface{}) {
-	log.log(DEBUG, format, a)
+	log.log(DEBUG, format, a...)
 }
 
 func (log *XLogger) Info(format string, a ...interface{}) {
-	log.log(INFO, format, a)
+	log.log(INFO, format, a...)
 }
 
 func (log *XLogger) Warning(format string, a ...interface{}) {
-	log.log(WARNING, format, a)
+	log.log(WARNING, format, a...)
 }
 
 func (log *XLogger) Error(format string, a ...interface{}) {
-	log.log(ERROR, format, a)
+	log.log(ERROR, format, a...)
 }

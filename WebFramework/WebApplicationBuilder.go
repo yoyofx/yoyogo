@@ -17,7 +17,7 @@ type WebApplicationBuilder struct {
 	hostContext     *Abstractions.HostBuildContext // host build 's context
 	routerBuilder   Router.IRouterBuilder          // route builder of interface
 	middleware      middleware
-	handlers        []Handler
+	handlers        []MiddlewareHandler
 	routeConfigures []func(Router.IRouterBuilder)          // endpoints router configure functions
 	mvcConfigures   []func(builder *Mvc.ControllerBuilder) // mvc router configure functions
 }
@@ -42,7 +42,7 @@ func CreateBlankWebBuilder() *WebHostBuilder {
 }
 
 // create application builder when combo all handlers to middleware
-func New(handlers ...Handler) *WebApplicationBuilder {
+func New(handlers ...MiddlewareHandler) *WebApplicationBuilder {
 	return &WebApplicationBuilder{
 		handlers: handlers,
 		//middleware: build(handlers),
@@ -55,7 +55,8 @@ func NewWebApplicationBuilder() *WebApplicationBuilder {
 	recovery := Middleware.NewRecovery()
 	logger := Middleware.NewLogger()
 	router := Middleware.NewRouter(routerBuilder)
-	self := New(logger, recovery, router)
+	jwt := Middleware.NewJwt()
+	self := New(logger, recovery, jwt, router)
 	self.routerBuilder = routerBuilder
 	return self
 }
@@ -75,6 +76,7 @@ func (self *WebApplicationBuilder) UseEndpoints(configure func(Router.IRouterBui
 }
 
 func (this *WebApplicationBuilder) buildEndPoints() {
+	this.routerBuilder.SetConfiguration(this.hostContext.Configuration)
 	for _, configure := range this.routeConfigures {
 		configure(this.routerBuilder)
 	}
@@ -101,6 +103,11 @@ func (this *WebApplicationBuilder) Build() interface{} {
 		panic("hostContext is nil! please set.")
 	}
 	//this.hostContext.HostingEnvironment
+	for _, handler := range this.handlers {
+		if configurationMdw, ok := handler.(Middleware.IConfigurationMiddleware); ok {
+			configurationMdw.SetConfiguration(this.hostContext.Configuration)
+		}
+	}
 	this.middleware = build(this.handlers)
 	this.buildEndPoints()
 	this.buildMvc(this.hostContext.ApplicationServicesDef)
@@ -112,7 +119,7 @@ func (this *WebApplicationBuilder) SetHostBuildContext(context *Abstractions.Hos
 }
 
 // apply middleware in builder
-func (app *WebApplicationBuilder) UseMiddleware(handler Handler) {
+func (app *WebApplicationBuilder) UseMiddleware(handler MiddlewareHandler) {
 	if handler == nil {
 		panic("handler cannot be nil")
 	}
@@ -144,7 +151,7 @@ func (app *WebApplicationBuilder) UseFunc(handlerFunc MiddlewareHandlerFunc) {
 }
 
 /*
-Middleware of Server Handler , request port.
+Middleware of Server MiddlewareHandler , request port.
 */
 func (app *WebApplicationBuilder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	app.middleware.Invoke(Context.NewContext(w, r, app.hostContext.ApplicationServices))
