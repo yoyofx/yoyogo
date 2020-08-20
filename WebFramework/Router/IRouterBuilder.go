@@ -1,6 +1,7 @@
 package Router
 
 import (
+	"github.com/yoyofx/yoyogo/Abstractions"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"github.com/yoyofx/yoyogo/WebFramework/Mvc"
 	"net/url"
@@ -48,4 +49,8 @@ type IRouterBuilder interface {
 	Any(path string, handler func(ctx *Context.HttpContext))
 
 	Group(name string, routerBuilderFunc func(router *RouterGroup))
+
+	SetConfiguration(config Abstractions.IConfiguration)
+
+	GetConfiguration() Abstractions.IConfiguration
 }

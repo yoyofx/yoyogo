@@ -1,6 +1,7 @@
 package Router
 
 import (
+	"github.com/yoyofx/yoyogo/Abstractions"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"github.com/yoyofx/yoyogo/WebFramework/Mvc"
 	"net/url"
@@ -10,6 +11,7 @@ import (
 type DefaultRouterBuilder struct {
 	mvcControllerBuilder  *Mvc.ControllerBuilder
 	endPointRouterHandler *EndPointRouterHandler
+	configuration         Abstractions.IConfiguration
 }
 
 func NewRouterBuilder() IRouterBuilder {
@@ -21,6 +23,14 @@ func NewRouterBuilder() IRouterBuilder {
 	defaultRouterHandler := &DefaultRouterBuilder{endPointRouterHandler: endpoint}
 
 	return defaultRouterHandler
+}
+
+func (router *DefaultRouterBuilder) SetConfiguration(config Abstractions.IConfiguration) {
+	router.configuration = config
+}
+
+func (router *DefaultRouterBuilder) GetConfiguration() Abstractions.IConfiguration {
+	return router.configuration
 }
 
 func (router *DefaultRouterBuilder) UseMvc(used bool) {

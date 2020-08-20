@@ -133,7 +133,7 @@ func (host *HostBuilder) Build() IServiceHost {
 	host.Context.ApplicationServicesDef = services
 	applicationBuilder.SetHostBuildContext(host.Context)
 	host.Context.HostServices = services.Build()              //serviceProvider
-	host.Context.RequestDelegate = applicationBuilder.Build() // ServeHTTP(w http.ResponseWriter, r *http.Request)
+	host.Context.RequestDelegate = applicationBuilder.Build() // ServeHTTP(w http.IResponseWriter, r *http.Request)
 	host.Context.ApplicationServices = services.Build()       //serviceProvider
 
 	if host.lifeConfigure != nil {

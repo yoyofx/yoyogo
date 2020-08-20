@@ -176,7 +176,7 @@ func (rec *Recovery) Inovke(ctx *Context.HttpContext, next func(ctx *Context.Htt
 			}
 			infos := &PanicInformation{RecoveredPanic: err, Request: ctx.Input.Request}
 
-			// PrintStack will write stack trace info to the ResponseWriter if set to true!
+			// PrintStack will write stack trace info to the IResponseWriter if set to true!
 			if rec.LogStack {
 				infos.Stack = stack
 				var msg string

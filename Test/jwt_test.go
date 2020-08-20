@@ -5,11 +5,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/yoyofx/yoyogo/Utils/jwt"
 	"testing"
+	"time"
 )
 
 func TestCreateToken(t *testing.T) {
-	SecretKey := []byte("AllYourBase")
-	token, _ := jwt.CreateToken(SecretKey, "YDQ", 2222)
+	SecretKey := []byte("12391JdeOW^%$#@")
+	token, _ := jwt.CreateToken(SecretKey, "YDQ", 2222, int64(time.Now().Add(time.Hour*72).Unix()))
 	fmt.Println(token)
 
 	claims, err := jwt.ParseToken(token, SecretKey)

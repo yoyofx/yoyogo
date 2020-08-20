@@ -8,3 +8,14 @@ application:
     static:
       patten: "/"
       webroot: "./Static"
+    jwt:
+      header: "Authorization"
+      secret: "12391JdeOW^%$#@"
+      prefix: "Bearer"
+      expires: 3
+      enable: true
+      skip_path: [
+          "/info",
+          "/v1/user/GetInfo"
+      ]
+

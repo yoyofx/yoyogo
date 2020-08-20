@@ -5,6 +5,7 @@ go 1.14
 require (
 	github.com/defval/inject/v2 v2.2.2
 	github.com/golang/protobuf v1.4.2
+	github.com/google/uuid v1.1.1
 	github.com/magiconair/properties v1.8.1
 	github.com/pkg/errors v0.8.1
 	github.com/prometheus/client_golang v0.9.3

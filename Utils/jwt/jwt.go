@@ -1,9 +1,5 @@
 package jwt
 
-import (
-	"time"
-)
-
 type jwtCustomClaims struct {
 	StandardClaims
 
@@ -16,18 +12,19 @@ type jwtCustomClaims struct {
  * 生成 token
  * SecretKey 是一个 const 常量
  */
-func CreateToken(SecretKey []byte, userName string, Uid uint) (tokenString string, err error) {
+func CreateToken(SecretKey []byte, userName string, Uid uint, expiresAt int64) (string, int64) {
 	claims := &jwtCustomClaims{
 		StandardClaims{
-			ExpiresAt: int64(time.Now().Add(time.Hour * 72).Unix()),
+			ExpiresAt: expiresAt,
 			Issuer:    userName,
 		},
 		Uid,
 		false,
 	}
+
 	token := NewWithClaims(SigningMethodHS256, claims)
-	tokenString, err = token.SignedString(SecretKey)
-	return
+	tokenString, _ := token.SignedString(SecretKey)
+	return tokenString, claims.ExpiresAt
 }
 
 /**

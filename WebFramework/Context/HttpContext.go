@@ -18,7 +18,7 @@ const (
 
 )
 
-type M = map[string]string
+type H = map[string]interface{}
 
 type HttpContext struct {
 	Input            Input
@@ -38,7 +38,7 @@ func NewContext(w http.ResponseWriter, r *http.Request, sp DependencyInjection.I
 func (ctx *HttpContext) init(w http.ResponseWriter, r *http.Request, sp DependencyInjection.IServiceProvider) {
 	ctx.storeMutex = new(sync.RWMutex)
 	ctx.Input = NewInput(r, 20<<32)
-	ctx.Output = Output{Response: &responseWriter{w, 0, 0, nil}}
+	ctx.Output = Output{Response: &CResponseWriter{w, 0, 0, nil}}
 	ctx.RequiredServices = sp
 	ctx.storeMutex.Lock()
 	ctx.store = nil
@@ -61,6 +61,15 @@ func (ctx *HttpContext) GetItem(key string) interface{} {
 	v := ctx.store[key]
 	ctx.storeMutex.RUnlock()
 	return v
+}
+
+// Get JWT UserInfo
+func (ctx *HttpContext) GetUser() map[string]interface{} {
+	v := ctx.GetItem("userinfo")
+	if v != nil {
+		return v.(map[string]interface{})
+	}
+	return nil
 }
 
 func (ctx *HttpContext) Bind(i interface{}) (err error) {

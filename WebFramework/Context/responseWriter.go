@@ -7,29 +7,29 @@ import (
 	"net/http"
 )
 
-// ResponseWriter is a wrapper around http.ResponseWriter that provides extra information about
+// IResponseWriter is a wrapper around http.ResponseWriter that provides extra information about
 // the response. It is recommended that middleware handlers use this construct to wrap a responsewriter
 // if the functionality calls for it.
-type ResponseWriter interface {
+type IResponseWriter interface {
 	http.ResponseWriter
 	http.Flusher
 	// Status returns the status code of the response or 0 if the response has
 	// not been written
 	Status() int
-	// Written returns whether or not the ResponseWriter has been written.
+	// Written returns whether or not the IResponseWriter has been written.
 	Written() bool
 	// Size returns the size of the response body.
 	Size() int
-	// Before allows for a function to be called before the ResponseWriter has been written to. This is
+	// Before allows for a function to be called before the IResponseWriter has been written to. This is
 	// useful for setting headers or any other operations that must happen before a response has been written.
-	Before(func(ResponseWriter))
+	Before(func(IResponseWriter))
 }
 
-type beforeFunc func(ResponseWriter)
+type beforeFunc func(IResponseWriter)
 
-// NewResponseWriter creates a ResponseWriter that wraps an http.ResponseWriter
-func NewResponseWriter(rw http.ResponseWriter) ResponseWriter {
-	nrw := &responseWriter{
+// NewResponseWriter creates a IResponseWriter that wraps an http.ResponseWriter
+func NewResponseWriter(rw http.ResponseWriter) IResponseWriter {
+	nrw := &CResponseWriter{
 		ResponseWriter: rw,
 	}
 
@@ -40,31 +40,31 @@ func NewResponseWriter(rw http.ResponseWriter) ResponseWriter {
 	return nrw
 }
 
-type responseWriter struct {
+type CResponseWriter struct {
 	http.ResponseWriter
 	status      int
 	size        int
 	beforeFuncs []beforeFunc
 }
 
-func (rw *responseWriter) SetStatus(code int) {
+func (rw *CResponseWriter) SetStatus(code int) {
 	rw.status = code
 }
 
-func (rw *responseWriter) WriteHeader(s int) {
+func (rw *CResponseWriter) WriteHeader(s int) {
 	rw.status = s
 	rw.callBefore()
 	rw.ResponseWriter.WriteHeader(s)
 }
 
-func (w *responseWriter) WriteHeaderNow() {
+func (w *CResponseWriter) WriteHeaderNow() {
 	if !w.Written() {
 		w.size = 0
 		w.ResponseWriter.WriteHeader(w.status)
 	}
 }
 
-func (rw *responseWriter) Write(b []byte) (int, error) {
+func (rw *CResponseWriter) Write(b []byte) (int, error) {
 	//if !rw.Written() {
 	//	// The status will be StatusOK if WriteHeader has not been called yet
 	//	rw.WriteHeader(http.StatusOK)
@@ -74,37 +74,37 @@ func (rw *responseWriter) Write(b []byte) (int, error) {
 	return size, err
 }
 
-func (rw *responseWriter) Status() int {
+func (rw *CResponseWriter) Status() int {
 	return rw.status
 }
 
-func (rw *responseWriter) Size() int {
+func (rw *CResponseWriter) Size() int {
 	return rw.size
 }
 
-func (rw *responseWriter) Written() bool {
+func (rw *CResponseWriter) Written() bool {
 	return rw.status != 0
 }
 
-func (rw *responseWriter) Before(before func(ResponseWriter)) {
+func (rw *CResponseWriter) Before(before func(IResponseWriter)) {
 	rw.beforeFuncs = append(rw.beforeFuncs, before)
 }
 
-func (rw *responseWriter) Hijack() (net.Conn, *bufio.ReadWriter, error) {
+func (rw *CResponseWriter) Hijack() (net.Conn, *bufio.ReadWriter, error) {
 	hijacker, ok := rw.ResponseWriter.(http.Hijacker)
 	if !ok {
-		return nil, nil, errors.New("the ResponseWriter doesn't support the Hijacker interface")
+		return nil, nil, errors.New("the IResponseWriter doesn't support the Hijacker interface")
 	}
 	return hijacker.Hijack()
 }
 
-func (rw *responseWriter) callBefore() {
+func (rw *CResponseWriter) callBefore() {
 	for i := len(rw.beforeFuncs) - 1; i >= 0; i-- {
 		rw.beforeFuncs[i](rw)
 	}
 }
 
-func (rw *responseWriter) Flush() {
+func (rw *CResponseWriter) Flush() {
 	flusher, ok := rw.ResponseWriter.(http.Flusher)
 	if ok {
 		if !rw.Written() {
@@ -116,7 +116,7 @@ func (rw *responseWriter) Flush() {
 }
 
 type responseWriterCloseNotifer struct {
-	*responseWriter
+	*CResponseWriter
 }
 
 func (rw *responseWriterCloseNotifer) CloseNotify() <-chan bool {

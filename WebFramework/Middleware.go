@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-type Handler interface {
+type MiddlewareHandler interface {
 	Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext))
 }
 
@@ -18,13 +18,13 @@ func (h MiddlewareHandlerFunc) Inovke(ctx *Context.HttpContext, next func(ctx *C
 }
 
 type middleware struct {
-	handler Handler
+	handler MiddlewareHandler
 
 	// nextfn stores the next.ServeHTTP to reduce memory allocate
 	nextfn func(ctx *Context.HttpContext)
 }
 
-func newMiddleware(handler Handler, next *middleware) middleware {
+func newMiddleware(handler MiddlewareHandler, next *middleware) middleware {
 	return middleware{
 		handler: handler,
 		nextfn:  next.Invoke,
@@ -35,14 +35,14 @@ func (m middleware) Invoke(ctx *Context.HttpContext) {
 	m.handler.Inovke(ctx, m.nextfn)
 }
 
-func wrap(handler http.Handler) Handler {
+func wrap(handler http.Handler) MiddlewareHandler {
 	return MiddlewareHandlerFunc(func(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 		handler.ServeHTTP(ctx.Output.GetWriter(), ctx.Input.GetReader())
 		next(ctx)
 	})
 }
 
-func wrapFunc(handlerFunc http.HandlerFunc) Handler {
+func wrapFunc(handlerFunc http.HandlerFunc) MiddlewareHandler {
 	return MiddlewareHandlerFunc(func(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 		handlerFunc(ctx.Output.GetWriter(), ctx.Input.GetReader())
 		next(ctx)
@@ -60,7 +60,7 @@ func voidMiddleware() middleware {
 	)
 }
 
-func build(handlers []Handler) middleware {
+func build(handlers []MiddlewareHandler) middleware {
 	var next middleware
 
 	switch {
