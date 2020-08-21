@@ -1,14 +1,16 @@
 package Mvc
 
 import (
+	"github.com/yoyofx/yoyogo/Abstractions"
 	"github.com/yoyofx/yoyogo/Abstractions/xlog"
-	"github.com/yoyofx/yoyogo/WebFramework/ActionResult"
+	"github.com/yoyofx/yoyogo/WebFramework/View"
 	"github.com/yoyofxteam/reflectx"
 	"strings"
 )
 
 // ControllerBuilder: controller builder
 type ControllerBuilder struct {
+	configuration    Abstractions.IConfiguration
 	mvcRouterHandler *RouterHandler
 }
 
@@ -18,13 +20,30 @@ func NewControllerBuilder() *ControllerBuilder {
 }
 
 // add views to mvc
-func (builder *ControllerBuilder) AddViews(option ViewOption) {
-	xlog.GetXLogger("ControllerBuilder").Debug("add mvc views: %s", option.Pattern)
-	builder.mvcRouterHandler.ViewEngine = &ActionResult.HTMLDebug{Files: option.Files,
-		Glob:    option.Pattern,
-		Delims:  ActionResult.Delims{Left: "{[{", Right: "}]}"},
-		FuncMap: option.FuncMap,
+func (builder *ControllerBuilder) AddViews(option *View.Option) {
+	xlog.GetXLogger("ControllerBuilder").Debug("add mvc views: %s", option.Path)
+	builder.mvcRouterHandler.Options.ViewOption = option
+}
+
+func (builder *ControllerBuilder) AddViewsByConfig() {
+	xlog.GetXLogger("ControllerBuilder").Debug("add mvc views: %s")
+	if builder.configuration != nil {
+		section := builder.configuration.GetSection("application.server.views")
+		option := &View.Option{}
+		section.Unmarshal(option)
+		builder.mvcRouterHandler.Options.ViewOption = option
 	}
+
+	//builder.mvcRouterHandler.Options.ViewOption =
+
+}
+
+func (builder *ControllerBuilder) SetViewEngine(viewEngine View.IViewEngine) {
+	builder.mvcRouterHandler.ViewEngine = viewEngine
+}
+
+func (builder *ControllerBuilder) SetConfiguration(configuration Abstractions.IConfiguration) {
+	builder.configuration = configuration
 }
 
 // add filter to mvc

@@ -42,7 +42,8 @@ func CreateCustomBuilder() *Abstractions.HostBuilder {
 			app.UseStaticAssets()
 			app.UseEndpoints(registerEndpointRouterConfig)
 			app.UseMvc(func(builder *Mvc.ControllerBuilder) {
-				builder.AddViews(Mvc.ViewOption{Pattern: "Static/templates/**"})
+				//builder.AddViews(&View.Option{Path: "./Static/templates"})
+				builder.AddViewsByConfig()
 				builder.AddController(contollers.NewUserController)
 				builder.AddFilter("/v1/user/info", &contollers.TestActionFilter{})
 			})

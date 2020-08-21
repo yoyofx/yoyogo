@@ -1,9 +1,12 @@
 package Mvc
 
-import "github.com/yoyofx/yoyogo/WebFramework/ActionResult"
+import (
+	"github.com/yoyofx/yoyogo/WebFramework/ActionResult"
+	"github.com/yoyofx/yoyogo/WebFramework/View"
+)
 
 type ApiController struct {
-	view *ActionResult.HTMLDebug
+	view View.IViewEngine
 }
 
 func (c *ApiController) GetName() string {
@@ -18,17 +21,18 @@ func (c *ApiController) Fail(msg string) ApiResult {
 	return ApiResult{Success: false, Message: msg}
 }
 
-func (c *ApiController) SetViewEngine(viewEngine *ActionResult.HTMLDebug) {
+func (c *ApiController) SetViewEngine(viewEngine View.IViewEngine) {
 	c.view = viewEngine
 }
 
 func (c *ApiController) View(name string, data interface{}) ActionResult.IActionResult {
-	return c.view.Instance(name, data)
+	html, _ := c.view.ViewHtml(name, data)
+	return ActionResult.Html{Document: html}
 }
 
 type IController interface {
 	GetName() string
-	SetViewEngine(viewEngine *ActionResult.HTMLDebug)
+	SetViewEngine(viewEngine View.IViewEngine)
 	//ViewData interface{}
 	//Data interface{}
 }

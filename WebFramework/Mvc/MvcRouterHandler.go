@@ -2,8 +2,8 @@ package Mvc
 
 import (
 	"fmt"
-	"github.com/yoyofx/yoyogo/WebFramework/ActionResult"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
+	"github.com/yoyofx/yoyogo/WebFramework/View"
 	"net/http"
 	"strings"
 )
@@ -12,7 +12,7 @@ type RouterHandler struct {
 	ControllerFilters     []ActionFilterChain
 	ControllerDescriptors map[string]ControllerDescriptor
 	Options               Options
-	ViewEngine            *ActionResult.HTMLDebug
+	ViewEngine            View.IViewEngine
 }
 
 func NewMvcRouterHandler() *RouterHandler {

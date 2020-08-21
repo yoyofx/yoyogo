@@ -43,13 +43,13 @@ func (controller UserController) PostUserInfo(ctx *Context.HttpContext, request 
 }
 
 func (controller UserController) GetHtmlHello() ActionResult.IActionResult {
-	return controller.View("hello.tmpl", map[string]interface{}{
+	return controller.View("hello", map[string]interface{}{
 		"name": "hello world!",
 	})
 }
 
 func (controller UserController) GetHtmlBody() ActionResult.IActionResult {
-	return controller.View("raw.tmpl", map[string]interface{}{
+	return controller.View("raw", map[string]interface{}{
 		"body": "raw.htm hello world!",
 	})
 }

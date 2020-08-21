@@ -8,6 +8,9 @@ application:
     static:
       patten: "/"
       webroot: "./Static"
+    views:
+      path: "./Static/templates"
+      includes: ["",""]
     jwt:
       header: "Authorization"
       secret: "12391JdeOW^%$#@"

@@ -2,11 +2,11 @@ package YoyoGo
 
 import (
 	"github.com/yoyofx/yoyogo/Abstractions"
-	"github.com/yoyofx/yoyogo/DependencyInjection"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"github.com/yoyofx/yoyogo/WebFramework/Middleware"
 	"github.com/yoyofx/yoyogo/WebFramework/Mvc"
 	"github.com/yoyofx/yoyogo/WebFramework/Router"
+	"github.com/yoyofx/yoyogo/WebFramework/View"
 	"net/http"
 )
 
@@ -45,7 +45,6 @@ func CreateBlankWebBuilder() *WebHostBuilder {
 func New(handlers ...MiddlewareHandler) *WebApplicationBuilder {
 	return &WebApplicationBuilder{
 		handlers: handlers,
-		//middleware: build(handlers),
 	}
 }
 
@@ -82,18 +81,49 @@ func (this *WebApplicationBuilder) buildEndPoints() {
 	}
 }
 
-func (this *WebApplicationBuilder) buildMvc(services *DependencyInjection.ServiceCollection) {
+func (this *WebApplicationBuilder) buildMvc() {
 	if this.routerBuilder.IsMvc() {
 		controllerBuilder := this.routerBuilder.GetMvcBuilder()
+		// add config for controller builder
+		controllerBuilder.SetConfiguration(this.hostContext.Configuration)
 		for _, configure := range this.mvcConfigures {
 			configure(controllerBuilder)
 		}
+		// add view engine
+		var viewEngine View.IViewEngine
+		err := this.hostContext.HostServices.GetServiceByName(&viewEngine, "viewEngine")
+		if err == nil {
+			option := this.routerBuilder.GetMvcBuilder().GetRouterHandler().Options.ViewOption
+			viewEngine.SetTemplatePath(option)
+			controllerBuilder.SetViewEngine(viewEngine)
+		}
+
 		// add controllers to application services
 		controllerDescriptorList := controllerBuilder.GetControllerDescriptorList()
 		for _, descriptor := range controllerDescriptorList {
-			services.AddSingletonByNameAndImplements(descriptor.ControllerName, descriptor.ControllerType, new(Mvc.IController))
+			this.hostContext.
+				ApplicationServicesDef.
+				AddSingletonByNameAndImplements(descriptor.ControllerName, descriptor.ControllerType, new(Mvc.IController))
 		}
 	}
+}
+
+func (this *WebApplicationBuilder) buildMiddleware() {
+	for _, handler := range this.handlers {
+		if configurationMdw, ok := handler.(Middleware.IConfigurationMiddleware); ok {
+			configurationMdw.SetConfiguration(this.hostContext.Configuration)
+		}
+	}
+	this.middleware = build(this.handlers)
+}
+
+//  this time is not build host.Context.HostServices , that add services define
+func (this *WebApplicationBuilder) innerConfigures() {
+	this.hostContext.
+		ApplicationServicesDef.
+		AddSingletonByNameAndImplements("viewEngine", View.CreateViewEngine, new(View.IViewEngine))
+	//-------------------------  view engine ----------------------------------
+
 }
 
 // build and combo all middleware to request delegate (ServeHTTP(w http.ResponseWriter, r *http.Request))
@@ -102,20 +132,19 @@ func (this *WebApplicationBuilder) Build() interface{} {
 	if this.hostContext == nil {
 		panic("hostContext is nil! please set.")
 	}
-	//this.hostContext.HostingEnvironment
-	for _, handler := range this.handlers {
-		if configurationMdw, ok := handler.(Middleware.IConfigurationMiddleware); ok {
-			configurationMdw.SetConfiguration(this.hostContext.Configuration)
-		}
-	}
-	this.middleware = build(this.handlers)
+
+	this.buildMiddleware()
 	this.buildEndPoints()
-	this.buildMvc(this.hostContext.ApplicationServicesDef)
+	this.buildMvc()
 	return this
 }
 
 func (this *WebApplicationBuilder) SetHostBuildContext(context *Abstractions.HostBuildContext) {
 	this.hostContext = context
+	// has host.Context.HostServices
+	if this.hostContext.ApplicationServicesDef != nil {
+		this.innerConfigures()
+	}
 }
 
 // apply middleware in builder
