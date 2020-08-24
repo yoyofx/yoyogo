@@ -38,6 +38,7 @@ func CreateCustomBuilder() *Abstractions.HostBuilder {
 	return YoyoGo.NewWebHostBuilder().
 		UseConfiguration(configuration).
 		Configure(func(app *YoyoGo.WebApplicationBuilder) {
+			app.UseMiddleware(Middleware.NewCORS())
 			app.UseMiddleware(Middleware.NewRequestID())
 			app.UseStaticAssets()
 			app.UseEndpoints(registerEndpointRouterConfig)

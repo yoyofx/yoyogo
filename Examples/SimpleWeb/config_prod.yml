@@ -17,3 +17,8 @@ application:
       prefix: "Bearer"
       expires: 3
       enable: true
+    cors:
+      enable: true
+      allow_origins: [ "*" ]
+      allow_methods: [ "POST","GET","PUT", "PATCH" ]
+      allow_credentials: true
