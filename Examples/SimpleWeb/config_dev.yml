@@ -22,7 +22,6 @@ application:
           "/v1/user/GetInfo"
       ]
     cors:
-      enable: true
       allow_origins: ["*"]
       allow_methods: ["POST","GET","PUT", "PATCH"]
       allow_credentials: true

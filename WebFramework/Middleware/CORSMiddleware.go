@@ -20,7 +20,8 @@ func NewCORS() *CORSMiddleware {
 
 func (cors *CORSMiddleware) SetConfiguration(config Abstractions.IConfiguration) {
 	if config != nil {
-		cors.Enable, _ = config.Get("application.server.cors.enable").(bool)
+		c := config.Get("application.server.cors")
+		cors.Enable = c != nil
 	}
 	if cors.Enable {
 		corsConfig := CORS.DefaultConfig()
