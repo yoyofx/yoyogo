@@ -145,6 +145,7 @@ func (host *HostBuilder) Build() IServiceHost {
 
 // inner configures function for DI.
 func innerConfigures(hostContext *HostBuildContext, serviceCollection *DependencyInjection.ServiceCollection) {
+	serviceCollection.AddSingleton(func() IConfiguration { return hostContext.Configuration })
 	serviceCollection.AddSingleton(func() *ApplicationLife { return hostContext.ApplicationCycle })
 	serviceCollection.AddSingleton(func() *Context.HostEnvironment { return hostContext.HostingEnvironment })
 }

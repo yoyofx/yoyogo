@@ -25,4 +25,12 @@ application:
       allow_origins: ["*"]
       allow_methods: ["POST","GET","PUT", "PATCH"]
       allow_credentials: true
+server_discovery:
+  type: "nacos"
+  metadata:
+    url: "localhost"
+    port: 8848
+    namespace: "public"
+    #group_name: ""
+    #clusters: [""]
 

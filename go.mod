@@ -7,7 +7,8 @@ require (
 	github.com/golang/protobuf v1.4.2
 	github.com/google/uuid v1.1.1
 	github.com/magiconair/properties v1.8.1
-	github.com/pkg/errors v0.8.1
+	github.com/nacos-group/nacos-sdk-go v1.0.0
+	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v0.9.3
 	github.com/spf13/pflag v1.0.3
 	github.com/spf13/viper v1.7.1

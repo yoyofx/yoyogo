@@ -26,7 +26,11 @@ func (host WebHost) Run() {
 	Abstractions.PrintLogo(logger, hostEnv)
 
 	ExitHookSignals.HookSignals(host)
+	Abstractions.HostRunning(logger, host.HostContext)
+	//application running
 	_ = host.webServer.Run(host.HostContext)
+	//application ending
+	Abstractions.HostEnding(logger, host.HostContext)
 
 }
 
@@ -37,6 +41,8 @@ func logFormater(logInfo XLog.LogInfo) string {
 }
 
 func (host WebHost) StopApplicationNotify() {
+	logger := XLog.GetXLogger("Application")
+	Abstractions.HostEnding(logger, host.HostContext)
 	host.HostContext.ApplicationCycle.StopApplication()
 }
 
