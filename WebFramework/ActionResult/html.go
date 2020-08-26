@@ -33,6 +33,10 @@ type HTMLDebug struct {
 	FuncMap template.FuncMap
 }
 
+type Html struct {
+	Document string
+}
+
 // HTML contains template reference and its name with given interface object.
 type HTML struct {
 	Template *template.Template
@@ -84,5 +88,17 @@ func (r HTML) Render(w http.ResponseWriter) error {
 
 // WriteContentType (HTML) writes HTML ContentType.
 func (r HTML) WriteContentType(w http.ResponseWriter) {
+	writeContentType(w, htmlContentType)
+}
+
+// Render (HTML) executes template and writes its result with custom ContentType for response.
+func (r Html) Render(w http.ResponseWriter) error {
+	r.WriteContentType(w)
+	_, err := w.Write([]byte(r.Document))
+	return err
+}
+
+// WriteContentType (HTML) writes HTML ContentType.
+func (r Html) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, htmlContentType)
 }

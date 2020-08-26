@@ -5,7 +5,7 @@ import (
 	"github.com/yoyofx/yoyogo/Abstractions"
 	"github.com/yoyofx/yoyogo/Abstractions/Platform/ConsoleColors"
 	"github.com/yoyofx/yoyogo/Abstractions/Platform/ExitHookSignals"
-	"github.com/yoyofx/yoyogo/Abstractions/xlog"
+	"github.com/yoyofx/yoyogo/Abstractions/XLog"
 )
 
 type WebHost struct {
@@ -19,7 +19,7 @@ func NewWebHost(server Abstractions.IServer, hostContext *Abstractions.HostBuild
 
 func (host WebHost) Run() {
 	hostEnv := host.HostContext.HostingEnvironment
-	logger := xlog.GetXLogger("Application")
+	logger := XLog.GetXLogger("Application")
 	logger.SetCustomLogFormat(logFormater)
 	Abstractions.RunningHostEnvironmentSetting(hostEnv)
 
@@ -30,7 +30,7 @@ func (host WebHost) Run() {
 
 }
 
-func logFormater(logInfo xlog.LogInfo) string {
+func logFormater(logInfo XLog.LogInfo) string {
 	outLog := fmt.Sprintf(ConsoleColors.Yellow("[yoyogo] ")+"[%s] %s",
 		logInfo.StartTime, logInfo.Message)
 	return outLog

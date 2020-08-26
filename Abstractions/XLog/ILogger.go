@@ -1,4 +1,4 @@
-package xlog
+package XLog
 
 type ILogger interface {
 	Debug(format string, a ...interface{})

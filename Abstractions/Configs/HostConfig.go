@@ -1,4 +1,4 @@
-package configs
+package Configs
 
 type HostConfig struct {
 	Name     string       `mapstructure:"name"`

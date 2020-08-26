@@ -1,7 +1,7 @@
 package Endpoints
 
 import (
-	"github.com/yoyofx/yoyogo/Abstractions/xlog"
+	"github.com/yoyofx/yoyogo/Abstractions/XLog"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"github.com/yoyofx/yoyogo/WebFramework/Router"
 	"html/template"
@@ -34,7 +34,7 @@ const (
 var panicHTMLTemplate = template.Must(template.New("PanicPage").Parse(panicText))
 
 func UseViz(router Router.IRouterBuilder) {
-	xlog.GetXLogger("Endpoint").Debug("loaded graphViz endpoint.")
+	XLog.GetXLogger("Endpoint").Debug("loaded graphViz endpoint.")
 
 	router.GET("/actuator/graph", func(ctx *Context.HttpContext) {
 		graphType := ctx.Input.QueryDefault("type", "data")

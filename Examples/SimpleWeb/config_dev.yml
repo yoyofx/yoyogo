@@ -8,6 +8,9 @@ application:
     static:
       patten: "/"
       webroot: "./Static"
+    views:
+      path: "./Static/templates"
+      includes: ["",""]
     jwt:
       header: "Authorization"
       secret: "12391JdeOW^%$#@"
@@ -18,4 +21,8 @@ application:
           "/info",
           "/v1/user/GetInfo"
       ]
+    cors:
+      allow_origins: ["*"]
+      allow_methods: ["POST","GET","PUT", "PATCH"]
+      allow_credentials: true
 

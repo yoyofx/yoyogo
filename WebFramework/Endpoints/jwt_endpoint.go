@@ -1,7 +1,7 @@
 package Endpoints
 
 import (
-	"github.com/yoyofx/yoyogo/Abstractions/xlog"
+	"github.com/yoyofx/yoyogo/Abstractions/XLog"
 	"github.com/yoyofx/yoyogo/Utils/jwt"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"github.com/yoyofx/yoyogo/WebFramework/Middleware"
@@ -11,7 +11,7 @@ import (
 )
 
 func UseJwt(router Router.IRouterBuilder) {
-	xlog.GetXLogger("Endpoint").Debug("loaded jwt endpoint.")
+	XLog.GetXLogger("Endpoint").Debug("loaded jwt endpoint.")
 	config := router.GetConfiguration()
 	var secretKey string
 	var expires int64
@@ -39,7 +39,7 @@ func UseJwt(router Router.IRouterBuilder) {
 				}
 			}
 			if name == "" || id == "" {
-				xlog.GetXLogger("Jwt Endpoint").Debug("Create Token: name: %s , id: %v , token: %s")
+				XLog.GetXLogger("Jwt Endpoint").Debug("Create Token: name: %s , id: %v , token: %s")
 				ctx.JSON(200, Context.H{
 					"token":   "",
 					"expires": 0,
@@ -50,7 +50,7 @@ func UseJwt(router Router.IRouterBuilder) {
 
 			uid, _ := strconv.Atoi(id)
 			token, expires := jwt.CreateToken([]byte(secretKey), name, uint(uid), int64(time.Now().Add(time.Hour*time.Duration(expires)).Unix()))
-			xlog.GetXLogger("Jwt Endpoint").Debug("Create Token: ( name: %s , id: %s , token: %s )", name, id, token)
+			XLog.GetXLogger("Jwt Endpoint").Debug("Create Token: ( name: %s , id: %s , token: %s )", name, id, token)
 			ctx.JSON(200, Context.H{
 				"token":   token,
 				"expires": expires,
@@ -58,7 +58,7 @@ func UseJwt(router Router.IRouterBuilder) {
 			})
 		})
 	} else {
-		xlog.GetXLogger("Jwt Endpoint").Error("config load error.")
+		XLog.GetXLogger("Jwt Endpoint").Error("config load error.")
 	}
 
 }

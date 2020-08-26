@@ -1,7 +1,7 @@
 package Endpoints
 
 import (
-	"github.com/yoyofx/yoyogo/Abstractions/xlog"
+	"github.com/yoyofx/yoyogo/Abstractions/XLog"
 	"github.com/yoyofx/yoyogo/WebFramework"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"github.com/yoyofx/yoyogo/WebFramework/Router"
@@ -21,7 +21,7 @@ func pprofHandler(h http.HandlerFunc) YoyoGo.HandlerFunc {
 }
 
 func UsePprof(router Router.IRouterBuilder) {
-	xlog.GetXLogger("Endpoint").Debug("loaded pprof endpoint.")
+	XLog.GetXLogger("Endpoint").Debug("loaded pprof endpoint.")
 
 	router.Group("/debug/pprof", func(prefixRouter *Router.RouterGroup) {
 		prefixRouter.GET("/", pprofHandler(pprof.Index))

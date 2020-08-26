@@ -1,4 +1,4 @@
-package configs
+package Configs
 
 type ServerConfig struct {
 	ServerType     string       `mapstructure:"type"`

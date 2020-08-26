@@ -1,4 +1,4 @@
-package xlog
+package XLog
 
 type LogInfo struct {
 	StartTime string

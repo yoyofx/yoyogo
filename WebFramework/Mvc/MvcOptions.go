@@ -1,11 +1,14 @@
 package Mvc
 
+import "github.com/yoyofx/yoyogo/WebFramework/View"
+
 const (
 	DefaultMvcTemplate = "v1/{controller}/{action}"
 )
 
 type Options struct {
-	Template RouteTemplate
+	Template   RouteTemplate
+	ViewOption *View.Option
 }
 
 // NewMvcOptions new mvc options.

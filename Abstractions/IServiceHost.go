@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/yoyofx/yoyogo"
 	"github.com/yoyofx/yoyogo/Abstractions/Platform/ConsoleColors"
-	"github.com/yoyofx/yoyogo/Abstractions/xlog"
+	"github.com/yoyofx/yoyogo/Abstractions/XLog"
 	"github.com/yoyofx/yoyogo/Utils"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"strconv"
@@ -18,7 +18,7 @@ type IServiceHost interface {
 	SetAppMode(mode string)
 }
 
-func PrintLogo(l xlog.ILogger, env *Context.HostEnvironment) {
+func PrintLogo(l XLog.ILogger, env *Context.HostEnvironment) {
 	logo, _ := base64.StdEncoding.DecodeString(YoyoGo.Logo)
 
 	fmt.Println(ConsoleColors.Blue(string(logo)))
