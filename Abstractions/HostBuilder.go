@@ -3,8 +3,8 @@ package Abstractions
 import (
 	"fmt"
 	"github.com/yoyofx/yoyogo"
+	"github.com/yoyofx/yoyogo/Abstractions/Configs"
 	"github.com/yoyofx/yoyogo/Abstractions/Env"
-	"github.com/yoyofx/yoyogo/Abstractions/configs"
 	"github.com/yoyofx/yoyogo/DependencyInjection"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"net"
@@ -39,7 +39,7 @@ func (host *HostBuilder) UseConfiguration(configuration IConfiguration) *HostBui
 	host.Context.HostingEnvironment.Profile = configuration.GetProfile()
 	section := host.Context.Configuration.GetSection("application")
 	if section != nil {
-		config := &configs.HostConfig{}
+		config := &Configs.HostConfig{}
 		section.Unmarshal(config)
 		host.Context.HostConfiguration = config
 	}
