@@ -32,7 +32,8 @@
 				"f7e7b06a-9e95-43df-7a05-ec28fe943548",
 				"dfc843b1-a121-8784-dd98-381809221e80",
 				"2c9f5051-40d1-ddbb-6b68-fdeedef8f10f",
-				"18808bfd-94ba-41d8-9268-30df6bd7727f"
+				"18808bfd-94ba-41d8-9268-30df6bd7727f",
+				"293c9e8c-b608-9aa3-3ee9-8f2f7b19fef8"
 			],
 			"owner": "5959537",
 			"folders_order": [],
@@ -65,6 +66,7 @@
 				}
 			],
 			"url": "http://localhost:8080/v1/user/postuserinfo",
+			"folder": "9cd2afdb-c74f-c541-11b6-b93fd3d6e398",
 			"queryParams": [],
 			"preRequestScript": null,
 			"pathVariables": {},
@@ -121,6 +123,27 @@
 			"rawModeData": "{\n\t\"username\":\"zl\"\n}"
 		},
 		{
+			"id": "293c9e8c-b608-9aa3-3ee9-8f2f7b19fef8",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8080/v1/user/GetSD",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1598514871451,
+			"name": "http://localhost:8080/v1/user/GetSD",
+			"description": "获取服务发现实例",
+			"collectionId": "5487971b-3ddd-4a84-d6b6-b23d3591ce8b",
+			"responses": []
+		},
+		{
 			"id": "2c9f5051-40d1-ddbb-6b68-fdeedef8f10f",
 			"headers": "Authorization: Bearer 1eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTgxNzQxODAsImlzcyI6InlveW8iLCJ1aWQiOjIyLCJhZG1pbiI6ZmFsc2V9.Wk6bXDjuOMLRbb_rQRuxZrRr2B2MG7Ot4iHmAxzJC1Q\n",
 			"headerData": [
@@ -132,6 +155,7 @@
 				}
 			],
 			"url": "http://localhost:8080/v1/user/gethtmlhello",
+			"folder": "9cd2afdb-c74f-c541-11b6-b93fd3d6e398",
 			"queryParams": [],
 			"preRequestScript": null,
 			"pathVariables": {},
@@ -150,27 +174,32 @@
 		},
 		{
 			"id": "35fe21aa-e471-312a-a17e-178a254d4193",
-			"headers": "",
-			"headerData": [],
+			"headers": "Origin: localhost\n",
+			"headerData": [
+				{
+					"key": "Origin",
+					"value": "localhost",
+					"description": "",
+					"enabled": true
+				}
+			],
 			"url": "http://localhost:8080/info",
 			"queryParams": [],
+			"preRequestScript": null,
 			"pathVariables": {},
 			"pathVariableData": [],
-			"preRequestScript": null,
 			"method": "GET",
-			"collectionId": "5487971b-3ddd-4a84-d6b6-b23d3591ce8b",
 			"data": null,
 			"dataMode": "params",
-			"name": "get /info",
-			"description": "get /info",
-			"descriptionFormat": "html",
-			"time": 1576555356196,
 			"version": 2,
-			"responses": [],
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"collection_id": "5487971b-3ddd-4a84-d6b6-b23d3591ce8b"
+			"time": 1598413381916,
+			"name": "get /info",
+			"description": "get /info",
+			"collectionId": "5487971b-3ddd-4a84-d6b6-b23d3591ce8b",
+			"responses": []
 		},
 		{
 			"id": "391dd094-a03e-ec74-beec-02e215cc566f",

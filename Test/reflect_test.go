@@ -162,7 +162,7 @@ func Test_UserController(t *testing.T) {
 	})
 	assert.Equal(t, len(rets), 1)
 
-	instance1 := contollers.NewUserController(models.NewUserAction())
+	instance1 := contollers.NewUserController(models.NewUserAction(), nil)
 	_ = instance1
 	//actionList = reflectx.GetObjectMethodInfoList(instance)
 	//_ = actionList

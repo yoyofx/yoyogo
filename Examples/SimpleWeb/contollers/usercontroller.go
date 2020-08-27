@@ -1,6 +1,7 @@
 package contollers
 
 import (
+	"github.com/yoyofx/yoyogo/Abstractions/ServerDiscovery"
 	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/models"
 	"github.com/yoyofx/yoyogo/WebFramework/ActionResult"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
@@ -9,11 +10,12 @@ import (
 
 type UserController struct {
 	Mvc.ApiController
-	userAction models.IUserAction
+	userAction      models.IUserAction
+	discoveryClient ServerDiscovery.IServerDiscovery
 }
 
-func NewUserController(userAction models.IUserAction) *UserController {
-	return &UserController{userAction: userAction}
+func NewUserController(userAction models.IUserAction, sd ServerDiscovery.IServerDiscovery) *UserController {
+	return &UserController{userAction: userAction, discoveryClient: sd}
 }
 
 type RegisterRequest struct {
@@ -57,4 +59,9 @@ func (controller UserController) GetHtmlBody() ActionResult.IActionResult {
 func (controller UserController) GetInfo() Mvc.ApiResult {
 
 	return controller.OK(controller.userAction.Login("zhang"))
+}
+
+func (controller UserController) GetSD() Mvc.ApiResult {
+	serviceList := controller.discoveryClient.GetAllInstances("demo_dev")
+	return controller.OK(serviceList)
 }
