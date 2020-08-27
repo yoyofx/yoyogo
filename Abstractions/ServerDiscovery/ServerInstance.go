@@ -13,7 +13,9 @@ type ServiceInstance interface {
 	GetHost() string
 
 	// GetPort will return the port.
-	GetPort() int
+	GetPort() uint64
+
+	GetWeight() float64
 
 	// IsEnable will return the enable status of this instance
 	IsEnable() bool
@@ -31,11 +33,12 @@ type DefaultServiceInstance struct {
 	Id          string
 	ServiceName string
 	Host        string
-	Port        int
+	Port        uint64
 	ClusterName string
 	GroupName   string
 	Enable      bool
 	Healthy     bool
+	Weight      float64
 	Metadata    map[string]string
 }
 
@@ -55,8 +58,11 @@ func (d *DefaultServiceInstance) GetHost() string {
 }
 
 // GetPort will return the port.
-func (d *DefaultServiceInstance) GetPort() int {
+func (d *DefaultServiceInstance) GetPort() uint64 {
 	return d.Port
+}
+func (d *DefaultServiceInstance) GetWeight() float64 {
+	return d.Weight
 }
 
 // IsEnable will return the enable status of this instance

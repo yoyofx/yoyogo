@@ -5,6 +5,7 @@ type IServerDiscovery interface {
 	Register() error
 	Update() error
 	Unregister() error
-	GetInstances(serviceName string) []ServiceInstance
+	GetHealthyInstances(serviceName string) []ServiceInstance
+	GetAllInstances(serviceName string) []ServiceInstance
 	Destroy() error
 }

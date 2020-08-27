@@ -19,7 +19,8 @@ application:
       enable: true
       skip_path: [
           "/info",
-          "/v1/user/GetInfo"
+          "/v1/user/GetInfo",
+          "/v1/user/GetSD"
       ]
     cors:
       allow_origins: ["*"]
