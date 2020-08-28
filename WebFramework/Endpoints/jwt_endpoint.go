@@ -17,8 +17,8 @@ func UseJwt(router Router.IRouterBuilder) {
 	var expires int64
 	var hasSecret, hasExpires bool
 	if config != nil {
-		secretKey, hasSecret = config.Get("application.server.jwt.secret").(string)
-		expires, hasExpires = config.Get("application.server.jwt.expires").(int64)
+		secretKey, hasSecret = config.Get("yoyogo.application.server.jwt.secret").(string)
+		expires, hasExpires = config.Get("yoyogo.application.server.jwt.expires").(int64)
 	}
 	if !hasSecret {
 		secretKey = "12391JdeOW^%$#@"

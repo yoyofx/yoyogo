@@ -1,37 +1,45 @@
-application:
-  name: demo_dev
-  metadata: "develop"
-  server:
-    type: "fasthttp"
-    address: ":8080"
-    max_request_size: 2096157
-    static:
-      patten: "/"
-      webroot: "./Static"
-    views:
-      path: "./Static/templates"
-      includes: ["",""]
-    jwt:
-      header: "Authorization"
-      secret: "12391JdeOW^%$#@"
-      prefix: "Bearer"
-      expires: 3
-      enable: true
-      skip_path: [
-          "/info",
-          "/v1/user/GetInfo",
-          "/v1/user/GetSD"
-      ]
-    cors:
-      allow_origins: ["*"]
-      allow_methods: ["POST","GET","PUT", "PATCH"]
-      allow_credentials: true
-server_discovery:
-  type: "nacos"
-  metadata:
-    url: "localhost"
-    port: 8848
-    namespace: "public"
-    #group_name: ""
-    #clusters: [""]
+yoyogo:
+  application:
+    name: demo_dev
+    metadata: "develop"
+    server:
+      type: "fasthttp"
+      address: ":8080"
+      max_request_size: 2096157
+      static:
+        patten: "/"
+        webroot: "./Static"
+      views:
+        path: "./Static/templates"
+        includes: ["",""]
+      jwt:
+        header: "Authorization"
+        secret: "12391JdeOW^%$#@"
+        prefix: "Bearer"
+        expires: 3
+        enable: true
+        skip_path: [
+            "/info",
+            "/v1/user/GetInfo",
+            "/v1/user/GetSD"
+        ]
+      cors:
+        allow_origins: ["*"]
+        allow_methods: ["POST","GET","PUT", "PATCH"]
+        allow_credentials: true
+  cloud:
+    discovery:
+    #  type: "nacos"
+    #  metadata:
+    #    url: "localhost"
+    #    port: 8848
+    #    namespace: "public"
+    #    group_name: ""
+    #    clusters: [""]
+      type: "consul"
+      metadata:
+        address: "localhost:8500"
+        health_check: "/actuator/health"
+        tags: [""]
+
 

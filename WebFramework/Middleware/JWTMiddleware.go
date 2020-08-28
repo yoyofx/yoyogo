@@ -30,11 +30,11 @@ func NewJwt() *JwtMiddleware {
 func (jwtmdw *JwtMiddleware) SetConfiguration(config Abstractions.IConfiguration) {
 	var hasEnable, hasSecret, hasPrefix, hasHeader bool
 	if config != nil {
-		jwtmdw.Enable, hasEnable = config.Get("application.server.jwt.enable").(bool)
-		jwtmdw.SecretKey, hasSecret = config.Get("application.server.jwt.secret").(string)
-		jwtmdw.Prefix, hasPrefix = config.Get("application.server.jwt.prefix").(string)
-		jwtmdw.Header, hasHeader = config.Get("application.server.jwt.header").(string)
-		jwtmdw.SkipPath, _ = config.Get("application.server.jwt.skip_path").([]interface{})
+		jwtmdw.Enable, hasEnable = config.Get("yoyogo.application.server.jwt.enable").(bool)
+		jwtmdw.SecretKey, hasSecret = config.Get("yoyogo.application.server.jwt.secret").(string)
+		jwtmdw.Prefix, hasPrefix = config.Get("yoyogo.application.server.jwt.prefix").(string)
+		jwtmdw.Header, hasHeader = config.Get("yoyogo.application.server.jwt.header").(string)
+		jwtmdw.SkipPath, _ = config.Get("yoyogo.application.server.jwt.skip_path").([]interface{})
 	}
 
 	if !hasEnable {
@@ -51,7 +51,9 @@ func (jwtmdw *JwtMiddleware) SetConfiguration(config Abstractions.IConfiguration
 		jwtmdw.Header = "Authorization"
 	}
 
+	jwtmdw.SkipPath = append(jwtmdw.SkipPath, "/")
 	jwtmdw.SkipPath = append(jwtmdw.SkipPath, "/auth/token")
+	jwtmdw.SkipPath = append(jwtmdw.SkipPath, "/actuator/health")
 
 }
 

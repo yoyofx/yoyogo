@@ -7,7 +7,7 @@ import (
 	"github.com/yoyofx/yoyogo/DependencyInjection"
 	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/contollers"
 	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/models"
-	"github.com/yoyofx/yoyogo/Internal/ServerDiscovery"
+	"github.com/yoyofx/yoyogo/Internal/ServiceDiscoveryProvider/Consul"
 	"github.com/yoyofx/yoyogo/WebFramework"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"github.com/yoyofx/yoyogo/WebFramework/Endpoints"
@@ -52,7 +52,8 @@ func CreateCustomBuilder() *Abstractions.HostBuilder {
 		}).
 		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
-			ServerDiscovery.UseNacos(serviceCollection)
+			Consul.UseServiceDiscovery(serviceCollection)
+			//Nacos.UseServiceDiscovery(serviceCollection)
 		}).
 		OnApplicationLifeEvent(getApplicationLifeEvent)
 }

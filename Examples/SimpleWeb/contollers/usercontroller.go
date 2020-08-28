@@ -1,7 +1,7 @@
 package contollers
 
 import (
-	"github.com/yoyofx/yoyogo/Abstractions/ServerDiscovery"
+	"github.com/yoyofx/yoyogo/Abstractions/ServiceDiscovery"
 	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/models"
 	"github.com/yoyofx/yoyogo/WebFramework/ActionResult"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
@@ -11,10 +11,10 @@ import (
 type UserController struct {
 	Mvc.ApiController
 	userAction      models.IUserAction
-	discoveryClient ServerDiscovery.IServerDiscovery
+	discoveryClient ServiceDiscovery.IServiceDiscovery
 }
 
-func NewUserController(userAction models.IUserAction, sd ServerDiscovery.IServerDiscovery) *UserController {
+func NewUserController(userAction models.IUserAction, sd ServiceDiscovery.IServiceDiscovery) *UserController {
 	return &UserController{userAction: userAction, discoveryClient: sd}
 }
 

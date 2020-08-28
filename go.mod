@@ -6,6 +6,7 @@ require (
 	github.com/defval/inject/v2 v2.2.2
 	github.com/golang/protobuf v1.4.2
 	github.com/google/uuid v1.1.1
+	github.com/hashicorp/consul/api v1.1.0
 	github.com/magiconair/properties v1.8.1
 	github.com/nacos-group/nacos-sdk-go v1.0.0
 	github.com/pkg/errors v0.9.1

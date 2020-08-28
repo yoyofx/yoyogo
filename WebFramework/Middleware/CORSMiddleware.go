@@ -20,12 +20,12 @@ func NewCORS() *CORSMiddleware {
 
 func (cors *CORSMiddleware) SetConfiguration(config Abstractions.IConfiguration) {
 	if config != nil {
-		c := config.Get("application.server.cors")
+		c := config.Get("yoyogo.application.server.cors")
 		cors.Enable = c != nil
 	}
 	if cors.Enable {
 		corsConfig := CORS.DefaultConfig()
-		allowOrigins, _ := config.Get("application.server.cors.allow_origins").([]interface{})
+		allowOrigins, _ := config.Get("yoyogo.application.server.cors.allow_origins").([]interface{})
 		if allowOrigins != nil {
 			for _, ao := range allowOrigins {
 				corsConfig.AllowOrigins = append(corsConfig.AllowOrigins, ao.(string))
@@ -33,14 +33,14 @@ func (cors *CORSMiddleware) SetConfiguration(config Abstractions.IConfiguration)
 			//corsConfig.AllowOrigins = allowOrigins
 		}
 		var ams []string
-		allowMethods, _ := config.Get("application.server.cors.allow_methods").([]interface{})
+		allowMethods, _ := config.Get("yoyogo.application.server.cors.allow_methods").([]interface{})
 		if allowMethods != nil {
 			for _, am := range allowMethods {
 				ams = append(ams, am.(string))
 			}
 			corsConfig.AllowMethods = ams
 		}
-		allowCredentials, _ := config.Get("application.server.cors.allow_credentials").(bool)
+		allowCredentials, _ := config.Get("yoyogo.application.server.cors.allow_credentials").(bool)
 		if allowMethods != nil {
 			corsConfig.AllowCredentials = allowCredentials
 		}
