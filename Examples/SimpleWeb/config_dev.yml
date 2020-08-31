@@ -36,10 +36,11 @@ yoyogo:
     #    namespace: "public"
     #    group_name: ""
     #    clusters: [""]
-      type: "consul"
+#      type: "consul"
+#      metadata:
+#        address: "localhost:8500"
+#        health_check: "/actuator/health"
+#        tags: [""]
+      type: "eureka"
       metadata:
-        address: "localhost:8500"
-        health_check: "/actuator/health"
-        tags: [""]
-
-
+        address: "http://localhost:8761/eureka"
