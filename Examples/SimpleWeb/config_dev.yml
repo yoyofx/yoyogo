@@ -29,11 +29,11 @@ yoyogo:
         allow_credentials: true
   cloud:
     discovery:
-    #  type: "nacos"
-    #  metadata:
-    #    url: "localhost"
-    #    port: 8848
-    #    namespace: "public"
+      type: "nacos"
+      metadata:
+        url: "localhost"
+        port: 8848
+        namespace: "public"
     #    group_name: ""
     #    clusters: [""]
 #      type: "consul"
@@ -41,6 +41,6 @@ yoyogo:
 #        address: "localhost:8500"
 #        health_check: "/actuator/health"
 #        tags: [""]
-      type: "eureka"
-      metadata:
-        address: "http://localhost:8761/eureka"
+#      type: "eureka"
+#      metadata:
+#        address: "http://localhost:8761/eureka"
