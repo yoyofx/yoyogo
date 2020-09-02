@@ -37,7 +37,7 @@ func (host *HostBuilder) Configure(configure interface{}) *HostBuilder {
 func (host *HostBuilder) UseConfiguration(configuration IConfiguration) *HostBuilder {
 	host.Context.Configuration = configuration
 	host.Context.HostingEnvironment.Profile = configuration.GetProfile()
-	section := host.Context.Configuration.GetSection("application")
+	section := host.Context.Configuration.GetSection("yoyogo.application")
 	if section != nil {
 		config := &Configs.HostConfig{}
 		section.Unmarshal(config)

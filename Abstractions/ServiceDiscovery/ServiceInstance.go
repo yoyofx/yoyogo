@@ -1,4 +1,4 @@
-package ServerDiscovery
+package ServiceDiscovery
 
 // ServiceInstance is the model class of an instance of a service, which is used for service registration and discovery.
 type ServiceInstance interface {
@@ -16,6 +16,12 @@ type ServiceInstance interface {
 	GetPort() uint64
 
 	GetWeight() float64
+
+	GetTags() []string
+
+	GetClusterName() string
+
+	GetGroupName() string
 
 	// IsEnable will return the enable status of this instance
 	IsEnable() bool
@@ -36,6 +42,7 @@ type DefaultServiceInstance struct {
 	Port        uint64
 	ClusterName string
 	GroupName   string
+	Tags        []string
 	Enable      bool
 	Healthy     bool
 	Weight      float64
@@ -63,6 +70,18 @@ func (d *DefaultServiceInstance) GetPort() uint64 {
 }
 func (d *DefaultServiceInstance) GetWeight() float64 {
 	return d.Weight
+}
+
+func (d *DefaultServiceInstance) GetTags() []string {
+	return d.Tags
+}
+
+func (d *DefaultServiceInstance) GetClusterName() string {
+	return d.ClusterName
+}
+
+func (d *DefaultServiceInstance) GetGroupName() string {
+	return d.GroupName
 }
 
 // IsEnable will return the enable status of this instance

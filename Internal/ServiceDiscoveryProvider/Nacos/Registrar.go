@@ -9,23 +9,27 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/model"
 	"github.com/nacos-group/nacos-sdk-go/vo"
 	"github.com/yoyofx/yoyogo/Abstractions"
-	"github.com/yoyofx/yoyogo/Abstractions/ServerDiscovery"
+	"github.com/yoyofx/yoyogo/Abstractions/ServiceDiscovery"
 	"github.com/yoyofx/yoyogo/Abstractions/XLog"
+	"github.com/yoyofx/yoyogo/Internal/ServiceDiscoveryProvider"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
-	"strconv"
 )
 
-type Register struct {
-	cacheLocalInstance ServerDiscovery.DefaultServiceInstance
+type Registrar struct {
+	cacheLocalInstance ServiceDiscovery.ServiceInstance
 	logger             XLog.ILogger
 	config             Config
 	client             naming_client.INamingClient
 }
 
-func NewServerDiscoveryWithDI(configuration Abstractions.IConfiguration, env *Context.HostEnvironment) ServerDiscovery.IServerDiscovery {
-	section := configuration.GetSection("server_discovery.metadata")
+func NewServerDiscoveryWithDI(configuration Abstractions.IConfiguration, env *Context.HostEnvironment) ServiceDiscovery.IServiceDiscovery {
+	sdType, ok := configuration.Get("yoyogo.cloud.discovery.type").(string)
+	if !ok || sdType != "nacos" {
+		panic(errors.New("yoyogo.cloud.discovery.type is not config node"))
+	}
+	section := configuration.GetSection("yoyogo.cloud.discovery.metadata")
 	if section == nil {
-		panic(errors.New("server_discovery.metadata is not config node"))
+		panic(errors.New("yoyogo.cloud.discovery.metadata is not config node"))
 	}
 	option := Config{}
 	section.Unmarshal(&option)
@@ -40,9 +44,9 @@ func NewServerDiscoveryWithDI(configuration Abstractions.IConfiguration, env *Co
 	return NewServerDiscovery(option)
 }
 
-func NewServerDiscovery(option Config) ServerDiscovery.IServerDiscovery {
+func NewServerDiscovery(option Config) ServiceDiscovery.IServiceDiscovery {
 	logger := XLog.GetXLogger("Server Discovery Nacos")
-	nacosRegister := &Register{}
+	nacosRegister := &Registrar{}
 
 	serverConfigs := []constant.ServerConfig{
 		{
@@ -58,7 +62,7 @@ func NewServerDiscovery(option Config) ServerDiscovery.IServerDiscovery {
 		NotLoadCacheAtStart: true,
 		RotateTime:          "1h",
 		MaxAge:              3,
-		LogLevel:            "debug",
+		LogLevel:            "error",
 	}
 
 	namingClient, err := clients.CreateNamingClient(map[string]interface{}{
@@ -78,31 +82,16 @@ func NewServerDiscovery(option Config) ServerDiscovery.IServerDiscovery {
 	return nacosRegister
 }
 
-func (register Register) GetName() string {
+func (register Registrar) GetName() string {
 	return "Nacos"
 }
 
-func (register *Register) Register() error {
-	port, _ := strconv.ParseInt(register.config.ENV.Port, 10, 64)
-
-	register.cacheLocalInstance = ServerDiscovery.DefaultServiceInstance{
-		Id:          uuid.New().String(),
-		ServiceName: register.config.ENV.ApplicationName,
-		Host:        register.config.ENV.Host,
-		Port:        uint64(port),
-		ClusterName: register.config.ClusterName,
-		GroupName:   register.config.GroupName,
-		Enable:      true,
-		Healthy:     true,
-		Metadata: map[string]string{
-			"VERSION": register.config.ENV.Version,
-		},
-	}
-
+func (register *Registrar) Register() error {
+	register.cacheLocalInstance = ServiceDiscoveryProvider.CreateServiceInstance(register.config.ENV)
 	success, err := register.client.RegisterInstance(vo.RegisterInstanceParam{
-		Ip:          register.cacheLocalInstance.Host,
-		Port:        uint64(register.cacheLocalInstance.Port),
-		ServiceName: register.cacheLocalInstance.ServiceName,
+		Ip:          register.cacheLocalInstance.GetHost(),
+		Port:        register.cacheLocalInstance.GetPort(),
+		ServiceName: register.cacheLocalInstance.GetServiceName(),
 		Weight:      10,
 		ClusterName: register.config.ClusterName,
 		GroupName:   register.config.GroupName,
@@ -116,22 +105,25 @@ func (register *Register) Register() error {
 	if err != nil {
 		register.logger.Error(err.Error())
 	}
-	register.logger.Debug("Register IP: %s , Success: %v", register.config.ENV.Host, success)
+	register.logger.Debug("Registrar IP: %s , Success: %v", register.config.ENV.Host, success)
 	return err
 }
 
-func (register Register) Update() error {
+func (register Registrar) Update() error {
 
 	return nil
 }
 
-func (register Register) Unregister() error {
+func (register Registrar) Unregister() error {
+	if register.cacheLocalInstance == nil {
+		return nil
+	}
 	_, err := register.client.DeregisterInstance(vo.DeregisterInstanceParam{
-		Ip:          register.cacheLocalInstance.Host,
-		Port:        register.cacheLocalInstance.Port,
-		Cluster:     register.cacheLocalInstance.ClusterName,
-		ServiceName: register.cacheLocalInstance.ServiceName,
-		GroupName:   register.cacheLocalInstance.GroupName,
+		Ip:          register.cacheLocalInstance.GetHost(),
+		Port:        register.cacheLocalInstance.GetPort(),
+		Cluster:     register.cacheLocalInstance.GetClusterName(),
+		ServiceName: register.cacheLocalInstance.GetServiceName(),
+		GroupName:   register.cacheLocalInstance.GetGroupName(),
 		Ephemeral:   true,
 	})
 	if err != nil {
@@ -140,7 +132,7 @@ func (register Register) Unregister() error {
 	return err
 }
 
-func (register Register) GetHealthyInstances(serviceName string) []ServerDiscovery.ServiceInstance {
+func (register Registrar) GetHealthyInstances(serviceName string) []ServiceDiscovery.ServiceInstance {
 	// SelectInstances only return the instances of healthy=${HealthyOnly},enable=true and weight>0
 	instances, err := register.client.SelectInstances(vo.SelectInstancesParam{
 		ServiceName: serviceName,
@@ -154,7 +146,7 @@ func (register Register) GetHealthyInstances(serviceName string) []ServerDiscove
 	return convInstance(register.config.GroupName, instances)
 }
 
-func (register Register) GetAllInstances(serviceName string) []ServerDiscovery.ServiceInstance {
+func (register Registrar) GetAllInstances(serviceName string) []ServiceDiscovery.ServiceInstance {
 	instances, err := register.client.SelectAllInstances(vo.SelectAllInstancesParam{
 		ServiceName: serviceName,
 		GroupName:   register.config.GroupName,             // default value is DEFAULT_GROUP
@@ -167,10 +159,10 @@ func (register Register) GetAllInstances(serviceName string) []ServerDiscovery.S
 	return convInstance(register.config.GroupName, instances)
 }
 
-func convInstance(groupName string, sourceInstances []model.Instance) []ServerDiscovery.ServiceInstance {
-	var serviceList []ServerDiscovery.ServiceInstance
+func convInstance(groupName string, sourceInstances []model.Instance) []ServiceDiscovery.ServiceInstance {
+	var serviceList []ServiceDiscovery.ServiceInstance
 	for _, s := range sourceInstances {
-		instance := &ServerDiscovery.DefaultServiceInstance{
+		instance := &ServiceDiscovery.DefaultServiceInstance{
 			Id:          uuid.New().String(),
 			ServiceName: s.ServiceName,
 			Host:        s.Ip,
@@ -187,7 +179,7 @@ func convInstance(groupName string, sourceInstances []model.Instance) []ServerDi
 	return serviceList
 }
 
-func (register Register) Destroy() error {
+func (register Registrar) Destroy() error {
 	register.logger.Debug("Destroy")
 	err := register.Unregister()
 	return err

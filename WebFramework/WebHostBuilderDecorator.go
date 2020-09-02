@@ -28,7 +28,7 @@ func (decorator WebHostBuilderDecorator) OverrideNewApplicationBuilder(context *
 // OverrideNewHost Create WebHost.
 func (decorator WebHostBuilderDecorator) OverrideNewHost(server Abstractions.IServer, context *Abstractions.HostBuildContext) Abstractions.IServiceHost {
 	if server == nil && context.HostConfiguration != nil {
-		section := context.Configuration.GetSection("application.server")
+		section := context.Configuration.GetSection("yoyogo.application.server")
 		if section != nil {
 			serverType := section.Get("type").(string)
 			address := section.Get("address").(string)

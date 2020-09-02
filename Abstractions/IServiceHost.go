@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/yoyofx/yoyogo"
 	"github.com/yoyofx/yoyogo/Abstractions/Platform/ConsoleColors"
-	"github.com/yoyofx/yoyogo/Abstractions/ServerDiscovery"
+	"github.com/yoyofx/yoyogo/Abstractions/ServiceDiscovery"
 	"github.com/yoyofx/yoyogo/Abstractions/XLog"
 	"github.com/yoyofx/yoyogo/Utils"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
@@ -28,7 +28,7 @@ func HostEnding(log XLog.ILogger, context *HostBuildContext) {
 }
 
 func startServerDiscovery(log XLog.ILogger, context *HostBuildContext) {
-	var sd ServerDiscovery.IServerDiscovery
+	var sd ServiceDiscovery.IServiceDiscovery
 	_ = context.HostServices.GetService(&sd)
 	if sd != nil {
 		_ = sd.Register()
@@ -36,7 +36,7 @@ func startServerDiscovery(log XLog.ILogger, context *HostBuildContext) {
 }
 
 func endServerDiscovery(log XLog.ILogger, context *HostBuildContext) {
-	var sd ServerDiscovery.IServerDiscovery
+	var sd ServiceDiscovery.IServiceDiscovery
 	_ = context.HostServices.GetService(&sd)
 	if sd != nil {
 		_ = sd.Destroy()

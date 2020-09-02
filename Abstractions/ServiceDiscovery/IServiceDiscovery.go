@@ -1,6 +1,6 @@
-package ServerDiscovery
+package ServiceDiscovery
 
-type IServerDiscovery interface {
+type IServiceDiscovery interface {
 	GetName() string
 	Register() error
 	Update() error
