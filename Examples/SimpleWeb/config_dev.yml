@@ -4,7 +4,7 @@ yoyogo:
     metadata: "develop"
     server:
       type: "fasthttp"
-      address: ":8080"
+      address: ":8081"
       max_request_size: 2096157
       static:
         patten: "/"
@@ -28,13 +28,16 @@ yoyogo:
         allow_methods: ["POST","GET","PUT", "PATCH"]
         allow_credentials: true
   cloud:
+    apm:
+      skyworking:
+        address: localhost:11800
     discovery:
       type: "nacos"
       metadata:
         url: "localhost"
         port: 8848
         namespace: "public"
-    #    group_name: ""
+        group_name: ""
     #    clusters: [""]
 #      type: "consul"
 #      metadata:
@@ -43,4 +46,4 @@ yoyogo:
 #        tags: [""]
 #      type: "eureka"
 #      metadata:
-#        address: "http://localhost:8761/eureka"
+#        address: "http://localhost:5000/eureka"
