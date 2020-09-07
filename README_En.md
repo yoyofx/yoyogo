@@ -30,7 +30,7 @@ import ...
 func main() {
     webHost := YoyoGo.CreateDefaultBuilder(func(router Router.IRouterBuilder) {
         router.GET("/info",func (ctx *Context.HttpContext) {
-            ctx.JSON(200, Context.M{"info": "ok"})
+            ctx.JSON(200, Context.H{"info": "ok"})
         })
     }).Build().Run()       //default port :8080
 }
