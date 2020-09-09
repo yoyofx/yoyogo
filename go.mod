@@ -3,6 +3,7 @@ module github.com/yoyofx/yoyogo
 go 1.14
 
 require (
+	github.com/SkyAPM/go2sky v0.5.0
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/clbanning/x2j v0.0.0-20191024224557-825249438eec // indirect
 	github.com/defval/inject/v2 v2.2.2

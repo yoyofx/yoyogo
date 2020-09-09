@@ -40,7 +40,7 @@ func CreateCustomBuilder() *Abstractions.HostBuilder {
 		UseConfiguration(configuration).
 		Configure(func(app *YoyoGo.WebApplicationBuilder) {
 			app.UseMiddleware(Middleware.NewCORS())
-			app.UseMiddleware(Middleware.NewRequestID())
+			app.UseMiddleware(Middleware.NewRequestTracker())
 			app.UseStaticAssets()
 			app.UseEndpoints(registerEndpointRouterConfig)
 			app.UseMvc(func(builder *Mvc.ControllerBuilder) {
@@ -52,7 +52,7 @@ func CreateCustomBuilder() *Abstractions.HostBuilder {
 		}).
 		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
-			//Eureka.UseServiceDiscovery(serviceCollection)
+			// Eureka.UseServiceDiscovery(serviceCollection)
 			//Consul.UseServiceDiscovery(serviceCollection)
 			Nacos.UseServiceDiscovery(serviceCollection)
 		}).
