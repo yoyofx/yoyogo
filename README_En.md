@@ -30,7 +30,7 @@ import ...
 func main() {
     webHost := YoyoGo.CreateDefaultBuilder(func(router Router.IRouterBuilder) {
         router.GET("/info",func (ctx *Context.HttpContext) {
-            ctx.JSON(200, Context.M{"info": "ok"})
+            ctx.JSON(200, Context.H{"info": "ok"})
         })
     }).Build().Run()       //default port :8080
 }
@@ -45,7 +45,7 @@ func main() {
 * [X] Simple router binded handle func
 * [X] HttpContext (request,response)
 * [X] Static File EndPoint（Static File Server）
-* [X] JSON Serialization Struct （Context.M）
+* [X] JSON Serialization Struct （Context.H）
 * [X] Get Request File And Save
 * [X] Unite Get Post Data Away (form-data , x-www-form-urlencoded)
 * [X] Binding Model for Http Request ( From, JSON ) 

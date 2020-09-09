@@ -51,7 +51,7 @@ import ...
 func main() {
     YoyoGo.CreateDefaultBuilder(func(router Router.IRouterBuilder) {
         router.GET("/info",func (ctx *Context.HttpContext) {    // 支持Group方式
-            ctx.JSON(200, Context.M{"info": "ok"})
+            ctx.JSON(200, Context.H{"info": "ok"})
         })
     }).Build().Run()       //默认端口号 :8080
 }
@@ -66,7 +66,7 @@ func main() {
 * [X] 简单路由器绑定句柄功能
 * [X] HttpContext 上下文封装(请求，响应)
 * [X] 静态文件端点（静态文件服务器）
-* [X] JSON 序列化结构（Context.M）
+* [X] JSON 序列化结构（Context.H）
 * [X] 获取请求文件并保存
 * [X] 获取请求数据（form-data，x-www-form-urlencoded，Json ，XML，Protobuf 等）
 * [X] Http 请求的绑定模型（Url, From，JSON，XML，Protobuf）
