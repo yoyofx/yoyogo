@@ -51,7 +51,7 @@ import ...
 func main() {
     YoyoGo.CreateDefaultBuilder(func(router Router.IRouterBuilder) {
         router.GET("/info",func (ctx *Context.HttpContext) {    // 支持Group方式
-            ctx.JSON(200, Context.M{"info": "ok"})
+            ctx.JSON(200, Context.H{"info": "ok"})
         })
     }).Build().Run()       //默认端口号 :8080
 }
@@ -66,7 +66,7 @@ func main() {
 * [X] 简单路由器绑定句柄功能
 * [X] HttpContext 上下文封装(请求，响应)
 * [X] 静态文件端点（静态文件服务器）
-* [X] JSON 序列化结构（Context.M）
+* [X] JSON 序列化结构（Context.H）
 * [X] 获取请求文件并保存
 * [X] 获取请求数据（form-data，x-www-form-urlencoded，Json ，XML，Protobuf 等）
 * [X] Http 请求的绑定模型（Url, From，JSON，XML，Protobuf）
@@ -93,13 +93,10 @@ func main() {
 * [X] Logger
 * [X] StaticFile
 * [X] Router Middleware
-* [ ] Session
-* [ ] CORS
-* [ ] GZip	
+* [X] CORS	
 * [X] Binding
-* [ ] Binding Valateion
-
-
+* [X] JWT
+* [X] RequestId And Tracker for SkyWorking
 
 ## 路由
 * [x] GET，POST，HEAD，PUT，DELETE 方法支持
@@ -123,12 +120,10 @@ func main() {
 ## 扩展
 * [X] 配置
 * [ ] WebSocket
-* [ ] JWT 
+* [X] JWT 
 * [ ] swagger
-* [ ] GRpc
-* [ ] OAuth2	 
+* [ ] GRpc	 
 * [X] Prometheus 
-* [ ] 安全
 
 
 # 进阶范例
@@ -143,25 +138,38 @@ func main() {
 
 // 自定义HostBuilder并支持 MVC 和 自动参数绑定功能，简单情况也可以直接使用CreateDefaultBuilder 。
 func CreateCustomBuilder() *Abstractions.HostBuilder {
-    return YoyoGo.NewWebHostBuilder().
-        SetEnvironment(Context.Prod).
-        UseFastHttp().
-        //UseServer(YoyoGo.DefaultHttps(":8080", "./Certificate/server.pem", "./Certificate/server.key")).
-        Configure(func(app *YoyoGo.WebApplicationBuilder) {
-            app.UseStatic("Static")
-            app.UseEndpoints(registerEndpointRouterConfig)
-            app.UseMvc(func(builder *Mvc.ControllerBuilder) {
-                builder.AddController(contollers.NewUserController)
-            })
-        }).
-        ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
-            serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
-        }).
-        OnApplicationLifeEvent(getApplicationLifeEvent)
+    configuration := Abstractions.NewConfigurationBuilder().AddYamlFile("config").Build()
+	return YoyoGo.NewWebHostBuilder().
+		UseConfiguration(configuration).
+		Configure(func(app *YoyoGo.WebApplicationBuilder) {
+			app.UseMiddleware(Middleware.NewCORS())
+			app.UseMiddleware(Middleware.NewRequestTracker())
+			app.UseStaticAssets()
+			app.UseEndpoints(registerEndpointRouterConfig)
+			app.UseMvc(func(builder *Mvc.ControllerBuilder) {
+				//builder.AddViews(&View.Option{Path: "./Static/templates"})
+				builder.AddViewsByConfig()
+				builder.AddController(contollers.NewUserController)
+				builder.AddFilter("/v1/user/info", &contollers.TestActionFilter{})
+			})
+		}).
+		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
+			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
+			// Eureka.UseServiceDiscovery(serviceCollection)
+			//Consul.UseServiceDiscovery(serviceCollection)
+			Nacos.UseServiceDiscovery(serviceCollection)
+		}).
+		OnApplicationLifeEvent(getApplicationLifeEvent)
 }
 
 //region endpoint 路由绑定函数
 func registerEndpoints(router Router.IRouterBuilder) {
+	Endpoints.UseHealth(router)
+	Endpoints.UseViz(router)
+	Endpoints.UsePrometheus(router)
+	Endpoints.UsePprof(router)
+	Endpoints.UseJwt(router)
+	
 	router.GET("/error", func(ctx *Context.HttpContext) {
 		panic("http get error")
 	})
@@ -177,13 +185,13 @@ func registerEndpoints(router Router.IRouterBuilder) {
 
         strResult := fmt.Sprintf("Name:%s , Q1:%s , bind: %s", pd_name, qs_q1, userInfo)
 
-        ctx.JSON(200, Std.M{"info": "hello world", "result": strResult})
+        ctx.JSON(200, Context.H{"info": "hello world", "result": strResult})
     })
 
     // 路由组功能实现绑定 GET 请求:  /v1/api/info
 	router.Group("/v1/api", func(router *Router.RouterGroup) {
 		router.GET("/info", func (ctx *Context.HttpContext) {
-	        ctx.JSON(200, Std.M{"info": "ok"})
+	        ctx.JSON(200, Context.H{"info": "ok"})
         })
 	})
     
@@ -191,7 +199,7 @@ func registerEndpoints(router Router.IRouterBuilder) {
 	router.GET("/ioc", func (ctx *Context.HttpContext) {
         var userAction models.IUserAction
         _ = ctx.RequiredServices.GetService(&userAction)
-        ctx.JSON(200, Std.M{"info": "ok " + userAction.Login("zhang")})
+        ctx.JSON(200, Context.H{"info": "ok " + userAction.Login("zhang")})
     })
 }
 
