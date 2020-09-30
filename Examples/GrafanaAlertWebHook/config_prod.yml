@@ -1,0 +1,16 @@
+application:
+  name: Alert
+  metadata: "prod Env"
+  server:
+    type: "fasthttp"
+    address: ":8089"
+    max_request_size: 2096157
+
+# alert通过 tag识别节点值
+alert:
+  jishi:
+    send_url: https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=efaebe93-7b21-4bc3-888f-260744f397ac
+    link_url: http://jcenter-main.easypass.cn/jiankong/d/trpHG7FGk/che-hou-ye-wu-ri-zhi-cha-xun?orgId=1&from=now-1h&to=now&var-app=jishi*&var-level=error&var-host=All&var-msg=*
+  znbk:
+    send_url: http://localhost
+    link_url: http://jcenter-main.easypass.cn/jiankong/d/trpHG7FGk/che-hou-ye-wu-ri-zhi-cha-xun?orgId=1&from=now-1h&to=now&var-app=zhineng*&var-level=error&var-host=All&var-msg=*

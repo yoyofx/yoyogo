@@ -1,6 +1,6 @@
-package main
+package WechatRequests
 
-type AlertRequest struct {
+type GrafanaAlertRequest struct {
 	PanelID     int    `json:"panelId" gorm:"column:panelId"`
 	DashboardID int    `json:"dashboardId" gorm:"column:dashboardId"`
 	ImageUrl    string `json:"imageUrl" gorm:"column:imageUrl"`
