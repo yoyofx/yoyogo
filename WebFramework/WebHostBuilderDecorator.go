@@ -28,16 +28,15 @@ func (decorator WebHostBuilderDecorator) OverrideNewApplicationBuilder(context *
 // OverrideNewHost Create WebHost.
 func (decorator WebHostBuilderDecorator) OverrideNewHost(server Abstractions.IServer, context *Abstractions.HostBuildContext) Abstractions.IServiceHost {
 	if server == nil && context.HostConfiguration != nil {
-		section := context.Configuration.GetSection("yoyogo.application.server")
-		if section != nil {
-			serverType := section.Get("type").(string)
-			address := section.Get("address").(string)
-			if serverType == "fasthttp" {
-				server = NewFastHttp(address)
-			} else if serverType == "http" {
-				server = DefaultHttpServer(address)
-			}
+		//section := context.Configuration.GetSection("yoyogo.application.server")
+		serverType := context.HostConfiguration.Server.ServerType
+		address := context.HostConfiguration.Server.Address
+		if serverType == "fasthttp" {
+			server = NewFastHttp(address)
+		} else if serverType == "http" {
+			server = DefaultHttpServer(address)
 		}
+
 	} else {
 		server = NewFastHttp(DefaultAddress)
 	}
