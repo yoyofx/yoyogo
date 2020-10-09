@@ -6,4 +6,5 @@ type LogInfo struct {
 	Class     string
 	Host      string
 	Message   string
+	Extend    map[string]interface{}
 }

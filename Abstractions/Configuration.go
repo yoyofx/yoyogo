@@ -14,21 +14,23 @@ type Configuration struct {
 }
 
 func NewConfiguration(configContext *ConfigurationContext) *Configuration {
+	defaultConfig := viper.New()
 
+	flag.String("port", "", "application port")
 	flag.String("profile", configContext.profile, "application profile")
 	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
 	pflag.Parse()
-	_ = viper.BindPFlags(pflag.CommandLine)
+	_ = defaultConfig.BindPFlags(pflag.CommandLine)
 
-	configContext.profile = viper.GetString("profile")
-
+	if pf := defaultConfig.GetString("profile"); pf != "" {
+		configContext.profile = pf
+	}
 	configName := configContext.configName + "_" + configContext.profile
 	exists, _ := Utils.PathExists("./" + configName + "." + configContext.configType)
 	if !exists {
 		configName = configContext.configName
 	}
 
-	defaultConfig := viper.New()
 	defaultConfig.AddConfigPath(".")
 	defaultConfig.SetConfigName(configName)
 	defaultConfig.SetConfigType(configContext.configType)

@@ -41,6 +41,10 @@ func (host *HostBuilder) UseConfiguration(configuration IConfiguration) *HostBui
 	if section != nil {
 		config := &Configs.HostConfig{}
 		section.Unmarshal(config)
+		portInterface := configuration.Get("port")
+		if portInterface != nil && portInterface.(string) != "" {
+			config.Server.Address = ":" + portInterface.(string)
+		}
 		host.Context.HostConfiguration = config
 	}
 	return host
