@@ -8,7 +8,7 @@ import (
 
 func main() {
 	configuration := Abstractions.NewConfigurationBuilder().AddYamlFile("config").Build()
-	// --profile=prod , to read , config_prod.yml
+	// --profile=prod , to read , config.yml
 	YoyoGo.NewWebHostBuilder().
 		UseConfiguration(configuration).
 		Configure(func(app *YoyoGo.WebApplicationBuilder) {

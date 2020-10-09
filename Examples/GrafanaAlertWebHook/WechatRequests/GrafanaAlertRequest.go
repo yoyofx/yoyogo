@@ -1,5 +1,7 @@
 package WechatRequests
 
+import "strconv"
+
 type GrafanaAlertRequest struct {
 	PanelID     int    `json:"panelId" gorm:"column:panelId"`
 	DashboardID int    `json:"dashboardId" gorm:"column:dashboardId"`
@@ -18,7 +20,16 @@ type GrafanaAlertRequest struct {
 		Tags   struct{} `json:"tags" gorm:"column:tags"`
 	} `json:"evalMatches" gorm:"column:evalMatches"`
 
-	Tags struct {
-		TagName string `json:"tag name" gorm:"column:tag name"`
-	} `json:"tags" gorm:"column:tags"`
+	Tags map[string]string `json:"tags" gorm:"column:tags"`
+}
+
+func (request GrafanaAlertRequest) GetMetricValue() string {
+	if len(request.EvalMatches) > 0 {
+		return strconv.Itoa(request.EvalMatches[0].Value)
+	}
+	return "0"
+}
+
+func (request GrafanaAlertRequest) GetTag() string {
+	return request.Tags["alert"]
 }
