@@ -28,7 +28,7 @@ func (server *FastHttpServer) GetAddr() string {
 
 func (server *FastHttpServer) Run(context *Abstractions.HostBuildContext) (e error) {
 
-	fastHttpHandler := fasthttpadaptor.NewFastHTTPHandler(context.RequestDelegate.(Abstractions.IRequestDelegate))
+	fastHttpHandler := fasthttpadaptor.NewFastHTTPHandler(context.RequestDelegate.(IRequestDelegate))
 
 	server.webserver = &fasthttp.Server{
 		Handler: fastHttpHandler,
