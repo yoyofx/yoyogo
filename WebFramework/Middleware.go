@@ -6,14 +6,14 @@ import (
 )
 
 type MiddlewareHandler interface {
-	Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext))
+	Invoke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext))
 }
 
 type NextFunc func(ctx *Context.HttpContext)
 
 type MiddlewareHandlerFunc func(ctx *Context.HttpContext, next func(ctx *Context.HttpContext))
 
-func (h MiddlewareHandlerFunc) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
+func (h MiddlewareHandlerFunc) Invoke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 	h(ctx, next)
 }
 
@@ -32,7 +32,7 @@ func newMiddleware(handler MiddlewareHandler, next *middleware) middleware {
 }
 
 func (m middleware) Invoke(ctx *Context.HttpContext) {
-	m.handler.Inovke(ctx, m.nextfn)
+	m.handler.Invoke(ctx, m.nextfn)
 }
 
 func wrap(handler http.Handler) MiddlewareHandler {

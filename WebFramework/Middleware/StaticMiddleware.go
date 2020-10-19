@@ -42,7 +42,7 @@ func NewStaticWithConfig(configuration Abstractions.IConfiguration) *Static {
 	}
 }
 
-func (s *Static) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
+func (s *Static) Invoke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 	if (ctx.Input.Request.Method != "GET" && ctx.Input.Request.Method != "HEAD") || (s.Option.IsPrefix && !strings.Contains(ctx.Input.Request.URL.Path, s.Option.VirtualPath)) {
 		next(ctx)
 		return

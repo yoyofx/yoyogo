@@ -57,7 +57,7 @@ func (jwtmdw *JwtMiddleware) SetConfiguration(config Abstractions.IConfiguration
 
 }
 
-func (jwtmdw *JwtMiddleware) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
+func (jwtmdw *JwtMiddleware) Invoke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 
 	if !jwtmdw.Enable || Utils.Contains(ctx.Input.Path(), jwtmdw.SkipPath) {
 		next(ctx)

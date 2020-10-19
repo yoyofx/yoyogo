@@ -154,7 +154,7 @@ func NewRecovery() *Recovery {
 	}
 }
 
-func (rec *Recovery) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
+func (rec *Recovery) Invoke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 
 	defer func() {
 		if err := recover(); err != nil {

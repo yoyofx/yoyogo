@@ -108,7 +108,7 @@ func NewLogger() *Logger {
 	return logger
 }
 
-func (l *Logger) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
+func (l *Logger) Invoke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 	start := time.Now()
 	next(ctx)
 	res := ctx.Output.GetWriter()

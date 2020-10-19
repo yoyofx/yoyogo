@@ -48,7 +48,7 @@ func (cors *CORSMiddleware) SetConfiguration(config Abstractions.IConfiguration)
 	}
 }
 
-func (cors *CORSMiddleware) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
+func (cors *CORSMiddleware) Invoke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 	if cors.Enable {
 		cors.mCors.ApplyCors(ctx)
 	}

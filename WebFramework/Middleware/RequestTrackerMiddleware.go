@@ -44,7 +44,7 @@ func (router *RequestTrackerMiddleware) SetConfiguration(config Abstractions.ICo
 
 //const componentIDGINHttpServer = 5006
 
-func (router *RequestTrackerMiddleware) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
+func (router *RequestTrackerMiddleware) Invoke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 	requestId := ctx.Input.Header(headerXRequestID)
 	if requestId == "" {
 		requestId = uuid.New().String()

@@ -16,7 +16,7 @@ func NewRouter(builder Router.IRouterBuilder) *RouterMiddleware {
 	return &RouterMiddleware{RouterBuilder: builder}
 }
 
-func (router *RouterMiddleware) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
+func (router *RouterMiddleware) Invoke(ctx *Context.HttpContext, next func(ctx *Context.HttpContext)) {
 	var handler func(ctx *Context.HttpContext)
 	handler = router.RouterBuilder.Search(ctx, strings.Split(ctx.Input.Request.URL.Path, "/")[1:], ctx.Input.RouterData)
 	if handler != nil {
