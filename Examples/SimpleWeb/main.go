@@ -1,12 +1,12 @@
 package main
 
 import (
+	"SimpleWeb/contollers"
+	"SimpleWeb/models"
 	"fmt"
 	"github.com/yoyofx/yoyogo/Abstractions"
 	"github.com/yoyofx/yoyogo/Abstractions/XLog"
 	"github.com/yoyofx/yoyogo/DependencyInjection"
-	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/contollers"
-	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/models"
 	"github.com/yoyofx/yoyogo/Internal/ServiceDiscoveryProvider/Nacos"
 	"github.com/yoyofx/yoyogo/WebFramework"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
@@ -40,7 +40,7 @@ func CreateCustomBuilder() *Abstractions.HostBuilder {
 		UseConfiguration(configuration).
 		Configure(func(app *YoyoGo.WebApplicationBuilder) {
 			app.UseMiddleware(Middleware.NewCORS())
-			app.UseMiddleware(Middleware.NewRequestTracker())
+			//app.UseMiddleware(Middleware.NewRequestTracker())
 			app.UseStaticAssets()
 			app.UseEndpoints(registerEndpointRouterConfig)
 			app.UseMvc(func(builder *Mvc.ControllerBuilder) {

@@ -1,6 +1,6 @@
 yoyogo:
   application:
-    name: demo_dev
+    name: yoyogo_demo_dev
     metadata: "develop"
     server:
       type: "fasthttp"
@@ -34,8 +34,8 @@ yoyogo:
     discovery:
       type: "nacos"
       metadata:
-        url: "localhost"
-        port: 8848
+        url: "120.53.133.30"
+        port: 80
         namespace: "public"
         group_name: ""
     #    clusters: [""]

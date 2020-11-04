@@ -1,8 +1,8 @@
 package contollers
 
 import (
+	"SimpleWeb/models"
 	"github.com/yoyofx/yoyogo/Abstractions/ServiceDiscovery"
-	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/models"
 	"github.com/yoyofx/yoyogo/WebFramework/ActionResult"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"github.com/yoyofx/yoyogo/WebFramework/Mvc"
