@@ -14,7 +14,7 @@ ENV GOPATH /root/gopath
 WORKDIR /godocker
 ADD . /godocker
 
-RUN go build -v -o app .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o /app .
 RUN chmod +x ./app
 
 EXPOSE 8080
