@@ -4,7 +4,7 @@ yoyogo:
     metadata: "develop"
     server:
       type: "fasthttp"
-      address: ":8082"
+      address: ":8080"
       max_request_size: 2096157
       static:
         patten: "/"
