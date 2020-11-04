@@ -11,12 +11,11 @@ RUN mkdir -p /root/gopath/bin
 RUN mkdir -p /root/code
 ENV GOPATH /root/gopath
 
-
 WORKDIR /godocker
-
 ADD . /godocker
 
 RUN go build -v -o app .
+RUN chmod +x ./app
 
 EXPOSE 8080
 
