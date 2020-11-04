@@ -16,7 +16,7 @@ WORKDIR /godocker
 
 ADD . /godocker
 
-RUN go build -v -o app main.go
+RUN go build -v -o app .
 
 EXPOSE 8080
 
