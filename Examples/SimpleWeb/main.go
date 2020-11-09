@@ -79,6 +79,8 @@ func registerEndpointRouterConfig(router Router.IRouterBuilder) {
 		router.GET("/info", GetInfo)
 	})
 
+	router.GET("/", GetInfo)
+
 	router.GET("/info", GetInfo)
 	router.GET("/ioc", GetInfoByIOC)
 }
