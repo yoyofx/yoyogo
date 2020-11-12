@@ -62,6 +62,6 @@ func (controller UserController) GetInfo() Mvc.ApiResult {
 }
 
 func (controller UserController) GetSD() Mvc.ApiResult {
-	serviceList := controller.discoveryClient.GetAllInstances("demo_dev")
+	serviceList := controller.discoveryClient.GetAllInstances("yoyogo_demo_dev")
 	return controller.OK(serviceList)
 }
