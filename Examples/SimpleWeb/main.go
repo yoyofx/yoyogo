@@ -1,12 +1,12 @@
 package main
 
 import (
+	"SimpleWeb/contollers"
+	"SimpleWeb/models"
 	"fmt"
 	"github.com/yoyofx/yoyogo/Abstractions"
 	"github.com/yoyofx/yoyogo/Abstractions/XLog"
 	"github.com/yoyofx/yoyogo/DependencyInjection"
-	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/contollers"
-	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/models"
 	"github.com/yoyofx/yoyogo/Internal/ServiceDiscoveryProvider/Nacos"
 	"github.com/yoyofx/yoyogo/WebFramework"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
@@ -35,12 +35,16 @@ func main() {
 
 //* Create the builder of Web host
 func CreateCustomBuilder() *Abstractions.HostBuilder {
-	configuration := Abstractions.NewConfigurationBuilder().AddYamlFile("config").Build()
+
+	configuration := Abstractions.NewConfigurationBuilder().
+		AddEnvironment().
+		AddYamlFile("config").Build()
+
 	return YoyoGo.NewWebHostBuilder().
 		UseConfiguration(configuration).
 		Configure(func(app *YoyoGo.WebApplicationBuilder) {
 			app.UseMiddleware(Middleware.NewCORS())
-			app.UseMiddleware(Middleware.NewRequestTracker())
+			//app.UseMiddleware(Middleware.NewRequestTracker())
 			app.UseStaticAssets()
 			app.UseEndpoints(registerEndpointRouterConfig)
 			app.UseMvc(func(builder *Mvc.ControllerBuilder) {
@@ -67,7 +71,7 @@ func registerEndpointRouterConfig(router Router.IRouterBuilder) {
 	Endpoints.UseViz(router)
 	Endpoints.UsePrometheus(router)
 	Endpoints.UsePprof(router)
-	Endpoints.UseJwt(router)
+	//Endpoints.UseJwt(router)
 
 	router.GET("/error", func(ctx *Context.HttpContext) {
 		panic("http get error")
@@ -78,6 +82,8 @@ func registerEndpointRouterConfig(router Router.IRouterBuilder) {
 	router.Group("/v1/api", func(router *Router.RouterGroup) {
 		router.GET("/info", GetInfo)
 	})
+
+	router.GET("/", GetInfo)
 
 	router.GET("/info", GetInfo)
 	router.GET("/ioc", GetInfoByIOC)

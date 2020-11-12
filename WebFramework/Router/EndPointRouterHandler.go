@@ -50,7 +50,12 @@ Next:
 // Search the tree.
 func (t *EndPointRouterHandler) search(components []string, params url.Values) *EndPointRouterHandler {
 Next:
-	for _, component := range components {
+	for cidx, component := range components {
+		if t.Component == component && cidx == 0 {
+			continue
+		} else if t.Component != "/" && t.Component != component && cidx == 0 {
+			return nil
+		}
 		for _, child := range t.children {
 			if child.Component == component || child.param == ':' || child.param == '*' {
 				if child.param == '*' {

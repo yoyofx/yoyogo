@@ -31,22 +31,27 @@ func SendTxtMessage(request GrafanaAlertRequest, config Abstractions.IConfigurat
 	tag := request.GetTag()
 	logger := XLog.GetXLogger("wechat")
 	js, _ := json.Marshal(request)
-	logger.Info(string(js))
+	logger.Info("Request json: %s", string(js))
 	if tag == "" {
 		logger.Info("no send")
 		return ""
 	}
-	sendUrl := config.Get("alert.webhook_url").(string)
+	sendUrl := config.Get(fmt.Sprintf("alert.%s.webhook_url", tag)).(string)
 	linkUrl := config.Get(fmt.Sprintf("alert.%s.link_url", tag)).(string)
+	logger.Info("request tag:%s", tag)
+	logger.Info(sendUrl)
+	logger.Info(linkUrl)
+
 	var message *MarkdownMessage
 	if request.State == "alerting" && len(request.EvalMatches) > 0 {
 		message = &MarkdownMessage{
 			Markdown: struct {
 				Content string `json:"content" gorm:"column:content"`
 			}{
-				Content: request.RuleName + ",请相关同事注意。\n" +
-					" > [报警次数]:<font color=\"warning\">" + request.GetMetricValue() + "次</font>" + "\n" +
-					" > [报警明细](" + linkUrl + ")\n",
+				Content: "## " + request.RuleName + ",请相关同事注意。\n" +
+					" > [报警信息] : " + request.Message + "\n" +
+					" > [报警次数] : <font color=\"warning\">" + request.GetMetricValue() + "次</font>" + "\n" +
+					" > [报警明细] : (" + linkUrl + ")\n",
 			},
 			Msgtype: "markdown",
 		}
@@ -55,5 +60,6 @@ func SendTxtMessage(request GrafanaAlertRequest, config Abstractions.IConfigurat
 	msgStr := string(msg)
 	logger.Info("send message:%s", msgStr)
 
+	//return sendUrl + msgStr
 	return postWechatMessage(sendUrl, msgStr)
 }

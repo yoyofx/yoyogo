@@ -33,7 +33,7 @@ func (server *HttpServer) Run(context *Abstractions.HostBuildContext) (e error) 
 
 	server.webserver = &http.Server{
 		Addr:    addr,
-		Handler: context.RequestDelegate.(Abstractions.IRequestDelegate),
+		Handler: context.RequestDelegate.(IRequestDelegate),
 	}
 
 	context.ApplicationCycle.StartApplication()

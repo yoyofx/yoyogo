@@ -1,14 +1,12 @@
 yoyogo:
   application:
-    name: yoyogo_demo_dev
+    name: yoyogo_demo_test
     metadata: "develop"
     server:
       type: "fasthttp"
       address: ":8080"
       path: "app"
       max_request_size: 2096157
-      mvc:
-        template: "/v1/{controller}/{action}"
       static:
         patten: "/"
         webroot: "./Static"

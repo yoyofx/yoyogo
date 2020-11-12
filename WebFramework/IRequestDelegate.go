@@ -1,4 +1,4 @@
-package Abstractions
+package YoyoGo
 
 import "net/http"
 

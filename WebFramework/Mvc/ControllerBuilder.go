@@ -54,7 +54,7 @@ func (builder *ControllerBuilder) AddFilter(pattern string, actionFilter IAction
 }
 
 // SetupOptions , setup mvc builder options
-func (builder *ControllerBuilder) SetupOptions(configOption func(options Options)) {
+func (builder *ControllerBuilder) SetupOptions(configOption func(options *Options)) {
 	configOption(builder.mvcRouterHandler.Options)
 }
 
@@ -89,7 +89,7 @@ func (builder *ControllerBuilder) GetControllerDescriptorByName(name string) Con
 }
 
 // GetMvcOptions get mvc options
-func (builder *ControllerBuilder) GetMvcOptions() Options {
+func (builder *ControllerBuilder) GetMvcOptions() *Options {
 	return builder.mvcRouterHandler.Options
 }
 

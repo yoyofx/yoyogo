@@ -56,9 +56,11 @@ func PrintLogo(l XLog.ILogger, env *Context.HostEnvironment) {
 	l.Debug("listening on port        :  %s", ConsoleColors.Blue(env.Port))
 	l.Debug("application running pid  :  %s", ConsoleColors.Blue(strconv.Itoa(env.PID)))
 	l.Debug("application name         :  %s", ConsoleColors.Blue(env.ApplicationName))
-	l.Debug("application environment  :  %s", ConsoleColors.Blue(env.Profile))
 	l.Debug("application exec path    :  %s", ConsoleColors.Yellow(Utils.GetCurrentDirectory()))
-	l.Debug("running in %s mode , change (Dev,Test,Prod) mode by HostBuilder.SetEnvironment .", ConsoleColors.Blue(env.Profile))
-	l.Debug(ConsoleColors.Green("Starting HTTP server..."))
+	l.Debug("application config path  :  %s", ConsoleColors.Yellow(env.MetaData["config.path"]))
+	l.Debug("application environment  :  %s", ConsoleColors.Yellow(ConsoleColors.Blue(env.Profile)))
+	l.Debug("running in %s mode , change (Dev,Test,Prod) mode by HostBuilder.SetEnvironment .", ConsoleColors.Red(env.Profile))
+	l.Debug(ConsoleColors.Green("Starting server..."))
+	l.Debug("server setting map       :  %v", env.MetaData)
 
 }

@@ -3,12 +3,8 @@ package Test
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
-	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/contollers"
-	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/models"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"github.com/yoyofxteam/reflectx"
-	"reflect"
-	"strings"
 	"testing"
 )
 
@@ -146,29 +142,30 @@ func getMehtodInfoByName(infos []reflectx.MethodInfo, name string) reflectx.Meth
 	return infos[0]
 }
 
-func Test_UserController(t *testing.T) {
-	controllerCtor := contollers.NewUserController
-	controllerName, controllerType := reflectx.GetCtorFuncOutTypeName(controllerCtor)
-	controllerName = strings.ToLower(controllerName)
-	// Create Controller and Action descriptors
-
-	instance := reflect.New(controllerType).Interface()
-	actionList := reflectx.GetObjectMethodInfoList(instance)
-	mi := getMehtodInfoByName(actionList, "GetUserName")
-	_ = mi.Parameters[0].ParameterType.Elem().Name()
-	rets := mi.Invoke(instance, &Context.HttpContext{}, &contollers.RegisterRequest{
-		UserName: "he",
-		Password: "123",
-	})
-	assert.Equal(t, len(rets), 1)
-
-	instance1 := contollers.NewUserController(models.NewUserAction(), nil)
-	_ = instance1
-	//actionList = reflectx.GetObjectMethodInfoList(instance)
-	//_ = actionList
-	//mi = getMehtodInfoByName(actionList,"GetUserName")
-	//mi.Invoke(instance,&Context.HttpContext{}, &contollers.RegisterRequest{
-	//	 UserName: "he",
-	//	 Password: "123",
-	//})
-}
+//
+//func Test_UserController(t *testing.T) {
+//	controllerCtor :=  contollers.NewUserController
+//	controllerName, controllerType := reflectx.GetCtorFuncOutTypeName(controllerCtor)
+//	controllerName = strings.ToLower(controllerName)
+//	// Create Controller and Action descriptors
+//
+//	instance := reflect.New(controllerType).Interface()
+//	actionList := reflectx.GetObjectMethodInfoList(instance)
+//	mi := getMehtodInfoByName(actionList, "GetUserName")
+//	_ = mi.Parameters[0].ParameterType.Elem().Name()
+//	rets := mi.Invoke(instance, &Context.HttpContext{}, &contollers.RegisterRequest{
+//		UserName: "he",
+//		Password: "123",
+//	})
+//	assert.Equal(t, len(rets), 1)
+//
+//	instance1 := contollers.NewUserController(models.NewUserAction(), nil)
+//	_ = instance1
+//	//actionList = reflectx.GetObjectMethodInfoList(instance)
+//	//_ = actionList
+//	//mi = getMehtodInfoByName(actionList,"GetUserName")
+//	//mi.Invoke(instance,&Context.HttpContext{}, &contollers.RegisterRequest{
+//	//	 UserName: "he",
+//	//	 Password: "123",
+//	//})
+//}

@@ -1,8 +1,8 @@
 package contollers
 
 import (
+	"SimpleWeb/models"
 	"github.com/yoyofx/yoyogo/Abstractions/ServiceDiscovery"
-	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/models"
 	"github.com/yoyofx/yoyogo/WebFramework/ActionResult"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"github.com/yoyofx/yoyogo/WebFramework/Mvc"
@@ -62,6 +62,6 @@ func (controller UserController) GetInfo() Mvc.ApiResult {
 }
 
 func (controller UserController) GetSD() Mvc.ApiResult {
-	serviceList := controller.discoveryClient.GetAllInstances("demo_dev")
+	serviceList := controller.discoveryClient.GetAllInstances("yoyogo_demo_dev")
 	return controller.OK(serviceList)
 }

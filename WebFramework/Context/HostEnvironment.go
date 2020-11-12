@@ -11,6 +11,7 @@ type HostEnvironment struct {
 	Port            string
 	Host            string
 	PID             int
+	MetaData        map[string]string
 }
 
 func (env HostEnvironment) IsDevelopment() bool {
