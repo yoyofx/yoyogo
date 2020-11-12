@@ -5,6 +5,7 @@ import "github.com/yoyofx/yoyogo/Abstractions/Env"
 type ConfigurationContext struct {
 	enableFlag bool
 	enableEnv  bool
+	configDir  string
 	configType string
 	configName string
 	profile    string
@@ -51,5 +52,6 @@ func (builder *ConfigurationBuilder) BuildEnv(env string) *Configuration {
 
 func (builder *ConfigurationBuilder) Build() *Configuration {
 	builder.context.profile = Env.Dev
+	builder.context.enableFlag = true
 	return NewConfiguration(builder.context)
 }

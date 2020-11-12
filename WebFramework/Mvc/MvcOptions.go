@@ -7,16 +7,16 @@ const (
 )
 
 type Options struct {
-	Template   RouteTemplate
+	Template   *RouteTemplate
 	ViewOption *View.Option
 }
 
 // NewMvcOptions new mvc options.
-func NewMvcOptions() Options {
-	return Options{Template: NewRouteTemplate(DefaultMvcTemplate)}
+func NewMvcOptions() *Options {
+	return &Options{Template: NewRouteTemplate(DefaultMvcTemplate)}
 }
 
 // MapRoute map url route to mvc url template.
-func (options Options) MapRoute(template string) {
+func (options *Options) MapRoute(template string) {
 	options.Template = NewRouteTemplate(template)
 }
