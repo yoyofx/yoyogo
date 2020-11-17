@@ -12,10 +12,10 @@ type RouteTemplate struct {
 	pathLen         int
 }
 
-func NewRouteTemplate(temp string) RouteTemplate {
+func NewRouteTemplate(temp string) *RouteTemplate {
 	templateSplits := strings.Split(temp, "/")
 
-	return RouteTemplate{
+	return &RouteTemplate{
 		Template:        temp,
 		controllerIndex: findIndex("{controller}", templateSplits),
 		actionIndex:     findIndex("{action}", templateSplits),

@@ -35,7 +35,11 @@ func main() {
 
 //* Create the builder of Web host
 func CreateCustomBuilder() *Abstractions.HostBuilder {
-	configuration := Abstractions.NewConfigurationBuilder().AddYamlFile("config").Build()
+
+	configuration := Abstractions.NewConfigurationBuilder().
+		AddEnvironment().
+		AddYamlFile("config").Build()
+
 	return YoyoGo.NewWebHostBuilder().
 		UseConfiguration(configuration).
 		Configure(func(app *YoyoGo.WebApplicationBuilder) {
@@ -67,7 +71,7 @@ func registerEndpointRouterConfig(router Router.IRouterBuilder) {
 	Endpoints.UseViz(router)
 	Endpoints.UsePrometheus(router)
 	Endpoints.UsePprof(router)
-	Endpoints.UseJwt(router)
+	//Endpoints.UseJwt(router)
 
 	router.GET("/error", func(ctx *Context.HttpContext) {
 		panic("http get error")

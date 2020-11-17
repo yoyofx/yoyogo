@@ -16,7 +16,8 @@ func GetCurrentDirectory() string {
 }
 
 func PathExists(path string) (bool, error) {
-	_, err := os.Stat(path)
+	f, err := os.Stat(path)
+	_ = f
 	if err == nil {
 		return true, nil
 	}

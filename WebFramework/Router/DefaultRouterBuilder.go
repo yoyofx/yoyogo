@@ -1,7 +1,9 @@
 package Router
 
 import (
+	"github.com/prometheus/common/log"
 	"github.com/yoyofx/yoyogo/Abstractions"
+	"github.com/yoyofx/yoyogo/Abstractions/XLog"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"github.com/yoyofx/yoyogo/WebFramework/Mvc"
 	"net/url"
@@ -12,21 +14,40 @@ type DefaultRouterBuilder struct {
 	mvcControllerBuilder  *Mvc.ControllerBuilder
 	endPointRouterHandler *EndPointRouterHandler
 	configuration         Abstractions.IConfiguration
+	log                   XLog.ILogger
 }
 
 func NewRouterBuilder() IRouterBuilder {
+
 	endpoint := &EndPointRouterHandler{
 		Component: "/",
 		Methods:   make(map[string]func(ctx *Context.HttpContext)),
 	}
 
 	defaultRouterHandler := &DefaultRouterBuilder{endPointRouterHandler: endpoint}
-
+	defaultRouterHandler.log = XLog.GetXLogger("DefaultRouterBuilder")
 	return defaultRouterHandler
 }
 
 func (router *DefaultRouterBuilder) SetConfiguration(config Abstractions.IConfiguration) {
 	router.configuration = config
+	// server.path
+	serverPath, hasPath := config.Get("yoyogo.application.server.path").(string)
+	if hasPath {
+		router.endPointRouterHandler.Component = serverPath
+		log.Infof("server.path:%s", serverPath)
+	}
+	// mvc.template
+	mvcTemplate, hasTemplate := config.Get("yoyogo.application.server.mvc.template").(string)
+	if hasTemplate {
+		if hasPath {
+			mvcTemplate = serverPath + mvcTemplate
+		}
+		router.mvcControllerBuilder.GetMvcOptions().MapRoute(mvcTemplate)
+		log.Infof("mvc.template:%s", mvcTemplate)
+
+	}
+
 }
 
 func (router *DefaultRouterBuilder) GetConfiguration() Abstractions.IConfiguration {
