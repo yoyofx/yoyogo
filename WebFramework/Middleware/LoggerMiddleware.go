@@ -3,11 +3,10 @@ package Middleware
 import (
 	"fmt"
 	"github.com/yoyofx/yoyogo/Abstractions/Platform/ConsoleColors"
+	"github.com/yoyofx/yoyogo/Abstractions/XLog"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"html/template"
-	"log"
 	"net/http"
-	"os"
 	"strconv"
 	"time"
 )
@@ -83,13 +82,8 @@ var LoggerDefaultFormat = "{{.StartTime}} | {{.Status}} \t {{.Duration}} | {{.Ho
 
 var LoggerDefaultDateFormat = "2006/01/02 - 15:04:05.00"
 
-type ALogger interface {
-	Println(v ...interface{})
-	Printf(format string, v ...interface{})
-}
-
 type Logger struct {
-	ALogger    ALogger
+	ALogger    XLog.ILogger
 	dateFormat string
 	template   *template.Template
 }
@@ -103,7 +97,9 @@ func (l *Logger) SetDateFormat(format string) {
 }
 
 func NewLogger() *Logger {
-	logger := &Logger{ALogger: log.New(os.Stdout, "", 0), dateFormat: LoggerDefaultDateFormat}
+	log := XLog.GetXLogger("Request Log")
+	log.SetCustomLogFormat(nil)
+	logger := &Logger{ALogger: log, dateFormat: LoggerDefaultDateFormat}
 	logger.SetFormat(LoggerDefaultFormat)
 	return logger
 }
@@ -144,6 +140,6 @@ func (l *Logger) Inovke(ctx *Context.HttpContext, next func(ctx *Context.HttpCon
 		logInfo.Body,
 	)
 
-	l.ALogger.Println(outLog)
+	l.ALogger.Info(outLog)
 
 }
