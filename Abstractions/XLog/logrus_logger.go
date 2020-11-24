@@ -38,7 +38,7 @@ func (log *LogrusLogger) With(level LogLevel, fiedls map[string]interface{}) *lo
 	//start := time.Now()
 
 	fieldsMap := make(map[string]interface{})
-	fieldsMap["prefix"] = "yoyogo"
+	fieldsMap["prefix"] = "YOYOGO"
 	if fiedls != nil {
 		fieldsMap = fiedls
 	}

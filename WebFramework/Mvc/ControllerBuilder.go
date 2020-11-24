@@ -19,29 +19,29 @@ func NewControllerBuilder() *ControllerBuilder {
 	return &ControllerBuilder{mvcRouterHandler: NewMvcRouterHandler()}
 }
 
-// add views to mvc
+// AddViews add views to mvc
 func (builder *ControllerBuilder) AddViews(option *View.Option) {
 	XLog.GetXLogger("ControllerBuilder").Debug("add mvc views: %s", option.Path)
 	builder.mvcRouterHandler.Options.ViewOption = option
 }
 
+// AddViewsByConfig add views by config
 func (builder *ControllerBuilder) AddViewsByConfig() {
-	XLog.GetXLogger("ControllerBuilder").Debug("add mvc views: %s")
 	if builder.configuration != nil {
 		section := builder.configuration.GetSection("yoyogo.application.server.views")
 		option := &View.Option{}
 		section.Unmarshal(option)
 		builder.mvcRouterHandler.Options.ViewOption = option
+		XLog.GetXLogger("ControllerBuilder").Debug("add mvc views: %s", option.Path)
 	}
-
-	//builder.mvcRouterHandler.Options.ViewOption =
-
 }
 
+// SetViewEngine set view engine
 func (builder *ControllerBuilder) SetViewEngine(viewEngine View.IViewEngine) {
 	builder.mvcRouterHandler.ViewEngine = viewEngine
 }
 
+// SetConfiguration set configuration
 func (builder *ControllerBuilder) SetConfiguration(configuration Abstractions.IConfiguration) {
 	builder.configuration = configuration
 }
