@@ -1,9 +1,7 @@
 package YoyoGo
 
 import (
-	"fmt"
 	"github.com/yoyofx/yoyogo/Abstractions"
-	"github.com/yoyofx/yoyogo/Abstractions/Platform/ConsoleColors"
 	"github.com/yoyofx/yoyogo/Abstractions/Platform/ExitHookSignals"
 	"github.com/yoyofx/yoyogo/Abstractions/XLog"
 )
@@ -20,7 +18,7 @@ func NewWebHost(server Abstractions.IServer, hostContext *Abstractions.HostBuild
 func (host WebHost) Run() {
 	hostEnv := host.HostContext.HostingEnvironment
 	logger := XLog.GetXLogger("Application")
-	logger.SetCustomLogFormat(logFormater)
+	logger.SetCustomLogFormat(nil)
 	Abstractions.RunningHostEnvironmentSetting(hostEnv)
 
 	Abstractions.PrintLogo(logger, hostEnv)
@@ -32,12 +30,6 @@ func (host WebHost) Run() {
 	//application ending
 	Abstractions.HostEnding(logger, host.HostContext)
 
-}
-
-func logFormater(logInfo XLog.LogInfo) string {
-	outLog := fmt.Sprintf(ConsoleColors.Yellow("[yoyogo] ")+"[%s] %s",
-		logInfo.StartTime, logInfo.Message)
-	return outLog
 }
 
 func (host WebHost) StopApplicationNotify() {

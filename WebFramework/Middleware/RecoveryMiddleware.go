@@ -2,11 +2,10 @@ package Middleware
 
 import (
 	"fmt"
+	"github.com/yoyofx/yoyogo/Abstractions/XLog"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"html/template"
-	"log"
 	"net/http"
-	"os"
 	"runtime"
 	"runtime/debug"
 )
@@ -133,7 +132,7 @@ func (t *HTMLPanicFormatter) FormatPanicError(rw http.ResponseWriter, r *http.Re
 }
 
 type Recovery struct {
-	Logger           ALogger
+	Logger           XLog.ILogger
 	PrintStack       bool
 	LogStack         bool
 	PanicHandlerFunc func(*PanicInformation)
@@ -144,8 +143,10 @@ type Recovery struct {
 
 // NewRecovery returns a new instance of Recovery
 func NewRecovery() *Recovery {
+	log := XLog.GetXLogger("Recovery Error")
+	log.SetCustomLogFormat(nil)
 	return &Recovery{
-		Logger:     log.New(os.Stdout, "[yoyogo] ", 0),
+		Logger:     log,
 		PrintStack: true,
 		LogStack:   true,
 		StackAll:   false,
@@ -184,9 +185,9 @@ func (rec *Recovery) Inovke(ctx *Context.HttpContext, next func(ctx *Context.Htt
 				if !rec.StackAll {
 					infos.Stack = nil
 					msg = string(stack)
-					rec.Logger.Printf(panicText, err)
+					rec.Logger.Error(panicText, err)
 				} else {
-					rec.Logger.Printf(panicText, err, msg)
+					rec.Logger.Error(panicText, err, msg)
 				}
 
 			}
@@ -204,8 +205,8 @@ func (rec *Recovery) Inovke(ctx *Context.HttpContext, next func(ctx *Context.Htt
 				func() {
 					defer func() {
 						if err := recover(); err != nil {
-							rec.Logger.Printf("provided PanicHandlerFunc panic'd: %s, trace:\n%s", err, debug.Stack())
-							rec.Logger.Printf("%s\n", debug.Stack())
+							rec.Logger.Error("provided PanicHandlerFunc panic'd: %s, trace:\n%s", err, debug.Stack())
+							rec.Logger.Error("%s\n", debug.Stack())
 						}
 					}()
 					rec.PanicHandlerFunc(infos)

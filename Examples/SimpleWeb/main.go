@@ -27,10 +27,10 @@ func SimpleDemo() {
 }
 
 func main() {
-	//SimpleDemo()
+	SimpleDemo()
 	//webHost := YoyoGo.CreateDefaultBuilder(registerEndpointRouterConfig).Build()
-	webHost := CreateCustomBuilder().Build()
-	webHost.Run()
+	//webHost := CreateCustomBuilder().Build()
+	//webHost.Run()
 }
 
 //* Create the builder of Web host
@@ -126,7 +126,7 @@ func PostInfo(ctx *Context.HttpContext) {
 
 func getApplicationLifeEvent(life *Abstractions.ApplicationLife) {
 	printDataEvent := func(event Abstractions.ApplicationEvent) {
-		XLog.GetXLogger("Application Life Event:").Debug(" Topic: %s; Event: %v\n", event.Topic, event.Data)
+		XLog.GetXLogger("Application Life Event:").Debug("Topic: %s; Event: %v", event.Topic, event.Data)
 		//fmt.Printf("[yoyogo] Topic: %s; Event: %v\n", event.Topic, event.Data)
 	}
 

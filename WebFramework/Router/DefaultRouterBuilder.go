@@ -1,8 +1,8 @@
 package Router
 
 import (
-	"github.com/prometheus/common/log"
 	"github.com/yoyofx/yoyogo/Abstractions"
+	"github.com/yoyofx/yoyogo/Abstractions/Platform/ConsoleColors"
 	"github.com/yoyofx/yoyogo/Abstractions/XLog"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"github.com/yoyofx/yoyogo/WebFramework/Mvc"
@@ -26,16 +26,20 @@ func NewRouterBuilder() IRouterBuilder {
 
 	defaultRouterHandler := &DefaultRouterBuilder{endPointRouterHandler: endpoint}
 	defaultRouterHandler.log = XLog.GetXLogger("DefaultRouterBuilder")
+	defaultRouterHandler.log.SetCustomLogFormat(nil)
 	return defaultRouterHandler
 }
 
 func (router *DefaultRouterBuilder) SetConfiguration(config Abstractions.IConfiguration) {
 	router.configuration = config
+	if config == nil {
+		return
+	}
 	// server.path
 	serverPath, hasPath := config.Get("yoyogo.application.server.path").(string)
 	if hasPath {
 		router.endPointRouterHandler.Component = serverPath
-		log.Infof("server.path:%s", serverPath)
+		router.log.Info("server.path:  %s", ConsoleColors.Green(serverPath))
 	}
 	// mvc.template
 	mvcTemplate, hasTemplate := config.Get("yoyogo.application.server.mvc.template").(string)
@@ -44,10 +48,8 @@ func (router *DefaultRouterBuilder) SetConfiguration(config Abstractions.IConfig
 			mvcTemplate = serverPath + mvcTemplate
 		}
 		router.mvcControllerBuilder.GetMvcOptions().MapRoute(mvcTemplate)
-		log.Infof("mvc.template:%s", mvcTemplate)
-
+		router.log.Info("mvc.template:  %s", ConsoleColors.Green(mvcTemplate))
 	}
-
 }
 
 func (router *DefaultRouterBuilder) GetConfiguration() Abstractions.IConfiguration {

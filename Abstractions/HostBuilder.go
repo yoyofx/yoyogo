@@ -102,10 +102,12 @@ func buildingHostEnvironmentSetting(context *HostBuildContext) {
 	hostEnv := context.HostingEnvironment
 	hostEnv.Version = YoyoGo.Version
 	hostEnv.Addr = DetectAddress("")
-	hostEnv.MetaData = make(map[string]string)
-	hostEnv.MetaData["config.path"] = context.Configuration.GetConfDir()
-	hostEnv.MetaData["server.path"] = context.Configuration.GetString("yoyogo.application.server.path")
-	hostEnv.MetaData["mvc.template"] = context.Configuration.GetString("yoyogo.application.server.mvc.template")
+	if context.Configuration != nil {
+		hostEnv.MetaData = make(map[string]string)
+		hostEnv.MetaData["config.path"] = context.Configuration.GetConfDir()
+		hostEnv.MetaData["server.path"] = context.Configuration.GetString("yoyogo.application.server.path")
+		hostEnv.MetaData["mvc.template"] = context.Configuration.GetString("yoyogo.application.server.mvc.template")
+	}
 	config := context.HostConfiguration
 	if config != nil {
 		hostEnv.ApplicationName = config.Name

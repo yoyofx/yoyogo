@@ -21,56 +21,69 @@ type WeightedResponseTime struct {
 	s ServiceDiscovery.IServiceDiscovery
 }
 
+func ping(host ServiceDiscovery.ServiceInstance, channel chan serviceDuration, curIndex int, endIndex int) {
+	destAddress := net.IPAddr{IP: net.ParseIP(host.GetHost())}
+	//初始化ICMP协议头
+	icmp := ICMP{
+		Type:        8,
+		Code:        0,
+		CheckSum:    0,
+		Identifier:  0,
+		SequenceNum: 0,
+	}
+	var buffer bytes.Buffer
+	_ = binary.Write(&buffer, binary.BigEndian, icmp)
+	icmp.CheckSum = checkSum(buffer.Bytes())
+	buffer.Reset()
+	conn, err := net.DialIP("ip4:icmp", nil, &destAddress)
+	defer conn.Close()
+	if err != nil {
+		msg := fmt.Sprintf("Fail to connect to remote host: %s\n", err)
+		log.Println(msg)
+	}
+	_ = binary.Write(&buffer, binary.BigEndian, icmp)
+	if _, err := conn.Write(buffer.Bytes()); err != nil {
+
+		log.Fatal(err)
+	}
+	//请求时间计算
+	startTime := time.Now()
+	_ = conn.SetReadDeadline(time.Now().Add(time.Second * 2))
+	recv := make([]byte, 1024)
+	_, err = conn.Read(recv)
+	if err != nil {
+		log.Fatal(err)
+	}
+	endTime := time.Now()
+	duration := endTime.Sub(startTime).Nanoseconds() / 1e6
+	channel <- serviceDuration{duration: duration, service: host}
+	if curIndex == endIndex {
+		close(channel)
+	}
+
+}
+
 func (w *WeightedResponseTime) Next(serviceName string) (ServiceDiscovery.ServiceInstance, error) {
 	//获取服务节点
 	var errorMsg error = nil
 	endpoints := w.s.GetAllInstances(serviceName)
 	//初始化服务信息切片
 	serviceDurationSlice := make([]serviceDuration, len(endpoints))
-	for _, v := range endpoints {
-		host := v.GetHost()
-		destAddress := net.IPAddr{IP: net.ParseIP(host)}
-		//初始化ICMP协议头
-		icmp := ICMP{
-			Type:        8,
-			Code:        0,
-			CheckSum:    0,
-			Identifier:  0,
-			SequenceNum: 0,
+	channel := make(chan serviceDuration)
+	//多线程ping
+	for i, v := range endpoints {
+		go ping(v, channel, i, len(endpoints)-1)
+	}
+	for v := range channel {
+		if v.duration==0||v.service==nil {
+			errorMsg=errors.New("get service response error")
 		}
-		var buffer bytes.Buffer
-		_ = binary.Write(&buffer, binary.BigEndian, icmp)
-		icmp.CheckSum = checkSum(buffer.Bytes())
-		buffer.Reset()
-		conn, err := net.DialIP("ip4:icmp", nil, &destAddress)
-		if err != nil {
-			msg := fmt.Sprintf("Fail to connect to remote host: %s\n", err)
-			log.Println(msg)
-			errorMsg = errors.New(msg)
-		}
-		_ = binary.Write(&buffer, binary.BigEndian, icmp)
-		if _, err := conn.Write(buffer.Bytes()); err != nil {
-			errorMsg = err
-			log.Fatal(err)
-		}
-		//请求时间计算
-		startTime := time.Now()
-		_ = conn.SetReadDeadline(time.Now().Add(time.Second * 2))
-		recv := make([]byte, 1024)
-		_, err = conn.Read(recv)
-		if err != nil {
-			log.Fatal(err)
-		}
-		endTime := time.Now()
-		duration := endTime.Sub(startTime).Nanoseconds() / 1e6
-		serviceDurationSlice = append(serviceDurationSlice, serviceDuration{service: v, duration: duration})
-		_ = conn.Close()
+		serviceDurationSlice = append(serviceDurationSlice, v)
 	}
 	sort.SliceStable(serviceDurationSlice, func(i, j int) bool {
 		return serviceDurationSlice[i].duration < serviceDurationSlice[j].duration
 	})
 	return serviceDurationSlice[0].service, errorMsg
-
 }
 
 //定义ICMP协议结构体

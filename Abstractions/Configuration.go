@@ -2,20 +2,23 @@ package Abstractions
 
 import (
 	"flag"
-	"fmt"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"github.com/yoyofx/yoyogo/Abstractions/XLog"
 	"github.com/yoyofx/yoyogo/Utils"
-	"log"
 	"path"
 )
 
 type Configuration struct {
 	context *ConfigurationContext
 	config  *viper.Viper
+	log     XLog.ILogger
 }
 
 func NewConfiguration(configContext *ConfigurationContext) *Configuration {
+	log := XLog.GetXLogger("Configuration")
+	log.SetCustomLogFormat(nil)
+
 	defaultConfig := viper.New()
 	if configContext.enableEnv {
 		defaultConfig.AutomaticEnv()
@@ -53,11 +56,12 @@ func NewConfiguration(configContext *ConfigurationContext) *Configuration {
 		panic(err)
 		return nil
 	}
-	log.Println(configFilePath)
+	log.Debug(configFilePath)
 
 	return &Configuration{
 		context: configContext,
 		config:  defaultConfig,
+		log:     log,
 	}
 }
 
@@ -85,7 +89,7 @@ func (c *Configuration) GetSection(name string) IConfiguration {
 func (c *Configuration) Unmarshal(obj interface{}) {
 	err := c.config.Unmarshal(obj)
 	if err != nil {
-		fmt.Println("unmarshal config is failed, err:", err)
+		c.log.Error("unmarshal config is failed, err:", err)
 	}
 }
 
