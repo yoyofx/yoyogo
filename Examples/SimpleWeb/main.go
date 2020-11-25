@@ -27,10 +27,10 @@ func SimpleDemo() {
 }
 
 func main() {
-	//SimpleDemo()
+	SimpleDemo()
 	//webHost := YoyoGo.CreateDefaultBuilder(registerEndpointRouterConfig).Build()
-	webHost := CreateCustomBuilder().Build()
-	webHost.Run()
+	//webHost := CreateCustomBuilder().Build()
+	//webHost.Run()
 }
 
 //* Create the builder of Web host

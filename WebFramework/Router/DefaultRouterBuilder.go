@@ -32,6 +32,9 @@ func NewRouterBuilder() IRouterBuilder {
 
 func (router *DefaultRouterBuilder) SetConfiguration(config Abstractions.IConfiguration) {
 	router.configuration = config
+	if config == nil {
+		return
+	}
 	// server.path
 	serverPath, hasPath := config.Get("yoyogo.application.server.path").(string)
 	if hasPath {
