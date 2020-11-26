@@ -49,7 +49,7 @@ func CreateCustomBuilder() *Abstractions.HostBuilder {
 			app.UseEndpoints(registerEndpointRouterConfig)
 			app.UseMvc(func(builder *Mvc.ControllerBuilder) {
 				//builder.AddViews(&View.Option{Path: "./Static/templates"})
-				//builder.AddViewsByConfig()
+				builder.AddViewsByConfig()
 				builder.AddController(contollers.NewUserController)
 				builder.AddFilter("/v1/user/info", &contollers.TestActionFilter{})
 			})
