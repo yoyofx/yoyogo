@@ -7,6 +7,7 @@ import (
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"github.com/yoyofx/yoyogo/WebFramework/Mvc"
 	"net/url"
+	"path"
 	"strings"
 )
 
@@ -45,7 +46,7 @@ func (router *DefaultRouterBuilder) SetConfiguration(config Abstractions.IConfig
 	mvcTemplate, hasTemplate := config.Get("yoyogo.application.server.mvc.template").(string)
 	if hasTemplate {
 		if hasPath {
-			mvcTemplate = serverPath + mvcTemplate
+			mvcTemplate = path.Join(serverPath, mvcTemplate)
 		}
 		router.mvcControllerBuilder.GetMvcOptions().MapRoute(mvcTemplate)
 		router.log.Info("mvc.template:  %s", ConsoleColors.Green(mvcTemplate))
