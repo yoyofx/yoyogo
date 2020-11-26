@@ -5,7 +5,7 @@ yoyogo:
     server:
       type: "fasthttp"
       address: ":8080"
-      path: "/"
+      path: "app"
       max_request_size: 2096157
       mvc:
         template: "/v1/{controller}/{action}"
