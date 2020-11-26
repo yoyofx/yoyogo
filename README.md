@@ -216,7 +216,7 @@ type UserInfo struct {
 
 // 定义Controller
 type UserController struct {
-	*Controller.ApiController
+	*Mvc.ApiController
 	userAction models.IUserAction    // IOC 对象参数
 }
 
@@ -227,19 +227,19 @@ func NewUserController(userAction models.IUserAction) *UserController {
 
 // 请求对象的参数化绑定
 type RegiserRequest struct {
-	Controller.RequestParam
+	Mvc.RequestParam
 	UserName string `param:"username"`
 	Password string `param:"password"`
 }
 
 // Register函数自动绑定参数
 func (this *UserController) Register(ctx *Context.HttpContext, request *RegiserRequest) ActionResult.IActionResult {
-	result := Controller.ApiResult{Success: true, Message: "ok", Data: request}
+	result := Mvc.ApiResult{Success: true, Message: "ok", Data: request}
 	return ActionResult.Json{Data: result}
 }
 
 // use userAction interface by ioc  
-func (this *UserController) GetInfo() Controller.ApiResult {
+func (this *UserController) GetInfo() Mvc.ApiResult {
 	return this.OK(this.userAction.Login("zhang"))
 }
 

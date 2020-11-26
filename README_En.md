@@ -210,7 +210,7 @@ func fireApplicationLifeEvent(life *YoyoGo.ApplicationLife) {
 
 // Mvc 
 type UserController struct {
-	*Controller.ApiController
+	*Mvc.ApiController
 	userAction models.IUserAction    // IOC
 }
 
@@ -221,14 +221,14 @@ func NewUserController(userAction models.IUserAction) *UserController {
 
 // reuqest param binder
 type RegiserRequest struct {
-	Controller.RequestParam
+	Mvc.RequestParam
 	UserName string `param:"username"`
 	Password string `param:"password"`
 }
 
 // auto bind action param by ioc
 func (this *UserController) Register(ctx *Context.HttpContext, request *RegiserRequest) ActionResult.IActionResult {
-	result := Controller.ApiResult{Success: true, Message: "ok", Data: request}
+	result := Mvc.ApiResult{Success: true, Message: "ok", Data: request}
 	return ActionResult.Json{Data: result}
 }
 
