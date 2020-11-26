@@ -94,8 +94,10 @@ func (this *WebApplicationBuilder) buildMvc() {
 		err := this.hostContext.HostServices.GetServiceByName(&viewEngine, "viewEngine")
 		if err == nil {
 			option := this.routerBuilder.GetMvcBuilder().GetRouterHandler().Options.ViewOption
-			viewEngine.SetTemplatePath(option)
-			controllerBuilder.SetViewEngine(viewEngine)
+			if option != nil {
+				viewEngine.SetTemplatePath(option)
+				controllerBuilder.SetViewEngine(viewEngine)
+			}
 		}
 
 		// add controllers to application services
