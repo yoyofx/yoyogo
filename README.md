@@ -227,7 +227,7 @@ func NewUserController(userAction models.IUserAction) *UserController {
 
 // 请求对象的参数化绑定
 type RegiserRequest struct {
-	Mvc.RequestParam
+	Mvc.RequestBody
 	UserName string `param:"username"`
 	Password string `param:"password"`
 }
