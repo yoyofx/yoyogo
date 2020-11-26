@@ -94,7 +94,7 @@ func main() {
 * [X] Framework's factory and type in Dependency injection Integration
 
 ## Features
-* [ ] configtion
+* [X] configtion
 * [ ] WebSocket
 * [X] JWT 
 * [ ] swagger
@@ -114,27 +114,27 @@ func main() {
 
 func CreateCustomBuilder() *Abstractions.HostBuilder {
     configuration := Abstractions.NewConfigurationBuilder().AddYamlFile("config").Build()
-   	return YoyoGo.NewWebHostBuilder().
-   		UseConfiguration(configuration).
-   		Configure(func(app *YoyoGo.WebApplicationBuilder) {
-   			app.UseMiddleware(Middleware.NewCORS())
-   			app.UseMiddleware(Middleware.NewRequestTracker())
-   			app.UseStaticAssets()
-   			app.UseEndpoints(registerEndpointRouterConfig)
-   			app.UseMvc(func(builder *Mvc.ControllerBuilder) {
-   				//builder.AddViews(&View.Option{Path: "./Static/templates"})
-   				builder.AddViewsByConfig()
-   				builder.AddController(contollers.NewUserController)
-   				builder.AddFilter("/v1/user/info", &contollers.TestActionFilter{})
-   			})
-   		}).
-   		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
-   			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
-   			// Eureka.UseServiceDiscovery(serviceCollection)
-   			//Consul.UseServiceDiscovery(serviceCollection)
-   			Nacos.UseServiceDiscovery(serviceCollection)
-   		}).
-   		OnApplicationLifeEvent(getApplicationLifeEvent)
+	return YoyoGo.NewWebHostBuilder().
+		UseConfiguration(configuration).
+		Configure(func(app *YoyoGo.WebApplicationBuilder) {
+			app.UseMiddleware(Middleware.NewCORS())
+			app.UseMiddleware(Middleware.NewRequestTracker())
+			app.UseStaticAssets()
+			app.UseEndpoints(registerEndpointRouterConfig)
+			app.UseMvc(func(builder *Mvc.ControllerBuilder) {
+				//builder.AddViews(&View.Option{Path: "./Static/templates"})
+				builder.AddViewsByConfig()
+				builder.AddController(contollers.NewUserController)
+				builder.AddFilter("/v1/user/info", &contollers.TestActionFilter{})
+			})
+		}).
+		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
+			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
+			// Eureka.UseServiceDiscovery(serviceCollection)
+			//Consul.UseServiceDiscovery(serviceCollection)
+			Nacos.UseServiceDiscovery(serviceCollection)
+		}).
+		OnApplicationLifeEvent(getApplicationLifeEvent)
 }
 
 //region endpoint router config function
@@ -210,7 +210,7 @@ func fireApplicationLifeEvent(life *YoyoGo.ApplicationLife) {
 
 // Mvc 
 type UserController struct {
-	*Controller.ApiController
+	*Mvc.ApiController
 	userAction models.IUserAction    // IOC
 }
 
@@ -221,19 +221,19 @@ func NewUserController(userAction models.IUserAction) *UserController {
 
 // reuqest param binder
 type RegiserRequest struct {
-	Controller.RequestParam
+	Mvc.RequestParam
 	UserName string `param:"username"`
 	Password string `param:"password"`
 }
 
 // auto bind action param by ioc
 func (this *UserController) Register(ctx *Context.HttpContext, request *RegiserRequest) ActionResult.IActionResult {
-	result := Controller.ApiResult{Success: true, Message: "ok", Data: request}
+	result := Mvc.ApiResult{Success: true, Message: "ok", Data: request}
 	return ActionResult.Json{Data: result}
 }
 
 // use userAction interface by ioc  
-func (this *UserController) GetInfo() Controller.ApiResult {
+func (this *UserController) GetInfo() Mvc.ApiResult {
 	return this.OK(this.userAction.Login("zhang"))
 }
 
