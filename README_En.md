@@ -221,7 +221,7 @@ func NewUserController(userAction models.IUserAction) *UserController {
 
 // reuqest param binder
 type RegiserRequest struct {
-	Mvc.RequestParam
+	Mvc.RequestBody
 	UserName string `param:"username"`
 	Password string `param:"password"`
 }
