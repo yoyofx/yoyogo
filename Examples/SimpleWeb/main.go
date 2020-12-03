@@ -7,6 +7,7 @@ import (
 	"github.com/yoyofx/yoyogo/Abstractions"
 	"github.com/yoyofx/yoyogo/Abstractions/XLog"
 	"github.com/yoyofx/yoyogo/DependencyInjection"
+	"github.com/yoyofx/yoyogo/Internal/DataSources"
 	"github.com/yoyofx/yoyogo/Internal/ServiceDiscoveryProvider/Nacos"
 	"github.com/yoyofx/yoyogo/WebFramework"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
@@ -56,6 +57,7 @@ func CreateCustomBuilder() *Abstractions.HostBuilder {
 		}).
 		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
+			serviceCollection.AddSingleton(DataSources.NewMySQLDataSource)
 			// Eureka.UseServiceDiscovery(serviceCollection)
 			//Consul.UseServiceDiscovery(serviceCollection)
 			Nacos.UseServiceDiscovery(serviceCollection)
@@ -71,6 +73,8 @@ func registerEndpointRouterConfig(router Router.IRouterBuilder) {
 	Endpoints.UseViz(router)
 	Endpoints.UsePrometheus(router)
 	Endpoints.UsePprof(router)
+	Endpoints.UseReadiness(router)
+	Endpoints.UseLiveness(router)
 	//Endpoints.UseJwt(router)
 
 	router.GET("/error", func(ctx *Context.HttpContext) {

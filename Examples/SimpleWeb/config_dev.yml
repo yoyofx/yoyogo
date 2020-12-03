@@ -50,3 +50,14 @@ yoyogo:
 #      type: "eureka"
 #      metadata:
 #        address: "http://localhost:5000/eureka"
+  database:
+    - db1:
+        type: "mysql"
+        url: tcp(cdb-amqub3mo.bj.tencentcdb.com:10042)/yoyoBlog?charset=utf8&parseTime=True
+        username: root
+        password: 1234abcd
+        debug: true
+        pool:
+          init_cap: 2
+          max_cap: 5
+          idle_timeout : 5
