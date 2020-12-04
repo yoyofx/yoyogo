@@ -7,8 +7,8 @@ import (
 	"github.com/yoyofx/yoyogo/Abstractions"
 	"github.com/yoyofx/yoyogo/Abstractions/XLog"
 	"github.com/yoyofx/yoyogo/DependencyInjection"
-	"github.com/yoyofx/yoyogo/Internal/DataSources"
 	"github.com/yoyofx/yoyogo/Internal/ServiceDiscoveryProvider/Nacos"
+	"github.com/yoyofx/yoyogo/Internal/datasources"
 	"github.com/yoyofx/yoyogo/WebFramework"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"github.com/yoyofx/yoyogo/WebFramework/Endpoints"
@@ -57,7 +57,7 @@ func CreateCustomBuilder() *Abstractions.HostBuilder {
 		}).
 		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
-			serviceCollection.AddSingleton(DataSources.NewMySQLDataSource)
+			serviceCollection.AddSingletonByImplementsAndName("db1", datasources.NewMysqlDataSource, new(Abstractions.IDataSource))
 			// Eureka.UseServiceDiscovery(serviceCollection)
 			//Consul.UseServiceDiscovery(serviceCollection)
 			Nacos.UseServiceDiscovery(serviceCollection)

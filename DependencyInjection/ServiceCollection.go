@@ -35,9 +35,19 @@ func (sc *ServiceCollection) AddSingleton(provider interface{}) {
 	sc.AddServiceDescriptor(sd)
 }
 
+func (sc *ServiceCollection) AddSingletonAndName(name string, provider interface{}) {
+	sc.AddSingletonByName(name, provider)
+	sc.AddSingleton(provider)
+}
+
 func (sc *ServiceCollection) AddSingletonByName(name string, provider interface{}) {
 	sd := NewServiceDescriptorByName(name, provider, Singleton)
 	sc.AddServiceDescriptor(sd)
+}
+
+func (sc *ServiceCollection) AddSingletonByImplementsAndName(name string, provider interface{}, implements interface{}) {
+	sc.AddSingletonByName(name, provider)
+	sc.AddSingletonByImplements(provider, implements)
 }
 
 func (sc *ServiceCollection) AddSingletonByImplements(provider interface{}, implements interface{}) {
