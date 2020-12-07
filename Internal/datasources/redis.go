@@ -53,8 +53,9 @@ func NewRedis(configuration Abstractions.IConfiguration) *RedisDataSource {
 		connPool:         make(map[string]Pool.Pool, 0),
 		log:              log,
 	}
-
-	dataSource.insertPool(redisdatasourcesConfig.Name, p)
+	if p != nil {
+		dataSource.insertPool(redisdatasourcesConfig.Name, p)
+	}
 
 	return dataSource
 }
