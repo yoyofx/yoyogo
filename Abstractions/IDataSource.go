@@ -2,7 +2,7 @@ package Abstractions
 
 type IDataSource interface {
 	GetName() string
-	Open() interface{}
+	Open() (conn interface{}, put func(), err error)
 	Close()
 	Ping() bool
 }

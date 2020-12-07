@@ -7,9 +7,6 @@ import (
 	"github.com/yoyofx/yoyogo/WebFramework/Router"
 )
 
-type databaseHealth struct {
-}
-
 func UseReadiness(router Router.IRouterBuilder) {
 	XLog.GetXLogger("Endpoint").Debug("loaded health endpoint.")
 
@@ -18,13 +15,15 @@ func UseReadiness(router Router.IRouterBuilder) {
 
 		var databases []Abstractions.IDataSource
 		_ = ctx.RequiredServices.GetService(&databases)
-		dbmap := make(map[string]interface{})
+		dumpArrays := make([]map[string]interface{}, 0)
 		for _, db := range databases {
-			dbmap["name"] = db.GetName()
-			dbmap["status"] = false
+			dump := make(map[string]interface{})
+			dump["name"] = db.GetName()
+			dump["status"] = false
 			if db.Ping() {
-				dbmap["status"] = true
+				dump["status"] = true
 			}
+			dumpArrays = append(dumpArrays, dump)
 
 		}
 
@@ -33,7 +32,7 @@ func UseReadiness(router Router.IRouterBuilder) {
 
 		ctx.JSON(200, Context.H{
 			"status":    status,
-			"databases": dbmap,
+			"databases": dumpArrays,
 		})
 	})
 }

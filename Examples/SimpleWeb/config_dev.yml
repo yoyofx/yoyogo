@@ -61,3 +61,12 @@ yoyogo:
           init_cap: 2
           max_cap: 5
           idle_timeout : 5
+      redis:
+        name: reids1
+        url: 127.0.0.1:6379
+        password:
+        db: 0
+        pool:
+          init_cap: 2
+          max_cap: 5
+          idle_timeout: 5
