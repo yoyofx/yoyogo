@@ -17,7 +17,7 @@ YoyoGo is a simple, light and fast Web framework written in Go.
 - No regexp or reflect
 - Inspired by many excellent Go Web framework
 
-[![](Resources/dingdingQR.jpg)](https://sourcerer.io/yoyofx)
+[![](resources/dingdingQR.jpg)](https://sourcerer.io/yoyofx)
 
 # Installation
 `go get github.com/yoyofx/yoyogo`
@@ -35,7 +35,7 @@ func main() {
     }).Build().Run()       //default port :8080
 }
 ```
-![](Resources/yoyorun.jpg)
+![](resources/yoyorun.jpg)
 
 
 # ToDo
@@ -122,7 +122,7 @@ func CreateCustomBuilder() *Abstractions.HostBuilder {
    			app.UseStaticAssets()
    			app.UseEndpoints(registerEndpointRouterConfig)
    			app.UseMvc(func(builder *Mvc.ControllerBuilder) {
-   				//builder.AddViews(&View.Option{Path: "./Static/templates"})
+   				//builder.AddViews(&view.Option{Path: "./Static/templates"})
    				builder.AddViewsByConfig()
    				builder.AddController(contollers.NewUserController)
    				builder.AddFilter("/v1/user/info", &contollers.TestActionFilter{})
@@ -130,8 +130,8 @@ func CreateCustomBuilder() *Abstractions.HostBuilder {
    		}).
    		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
    			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
-   			// Eureka.UseServiceDiscovery(serviceCollection)
-   			//Consul.UseServiceDiscovery(serviceCollection)
+   			// eureka.UseServiceDiscovery(serviceCollection)
+   			//consul.UseServiceDiscovery(serviceCollection)
    			Nacos.UseServiceDiscovery(serviceCollection)
    		}).
    		OnApplicationLifeEvent(getApplicationLifeEvent)
@@ -208,7 +208,7 @@ func fireApplicationLifeEvent(life *YoyoGo.ApplicationLife) {
 	}
 }
 
-// Mvc 
+// mvc 
 type UserController struct {
 	*Mvc.ApiController
 	userAction models.IUserAction    // IOC
