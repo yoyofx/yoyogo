@@ -4,10 +4,12 @@ import (
 	"SimpleWeb/contollers"
 	"SimpleWeb/models"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/yoyofx/yoyogo/Abstractions"
 	"github.com/yoyofx/yoyogo/Abstractions/XLog"
 	"github.com/yoyofx/yoyogo/DependencyInjection"
 	"github.com/yoyofx/yoyogo/Internal/ServiceDiscoveryProvider/Nacos"
+	"github.com/yoyofx/yoyogo/Internal/datasources"
 	"github.com/yoyofx/yoyogo/WebFramework"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"github.com/yoyofx/yoyogo/WebFramework/Endpoints"
@@ -56,6 +58,9 @@ func CreateCustomBuilder() *Abstractions.HostBuilder {
 		}).
 		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
+			serviceCollection.AddSingletonByImplementsAndName("db1", datasources.NewMysqlDataSource, new(Abstractions.IDataSource))
+			serviceCollection.AddSingletonByImplementsAndName("redis1", datasources.NewRedis, new(Abstractions.IDataSource))
+
 			// Eureka.UseServiceDiscovery(serviceCollection)
 			//Consul.UseServiceDiscovery(serviceCollection)
 			Nacos.UseServiceDiscovery(serviceCollection)
@@ -71,6 +76,8 @@ func registerEndpointRouterConfig(router Router.IRouterBuilder) {
 	Endpoints.UseViz(router)
 	Endpoints.UsePrometheus(router)
 	Endpoints.UsePprof(router)
+	Endpoints.UseReadiness(router)
+	Endpoints.UseLiveness(router)
 	//Endpoints.UseJwt(router)
 
 	router.GET("/error", func(ctx *Context.HttpContext) {

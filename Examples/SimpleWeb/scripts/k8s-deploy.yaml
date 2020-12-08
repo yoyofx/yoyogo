@@ -2,6 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: default
   name: yoyogodemo
 spec:
   selector:
@@ -10,13 +11,17 @@ spec:
   replicas: 1 # tells deployment to run 2 pods matching the template
   template: # create pods using pod definition in this template
     metadata:
+      annotations:
+        prometheus.io/path: /app/actuator/metrics
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
       labels:
         app: yoyogodemo
     spec:
       containers:
         - name: yoyogodemo
-          image: maxzhang1985/yoyogo:version-1.4.6
-          imagePullPolicy: Always #Always 总是拉取镜像 IfNotPresent 本地有则使用本地镜像,不拉取Never 只使用本地镜像，从不拉取，即使本地没有
+          image: ccr.ccs.tencentyun.com/tsf_86509022/yoyogo_demo:dev-2090a2b9f9d618da306bc079422f264abc421f60
+          imagePullPolicy: IfNotPresent #Always 总是拉取镜像 IfNotPresent 本地有则使用本地镜像,不拉取Never 只使用本地镜像，从不拉取，即使本地没有
           ports:
             - containerPort: 8080
           livenessProbe:
@@ -26,5 +31,5 @@ spec:
             initialDelaySeconds: 15
             timeoutSeconds: 1
           env:
-            - name: PROFILE
+            - name: TEST
               value: "test12"

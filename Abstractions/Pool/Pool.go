@@ -18,4 +18,6 @@ type Pool interface {
 	Release()
 
 	Len() int
+
+	Ping(interface{}) error
 }
