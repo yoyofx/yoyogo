@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/yoyofx/yoyogo/Abstractions"
-	"github.com/yoyofx/yoyogo/Abstractions/XLog"
+	"github.com/yoyofx/yoyogo/abstractions"
+	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"io/ioutil"
 	"net/http"
 )
@@ -27,9 +27,9 @@ func postWechatMessage(sendUrl, msg string) string {
 	return strBody
 }
 
-func SendTxtMessage(request GrafanaAlertRequest, config Abstractions.IConfiguration) string {
+func SendTxtMessage(request GrafanaAlertRequest, config abstractions.IConfiguration) string {
 	tag := request.GetTag()
-	logger := XLog.GetXLogger("wechat")
+	logger := xlog.GetXLogger("wechat")
 	js, _ := json.Marshal(request)
 	logger.Info("Request json: %s", string(js))
 	if tag == "" {
