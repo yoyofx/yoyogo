@@ -1,4 +1,4 @@
-# YoyoGo [英文介绍](https://github.com/yoyofx/yoyogo/blob/master/README_En.md "中文介绍")
+# YoyoGo [English](https://github.com/yoyofx/yoyogo/blob/master/README_En.md "中文介绍")
 YoyoGo 一个简单、轻量、快速、基于依赖注入的微服务框架
 
 * 文档： https://github.com/yoyofx/yoyogo/wiki
@@ -18,7 +18,8 @@ YoyoGo 一个简单、轻量、快速、基于依赖注入的微服务框架
 - 微服务框架抽象了分层，在一个框架体系兼容各种server实现，如 rest,grpc等
 - 受到许多出色的 Go Web 框架的启发，server可替换，目前实现了 **fasthttp** 和 **net.http**
 
-[![](resources/dingdingQR.jpg)](https://sourcerer.io/yoyofx)
+[![](https://mnur-prod-public.oss-cn-beijing.aliyuncs.com/0/tech/20201209184239.png)](https://sourcerer.io/yoyofx)
+
 感兴趣的朋友可以加入公众号，通过公众号入群
 
 # 框架安装
@@ -57,8 +58,7 @@ func main() {
     }).Build().Run()       //默认端口号 :8080
 }
 ```
-![](resources/yoyorun.jpg)
-
+![](https://mnur-prod-public.oss-cn-beijing.aliyuncs.com/0/tech/20201209182340.png)
 
 # 实现进度
 ## 标准功能
