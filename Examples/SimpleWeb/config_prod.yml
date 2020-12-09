@@ -1,6 +1,6 @@
 application:
   name: demo_prod
-  metadata: "prod Env"
+  metadata: "prod hostenv"
   server:
     type: "fasthttp"
     address: ":8080"
