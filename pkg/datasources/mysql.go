@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/yoyofx/yoyogo/Abstractions"
-	"github.com/yoyofx/yoyogo/Abstractions/Pool"
-	"github.com/yoyofx/yoyogo/Abstractions/XLog"
+	"github.com/yoyofx/yoyogo/abstractions"
+	"github.com/yoyofx/yoyogo/abstractions/pool"
+	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"sync"
 	"time"
 )
