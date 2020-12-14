@@ -51,6 +51,10 @@ func (router *DefaultRouterBuilder) SetConfiguration(config abstractions.IConfig
 		router.mvcControllerBuilder.GetMvcOptions().MapRoute(mvcTemplate)
 		router.log.Info("mvc.template:  %s", consolecolors.Green(mvcTemplate))
 	}
+	// mvc.serializer.json.camecase
+	cameCase := config.GetBool("yoyogo.application.server.mvc.serializer.json.camecase")
+	router.mvcControllerBuilder.GetMvcOptions().Serializer = &mvc.SerializerOption{JsonCameCase: cameCase}
+
 }
 
 func (router *DefaultRouterBuilder) GetConfiguration() abstractions.IConfiguration {

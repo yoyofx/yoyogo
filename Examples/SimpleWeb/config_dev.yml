@@ -9,6 +9,9 @@ yoyogo:
       max_request_size: 2096157
       mvc:
         template: "/v1/{controller}/{action}"
+        serializer:
+          json:
+            camecase: true
       static:
         patten: "/"
         webroot: "./Static"
