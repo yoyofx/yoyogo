@@ -136,6 +136,10 @@ func (host *HostBuilder) Build() IServiceHost {
 		configure(services)
 	}
 
+	for _, configProcessorRegFunc := range configurationProcessors {
+		configProcessorRegFunc(host.Context.Configuration, services)
+	}
+
 	applicationBuilder := host.Decorator.OverrideNewApplicationBuilder(host.Context)
 
 	for _, configure := range host.configures {

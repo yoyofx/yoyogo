@@ -1,31 +1,26 @@
-package datasources
+package mysql
 
 import (
 	"database/sql"
 	"errors"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/pool"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
+	"github.com/yoyofx/yoyogo/pkg/datasources"
 	"sync"
 	"time"
 )
 
 // DataSourceConfig 数据源配置
 type dataSourceConfig struct {
-	Name     string          `mapstructure:"name"`
-	Url      string          `mapstructure:"url"`
-	UserName string          `mapstructure:"username"`
-	Password string          `mapstructure:"password"`
-	Debug    bool            `mapstructure:"debug"`
-	Pool     *dataSourcePool `mapstructure:"pool"`
-}
-
-// DataSourcePool 数据源连接池配置
-type dataSourcePool struct {
-	InitCap     int `mapstructure:"init_cap"`
-	MaxCap      int `mapstructure:"max_cap"`
-	Idletimeout int `mapstructure:"idle_timeout"`
+	Name     string                      `mapstructure:"name"`
+	Url      string                      `mapstructure:"url"`
+	UserName string                      `mapstructure:"username"`
+	Password string                      `mapstructure:"password"`
+	Debug    bool                        `mapstructure:"debug"`
+	Pool     *datasources.DataSourcePool `mapstructure:"pool"`
 }
 
 type MySqlDataSource struct {

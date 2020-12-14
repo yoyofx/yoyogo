@@ -4,11 +4,11 @@ import (
 	"SimpleWeb/contollers"
 	"SimpleWeb/models"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/dependencyinjection"
-	"github.com/yoyofx/yoyogo/pkg/datasources"
+	_ "github.com/yoyofx/yoyogo/pkg/datasources/mysql"
+	_ "github.com/yoyofx/yoyogo/pkg/datasources/redis"
 	"github.com/yoyofx/yoyogo/pkg/servicediscovery/nacos"
 	WebApplication "github.com/yoyofx/yoyogo/web"
 	"github.com/yoyofx/yoyogo/web/context"
@@ -58,8 +58,8 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 		}).
 		ConfigureServices(func(serviceCollection *dependencyinjection.ServiceCollection) {
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
-			serviceCollection.AddSingletonByImplementsAndName("db1", datasources.NewMysqlDataSource, new(abstractions.IDataSource))
-			serviceCollection.AddSingletonByImplementsAndName("redis1", datasources.NewRedis, new(abstractions.IDataSource))
+			//serviceCollection.AddSingletonByImplementsAndName("db1", mysql.NewMysqlDataSource, new(abstractions.IDataSource))
+			//serviceCollection.AddSingletonByImplementsAndName("redis1", redis.NewRedis, new(abstractions.IDataSource))
 
 			// eureka.UseServiceDiscovery(serviceCollection)
 			//consul.UseServiceDiscovery(serviceCollection)

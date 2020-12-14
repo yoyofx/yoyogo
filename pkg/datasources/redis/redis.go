@@ -1,4 +1,4 @@
-package datasources
+package redis
 
 import (
 	"errors"
@@ -7,17 +7,18 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/pool"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
+	"github.com/yoyofx/yoyogo/pkg/datasources"
 	"sync"
 	"time"
 )
 
 // DataSourceConfig 数据源配置
 type redisConfig struct {
-	Name     string          `mapstructure:"name"`
-	Url      string          `mapstructure:"url"`
-	Password string          `mapstructure:"password"`
-	DB       int             `mapstructure:"db"`
-	Pool     *dataSourcePool `mapstructure:"pool"`
+	Name     string                      `mapstructure:"name"`
+	Url      string                      `mapstructure:"url"`
+	Password string                      `mapstructure:"password"`
+	DB       int                         `mapstructure:"db"`
+	Pool     *datasources.DataSourcePool `mapstructure:"pool"`
 }
 
 // DataSourcePool 数据源连接池配置
