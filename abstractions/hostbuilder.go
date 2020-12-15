@@ -5,7 +5,6 @@ import (
 	"github.com/yoyofx/yoyogo"
 	"github.com/yoyofx/yoyogo/abstractions/hostenv"
 	"github.com/yoyofx/yoyogo/dependencyinjection"
-	"github.com/yoyofx/yoyogo/web/context"
 	"net"
 	"os"
 	"strings"
@@ -91,7 +90,7 @@ func getLocalIP() string {
 }
 
 // RunningHostEnvironmentSetting ,get running hostenv setting.
-func RunningHostEnvironmentSetting(hostEnv *context.HostEnvironment) {
+func RunningHostEnvironmentSetting(hostEnv *HostEnvironment) {
 	hostEnv.Host = getLocalIP()
 	hostEnv.PID = os.Getpid()
 }
@@ -164,5 +163,5 @@ func (host *HostBuilder) Build() IServiceHost {
 func innerConfigures(hostContext *HostBuilderContext, serviceCollection *dependencyinjection.ServiceCollection) {
 	serviceCollection.AddSingleton(func() IConfiguration { return hostContext.Configuration })
 	serviceCollection.AddSingleton(func() *ApplicationLife { return hostContext.ApplicationCycle })
-	serviceCollection.AddSingleton(func() *context.HostEnvironment { return hostContext.HostingEnvironment })
+	serviceCollection.AddSingleton(func() *HostEnvironment { return hostContext.HostingEnvironment })
 }

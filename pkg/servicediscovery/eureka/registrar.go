@@ -8,11 +8,10 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/pkg/servicediscovery"
-	"github.com/yoyofx/yoyogo/web/context"
 )
 
 type Option struct {
-	ENV     *context.HostEnvironment
+	ENV     *abstractions.HostEnvironment
 	Address string `mapstructure:"address"`
 }
 
@@ -24,7 +23,7 @@ type Registrar struct {
 	eurekaConnection   *fargo.EurekaConnection
 }
 
-func NewServerDiscoveryWithDI(configuration abstractions.IConfiguration, env *context.HostEnvironment) servicediscovery.IServiceDiscovery {
+func NewServerDiscoveryWithDI(configuration abstractions.IConfiguration, env *abstractions.HostEnvironment) servicediscovery.IServiceDiscovery {
 	sdType, ok := configuration.Get("yoyogo.cloud.discovery.type").(string)
 	if !ok || sdType != "eureka" {
 		panic(errors.New("yoyogo.cloud.discovery.type is not config node"))

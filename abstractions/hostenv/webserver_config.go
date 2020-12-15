@@ -1,6 +1,6 @@
 package hostenv
 
-type ServerConfig struct {
+type WebServerConfig struct {
 	ServerType     string       `mapstructure:"type"`
 	Address        string       `mapstructure:"address"`
 	MaxRequestSize string       `mapstructure:"max_request_size"`

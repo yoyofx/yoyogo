@@ -44,13 +44,14 @@ func (router *DefaultRouterBuilder) SetConfiguration(config abstractions.IConfig
 	}
 	// mvc.template
 	mvcTemplate, hasTemplate := config.Get("yoyogo.application.server.mvc.template").(string)
-	if hasTemplate {
-		if hasPath {
-			mvcTemplate = path.Join(serverPath, mvcTemplate)
-		}
-		router.mvcControllerBuilder.GetMvcOptions().MapRoute(mvcTemplate)
-		router.log.Info("mvc.template:  %s", consolecolors.Green(mvcTemplate))
+	if !hasTemplate {
+		mvcTemplate = mvc.DefaultMvcTemplate
 	}
+	if hasPath {
+		mvcTemplate = path.Join(serverPath, mvcTemplate)
+	}
+	router.mvcControllerBuilder.GetMvcOptions().MapRoute(mvcTemplate)
+	router.log.Info("mvc.template:  %s", consolecolors.Green(mvcTemplate))
 	// mvc.serializer.json.camecase
 	cameCase := config.GetBool("yoyogo.application.server.mvc.serializer.json.camecase")
 	router.mvcControllerBuilder.GetMvcOptions().Serializer = &mvc.SerializerOption{JsonCameCase: cameCase}

@@ -2,12 +2,12 @@ package servicediscovery
 
 import (
 	"github.com/google/uuid"
+	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
-	"github.com/yoyofx/yoyogo/web/context"
 	"strconv"
 )
 
-func CreateServiceInstance(environment *context.HostEnvironment) servicediscovery.ServiceInstance {
+func CreateServiceInstance(environment *abstractions.HostEnvironment) servicediscovery.ServiceInstance {
 	port, _ := strconv.ParseInt(environment.Port, 10, 64)
 
 	return &servicediscovery.DefaultServiceInstance{

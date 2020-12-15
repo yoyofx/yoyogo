@@ -21,6 +21,14 @@ func DefaultHttps(addr string, cert string, key string) *HttpServer {
 	return &HttpServer{IsTLS: true, Addr: addr, CertFile: cert, KeyFile: key}
 }
 
+func NewDefaultHttpByConfig(config ServerConfig) *HttpServer {
+	if config.IsTLS {
+		return DefaultHttps(config.Addr, config.CertFile, config.KeyFile)
+	} else {
+		return DefaultHttpServer(config.Addr)
+	}
+}
+
 func (server *HttpServer) GetAddr() string {
 	return server.Addr
 }

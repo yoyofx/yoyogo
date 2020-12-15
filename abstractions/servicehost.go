@@ -8,7 +8,6 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/utils"
-	"github.com/yoyofx/yoyogo/web/context"
 	"strconv"
 )
 
@@ -43,7 +42,7 @@ func endServerDiscovery(log xlog.ILogger, context *HostBuilderContext) {
 	}
 }
 
-func PrintLogo(l xlog.ILogger, env *context.HostEnvironment) {
+func PrintLogo(l xlog.ILogger, env *HostEnvironment) {
 	logo, _ := base64.StdEncoding.DecodeString(yoyogo.Logo)
 
 	fmt.Println(consolecolors.Blue(string(logo)))
