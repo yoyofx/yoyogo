@@ -4,6 +4,7 @@ import (
 	"github.com/valyala/fasthttp"
 	"github.com/valyala/fasthttp/fasthttpadaptor"
 	"github.com/yoyofx/yoyogo/abstractions"
+	"github.com/yoyofx/yoyogo/abstractions/hostenv"
 	"log"
 	"net/http"
 )
@@ -22,7 +23,7 @@ func NewFastHttps(addr string, cert string, key string) *FastHttpServer {
 	return &FastHttpServer{IsTLS: true, Addr: addr, CertFile: cert, KeyFile: key}
 }
 
-func NewFastHttpByConfig(config ServerConfig) *FastHttpServer {
+func NewFastHttpByConfig(config hostenv.HttpServerConfig) *FastHttpServer {
 	if config.IsTLS {
 		return NewFastHttps(config.Addr, config.CertFile, config.KeyFile)
 	} else {

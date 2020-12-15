@@ -125,7 +125,6 @@ func (this *WebApplicationBuilder) innerConfigures() {
 		ApplicationServicesDef.
 		AddSingletonByNameAndImplements("viewEngine", view.CreateViewEngine, new(view.IViewEngine))
 	//-------------------------  view engine ----------------------------------
-
 }
 
 // build and combo all middleware to request delegate (ServeHTTP(w http.ResponseWriter, r *http.Request))

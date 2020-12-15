@@ -96,7 +96,7 @@ func RunningHostEnvironmentSetting(hostEnv *HostEnvironment) {
 }
 
 //buildingHostEnvironmentSetting  build each configuration by init , such as file or hostenv or args ...
-func buildingHostEnvironmentSetting(context *HostBuilderContext) {
+func buildingHostEnvironmentSetting(serviceCollection *dependencyinjection.ServiceCollection, context *HostBuilderContext) {
 	hostEnv := context.HostingEnvironment
 	hostEnv.Version = yoyogo.Version
 	hostEnv.Addr = DetectAddress("")
@@ -120,17 +120,24 @@ func buildingHostEnvironmentSetting(context *HostBuilderContext) {
 	if hostEnv.Profile == "" {
 		hostEnv.Profile = hostenv.Dev
 	}
-
+	httpserverConfig := config.Server.Tls
+	httpserverConfig.Addr = hostEnv.Addr
+	if httpserverConfig.CertFile != "" && httpserverConfig.KeyFile != "" {
+		httpserverConfig.IsTLS = true
+	}
+	serviceCollection.AddSingleton(func() hostenv.HttpServerConfig { return httpserverConfig })
 }
 
 // Build host
 func (host *HostBuilder) Build() IServiceHost {
 	services := dependencyinjection.NewServiceCollection()
 
-	buildingHostEnvironmentSetting(host.Context)
+	buildingHostEnvironmentSetting(services, host.Context)
 	host.Context.ApplicationCycle = NewApplicationLife()
 
 	innerConfigures(host.Context, services)
+	host.Decorator.OverrideIOCInnerConfigures(services)
+
 	for _, configure := range host.servicesConfigures {
 		configure(services)
 	}

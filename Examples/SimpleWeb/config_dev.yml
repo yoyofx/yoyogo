@@ -7,6 +7,9 @@ yoyogo:
       address: ":8080"
       path: "app"
       max_request_size: 2096157
+      tls:
+        cert: ""
+        key: ""
       mvc:
         template: "v1/{controller}/{action}"
         serializer:
