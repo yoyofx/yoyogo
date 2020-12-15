@@ -2,66 +2,66 @@ package contollers
 
 import (
 	"SimpleWeb/models"
-	"github.com/yoyofx/yoyogo/Abstractions/ServiceDiscovery"
-	"github.com/yoyofx/yoyogo/WebFramework/ActionResult"
-	"github.com/yoyofx/yoyogo/WebFramework/Context"
-	"github.com/yoyofx/yoyogo/WebFramework/Mvc"
+	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
+	"github.com/yoyofx/yoyogo/web/actionresult"
+	"github.com/yoyofx/yoyogo/web/context"
+	"github.com/yoyofx/yoyogo/web/mvc"
 )
 
 type UserController struct {
-	Mvc.ApiController
+	mvc.ApiController
 	userAction      models.IUserAction
-	discoveryClient ServiceDiscovery.IServiceDiscovery
+	discoveryClient servicediscovery.IServiceDiscovery
 }
 
-func NewUserController(userAction models.IUserAction, sd ServiceDiscovery.IServiceDiscovery) *UserController {
+func NewUserController(userAction models.IUserAction, sd servicediscovery.IServiceDiscovery) *UserController {
 	return &UserController{userAction: userAction, discoveryClient: sd}
 }
 
 type RegisterRequest struct {
-	Mvc.RequestBody
+	mvc.RequestBody
 	UserName string `param:"UserName"`
 	Password string `param:"Password"`
 }
 
-func (controller UserController) Register(ctx *Context.HttpContext, request *RegisterRequest) ActionResult.IActionResult {
-	result := Mvc.ApiResult{Success: true, Message: "ok", Data: request}
+func (controller UserController) Register(ctx *context.HttpContext, request *RegisterRequest) actionresult.IActionResult {
+	result := mvc.ApiResult{Success: true, Message: "ok", Data: request}
 
-	return ActionResult.Json{Data: result}
+	return actionresult.Json{Data: result}
 }
 
-func (controller UserController) GetUserName(ctx *Context.HttpContext, request *RegisterRequest) ActionResult.IActionResult {
-	result := Mvc.ApiResult{Success: true, Message: "ok", Data: request}
+func (controller UserController) GetUserName(ctx *context.HttpContext, request *RegisterRequest) actionresult.IActionResult {
+	result := mvc.ApiResult{Success: true, Message: "ok", Data: request}
 
-	return ActionResult.Json{Data: result}
+	return actionresult.Json{Data: result}
 }
 
-func (controller UserController) PostUserInfo(ctx *Context.HttpContext, request *RegisterRequest) ActionResult.IActionResult {
+func (controller UserController) PostUserInfo(ctx *context.HttpContext, request *RegisterRequest) actionresult.IActionResult {
 
-	return ActionResult.Json{Data: Mvc.ApiResult{Success: true, Message: "ok", Data: Context.H{
+	return actionresult.Json{Data: mvc.ApiResult{Success: true, Message: "ok", Data: context.H{
 		"user":    ctx.GetUser(),
 		"request": request,
 	}}}
 }
 
-func (controller UserController) GetHtmlHello() ActionResult.IActionResult {
+func (controller UserController) GetHtmlHello() actionresult.IActionResult {
 	return controller.View("hello", map[string]interface{}{
 		"name": "hello world!",
 	})
 }
 
-func (controller UserController) GetHtmlBody() ActionResult.IActionResult {
+func (controller UserController) GetHtmlBody() actionresult.IActionResult {
 	return controller.View("raw", map[string]interface{}{
 		"body": "raw.htm hello world!",
 	})
 }
 
-func (controller UserController) GetInfo() Mvc.ApiResult {
+func (controller UserController) GetInfo() mvc.ApiResult {
 
 	return controller.OK(controller.userAction.Login("zhang"))
 }
 
-func (controller UserController) GetSD() Mvc.ApiResult {
+func (controller UserController) GetSD() mvc.ApiResult {
 	serviceList := controller.discoveryClient.GetAllInstances("yoyogo_demo_dev")
 	return controller.OK(serviceList)
 }

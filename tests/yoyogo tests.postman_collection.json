@@ -1,0 +1,516 @@
+{
+	"id": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+	"name": "yoyogo tests",
+	"description": "",
+	"order": [
+		"4cee394d-a8f9-8d44-ed10-b15fd54b0130",
+		"249a3dee-ae79-097f-5d78-d4f8ce40fbc4",
+		"06e0bf5b-42f5-6b00-6411-2affe0ed74e5"
+	],
+	"folders": [
+		{
+			"name": "Endpoint",
+			"description": "",
+			"collectionId": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+			"order": [
+				"1f17aac6-b2af-8188-a109-839f616f1006",
+				"1f7c8339-b749-72f8-0ad2-826fc85a4ba2",
+				"cb0057e1-61e7-8cc2-7b22-0801a7f1f8d5"
+			],
+			"owner": 0,
+			"folders_order": [],
+			"id": "3749ce5d-6f75-6808-b778-41829f2091a2"
+		},
+		{
+			"name": "Mvc",
+			"description": "",
+			"collectionId": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+			"order": [
+				"b5bb4dc5-cbb9-a97e-a3b6-393b71ba81b2",
+				"b3afe6be-2377-312f-d972-b4e56645e393",
+				"b4a911eb-fa63-c4f1-709b-7a00d91f8436",
+				"9b27a999-7fcd-8447-d520-1fc492d97439",
+				"5f045152-478f-d05d-7190-34157b7e1ea2",
+				"f7da6777-802f-f276-d005-3428017cba94",
+				"4720b3a0-1105-9746-f890-8b14f0619b4e",
+				"4fd71192-30df-8189-074f-20086d5ae4f6",
+				"3d0cc8e4-5fb4-435f-e8a8-06eec36f3a6f"
+			],
+			"owner": 0,
+			"folders_order": [],
+			"id": "3cbd2570-d350-00af-7ea0-c67d5c82afdc"
+		}
+	],
+	"folders_order": [
+		"3cbd2570-d350-00af-7ea0-c67d5c82afdc",
+		"3749ce5d-6f75-6808-b778-41829f2091a2"
+	],
+	"timestamp": 1576554457088,
+	"owner": 0,
+	"public": false,
+	"requests": [
+		{
+			"id": "06e0bf5b-42f5-6b00-6411-2affe0ed74e5",
+			"headers": "Origin: localhost\n",
+			"headerData": [
+				{
+					"key": "Origin",
+					"value": "localhost",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/app/info",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1605168119089,
+			"name": "get /info",
+			"description": "get /info",
+			"collectionId": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+			"responses": []
+		},
+		{
+			"id": "1f17aac6-b2af-8188-a109-839f616f1006",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8080/app/actuator/health",
+			"folder": "3749ce5d-6f75-6808-b778-41829f2091a2",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1605166783087,
+			"name": "http://localhost:8080/actuator/health",
+			"description": "",
+			"collectionId": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+			"responses": []
+		},
+		{
+			"id": "1f7c8339-b749-72f8-0ad2-826fc85a4ba2",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8080/app/actuator/graph?type=viz",
+			"folder": "3749ce5d-6f75-6808-b778-41829f2091a2",
+			"queryParams": [
+				{
+					"key": "type",
+					"value": "viz",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1605167857781,
+			"name": "http://localhost:8080/actuator/graph?type=viz",
+			"description": "",
+			"collectionId": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+			"responses": []
+		},
+		{
+			"id": "249a3dee-ae79-097f-5d78-d4f8ce40fbc4",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8080/app/v1/api/info",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1605166778988,
+			"name": "get /v1/api/info (group)",
+			"description": "group by /v1/api/info",
+			"collectionId": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+			"responses": []
+		},
+		{
+			"id": "3d0cc8e4-5fb4-435f-e8a8-06eec36f3a6f",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8080/app/v1/usercontroller/Register?username=max&password=123",
+			"queryParams": [
+				{
+					"key": "username",
+					"value": "max",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "password",
+					"value": "123",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+			"data": null,
+			"dataMode": "params",
+			"name": "get c:user/a:register (MVC)",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1605167736636,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "3cbd2570-d350-00af-7ea0-c67d5c82afdc"
+		},
+		{
+			"id": "4720b3a0-1105-9746-f890-8b14f0619b4e",
+			"headers": "Content-Type: application/json\nAuthorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTgxNjYwNzIsImlzcyI6IllEUSIsInVpZCI6MjIyMiwiYWRtaW4iOmZhbHNlfQ.fS_cDhbuZVLbrSI_fN1zT3_ZU59HdOpcvuzaQkWHeLE\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Authorization",
+					"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTgxNjYwNzIsImlzcyI6IllEUSIsInVpZCI6MjIyMiwiYWRtaW4iOmZhbHNlfQ.fS_cDhbuZVLbrSI_fN1zT3_ZU59HdOpcvuzaQkWHeLE",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/app/v1/user/postuserinfo",
+			"folder": "3cbd2570-d350-00af-7ea0-c67d5c82afdc",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1605167831550,
+			"name": "http://localhost:8080/v1/user/postuserinfo",
+			"description": "json body",
+			"collectionId": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+			"responses": [],
+			"rawModeData": "{\"UserName\":\"zl\",\"Password\":\"123\"}"
+		},
+		{
+			"id": "4cee394d-a8f9-8d44-ed10-b15fd54b0130",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/app/info/1?q1=1231232",
+			"queryParams": [
+				{
+					"key": "q1",
+					"value": "1231232",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1605166825915,
+			"name": "post /info/:id  (params binding)",
+			"description": "Post /info/:id querystring is q1  body { username: \"xxx\"  }",
+			"collectionId": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+			"responses": [],
+			"rawModeData": "{\n\t\"username\":\"zl\"\n}"
+		},
+		{
+			"id": "4fd71192-30df-8189-074f-20086d5ae4f6",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8080/app/v1/user/GetSD",
+			"folder": "3cbd2570-d350-00af-7ea0-c67d5c82afdc",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1605167840310,
+			"name": "http://localhost:8080/v1/user/GetSD",
+			"description": "获取服务发现实例",
+			"collectionId": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+			"responses": []
+		},
+		{
+			"id": "5f045152-478f-d05d-7190-34157b7e1ea2",
+			"headers": "//Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": false
+				}
+			],
+			"url": "http://localhost:8080/app/v1/user/postuserinfo",
+			"folder": "3cbd2570-d350-00af-7ea0-c67d5c82afdc",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "UserName",
+					"value": "zl",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "Password",
+					"value": "123",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1605167810097,
+			"name": "http://localhost:8080/v1/user/postuserinfo",
+			"description": "",
+			"collectionId": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+			"responses": []
+		},
+		{
+			"id": "9b27a999-7fcd-8447-d520-1fc492d97439",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8080/app/v1/user/getusername?UserName=max&Password=123",
+			"folder": "3cbd2570-d350-00af-7ea0-c67d5c82afdc",
+			"queryParams": [
+				{
+					"key": "UserName",
+					"value": "max",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Password",
+					"value": "123",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1605167802933,
+			"name": "http://localhost:8080/v1/user/username?username=max&password=123",
+			"description": "",
+			"collectionId": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+			"responses": []
+		},
+		{
+			"id": "b3afe6be-2377-312f-d972-b4e56645e393",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8080/app/v1/user/GetInfo",
+			"folder": "3cbd2570-d350-00af-7ea0-c67d5c82afdc",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1605167763328,
+			"name": "http://localhost:8080/user/GetInfo",
+			"description": "",
+			"collectionId": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+			"responses": []
+		},
+		{
+			"id": "b4a911eb-fa63-c4f1-709b-7a00d91f8436",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8080/app/v1/user/getinfo",
+			"folder": "3cbd2570-d350-00af-7ea0-c67d5c82afdc",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1605167789332,
+			"name": "http://localhost:8080/v1/user/info",
+			"description": "",
+			"collectionId": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+			"responses": []
+		},
+		{
+			"id": "b5bb4dc5-cbb9-a97e-a3b6-393b71ba81b2",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8080/app/v1/usercontroller/Register?UserName=max&Password=123",
+			"folder": "3cbd2570-d350-00af-7ea0-c67d5c82afdc",
+			"queryParams": [
+				{
+					"key": "UserName",
+					"value": "max",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Password",
+					"value": "123",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1605167753420,
+			"name": "get c:user/a:register (MVC)",
+			"description": "",
+			"collectionId": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+			"responses": []
+		},
+		{
+			"id": "cb0057e1-61e7-8cc2-7b22-0801a7f1f8d5",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/app/auth/token",
+			"folder": "3749ce5d-6f75-6808-b778-41829f2091a2",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1605167867254,
+			"name": "http://localhost:8080/auth/token",
+			"description": "",
+			"collectionId": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+			"responses": [],
+			"rawModeData": "{ \"id\":\"22\" , \"name\":\"yoyo\"  }"
+		},
+		{
+			"id": "f7da6777-802f-f276-d005-3428017cba94",
+			"headers": "Authorization: Bearer 1eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTgxNzQxODAsImlzcyI6InlveW8iLCJ1aWQiOjIyLCJhZG1pbiI6ZmFsc2V9.Wk6bXDjuOMLRbb_rQRuxZrRr2B2MG7Ot4iHmAxzJC1Q\n",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "Bearer 1eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTgxNzQxODAsImlzcyI6InlveW8iLCJ1aWQiOjIyLCJhZG1pbiI6ZmFsc2V9.Wk6bXDjuOMLRbb_rQRuxZrRr2B2MG7Ot4iHmAxzJC1Q",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://localhost:8080/app/v1/user/gethtmlhello",
+			"folder": "3cbd2570-d350-00af-7ea0-c67d5c82afdc",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1605167819508,
+			"name": "http://localhost:8080/v1/user/gethtmlhello",
+			"description": "",
+			"collectionId": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+			"responses": []
+		}
+	]
+}
