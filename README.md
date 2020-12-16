@@ -18,9 +18,13 @@ YoyoGo 一个简单、轻量、快速、基于依赖注入的微服务框架
 - 微服务框架抽象了分层，在一个框架体系兼容各种server实现，如 rest,grpc等
 - 受到许多出色的 Go Web 框架的启发，server可替换，目前实现了 **fasthttp** 和 **net.http**
 
+QQ交流群： [780385870](https://qm.qq.com/cgi-bin/qm/qr?k=xP5ZSGZaLLgJIjK0P89gen8V-p5b1cHg&jump_from=webapi) (Go浪文学院)
+
+也可以加入我的公众号，通过公众号入群菜单进入微信群
+
 [![](https://mnur-prod-public.oss-cn-beijing.aliyuncs.com/0/tech/20201209184239.png)](https://sourcerer.io/yoyofx)
 
-感兴趣的朋友可以加入公众号，通过公众号入群
+感兴趣的朋友
 
 # 框架安装
 ```bash
