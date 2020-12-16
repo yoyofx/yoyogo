@@ -47,9 +47,16 @@ func writeJSON(w http.ResponseWriter, obj interface{}) error {
 	return err
 }
 
+func writeJsonCamel(w http.ResponseWriter, obj interface{}) error {
+	writeContentType(w, jsonContentType)
+	encoder := json.NewEncoder(w)
+	err := encoder.Encode(&JsonCamelCase{obj})
+	return err
+}
+
 // actionresult (JSON) writes data with custom ContentType.
 func (d Json) Render(w http.ResponseWriter) (err error) {
-	if err = writeJSON(w, d.Data); err != nil {
+	if err = writeJsonCamel(w, d.Data); err != nil {
 		panic(err)
 	}
 	return
