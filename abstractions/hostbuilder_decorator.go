@@ -1,5 +1,7 @@
 package abstractions
 
+import "github.com/yoyofx/yoyogo/dependencyinjection"
+
 // IHostBuilderDecorator Host Builder decorator or extension
 type IHostBuilderDecorator interface {
 
@@ -9,4 +11,6 @@ type IHostBuilderDecorator interface {
 	OverrideNewApplicationBuilder(context *HostBuilderContext) IApplicationBuilder
 	// OverrideNewHost Create IServiceHost.
 	OverrideNewHost(server IServer, context *HostBuilderContext) IServiceHost
+	// OverrideInnerConfigures inner configures for IOC
+	OverrideIOCInnerConfigures(serviceCollection *dependencyinjection.ServiceCollection)
 }

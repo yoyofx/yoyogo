@@ -24,11 +24,7 @@ func UseReadiness(router router.IRouterBuilder) {
 				dump["status"] = true
 			}
 			dumpArrays = append(dumpArrays, dump)
-
 		}
-
-		//databases1 := &datasources.MySqlDataSource{}
-		//_ = ctx.RequiredServices.GetServiceByName(&databases1,"db1")
 
 		ctx.JSON(200, context.H{
 			"status":    status,

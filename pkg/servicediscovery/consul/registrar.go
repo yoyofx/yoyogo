@@ -8,7 +8,6 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	sd "github.com/yoyofx/yoyogo/pkg/servicediscovery"
-	"github.com/yoyofx/yoyogo/web/context"
 )
 
 type Registrar struct {
@@ -18,7 +17,7 @@ type Registrar struct {
 	config             Option
 }
 
-func NewServerDiscoveryWithDI(configuration abstractions.IConfiguration, env *context.HostEnvironment) servicediscovery.IServiceDiscovery {
+func NewServerDiscoveryWithDI(configuration abstractions.IConfiguration, env *abstractions.HostEnvironment) servicediscovery.IServiceDiscovery {
 	sdType, ok := configuration.Get("yoyogo.cloud.discovery.type").(string)
 	if !ok || sdType != "consul" {
 		panic(errors.New("yoyogo.cloud.discovery.type is not config node"))

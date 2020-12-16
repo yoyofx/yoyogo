@@ -2,12 +2,12 @@ package consul
 
 import (
 	consul "github.com/hashicorp/consul/api"
-	"github.com/yoyofx/yoyogo/web/context"
+	"github.com/yoyofx/yoyogo/abstractions"
 	"log"
 )
 
 type Option struct {
-	ENV     *context.HostEnvironment
+	ENV     *abstractions.HostEnvironment
 	Address string   `mapstructure:"address"`
 	Token   string   `mapstructure:"token"`
 	Tags    []string `mapstructure:"tags"`

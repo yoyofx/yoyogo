@@ -2,6 +2,7 @@ package web
 
 import (
 	"github.com/yoyofx/yoyogo/abstractions"
+	"github.com/yoyofx/yoyogo/abstractions/hostenv"
 	"golang.org/x/net/context"
 	"log"
 	"net/http"
@@ -19,6 +20,14 @@ func DefaultHttpServer(addr string) *HttpServer {
 
 func DefaultHttps(addr string, cert string, key string) *HttpServer {
 	return &HttpServer{IsTLS: true, Addr: addr, CertFile: cert, KeyFile: key}
+}
+
+func NewDefaultHttpByConfig(config hostenv.HttpServerConfig) *HttpServer {
+	if config.IsTLS {
+		return DefaultHttps(config.Addr, config.CertFile, config.KeyFile)
+	} else {
+		return DefaultHttpServer(config.Addr)
+	}
 }
 
 func (server *HttpServer) GetAddr() string {

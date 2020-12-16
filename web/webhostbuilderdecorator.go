@@ -2,6 +2,7 @@ package web
 
 import (
 	"github.com/yoyofx/yoyogo/abstractions"
+	"github.com/yoyofx/yoyogo/dependencyinjection"
 )
 
 const (
@@ -27,20 +28,18 @@ func (decorator WebHostBuilderDecorator) OverrideNewApplicationBuilder(context *
 
 // OverrideNewHost Create WebHost.
 func (decorator WebHostBuilderDecorator) OverrideNewHost(server abstractions.IServer, context *abstractions.HostBuilderContext) abstractions.IServiceHost {
+	serverType := "fasthttp"
 	if server == nil && context.HostConfiguration != nil {
-		//section := context.Configuration.GetSection("yoyogo.application.server")
-		serverType := context.HostConfiguration.Server.ServerType
-		address := context.HostConfiguration.Server.Address
-		if serverType == "fasthttp" {
-			server = NewFastHttp(address)
-		} else if serverType == "http" {
-			server = DefaultHttpServer(address)
-		}
-
-	} else {
-		server = NewFastHttp(DefaultAddress)
+		serverType = context.HostConfiguration.Server.ServerType
 	}
+	_ = context.ApplicationServices.GetServiceByName(&server, serverType)
 	return NewWebHost(server, context)
+}
+
+// OverrideInnerConfigures inner configures for IOC
+func (decorator WebHostBuilderDecorator) OverrideIOCInnerConfigures(serviceCollection *dependencyinjection.ServiceCollection) {
+	serviceCollection.AddSingletonByNameAndImplements("fasthttp", NewFastHttpByConfig, new(abstractions.IServer))
+	serviceCollection.AddSingletonByNameAndImplements("http", NewDefaultHttpByConfig, new(abstractions.IServer))
 }
 
 // NewWebHostBuilderDecorator WebHostBuilderDecorator.

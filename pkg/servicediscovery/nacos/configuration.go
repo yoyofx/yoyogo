@@ -1,6 +1,8 @@
 package nacos
 
-import "github.com/yoyofx/yoyogo/web/context"
+import (
+	"github.com/yoyofx/yoyogo/abstractions"
+)
 
 const (
 	GroupName = "DEFAULT_GROUP"
@@ -8,7 +10,7 @@ const (
 )
 
 type Config struct {
-	ENV         *context.HostEnvironment
+	ENV         *abstractions.HostEnvironment
 	Url         string `mapstructure:"url"`
 	Port        uint64 `mapstructure:"port"`
 	NamespaceId string `mapstructure:"namespace"`
