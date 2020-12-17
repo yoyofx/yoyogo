@@ -1,12 +1,17 @@
 yoyogo:
   application:
     name: yoyogo_demo_test
-    metadata: "develop"
+    metadata: "test"
     server:
       type: "fasthttp"
       address: ":8080"
       path: "app"
       max_request_size: 2096157
+      tls:
+        cert: ""
+        key: ""
+      mvc:
+        template: "v1/{controller}/{action}"
       static:
         patten: "/"
         webroot: "./Static"
@@ -18,7 +23,7 @@ yoyogo:
         secret: "12391JdeOW^%$#@"
         prefix: "Bearer"
         expires: 3
-        enable: false
+        enable: true
         skip_path: [
             "/info",
             "/v1/user/GetInfo",
@@ -40,11 +45,31 @@ yoyogo:
         namespace: "public"
         group_name: ""
     #    clusters: [""]
-#      type: "consul"
-#      metadata:
-#        address: "localhost:8500"
-#        health_check: "/actuator/health"
-#        tags: [""]
-#      type: "eureka"
-#      metadata:
-#        address: "http://localhost:5000/eureka"
+  #      type: "consul"
+  #      metadata:
+  #        address: "localhost:8500"
+  #        health_check: "/actuator/health"
+  #        tags: [""]
+  #      type: "eureka"
+  #      metadata:
+  #        address: "http://localhost:5000/eureka"
+  datasource:
+    mysql:
+      name: db1
+      url: tcp(cdb-amqub3mo.bj.tencentcdb.com:10042)/yoyoBlog?charset=utf8&parseTime=True
+      username: root
+      password: 1234abcd
+      debug: true
+      pool:
+        init_cap: 2
+        max_cap: 5
+        idle_timeout : 5
+    redis:
+      name: reids1
+      url: 127.0.0.1:6379
+      password:
+      db: 0
+      pool:
+        init_cap: 2
+        max_cap: 5
+        idle_timeout: 5

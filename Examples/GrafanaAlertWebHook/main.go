@@ -10,9 +10,9 @@ import (
 func main() {
 	configuration := abstractions.NewConfigurationBuilder().AddYamlFile("config").Build()
 	// --profile=prod , to read , config.yml
-	YoyoGo.NewWebHostBuilder().
+	web.NewWebHostBuilder().
 		UseConfiguration(configuration).
-		Configure(func(app *YoyoGo.WebApplicationBuilder) {
+		Configure(func(app *web.ApplicationBuilder) {
 			app.UseEndpoints(func(router router.IRouterBuilder) {
 				router.POST("/alert", PostAlert)
 				endpoints.UsePrometheus(router)

@@ -4,13 +4,14 @@ import (
 	"SimpleWeb/contollers"
 	"SimpleWeb/models"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/dependencyinjection"
-	"github.com/yoyofx/yoyogo/pkg/datasources"
+	_ "github.com/yoyofx/yoyogo/pkg/datasources/mysql"
+	_ "github.com/yoyofx/yoyogo/pkg/datasources/redis"
 	"github.com/yoyofx/yoyogo/pkg/servicediscovery/nacos"
-	WebApplication "github.com/yoyofx/yoyogo/web"
+	web "github.com/yoyofx/yoyogo/web"
+	"github.com/yoyofx/yoyogo/web/actionresult/extension"
 	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofx/yoyogo/web/endpoints"
 	"github.com/yoyofx/yoyogo/web/middlewares"
@@ -19,8 +20,9 @@ import (
 )
 
 func SimpleDemo() {
-	WebApplication.CreateDefaultBuilder(func(router router.IRouterBuilder) {
+	web.CreateHttpBuilder(func(router router.IRouterBuilder) {
 		endpoints.UsePrometheus(router)
+		registerEndpointRouterConfig(router)
 
 		router.GET("/info", func(ctx *context.HttpContext) {
 			ctx.JSON(200, context.H{"info": "ok"})
@@ -30,7 +32,7 @@ func SimpleDemo() {
 
 func main() {
 	//SimpleDemo()
-	//webHost := YoyoGo.CreateDefaultBuilder(registerEndpointRouterConfig).Build()
+
 	webHost := CreateCustomBuilder().Build()
 	webHost.Run()
 }
@@ -42,13 +44,14 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 		AddEnvironment().
 		AddYamlFile("config").Build()
 
-	return WebApplication.NewWebHostBuilder().
+	return web.NewWebHostBuilder().
 		UseConfiguration(configuration).
-		Configure(func(app *WebApplication.WebApplicationBuilder) {
+		Configure(func(app *web.ApplicationBuilder) {
 			app.UseMiddleware(middlewares.NewCORS())
-			//WebApplication.UseMiddleware(middlewares.NewRequestTracker())
+			//web.UseMiddleware(middlewares.NewRequestTracker())
 			app.UseStaticAssets()
 			app.UseEndpoints(registerEndpointRouterConfig)
+			app.SetJsonSerializer(extension.CamelJson())
 			app.UseMvc(func(builder *mvc.ControllerBuilder) {
 				//builder.AddViews(&view.Option{Path: "./Static/templates"})
 				builder.AddViewsByConfig()
@@ -58,10 +61,8 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 		}).
 		ConfigureServices(func(serviceCollection *dependencyinjection.ServiceCollection) {
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
-			serviceCollection.AddSingletonByImplementsAndName("db1", datasources.NewMysqlDataSource, new(abstractions.IDataSource))
-			serviceCollection.AddSingletonByImplementsAndName("redis1", datasources.NewRedis, new(abstractions.IDataSource))
 
-			// eureka.UseServiceDiscovery(serviceCollection)
+			//eureka.UseServiceDiscovery(serviceCollection)
 			//consul.UseServiceDiscovery(serviceCollection)
 			nacos.UseServiceDiscovery(serviceCollection)
 		}).
@@ -78,7 +79,7 @@ func registerEndpointRouterConfig(routerBuilder router.IRouterBuilder) {
 	endpoints.UsePprof(routerBuilder)
 	endpoints.UseReadiness(routerBuilder)
 	endpoints.UseLiveness(routerBuilder)
-	//endpoints.UseJwt(routerBuilder)
+	endpoints.UseJwt(routerBuilder)
 
 	routerBuilder.GET("/error", func(ctx *context.HttpContext) {
 		panic("http get error")

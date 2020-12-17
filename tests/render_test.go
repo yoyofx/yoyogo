@@ -9,6 +9,7 @@ import (
 	"github.com/ugorji/go/codec"
 	"github.com/yoyofx/yoyogo/tests/testdata/protoexample"
 	"github.com/yoyofx/yoyogo/web/actionresult"
+	"github.com/yoyofx/yoyogo/web/actionresult/extension"
 	"html/template"
 	"net/http"
 	"net/http/httptest"
@@ -48,7 +49,7 @@ func TestRenderJSON(t *testing.T) {
 		"foo":  "bar",
 		"html": "<b>",
 	}
-
+	actionresult.SetJsonSerializeEncoder(extension.DefaultJsonEncoder{})
 	(actionresult.Json{data}).WriteContentType(w)
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
 

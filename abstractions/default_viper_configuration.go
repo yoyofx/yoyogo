@@ -73,6 +73,10 @@ func (c *Configuration) GetString(name string) string {
 	return c.config.GetString(name)
 }
 
+func (c *Configuration) GetBool(name string) bool {
+	return c.config.GetBool(name)
+}
+
 func (c *Configuration) GetInt(name string) int {
 	return c.config.GetInt(name)
 }

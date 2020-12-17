@@ -13,7 +13,7 @@ import (
 
 const (
 	defaultTagName   = "param"
-	jsonTagName      = "json"
+	jsonTagName      = "extension"
 	defaultMaxMemory = 32 << 20 // 32 MB
 
 )

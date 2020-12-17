@@ -24,10 +24,9 @@ type RegisterRequest struct {
 	Password string `param:"Password"`
 }
 
-func (controller UserController) Register(ctx *context.HttpContext, request *RegisterRequest) actionresult.IActionResult {
-	result := mvc.ApiResult{Success: true, Message: "ok", Data: request}
+func (controller UserController) Register(ctx *context.HttpContext, request *RegisterRequest) mvc.ApiResult {
 
-	return actionresult.Json{Data: result}
+	return mvc.ApiResult{Success: true, Message: "ok", Data: request}
 }
 
 func (controller UserController) GetUserName(ctx *context.HttpContext, request *RegisterRequest) actionresult.IActionResult {

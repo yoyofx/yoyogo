@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"fmt"
+	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/web/context"
 	"html/template"
@@ -112,7 +113,7 @@ type TextPanicFormatter struct{}
 
 func (t *TextPanicFormatter) FormatPanicError(rw http.ResponseWriter, r *http.Request, infos *PanicInformation) {
 	if rw.Header().Get("Content-Type") == "" {
-		rw.Header().Set("Content-Type", "application/json; charset=utf-8")
+		rw.Header().Set("Content-Type", "application/extension; charset=utf-8")
 	}
 	//infos.Stack
 	_, _ = fmt.Fprintf(rw, panicText, infos.RecoveredPanic)
@@ -159,7 +160,7 @@ func (rec *Recovery) Inovke(ctx *context.HttpContext, next func(ctx *context.Htt
 
 	defer func() {
 		if err := recover(); err != nil {
-			var hostEnv *context.HostEnvironment
+			var hostEnv *abstractions.HostEnvironment
 			envErr := ctx.RequiredServices.GetService(&hostEnv)
 
 			if envErr == nil && hostEnv.IsDevelopment() {

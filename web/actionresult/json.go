@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/yoyofx/yoyogo/web/actionresult/extension"
 	"html/template"
 	"net/http"
 )
@@ -47,9 +48,25 @@ func writeJSON(w http.ResponseWriter, obj interface{}) error {
 	return err
 }
 
+func writeJsonCamel(w http.ResponseWriter, obj interface{}) error {
+	writeContentType(w, jsonContentType)
+	encoder := json.NewEncoder(w)
+	err := encoder.Encode(&extension.JsonCamelCase{Value: obj})
+	return err
+}
+
+var (
+	jsonEncoder extension.Encoder
+)
+
+func SetJsonSerializeEncoder(encoder extension.Encoder) {
+	jsonEncoder = encoder
+}
+
 // actionresult (JSON) writes data with custom ContentType.
 func (d Json) Render(w http.ResponseWriter) (err error) {
-	if err = writeJSON(w, d.Data); err != nil {
+	writeContentType(w, jsonContentType)
+	if err = jsonEncoder.Encode(w, d.Data); err != nil {
 		panic(err)
 	}
 	return
@@ -98,7 +115,7 @@ func (r SecureJson) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, jsonContentType)
 }
 
-// callback(json)
+// callback(extension)
 // actionresult (Jsonp JSON) marshals the given interface object and writes it and its callback with custom ContentType.
 func (r Jsonp) Render(w http.ResponseWriter) (err error) {
 	r.WriteContentType(w)
