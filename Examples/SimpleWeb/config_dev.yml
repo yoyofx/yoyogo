@@ -12,9 +12,6 @@ yoyogo:
         key: ""
       mvc:
         template: "v1/{controller}/{action}"
-        serializer:
-          json:
-            camecase: true
       static:
         patten: "/"
         webroot: "./Static"

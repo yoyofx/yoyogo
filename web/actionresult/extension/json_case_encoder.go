@@ -1,11 +1,24 @@
-package actionresult
+package extension
 
 import (
 	"encoding/json"
+	"io"
 	"regexp"
 	"strings"
 	"unicode"
 )
+
+func CamelJson() CaseJsonEncoder {
+	return CaseJsonEncoder{}
+}
+
+type CaseJsonEncoder struct {
+}
+
+func (jsonEncoder CaseJsonEncoder) Encode(w io.Writer, data interface{}) error {
+	encoder := json.NewEncoder(w)
+	return encoder.Encode(&JsonCamelCase{Value: data})
+}
 
 type JsonCamelCase struct {
 	Value interface{}

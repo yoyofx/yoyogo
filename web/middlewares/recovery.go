@@ -113,7 +113,7 @@ type TextPanicFormatter struct{}
 
 func (t *TextPanicFormatter) FormatPanicError(rw http.ResponseWriter, r *http.Request, infos *PanicInformation) {
 	if rw.Header().Get("Content-Type") == "" {
-		rw.Header().Set("Content-Type", "application/json; charset=utf-8")
+		rw.Header().Set("Content-Type", "application/extension; charset=utf-8")
 	}
 	//infos.Stack
 	_, _ = fmt.Fprintf(rw, panicText, infos.RecoveredPanic)

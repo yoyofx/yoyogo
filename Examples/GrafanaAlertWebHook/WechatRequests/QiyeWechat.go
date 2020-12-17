@@ -13,7 +13,7 @@ import (
 func postWechatMessage(sendUrl, msg string) string {
 	client := &http.Client{}
 	req, _ := http.NewRequest("POST", sendUrl, bytes.NewBuffer([]byte(msg)))
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Content-Type", "application/extension")
 	req.Header.Set("charset", "UTF-8")
 	resp, err := client.Do(req)
 	if err != nil {
@@ -31,7 +31,7 @@ func SendTxtMessage(request GrafanaAlertRequest, config abstractions.IConfigurat
 	tag := request.GetTag()
 	logger := xlog.GetXLogger("wechat")
 	js, _ := json.Marshal(request)
-	logger.Info("Request json: %s", string(js))
+	logger.Info("Request extension: %s", string(js))
 	if tag == "" {
 		logger.Info("no send")
 		return ""
