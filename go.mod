@@ -7,9 +7,11 @@ require (
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/clbanning/x2j v0.0.0-20191024224557-825249438eec // indirect
 	github.com/defval/inject/v2 v2.2.2
+	github.com/fogleman/gg v1.3.0
 	github.com/franela/goblin v0.0.0-20201006155558-6240afcb2eb7 // indirect
 	github.com/franela/goreq v0.0.0-20171204163338-bcd34c9993f8 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
+	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/golang/protobuf v1.4.2
 	github.com/gomodule/redigo v1.8.3
 	github.com/google/uuid v1.1.1
@@ -30,6 +32,7 @@ require (
 	github.com/valyala/fasthttp v1.17.0
 	github.com/yoyofxteam/reflectx v0.2.3
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
+	golang.org/x/image v0.0.0-20190802002840-cff245a6509b
 	golang.org/x/net v0.0.0-20201202161906-c7110b5ffcbb
 	gopkg.in/gcfg.v1 v1.2.3 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
