@@ -3,9 +3,8 @@ YoyoGo is a simple, light and fast Web framework written in Go.
 
 ![Release](https://img.shields.io/github/v/tag/yoyofx/yoyogo.svg?color=24B898&label=release&logo=github&sort=semver)
 ![Go](https://github.com/yoyofx/yoyogo/workflows/Go/badge.svg)
-![GoVersion](https://img.shields.io/github/go-mod/go-version/maxzhang1985/yoyogo)
-![DockerPull](https://img.shields.io/docker/pulls/maxzhang1985/yoyogo)
-[![Report](https://goreportcard.com/badge/github.com/yoyofx/yoyogo)](https://goreportcard.com/report/github.com/maxzhang1985/yoyogo)
+![GoVersion](https://img.shields.io/github/go-mod/go-version/yoyofx/yoyogo)
+[![Report](https://goreportcard.com/badge/github.com/yoyofx/yoyogo)](https://goreportcard.com/report/github.com/yoyofx/yoyogo)
 [![Documentation](https://img.shields.io/badge/godoc-reference-blue.svg?color=24B898&logo=go&logoColor=ffffff)](https://godoc.org/github.com/yoyofx/yoyogo)
 ![Contributors](https://img.shields.io/github/contributors/yoyofx/yoyogo.svg)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
