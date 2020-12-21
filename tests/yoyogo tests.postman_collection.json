@@ -15,7 +15,8 @@
 			"order": [
 				"1f17aac6-b2af-8188-a109-839f616f1006",
 				"1f7c8339-b749-72f8-0ad2-826fc85a4ba2",
-				"cb0057e1-61e7-8cc2-7b22-0801a7f1f8d5"
+				"cb0057e1-61e7-8cc2-7b22-0801a7f1f8d5",
+				"d216b801-d4db-0884-50d2-c932650e172c"
 			],
 			"owner": 0,
 			"folders_order": [],
@@ -34,7 +35,8 @@
 				"f7da6777-802f-f276-d005-3428017cba94",
 				"4720b3a0-1105-9746-f890-8b14f0619b4e",
 				"4fd71192-30df-8189-074f-20086d5ae4f6",
-				"3d0cc8e4-5fb4-435f-e8a8-06eec36f3a6f"
+				"3d0cc8e4-5fb4-435f-e8a8-06eec36f3a6f",
+				"1a25e0d5-cf7d-54de-213e-5de92757706f"
 			],
 			"owner": 0,
 			"folders_order": [],
@@ -75,6 +77,27 @@
 			"time": 1605168119089,
 			"name": "get /info",
 			"description": "get /info",
+			"collectionId": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+			"responses": []
+		},
+		{
+			"id": "1a25e0d5-cf7d-54de-213e-5de92757706f",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8080/app/v1/user/captcha",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1608537355263,
+			"name": "http://localhost:8080/app/v1/user/captcha",
+			"description": "",
 			"collectionId": "b30d3028-2d94-9d12-7427-be673a10fd4a",
 			"responses": []
 		},
@@ -482,6 +505,36 @@
 			"collectionId": "b30d3028-2d94-9d12-7427-be673a10fd4a",
 			"responses": [],
 			"rawModeData": "{ \"id\":\"22\" , \"name\":\"yoyo\"  }"
+		},
+		{
+			"id": "d216b801-d4db-0884-50d2-c932650e172c",
+			"headers": "//Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": false
+				}
+			],
+			"url": "http://localhost:8080/app/actuator/health/readiness",
+			"folder": "3749ce5d-6f75-6808-b778-41829f2091a2",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1608205376222,
+			"name": "http://localhost:8080/app/actuator/health/readiness",
+			"description": "",
+			"collectionId": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+			"responses": []
 		},
 		{
 			"id": "f7da6777-802f-f276-d005-3428017cba94",
