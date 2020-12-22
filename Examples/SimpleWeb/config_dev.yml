@@ -7,6 +7,7 @@ yoyogo:
       address: ":8080"
       path: "app"
       max_request_size: 2096157
+      session_timeout: 3600
       tls:
         cert: ""
         key: ""

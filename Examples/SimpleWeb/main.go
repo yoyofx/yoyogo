@@ -17,6 +17,8 @@ import (
 	"github.com/yoyofx/yoyogo/web/middlewares"
 	"github.com/yoyofx/yoyogo/web/mvc"
 	"github.com/yoyofx/yoyogo/web/router"
+	"github.com/yoyofx/yoyogo/web/session"
+	"github.com/yoyofx/yoyogo/web/session/identity"
 )
 
 func SimpleDemo() {
@@ -47,6 +49,7 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 	return web.NewWebHostBuilder().
 		UseConfiguration(configuration).
 		Configure(func(app *web.ApplicationBuilder) {
+			app.UseMiddlewareFront(middlewares.NewSession())
 			app.UseMiddleware(middlewares.NewCORS())
 			//web.UseMiddleware(middlewares.NewRequestTracker())
 			app.UseStaticAssets()
@@ -72,32 +75,56 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 //*/
 
 //region router config function
-func registerEndpointRouterConfig(routerBuilder router.IRouterBuilder) {
-	endpoints.UseHealth(routerBuilder)
-	endpoints.UseViz(routerBuilder)
-	endpoints.UsePrometheus(routerBuilder)
-	endpoints.UsePprof(routerBuilder)
-	endpoints.UseReadiness(routerBuilder)
-	endpoints.UseLiveness(routerBuilder)
-	endpoints.UseJwt(routerBuilder)
+func registerEndpointRouterConfig(rb router.IRouterBuilder) {
+	endpoints.UseHealth(rb)
+	endpoints.UseViz(rb)
+	endpoints.UsePrometheus(rb)
+	endpoints.UsePprof(rb)
+	endpoints.UseReadiness(rb)
+	endpoints.UseLiveness(rb)
+	endpoints.UseJwt(rb)
 
-	routerBuilder.GET("/error", func(ctx *context.HttpContext) {
+	rb.GET("/error", func(ctx *context.HttpContext) {
 		panic("http get error")
 	})
 
-	routerBuilder.POST("/info/:id", PostInfo)
+	rb.POST("/info/:id", PostInfo)
 
-	routerBuilder.Group("/v1/api", func(routergroup *router.RouterGroup) {
-		routergroup.GET("/info", GetInfo)
+	rb.Group("/v1/api", func(rg *router.RouterGroup) {
+		rg.GET("/info", GetInfo)
 	})
 
-	routerBuilder.GET("/", GetInfo)
+	rb.GET("/", GetInfo)
 
-	routerBuilder.GET("/info", GetInfo)
-	routerBuilder.GET("/ioc", GetInfoByIOC)
+	rb.GET("/info", GetInfo)
+	rb.GET("/ioc", GetInfoByIOC)
+	rb.GET("/session", TestSession)
+	rb.GET("/newsession", SetSession)
 }
 
 //endregion
+
+var (
+	sessionMgr = session.NewSession(15)
+)
+
+func SetSession(ctx *context.HttpContext) {
+	sessionId := sessionMgr.Load(identity.NewCookie(ctx, "TestCookieName"))
+	sessionMgr.SetValue(sessionId, "user", "yoyogo")
+	ctx.JSON(200, context.H{"ok": true})
+}
+
+func TestSession(ctx *context.HttpContext) {
+	sessionId := sessionMgr.Load(identity.NewCookie(ctx, "TestCookieName"))
+
+	s, _ := sessionMgr.GetValue(sessionId, "user")
+	ret := ""
+	v, e := s.(string)
+	if e {
+		ret = v
+	}
+	ctx.JSON(200, context.H{"user": ret})
+}
 
 //region Http Request Methods
 

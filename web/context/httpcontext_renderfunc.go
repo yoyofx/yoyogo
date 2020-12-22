@@ -49,7 +49,7 @@ func (ctx *HttpContext) JSON(code int, obj interface{}) {
 }
 
 // AsciiJSON serializes the given struct as JSON into the response body with unicode to ASCII string.
-// It also sets the Content-Type as "application/extension".
+// It also sets the Content-Type as "application/json".
 func (ctx *HttpContext) AsciiJSON(code int, obj interface{}) {
 	ctx.Render(code, actionresult.AsciiJson{Data: obj})
 }

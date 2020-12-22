@@ -178,6 +178,16 @@ func (app *ApplicationBuilder) UseMiddleware(handler MiddlewareHandler) {
 	app.handlers = append(app.handlers, handler)
 }
 
+// apply middleware in builder
+func (app *ApplicationBuilder) UseMiddlewareFront(handler MiddlewareHandler) {
+	if handler == nil {
+		panic("handler cannot be nil")
+	}
+	app.handlers = append(app.handlers, nil)
+	copy(app.handlers[0+1:], app.handlers[0:])
+	app.handlers[0] = handler
+}
+
 // apply static middleware in builder
 func (app *ApplicationBuilder) UseStatic(patten string, path string) {
 	app.UseMiddleware(middlewares.NewStatic(patten, path))

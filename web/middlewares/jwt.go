@@ -19,7 +19,7 @@ type JwtMiddleware struct {
 }
 
 type JwtRequest struct {
-	Id   string `extension:"id"`
+	Id   string `json:"id"`
 	Name string `extension:"name"`
 }
 
