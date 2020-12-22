@@ -16,12 +16,13 @@ import (
 
 //application builder struct
 type ApplicationBuilder struct {
-	hostContext     *abstractions.HostBuilderContext // host build 's context
-	routerBuilder   router.IRouterBuilder            // route builder of interface
-	middleware      middleware
-	handlers        []MiddlewareHandler
-	routeConfigures []func(router.IRouterBuilder)          // endpoints router configure functions
-	mvcConfigures   []func(builder *mvc.ControllerBuilder) // mvc router configure functions
+	hostContext       *abstractions.HostBuilderContext // host build 's context
+	routerBuilder     router.IRouterBuilder            // route builder of interface
+	middleware        middleware
+	handlersProviders []interface{}                          // handlers ctor functions
+	handlers          []MiddlewareHandler                    // middleware lists
+	routeConfigures   []func(router.IRouterBuilder)          // endpoints router configure functions
+	mvcConfigures     []func(builder *mvc.ControllerBuilder) // mvc router configure functions
 }
 
 // create classic application builder
@@ -134,11 +135,16 @@ func (this *ApplicationBuilder) buildMvc() {
 }
 
 func (this *ApplicationBuilder) buildMiddleware() {
+	var mids []MiddlewareHandler
+	_ = this.hostContext.HostServices.GetService(&mids)
+	this.handlers = append(mids, this.handlers...)
+
 	for _, handler := range this.handlers {
 		if configurationMdw, ok := handler.(middlewares.IConfigurationMiddleware); ok {
 			configurationMdw.SetConfiguration(this.hostContext.Configuration)
 		}
 	}
+
 	this.middleware = build(this.handlers)
 }
 
@@ -148,6 +154,13 @@ func (this *ApplicationBuilder) innerConfigures() {
 		ApplicationServicesDef.
 		AddSingletonByNameAndImplements("viewEngine", view.CreateViewEngine, new(view.IViewEngine))
 	//-------------------------  view engine ----------------------------------
+
+	for _, provider := range this.handlersProviders {
+		this.hostContext.
+			ApplicationServicesDef.AddSingletonByImplements(provider, new(MiddlewareHandler))
+	}
+	//-------------------------  middleware provider ----------------------------------
+
 }
 
 // build and combo all middleware to request delegate (ServeHTTP(w http.ResponseWriter, r *http.Request))
@@ -168,6 +181,10 @@ func (this *ApplicationBuilder) SetHostBuildContext(context *abstractions.HostBu
 	if this.hostContext.ApplicationServicesDef != nil {
 		this.innerConfigures()
 	}
+}
+
+func (app *ApplicationBuilder) Use(provider interface{}) {
+	app.handlersProviders = append(app.handlersProviders, provider)
 }
 
 // apply middleware in builder

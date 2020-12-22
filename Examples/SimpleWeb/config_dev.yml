@@ -7,18 +7,20 @@ yoyogo:
       address: ":8080"
       path: "app"
       max_request_size: 2096157
-      session_timeout: 3600
+      session:
+        name: "YOYOYGOSESSIONID"
+        timeout: 3600
       tls:
         cert: ""
         key: ""
       mvc:
         template: "v1/{controller}/{action}"
+        views:
+          path: "./Static/templates"
+          includes: [ "","" ]
       static:
         patten: "/"
         webroot: "./Static"
-      views:
-        path: "./Static/templates"
-        includes: ["",""]
       jwt:
         header: "Authorization"
         secret: "12391JdeOW^%$#@"
