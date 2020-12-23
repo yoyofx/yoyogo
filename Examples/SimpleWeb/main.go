@@ -70,8 +70,8 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 			//consul.UseServiceDiscovery(serviceCollection)
 			nacos.UseServiceDiscovery(serviceCollection)
 			session.UseSession(serviceCollection, func(options *session.Options) {
-				options.AddSessionMemoryStore(store.NewMemory(3600))
-				options.AddSessionIdentity(identity.NewCookie(""))
+				options.AddSessionMemoryStore(store.NewMemory())
+				options.AddSessionIdentity(identity.NewCookie())
 			})
 		}).
 		OnApplicationLifeEvent(getApplicationLifeEvent)

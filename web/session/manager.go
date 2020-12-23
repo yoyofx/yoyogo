@@ -47,6 +47,9 @@ func (mgr *Manager) Load(provider interface{}) string {
 	id, _ := provider.(identity.IProvider)
 	id.SetMaxLifeTime(mgr.mMaxLifeTime)
 	sessionId := id.GetID()
+	if sessionId == "" {
+		return ""
+	}
 	return mgr.store.NewID(sessionId)
 }
 

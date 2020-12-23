@@ -12,9 +12,9 @@ type Memory struct {
 	mSessions    map[string]*session
 }
 
-func NewMemory(mMaxLifeTime int64) *Memory {
+func NewMemory() *Memory {
 	return &Memory{
-		mMaxLifeTime: mMaxLifeTime,
+		mMaxLifeTime: 3600,
 		mSessions:    make(map[string]*session),
 	}
 }

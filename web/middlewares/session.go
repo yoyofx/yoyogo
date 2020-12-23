@@ -17,12 +17,21 @@ type SessionMiddleware struct {
 	mMaxLifeTime int64
 }
 
+type SessionConfig struct {
+	Name    string `mapstructure:"name"`
+	TimeOut int64  `mapstructure:"timeout"`
+}
+
 func NewSessionWith(provider identity.IProvider, store store.ISessionStore, config abstractions.IConfiguration) *SessionMiddleware {
-	sessionTimeout := config.GetInt("yoyogo.application.server.session.timeout")
-	if sessionTimeout == 0 {
-		sessionTimeout = 3600
+	var sessionConfig *SessionConfig
+	config.GetSection("yoyogo.application.server.session").Unmarshal(&sessionConfig)
+	if sessionConfig.TimeOut == 0 {
+		sessionConfig.TimeOut = 3600
 	}
-	store.SetMaxLifeTime(int64(sessionTimeout))
+	if sessionConfig.Name != "" {
+		provider.SetName(sessionConfig.Name)
+	}
+	store.SetMaxLifeTime(sessionConfig.TimeOut)
 	mgr := session.NewSessionWithStore(store)
 	return &SessionMiddleware{BaseMiddleware: &BaseMiddleware{}, sessionMgr: mgr, identity: provider, sessionStore: store}
 }
@@ -30,7 +39,9 @@ func NewSessionWith(provider identity.IProvider, store store.ISessionStore, conf
 func (sessionMid *SessionMiddleware) Inovke(ctx *context.HttpContext, next func(ctx *context.HttpContext)) {
 	sessionMid.identity.SetContext(ctx)
 	sessionId := sessionMid.sessionMgr.Load(sessionMid.identity)
-	ctx.SetItem("sessionId", sessionId)
-	ctx.SetItem("sessionMgr", sessionMid.sessionMgr)
+	if sessionId != "" {
+		ctx.SetItem("sessionId", sessionId)
+		ctx.SetItem("sessionMgr", sessionMid.sessionMgr)
+	}
 	next(ctx)
 }
