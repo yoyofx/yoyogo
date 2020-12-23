@@ -5,4 +5,5 @@ type IProvider interface {
 	GetID() string
 	Clear()
 	SetMaxLifeTime(liftTime int64)
+	SetContext(context interface{})
 }

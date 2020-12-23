@@ -20,12 +20,16 @@ type Cookie struct {
 var defaultLifeTime int64 = 3600
 
 //NewCookie new cookie provider
-func NewCookie(context *context.HttpContext, cookieName string) *Cookie {
+func NewCookie(cookieName string) *Cookie {
 	return &Cookie{
 		sessionCookieName: cookieName,
-		httpContext:       context,
+		httpContext:       nil,
 		mMaxLifeTime:      defaultLifeTime,
 	}
+}
+
+func (c *Cookie) SetContext(cxt interface{}) {
+	c.httpContext = cxt.(*context.HttpContext)
 }
 
 //SetMaxLifeTime set life time

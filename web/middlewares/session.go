@@ -2,45 +2,35 @@ package middlewares
 
 import (
 	"github.com/yoyofx/yoyogo/abstractions"
-	"github.com/yoyofx/yoyogo/dependencyinjection"
 	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofx/yoyogo/web/session"
 	"github.com/yoyofx/yoyogo/web/session/identity"
+	"github.com/yoyofx/yoyogo/web/session/store"
 )
 
 type SessionMiddleware struct {
 	*BaseMiddleware
-	sessionMgr   session.IManager
+	sessionMgr   context.ISessionManager
+	sessionStore store.ISessionStore
+	identity     identity.IProvider
 	sessionName  string
 	mMaxLifeTime int64
 }
 
-func NewSession() *SessionMiddleware {
-	return &SessionMiddleware{BaseMiddleware: &BaseMiddleware{}}
-}
-
-func RegisterCookieSession() {
-	abstractions.RegisterConfigurationProcessor(
-		func(config abstractions.IConfiguration, serviceCollection *dependencyinjection.ServiceCollection) {
-			serviceCollection.AddSingletonByImplements(NewSession, new(abstractions.IDataSource))
-		})
-}
-
-func (sessionMid *SessionMiddleware) SetConfiguration(config abstractions.IConfiguration) {
+func NewSessionWith(provider identity.IProvider, store store.ISessionStore, config abstractions.IConfiguration) *SessionMiddleware {
 	sessionTimeout := config.GetInt("yoyogo.application.server.session.timeout")
-	sessionName := config.GetString("yoyogo.application.server.session.name")
 	if sessionTimeout == 0 {
 		sessionTimeout = 3600
 	}
-	if sessionName == "" {
-		sessionName = "YOYOGOSESSIONID"
-	}
-	sessionMid.sessionName = sessionName
-	sessionMid.sessionMgr = session.NewSession(int64(sessionTimeout))
+	store.SetMaxLifeTime(int64(sessionTimeout))
+	mgr := session.NewSessionWithStore(store)
+	return &SessionMiddleware{BaseMiddleware: &BaseMiddleware{}, sessionMgr: mgr, identity: provider, sessionStore: store}
 }
 
 func (sessionMid *SessionMiddleware) Inovke(ctx *context.HttpContext, next func(ctx *context.HttpContext)) {
-	sessionId := sessionMid.sessionMgr.Load(identity.NewCookie(ctx, sessionMid.sessionName))
+	sessionMid.identity.SetContext(ctx)
+	sessionId := sessionMid.sessionMgr.Load(sessionMid.identity)
 	ctx.SetItem("sessionId", sessionId)
+	ctx.SetItem("sessionMgr", sessionMid.sessionMgr)
 	next(ctx)
 }

@@ -18,9 +18,9 @@ import (
 type ApplicationBuilder struct {
 	hostContext       *abstractions.HostBuilderContext // host build 's context
 	routerBuilder     router.IRouterBuilder            // route builder of interface
-	middleware        middleware
+	middleware        middlewares.Middleware
 	handlersProviders []interface{}                          // handlers ctor functions
-	handlers          []MiddlewareHandler                    // middleware lists
+	handlers          []middlewares.MiddlewareHandler        // middleware lists
 	routeConfigures   []func(router.IRouterBuilder)          // endpoints router configure functions
 	mvcConfigures     []func(builder *mvc.ControllerBuilder) // mvc router configure functions
 }
@@ -59,7 +59,7 @@ func CreateBlankWebBuilder() *WebHostBuilder {
 }
 
 // create application builder when combo all handlers to middleware
-func New(handlers ...MiddlewareHandler) *ApplicationBuilder {
+func New(handlers ...middlewares.MiddlewareHandler) *ApplicationBuilder {
 	return &ApplicationBuilder{
 		handlers: handlers,
 	}
@@ -135,7 +135,7 @@ func (this *ApplicationBuilder) buildMvc() {
 }
 
 func (this *ApplicationBuilder) buildMiddleware() {
-	var mids []MiddlewareHandler
+	var mids []middlewares.MiddlewareHandler
 	_ = this.hostContext.HostServices.GetService(&mids)
 	this.handlers = append(mids, this.handlers...)
 
@@ -145,7 +145,7 @@ func (this *ApplicationBuilder) buildMiddleware() {
 		}
 	}
 
-	this.middleware = build(this.handlers)
+	this.middleware = middlewares.Build(this.handlers)
 }
 
 //  this time is not build host.context.HostServices , that add services define
@@ -157,7 +157,7 @@ func (this *ApplicationBuilder) innerConfigures() {
 
 	for _, provider := range this.handlersProviders {
 		this.hostContext.
-			ApplicationServicesDef.AddSingletonByImplements(provider, new(MiddlewareHandler))
+			ApplicationServicesDef.AddSingletonByImplements(provider, new(middlewares.MiddlewareHandler))
 	}
 	//-------------------------  middleware provider ----------------------------------
 
@@ -188,7 +188,7 @@ func (app *ApplicationBuilder) Use(provider interface{}) {
 }
 
 // apply middleware in builder
-func (app *ApplicationBuilder) UseMiddleware(handler MiddlewareHandler) {
+func (app *ApplicationBuilder) UseMiddleware(handler middlewares.MiddlewareHandler) {
 	if handler == nil {
 		panic("handler cannot be nil")
 	}
@@ -196,7 +196,7 @@ func (app *ApplicationBuilder) UseMiddleware(handler MiddlewareHandler) {
 }
 
 // apply middleware in builder
-func (app *ApplicationBuilder) UseMiddlewareFront(handler MiddlewareHandler) {
+func (app *ApplicationBuilder) UseMiddlewareFront(handler middlewares.MiddlewareHandler) {
 	if handler == nil {
 		panic("handler cannot be nil")
 	}
@@ -216,16 +216,16 @@ func (app *ApplicationBuilder) UseStaticAssets() {
 
 // apply handler middleware in builder
 func (app *ApplicationBuilder) UseHandler(handler http.Handler) {
-	app.UseMiddleware(wrap(handler))
+	app.UseMiddleware(middlewares.Wrap(handler))
 }
 
 // apply handler func middleware in builder
 func (app *ApplicationBuilder) UseHandlerFunc(handlerFunc func(rw http.ResponseWriter, r *http.Request)) {
-	app.UseMiddleware(wrapFunc(handlerFunc))
+	app.UseMiddleware(middlewares.WrapFunc(handlerFunc))
 }
 
 // apply handler func middleware in builder
-func (app *ApplicationBuilder) UseFunc(handlerFunc MiddlewareHandlerFunc) {
+func (app *ApplicationBuilder) UseFunc(handlerFunc middlewares.MiddlewareHandlerFunc) {
 	app.UseMiddleware(handlerFunc)
 }
 

@@ -1,22 +1,12 @@
 package session
 
 import (
+	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofx/yoyogo/web/session/identity"
 	"github.com/yoyofx/yoyogo/web/session/store"
 )
 
-//IManager session manager of interface
-type IManager interface {
-	GetIDList() []string
-	Clear(identity.IProvider)
-	Load(identity.IProvider) string
-	Remove(sessionId string)
-	SetValue(sessionID string, key string, value interface{})
-	GetValue(sessionID string, key string) (interface{}, bool)
-	GC()
-}
-
-//IManager session manager
+//ISessionManager session manager
 type Manager struct {
 	mMaxLifeTime int64
 	identity     identity.IProvider
@@ -24,19 +14,19 @@ type Manager struct {
 }
 
 //NewSession ctor for session manager
-func NewSession(mMaxLifeTime int64) IManager {
-	mgr := &Manager{
-		mMaxLifeTime: mMaxLifeTime,
-		store:        store.NewMemory(mMaxLifeTime),
-	}
-	go mgr.GC()
-	return mgr
-}
+//func NewSession(mMaxLifeTime int64) context.ISessionManager {
+//	mgr := &Manager{
+//		mMaxLifeTime: mMaxLifeTime,
+//		store:        store.NewMemory(mMaxLifeTime),
+//	}
+//	go mgr.GC()
+//	return mgr
+//}
 
-func NewSessionWithStore(store store.ISessionStore, mMaxLifeTime int64) IManager {
+//NewSessionWithStore ctor for session manager , must be used to session.UseSession ,that add dependents to IOC.
+func NewSessionWithStore(store store.ISessionStore) context.ISessionManager {
 	mgr := &Manager{
-		mMaxLifeTime: mMaxLifeTime,
-		store:        store,
+		store: store,
 	}
 	go mgr.GC()
 	return mgr
@@ -53,16 +43,18 @@ func (mgr *Manager) GetIDList() []string {
 }
 
 // Load init and restore session information to the session store
-func (mgr *Manager) Load(identity identity.IProvider) string {
-	identity.SetMaxLifeTime(mgr.mMaxLifeTime)
-	sessionId := identity.GetID()
+func (mgr *Manager) Load(provider interface{}) string {
+	id, _ := provider.(identity.IProvider)
+	id.SetMaxLifeTime(mgr.mMaxLifeTime)
+	sessionId := id.GetID()
 	return mgr.store.NewID(sessionId)
 }
 
 // Clear clear session
-func (mgr *Manager) Clear(identity identity.IProvider) {
+func (mgr *Manager) Clear(provider interface{}) {
+	id, _ := provider.(identity.IProvider)
 	mgr.store.Clear()
-	identity.Clear()
+	id.Clear()
 }
 
 //Remove remove session store by id

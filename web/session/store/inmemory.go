@@ -23,6 +23,10 @@ func (mem *Memory) UpdateLastTimeAccessed(sessionId string) {
 	mem.mSessions[sessionId].UpdateLastTimeAccessed()
 }
 
+func (mem *Memory) SetMaxLifeTime(lifetime int64) {
+	mem.mMaxLifeTime = lifetime
+}
+
 //NewID new session id
 func (mem *Memory) NewID(sessionId string) string {
 	mem.mLock.Lock()

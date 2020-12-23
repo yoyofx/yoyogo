@@ -19,6 +19,7 @@ import (
 	"github.com/yoyofx/yoyogo/web/router"
 	"github.com/yoyofx/yoyogo/web/session"
 	"github.com/yoyofx/yoyogo/web/session/identity"
+	"github.com/yoyofx/yoyogo/web/session/store"
 )
 
 func SimpleDemo() {
@@ -49,7 +50,7 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 	return web.NewWebHostBuilder().
 		UseConfiguration(configuration).
 		Configure(func(app *web.ApplicationBuilder) {
-			app.Use(middlewares.NewSession)
+			app.Use(middlewares.NewSessionWith)
 			app.UseMiddleware(middlewares.NewCORS())
 			//web.UseMiddleware(middlewares.NewRequestTracker())
 			app.UseStaticAssets()
@@ -68,6 +69,10 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 			//eureka.UseServiceDiscovery(serviceCollection)
 			//consul.UseServiceDiscovery(serviceCollection)
 			nacos.UseServiceDiscovery(serviceCollection)
+			session.UseSession(serviceCollection, func(options *session.Options) {
+				options.AddSessionMemoryStore(store.NewMemory(3600))
+				options.AddSessionIdentity(identity.NewCookie(""))
+			})
 		}).
 		OnApplicationLifeEvent(getApplicationLifeEvent)
 }
@@ -104,25 +109,13 @@ func registerEndpointRouterConfig(rb router.IRouterBuilder) {
 
 //endregion
 
-var (
-	sessionMgr = session.NewSession(15)
-)
-
 func SetSession(ctx *context.HttpContext) {
-	sessionId := sessionMgr.Load(identity.NewCookie(ctx, "TestCookieName"))
-	sessionMgr.SetValue(sessionId, "user", "yoyogo")
+	ctx.GetSession().SetValue("user", "yoyogo")
 	ctx.JSON(200, context.H{"ok": true})
 }
 
 func TestSession(ctx *context.HttpContext) {
-	sessionId := sessionMgr.Load(identity.NewCookie(ctx, "TestCookieName"))
-
-	s, _ := sessionMgr.GetValue(sessionId, "user")
-	ret := ""
-	v, e := s.(string)
-	if e {
-		ret = v
-	}
+	ret := ctx.GetSession().GetString("user")
 	ctx.JSON(200, context.H{"user": ret})
 }
 

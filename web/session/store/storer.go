@@ -9,4 +9,5 @@ type ISessionStore interface {
 	Clear()
 	Remove(sessionId string)
 	UpdateLastTimeAccessed(sessionId string)
+	SetMaxLifeTime(lifetime int64)
 }
