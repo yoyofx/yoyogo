@@ -1,5 +1,5 @@
 package redis
 
-type Set struct {
+type Lock struct {
 	ops Ops
 }

@@ -25,7 +25,7 @@ var ctx = context.Background()
 
 func TestRedisConn(t *testing.T) {
 	client := newClient()
-	defer client.Close()
+	//defer client.Close()
 
 	//ping
 	pong, err := client.Ping(ctx).Result()
@@ -62,15 +62,19 @@ func TestRedisStringValue(t *testing.T) {
 	_ = serializer.Deserialization(doctorResult, &doctor2)
 	assert.Equal(t, doctor2.Name, "钟南山")
 	assert.Equal(t, doctor2.Age, 83)
+
+	//client.SetNX()
 }
 
 func TestRedisList(t *testing.T) {
 	client := newClient()
 	defer client.Close()
 	listKey := "go2list"
+	_, _ = client.Del(ctx, listKey).Result()
 
 	client.RPush(ctx, listKey, 1, 2, 3)
+
 	first, _ := client.LPop(ctx, listKey).Int()
-	assert.Equal(t, first, 121312)
+	assert.Equal(t, first, 1)
 
 }
