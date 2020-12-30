@@ -11,7 +11,7 @@ type Ops interface {
 	MultiSet(values ...interface{}) error
 	SetValue(key string, value interface{}, expiration time.Duration) error
 	Set(key string, value string, expiration time.Duration) error
-	SetNX(key string, value string, expiration time.Duration) error
+	SetNX(key string, value interface{}) (bool, error)
 	Get(key string) (string, error)
 	GetValue(key string) ([]byte, error)
 	Append(key string, value string) (int64, error)

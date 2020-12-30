@@ -74,8 +74,8 @@ func (ops *GoRedisStandaloneOps) Set(key string, value string, expiration time.D
 	return ops.client.Set(ctx, key, value, expiration).Err()
 }
 
-func (ops *GoRedisStandaloneOps) SetNX(key string, value string, expiration time.Duration) error {
-	return ops.client.SetNX(ctx, key, value, expiration).Err()
+func (ops *GoRedisStandaloneOps) SetNX(key string, value interface{}) (bool, error) {
+	return ops.client.SetNX(ctx, key, value, 0).Result()
 }
 
 func (ops *GoRedisStandaloneOps) GetValue(key string) ([]byte, error) {

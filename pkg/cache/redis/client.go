@@ -42,6 +42,7 @@ func (c *Client) SetSerializer(serializer ISerializer) {
 
 //GetKVOps Returns the operations performed on simple values (or Strings in Redis terminology).
 func (c *Client) GetKVOps() KV {
+	c.kv.serializer = c.valueSerializer
 	return c.kv
 }
 

@@ -36,6 +36,15 @@ func (kv KV) GetString(key string) (string, error) {
 	return kv.ops.Get(key)
 }
 
+// Set set serialization object to the key, redis cmd: setnx
+func (kv KV) SetIfAbsent(key string, value interface{}) (bool, error) {
+	ss, e := kv.serializer.Serialization(value)
+	if e != nil {
+		return false, e
+	}
+	return kv.ops.SetNX(key, ss)
+}
+
 //Set set serialization object to the key
 func (kv KV) Set(key string, value interface{}, duration time.Duration) error {
 	ss, e := kv.serializer.Serialization(value)
