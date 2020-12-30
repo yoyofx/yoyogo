@@ -77,4 +77,7 @@ func TestRedisList(t *testing.T) {
 	first, _ := client.LPop(ctx, listKey).Int()
 	assert.Equal(t, first, 1)
 
+	i1, _ := client.LIndex(ctx, listKey, 1).Int64()
+	assert.Equal(t, i1, int64(3))
+
 }
