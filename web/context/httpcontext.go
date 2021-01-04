@@ -112,3 +112,12 @@ func (ctx *HttpContext) Render(code int, r actionresult.IActionResult) {
 
 	ctx.Output.SetStatusCode(code)
 }
+
+func (ctx *HttpContext) GetSession() *Session {
+	sessionId := ctx.GetItem("sessionId").(string)
+	if sessionId == "" {
+		return nil
+	}
+	mgr := ctx.GetItem("sessionMgr").(ISessionManager)
+	return NewSession(sessionId, mgr)
+}

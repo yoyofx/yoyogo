@@ -15,8 +15,8 @@ type WebHostBuilderDecorator struct {
 
 // OverrideConfigure is configure function by web application builder.
 func (decorator WebHostBuilderDecorator) OverrideConfigure(configureFunc interface{}, builder abstractions.IApplicationBuilder) {
-	configureWebAppFunc := configureFunc.(func(applicationBuilder *WebApplicationBuilder))
-	configureWebAppFunc(builder.(*WebApplicationBuilder))
+	configureWebAppFunc := configureFunc.(func(applicationBuilder *ApplicationBuilder))
+	configureWebAppFunc(builder.(*ApplicationBuilder))
 }
 
 // OverrideNewApplicationBuilder create web application builder.

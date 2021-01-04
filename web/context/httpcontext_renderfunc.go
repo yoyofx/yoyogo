@@ -3,6 +3,7 @@ package context
 import (
 	"github.com/yoyofx/yoyogo/web/actionresult"
 	"net/http"
+	"sync"
 )
 
 func (ctx *HttpContext) HTML(code int, name string, obj interface{}) {
@@ -32,8 +33,19 @@ func (ctx *HttpContext) JSONP(code int, obj interface{}) {
 	ctx.Render(code, actionresult.Jsonp{Callback: callback, Data: obj})
 }
 
+var (
+	jsonPool = sync.Pool{
+		New: func() interface{} {
+			return actionresult.Json{}
+		},
+	}
+)
+
 func (ctx *HttpContext) JSON(code int, obj interface{}) {
-	ctx.Render(code, actionresult.Json{Data: obj})
+	result := jsonPool.Get().(actionresult.Json)
+	defer jsonPool.Put(result)
+	result.Data = obj
+	ctx.Render(code, result)
 }
 
 // AsciiJSON serializes the given struct as JSON into the response body with unicode to ASCII string.

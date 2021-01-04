@@ -9,7 +9,6 @@ const (
 type Options struct {
 	Template   *RouteTemplate
 	ViewOption *view.Option
-	Serializer *SerializerOption
 }
 
 // NewMvcOptions new mvc options.

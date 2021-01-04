@@ -4,6 +4,7 @@ import (
 	"SimpleWeb/models"
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/web/actionresult"
+	"github.com/yoyofx/yoyogo/web/captcha"
 	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofx/yoyogo/web/mvc"
 )
@@ -24,10 +25,9 @@ type RegisterRequest struct {
 	Password string `param:"Password"`
 }
 
-func (controller UserController) Register(ctx *context.HttpContext, request *RegisterRequest) actionresult.IActionResult {
-	result := mvc.ApiResult{Success: true, Message: "ok", Data: request}
+func (controller UserController) Register(ctx *context.HttpContext, request *RegisterRequest) mvc.ApiResult {
 
-	return actionresult.Json{Data: result}
+	return mvc.ApiResult{Success: true, Message: "ok", Data: request}
 }
 
 func (controller UserController) GetUserName(ctx *context.HttpContext, request *RegisterRequest) actionresult.IActionResult {
@@ -64,4 +64,10 @@ func (controller UserController) GetInfo() mvc.ApiResult {
 func (controller UserController) GetSD() mvc.ApiResult {
 	serviceList := controller.discoveryClient.GetAllInstances("yoyogo_demo_dev")
 	return controller.OK(serviceList)
+}
+
+func (controller UserController) GetCaptcha() actionresult.IActionResult {
+	text, md5, bytes := captcha.CreateImage(6)
+	_, _ = text, md5
+	return actionresult.Image{Data: bytes}
 }

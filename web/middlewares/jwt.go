@@ -20,7 +20,7 @@ type JwtMiddleware struct {
 
 type JwtRequest struct {
 	Id   string `json:"id"`
-	Name string `json:"name"`
+	Name string `extension:"name"`
 }
 
 func NewJwt() *JwtMiddleware {
