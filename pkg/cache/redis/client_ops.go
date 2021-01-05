@@ -1,6 +1,9 @@
 package redis
 
-import "time"
+import (
+	"github.com/go-redis/redis/v8"
+	"time"
+)
 
 type Ops interface {
 	Ping() (string, error)
@@ -21,4 +24,9 @@ type Ops interface {
 	MultiGet(key ...string) ([]interface{}, error)
 	IncrBy(key string, step int64) (int64, error)
 	LPush(key string, values ...interface{}) (int64, error)
+	GeoAddArr(key string, geoLocation ...*redis.GeoLocation) *redis.IntCmd
+	GeoPos(key string, member ...string) *redis.GeoPosCmd
+	GeoDist(key string, member1, member2, unit string) *redis.FloatCmd
+	GeoRadius(key string, longitude, latitude float64, query *redis.GeoRadiusQuery) *redis.GeoLocationCmd
+	GeoRadiusByMember(key string, member string, query *redis.GeoRadiusQuery) *redis.GeoLocationCmd
 }
