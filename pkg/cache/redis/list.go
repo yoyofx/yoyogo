@@ -62,14 +62,26 @@ func (ls List) Clear(key string) (bool, error) {
 	return c > 0, e
 }
 
-func (ls List) AddElement(key string, values interface{}) error {
-	return nil
+//AddElements add serialization elements to key list
+func (ls List) AddElements(key string, values ...interface{}) error {
+	var rets []interface{}
+	for _, value := range values {
+		bytes, _ := ls.serializer.Serialization(value)
+		rets = append(rets, bytes)
+	}
+	_, err := ls.RightPush(key, rets)
+	return err
 }
 
 func (ls List) GetElement(key string, index int64, elem interface{}) error {
-	return nil
+	strElem, _ := ls.Index(key, index)
+	return ls.serializer.Deserialization([]byte(strElem), elem)
 }
 
-func (ls List) GetElements(key string, index int64, elements []interface{}) error {
+func (ls List) GetElements(key string, startIndex int64, endIndex int64, elements []interface{}) error {
+	//strElemArray, _ := ls.Range(key, startIndex, endIndex)
+	//for _, strElem := range strElemArray {
+	//	//_ = ls.serializer.Deserialization([]byte(strElem), elem)
+	//}
 	return nil
 }
