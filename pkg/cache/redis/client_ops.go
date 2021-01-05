@@ -1,6 +1,9 @@
 package redis
 
-import "time"
+import (
+	"github.com/go-redis/redis/v8"
+	"time"
+)
 
 type Ops interface {
 	Ping() (string, error)
