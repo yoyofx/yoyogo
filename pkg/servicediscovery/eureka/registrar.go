@@ -7,7 +7,7 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
-	"github.com/yoyofx/yoyogo/pkg/servicediscovery"
+	sd "github.com/yoyofx/yoyogo/pkg/servicediscovery"
 )
 
 type Option struct {
@@ -56,7 +56,7 @@ func (registrar *Registrar) GetName() string {
 }
 
 func (registrar *Registrar) Register() error {
-	registrar.cacheLocalInstance = servicediscovery.CreateServiceInstance(registrar.config.ENV)
+	registrar.cacheLocalInstance = sd.CreateServiceInstance(registrar.config.ENV)
 	if registrar.client == nil {
 		instance := &fargo.Instance{
 			InstanceId:     registrar.cacheLocalInstance.GetId(),
