@@ -23,6 +23,8 @@ type Ops interface {
 	RandomKey() (string, error)
 	MultiGet(key ...string) ([]interface{}, error)
 	IncrBy(key string, step int64) (int64, error)
+	LIndex(key string, index int64) (string, error)
+	LPop(key string) (string, error)
 	LPush(key string, values ...interface{}) (int64, error)
 	LRange(key string, start int64, end int64) ([]string, error)
 	LTrim(key string, start int64, end int64) error

@@ -100,6 +100,13 @@ func (ops *GoRedisStandaloneOps) RandomKey() (string, error) {
 
 //---------------------------------------------------------------------------------------------------
 // list ops
+func (ops *GoRedisStandaloneOps) LPop(key string) (string, error) {
+	return ops.client.LPop(ctx, key).Result()
+}
+
+func (ops *GoRedisStandaloneOps) LIndex(key string, index int64) (string, error) {
+	return ops.client.LIndex(ctx, key, index).Result()
+}
 
 func (ops *GoRedisStandaloneOps) LPush(key string, values ...interface{}) (int64, error) {
 	return ops.client.LPush(ctx, key, values).Result()
