@@ -25,7 +25,7 @@ func NewClient(options *Options) IClient {
 
 	}
 	kv := KV{ops: ops}
-	list := List{ops}
+	list := List{ops: ops}
 	hash := Hash{ops: ops}
 	set := Set{ops: ops}
 	zset := ZSet{ops: ops}
@@ -48,6 +48,7 @@ func (c *Client) GetKVOps() KV {
 
 //GetListOps Returns the operations performed on list values.
 func (c *Client) GetListOps() List {
+	c.list.serializer = c.valueSerializer
 	return c.list
 }
 
