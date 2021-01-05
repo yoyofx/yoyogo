@@ -1,10 +1,5 @@
 package redis
 
-import (
-	"errors"
-	"github.com/go-redis/redis/v8"
-)
-
 type GeoEnum string
 
 type GeoUnit string
@@ -76,66 +71,39 @@ type GeoRadiusByMemberQuery struct {
 */
 func (geo *Geo) GeoAdd(key string, longitude float64, latitude float64, member string) int64 {
 
-	location := redis.GeoLocation{
+	location := GeoPosition{
 		Longitude: longitude,
 		Latitude:  latitude,
-		Name:      member,
+		Member:    member,
 	}
-	res := geo.ops.GeoAddArr(key, &location)
-	return res.Val()
+	res := geo.ops.GeoAddArr(key, location)
+	return res
 }
 
 /*
 添加一批地理信息
 */
 func (geo *Geo) GeoAddArr(key string, geoPosition []GeoPosition) int64 {
-	var geoList = make([]*redis.GeoLocation, 0)
-	for _, x := range geoPosition {
-		geoEle := redis.GeoLocation{
-			Longitude: x.Longitude,
-			Latitude:  x.Latitude,
-			Name:      x.Member,
-		}
-		geoList = append(geoList, &geoEle)
-	}
-	res := geo.ops.GeoAddArr(key, geoList...)
-	return res.Val()
+	res := geo.ops.GeoAddArr(key, geoPosition...)
+	return res
 }
 
 /*
 根据地理位置名称获取经纬度
 */
 func (geo *Geo) GeoPos(key string, member string) (err error, geoRes GeoPosition) {
-
-	resList := geo.ops.GeoPos(key, member)
-	resEle := resList.Val()[0]
-	if resEle == nil {
-		return errors.New("this member dont have any info"), GeoPosition{}
+	err, resList := geo.ops.GeoPos(key, member)
+	if err != nil {
+		return err, GeoPosition{}
 	}
-	return nil, GeoPosition{
-		Longitude: resEle.Longitude,
-		Latitude:  resEle.Latitude,
-		Member:    member,
-	}
+	return nil, resList[0]
 }
 
 /*
 获取一批地理位置的经纬度
 */
 func (geo *Geo) GeoPosArr(key string, members []string) (err error, geoRes []GeoPosition) {
-	resList := geo.ops.GeoPos(key, members...)
-	if len(resList.Val()) == 0 {
-		return errors.New("not find any geo info"), make([]GeoPosition, 0)
-	}
-	resGeoList := make([]GeoPosition, 0)
-	resListVal := resList.Val()
-	for i, x := range members {
-		resValEle := resListVal[i]
-		if resValEle != nil {
-			resGeoList = append(resGeoList, GeoPosition{Longitude: resValEle.Longitude, Latitude: resValEle.Latitude, Member: x})
-		}
-	}
-	return nil, resGeoList
+	return geo.ops.GeoPos(key, members...)
 }
 
 func getUnit(unit GeoUnit) string {
@@ -170,75 +138,19 @@ func GetSort(sort GeoEnum) string {
 获取两个坐标的直线距离
 */
 func (geo *Geo) GeoDist(key string, member1, member2 string, unit GeoUnit) (error, GeoDistInfo) {
-	unitStr := getUnit(unit)
-	if unitStr == "" {
-		return errors.New("error unit"), GeoDistInfo{}
-	}
-	res := geo.ops.GeoDist(key, member1, member2, unitStr)
-	return nil, GeoDistInfo{Unit: unit, Dist: res.Val()}
+	return geo.ops.GeoDist(key, member1, member2, unit)
 }
 
 /**
 经纬度中心距离计算
 */
 func (geo *Geo) GeoRadius(key string, query GeoRadiusQuery) (error, []GeoPosition) {
-	unitStr := getUnit(query.Unit)
-	if unitStr == "" {
-		return errors.New("error unit"), make([]GeoPosition, 0)
-	}
-	res := geo.ops.GeoRadius(key, query.Longitude, query.Latitude, &redis.GeoRadiusQuery{
-		Radius:      query.Radius,
-		Unit:        unitStr,
-		WithCoord:   query.WithCoord,
-		WithDist:    query.WithDist,
-		WithGeoHash: query.WithGeoHash,
-		Count:       query.Count,
-		Sort:        GetSort(query.Sort),
-		Store:       query.Store,
-		StoreDist:   query.StoreDist,
-	})
-	geoList := make([]GeoPosition, 0)
-	for _, x := range res.Val() {
-		geoList = append(geoList, GeoPosition{
-			Member:    x.Name,
-			Longitude: x.Longitude,
-			Latitude:  x.Latitude,
-			Dist:      x.Dist,
-			GeoHash:   x.GeoHash,
-			Unit:      query.Unit,
-		})
-	}
-	return nil, geoList
+	return geo.ops.GeoRadius(key, query)
 }
 
 /**
 地理标识中心距离计算
 */
 func (geo *Geo) GeoRadiusByMember(key string, query GeoRadiusByMemberQuery) (error, []GeoPosition) {
-	unitStr := getUnit(query.Unit)
-	if unitStr == "" {
-		return errors.New("error unit"), make([]GeoPosition, 0)
-	}
-	res := geo.ops.GeoRadiusByMember(key, query.Member, &redis.GeoRadiusQuery{
-		Radius:      query.Radius,
-		Unit:        unitStr,
-		WithCoord:   query.WithCoord,
-		WithDist:    query.WithDist,
-		WithGeoHash: query.WithGeoHash,
-		Count:       query.Count,
-		Sort:        GetSort(query.Sort),
-		Store:       query.Store,
-		StoreDist:   query.StoreDist,
-	})
-	geoList := make([]GeoPosition, 0)
-	for _, x := range res.Val() {
-		geoList = append(geoList, GeoPosition{
-			Member:    x.Name,
-			Longitude: x.Longitude,
-			Latitude:  x.Latitude,
-			Dist:      x.Dist,
-			GeoHash:   x.GeoHash,
-		})
-	}
-	return nil, geoList
+	return geo.ops.GeoRadiusByMember(key, query.Member, query)
 }
