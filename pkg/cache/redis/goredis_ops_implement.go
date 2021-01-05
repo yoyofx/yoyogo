@@ -100,16 +100,31 @@ func (ops *GoRedisStandaloneOps) RandomKey() (string, error) {
 
 //---------------------------------------------------------------------------------------------------
 // list ops
-func (ops *GoRedisStandaloneOps) LIndex(key string, index int64) (string, error) {
-	return ops.client.LIndex(ctx, key, index).Result()
-}
-
-func (ops *GoRedisStandaloneOps) LPop(key string) (string, error) {
-	return ops.client.LPop(ctx, key).Result()
-}
 
 func (ops *GoRedisStandaloneOps) LPush(key string, values ...interface{}) (int64, error) {
 	return ops.client.LPush(ctx, key, values).Result()
+}
+
+//--------------------------------------------------------------------------------------------------
+//geo ops
+
+func (ops *GoRedisStandaloneOps) GeoAddArr(key string, geoLocation ...*redis.GeoLocation) *redis.IntCmd {
+	return ops.client.GeoAdd(ctx, key, geoLocation...)
+}
+
+func (ops *GoRedisStandaloneOps) GeoPos(key string, member ...string) *redis.GeoPosCmd {
+	return ops.client.GeoPos(ctx, key, member...)
+}
+
+func (ops *GoRedisStandaloneOps) GeoDist(key string, member1, member2, unit string) *redis.FloatCmd {
+	return ops.client.GeoDist(ctx, key, member1, member2, unit)
+}
+
+func (ops *GoRedisStandaloneOps) GeoRadius(key string, longitude, latitude float64, query *redis.GeoRadiusQuery) *redis.GeoLocationCmd {
+	return ops.client.GeoRadius(ctx, key, longitude, latitude, query)
+}
+func (ops *GoRedisStandaloneOps) GeoRadiusByMember(key string, member string, query *redis.GeoRadiusQuery) *redis.GeoLocationCmd {
+	return ops.client.GeoRadiusByMember(ctx, key, member, query)
 }
 
 func (ops *GoRedisStandaloneOps) LRange(key string, start int64, end int64) ([]string, error) {

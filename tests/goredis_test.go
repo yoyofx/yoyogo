@@ -83,3 +83,77 @@ func TestRedisList(t *testing.T) {
 	values, _ := client.LRange(ctx, listKey, 0, 1).Result()
 	assert.Equal(t, len(values), 2)
 }
+
+var geoKey="Geo"
+
+func TestRedisGeo(t *testing.T)  {
+	client:=cache.NewClient(&cache.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetGeoOps()
+	res:= ops.GeoAdd(geoKey,116.488566,39.914741,"GUOMAO")
+	fmt.Println(res)
+}
+
+func TestRedisGeoAdd(t *testing.T)  {
+	client:=cache.NewClient(&cache.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetGeoOps()
+	list:=make([]cache.GeoPosition,0)
+	list=append(list,cache.GeoPosition{Member:"北京东",Longitude: 116.49065,Latitude: 39.908294})
+	list=append(list,cache.GeoPosition{Member:"慈云寺",Longitude: 116.495429,Latitude: 39.919307})
+	res:= ops.GeoAddArr(geoKey,list)
+	fmt.Println(res)
+}
+func TestRedisGeoPos(t *testing.T)  {
+	client:=cache.NewClient(&cache.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetGeoOps()
+	ERR,res:= ops.GeoPos(geoKey,"GUOMAO")
+	fmt.Println(ERR)
+	fmt.Println(res)
+}
+
+func TestGeoDist(t *testing.T)  {
+	client:=cache.NewClient(&cache.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetGeoOps()
+	ERR,res:= ops.GeoDist(geoKey,"GUOMAO","SIHUI",cache.M)
+	fmt.Println(ERR)
+	fmt.Println(res)
+}
+
+func TestGeoRadius(t *testing.T)  {
+	client:=cache.NewClient(&cache.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetGeoOps()
+	ERR,res:= ops.GeoRadius(geoKey,cache.GeoRadiusQuery{Longitude:116.514724,Latitude: 39.922378, Radius: 10,Unit: cache.KM,WithDist: true,Count: 5,WithCoord: true})
+	fmt.Println(ERR)
+	fmt.Println(res)
+}
+
+func TestGeoRadiusByMember(t *testing.T)  {
+	client:=cache.NewClient(&cache.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetGeoOps()
+	ERR,res:= ops.GeoRadiusByMember(geoKey,cache.GeoRadiusByMemberQuery{Member: "SIHUI", Radius: 10,Unit: cache.KM,WithDist: true,Count: 3,WithCoord: true})
+	fmt.Println(ERR)
+	fmt.Println(res)
+}
