@@ -43,7 +43,7 @@ func NewServerDiscovery(option Option) servicediscovery.IServiceDiscovery {
 	var fargoConfig fargo.Config
 	fargoConfig.Eureka.ServiceUrls = []string{option.Address}
 	// 订阅服务器应轮询更新的频率。
-	fargoConfig.Eureka.PollIntervalSeconds = 1
+	fargoConfig.Eureka.PollIntervalSeconds = 30
 	fargoConnection := fargo.NewConnFromConfig(fargoConfig)
 	eurekaRegister.logger = logger
 	eurekaRegister.eurekaConnection = &fargoConnection
@@ -90,6 +90,7 @@ func (registrar *Registrar) GetHealthyInstances(serviceName string) []servicedis
 
 func (registrar *Registrar) GetAllInstances(serviceName string) []servicediscovery.ServiceInstance {
 	app, err := registrar.eurekaConnection.GetApp(serviceName)
+	//registrar.eurekaConnection.UpdateApp()
 	if err != nil {
 		return nil
 	}
