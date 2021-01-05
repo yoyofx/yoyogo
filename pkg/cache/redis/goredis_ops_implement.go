@@ -100,6 +100,13 @@ func (ops *GoRedisStandaloneOps) RandomKey() (string, error) {
 
 //---------------------------------------------------------------------------------------------------
 // list ops
+func (ops *GoRedisStandaloneOps) LPop(key string) (string, error) {
+	return ops.client.LPop(ctx, key).Result()
+}
+
+func (ops *GoRedisStandaloneOps) LIndex(key string, index int64) (string, error) {
+	return ops.client.LIndex(ctx, key, index).Result()
+}
 
 func (ops *GoRedisStandaloneOps) LPush(key string, values ...interface{}) (int64, error) {
 	return ops.client.LPush(ctx, key, values).Result()
@@ -125,4 +132,32 @@ func (ops *GoRedisStandaloneOps) GeoRadius(key string, longitude, latitude float
 }
 func (ops *GoRedisStandaloneOps) GeoRadiusByMember(key string, member string, query *redis.GeoRadiusQuery) *redis.GeoLocationCmd {
 	return ops.client.GeoRadiusByMember(ctx, key, member, query)
+}
+
+func (ops *GoRedisStandaloneOps) LRange(key string, start int64, end int64) ([]string, error) {
+	return ops.client.LRange(ctx, key, start, end).Result()
+}
+
+func (ops *GoRedisStandaloneOps) LTrim(key string, start int64, end int64) error {
+	return ops.client.LTrim(ctx, key, start, end).Err()
+}
+
+func (ops *GoRedisStandaloneOps) RPop(key string) (string, error) {
+	return ops.client.RPop(ctx, key).Result()
+}
+
+func (ops *GoRedisStandaloneOps) RPush(key string, values ...interface{}) (int64, error) {
+	return ops.client.RPush(ctx, key, values).Result()
+}
+
+func (ops *GoRedisStandaloneOps) LSet(key string, index int64, value interface{}) error {
+	return ops.client.LSet(ctx, key, index, value).Err()
+}
+
+func (ops *GoRedisStandaloneOps) LSize(key string) (int64, error) {
+	return ops.client.LLen(ctx, key).Result()
+}
+
+func (ops *GoRedisStandaloneOps) LRemove(key string, count int64, value interface{}) (int64, error) {
+	return ops.client.LRem(ctx, key, count, value).Result()
 }

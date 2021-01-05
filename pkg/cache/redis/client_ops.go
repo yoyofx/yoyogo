@@ -23,7 +23,16 @@ type Ops interface {
 	RandomKey() (string, error)
 	MultiGet(key ...string) ([]interface{}, error)
 	IncrBy(key string, step int64) (int64, error)
+	LIndex(key string, index int64) (string, error)
+	LPop(key string) (string, error)
 	LPush(key string, values ...interface{}) (int64, error)
+	LRange(key string, start int64, end int64) ([]string, error)
+	LTrim(key string, start int64, end int64) error
+	RPop(key string) (string, error)
+	RPush(key string, values ...interface{}) (int64, error)
+	LSet(key string, index int64, value interface{}) error
+	LSize(key string) (int64, error)
+	LRemove(key string, count int64, value interface{}) (int64, error)
 	GeoAddArr(key string, geoLocation ...*redis.GeoLocation) *redis.IntCmd
 	GeoPos(key string, member ...string) *redis.GeoPosCmd
 	GeoDist(key string, member1, member2, unit string) *redis.FloatCmd

@@ -80,6 +80,8 @@ func TestRedisList(t *testing.T) {
 	i1, _ := client.LIndex(ctx, listKey, 1).Int64()
 	assert.Equal(t, i1, int64(3))
 
+	values, _ := client.LRange(ctx, listKey, 0, 1).Result()
+	assert.Equal(t, len(values), 2)
 }
 
 var geoKey="Geo"
