@@ -48,3 +48,77 @@ func Test_RedisValueOps(t *testing.T) {
 	s1, _ := client.RandomKey()
 	fmt.Println(s1)
 }
+
+var geoKey = "Geo"
+
+func TestRedisGeo(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetGeoOps()
+	res := ops.GeoAdd(geoKey, 116.488566, 39.914741, "GUOMAO")
+	fmt.Println(res)
+}
+
+func TestRedisGeoAdd(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetGeoOps()
+	list := make([]redis.GeoPosition, 0)
+	list = append(list, redis.GeoPosition{Member: "北京东", Longitude: 116.49065, Latitude: 39.908294})
+	list = append(list, redis.GeoPosition{Member: "慈云寺", Longitude: 116.495429, Latitude: 39.919307})
+	res := ops.GeoAddArr(geoKey, list)
+	fmt.Println(res)
+}
+func TestRedisGeoPos(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetGeoOps()
+	ERR, res := ops.GeoPos(geoKey, "GUOMAO")
+	assert.Equal(t, ERR, nil)
+	assert.Equal(t, res.Member, "GUOMAO")
+}
+
+func TestGeoDist(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetGeoOps()
+	ERR, res := ops.GeoDist(geoKey, "GUOMAO", "SIHUI", redis.M)
+	assert.Equal(t, ERR, nil)
+	assert.Equal(t, res.Dist, float64(1128.2414))
+}
+
+func TestGeoRadius(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetGeoOps()
+	ERR, res := ops.GeoRadius(geoKey, redis.GeoRadiusQuery{Longitude: 116.514724, Latitude: 39.922378, Radius: 10, Unit: redis.KM, WithDist: true, Count: 5, WithCoord: true})
+	assert.Equal(t, ERR, nil)
+	assert.Equal(t, len(res), 5)
+}
+
+func TestGeoRadiusByMember(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetGeoOps()
+	ERR, res := ops.GeoRadiusByMember(geoKey, redis.GeoRadiusByMemberQuery{Member: "SIHUI", Radius: 10, Unit: redis.KM, WithDist: true, Count: 3, WithCoord: true})
+	assert.Equal(t, ERR, nil)
+	assert.Equal(t, len(res), 3)
+}
