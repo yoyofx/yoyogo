@@ -34,6 +34,7 @@ type GeoPosition struct {
 	Dist      float64
 	Member    string
 	GeoHash   int64
+	Unit      GeoUnit
 }
 
 type GeoDistInfo struct {
@@ -88,7 +89,7 @@ func (geo *Geo) GeoAdd(key string, longitude float64, latitude float64, member s
 添加一批地理信息
 */
 func (geo *Geo) GeoAddArr(key string, geoPosition []GeoPosition) int64 {
-	var geoList = make([]*redis.GeoLocation, 2)
+	var geoList = make([]*redis.GeoLocation, 0)
 	for _, x := range geoPosition {
 		geoEle := redis.GeoLocation{
 			Longitude: x.Longitude,
@@ -126,7 +127,7 @@ func (geo *Geo) GeoPosArr(key string, members []string) (err error, geoRes []Geo
 	if len(resList.Val()) == 0 {
 		return errors.New("not find any geo info"), make([]GeoPosition, 0)
 	}
-	resGeoList := make([]GeoPosition, 2)
+	resGeoList := make([]GeoPosition, 0)
 	resListVal := resList.Val()
 	for i, x := range members {
 		resValEle := resListVal[i]
@@ -196,7 +197,7 @@ func (geo *Geo) GeoRadius(key string, query GeoRadiusQuery) (error, []GeoPositio
 		Store:       query.Store,
 		StoreDist:   query.StoreDist,
 	})
-	geoList := make([]GeoPosition, query.Count)
+	geoList := make([]GeoPosition, 0)
 	for _, x := range res.Val() {
 		geoList = append(geoList, GeoPosition{
 			Member:    x.Name,
@@ -204,6 +205,7 @@ func (geo *Geo) GeoRadius(key string, query GeoRadiusQuery) (error, []GeoPositio
 			Latitude:  x.Latitude,
 			Dist:      x.Dist,
 			GeoHash:   x.GeoHash,
+			Unit:      query.Unit,
 		})
 	}
 	return nil, geoList
@@ -228,7 +230,7 @@ func (geo *Geo) GeoRadiusByMember(key string, query GeoRadiusByMemberQuery) (err
 		Store:       query.Store,
 		StoreDist:   query.StoreDist,
 	})
-	geoList := make([]GeoPosition, query.Count)
+	geoList := make([]GeoPosition, 0)
 	for _, x := range res.Val() {
 		geoList = append(geoList, GeoPosition{
 			Member:    x.Name,
