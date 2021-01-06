@@ -147,7 +147,7 @@ func (ops *GoRedisStandaloneOps) RPop(key string) (string, error) {
 }
 
 func (ops *GoRedisStandaloneOps) RPush(key string, values ...interface{}) (int64, error) {
-	return ops.client.RPush(ctx, key, values).Result()
+	return ops.client.RPush(ctx, key, values...).Result()
 }
 
 func (ops *GoRedisStandaloneOps) LSet(key string, index int64, value interface{}) error {
