@@ -7,7 +7,7 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
-	"github.com/yoyofx/yoyogo/pkg/servicediscovery"
+	sd "github.com/yoyofx/yoyogo/pkg/servicediscovery"
 )
 
 type Option struct {
@@ -43,7 +43,7 @@ func NewServerDiscovery(option Option) servicediscovery.IServiceDiscovery {
 	var fargoConfig fargo.Config
 	fargoConfig.Eureka.ServiceUrls = []string{option.Address}
 	// 订阅服务器应轮询更新的频率。
-	fargoConfig.Eureka.PollIntervalSeconds = 1
+	fargoConfig.Eureka.PollIntervalSeconds = 30
 	fargoConnection := fargo.NewConnFromConfig(fargoConfig)
 	eurekaRegister.logger = logger
 	eurekaRegister.eurekaConnection = &fargoConnection
@@ -56,7 +56,7 @@ func (registrar *Registrar) GetName() string {
 }
 
 func (registrar *Registrar) Register() error {
-	registrar.cacheLocalInstance = servicediscovery.CreateServiceInstance(registrar.config.ENV)
+	registrar.cacheLocalInstance = sd.CreateServiceInstance(registrar.config.ENV)
 	if registrar.client == nil {
 		instance := &fargo.Instance{
 			InstanceId:     registrar.cacheLocalInstance.GetId(),
@@ -90,6 +90,7 @@ func (registrar *Registrar) GetHealthyInstances(serviceName string) []servicedis
 
 func (registrar *Registrar) GetAllInstances(serviceName string) []servicediscovery.ServiceInstance {
 	app, err := registrar.eurekaConnection.GetApp(serviceName)
+	//registrar.eurekaConnection.UpdateApp()
 	if err != nil {
 		return nil
 	}
