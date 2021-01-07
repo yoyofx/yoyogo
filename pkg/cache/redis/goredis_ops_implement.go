@@ -161,3 +161,55 @@ func (ops *GoRedisStandaloneOps) LSize(key string) (int64, error) {
 func (ops *GoRedisStandaloneOps) LRemove(key string, count int64, value interface{}) (int64, error) {
 	return ops.client.LRem(ctx, key, count, value).Result()
 }
+
+func (ops *GoRedisStandaloneOps) SAdd(key string, members ...interface{}) (int64, error) {
+	return ops.client.SAdd(ctx, key, members...).Result()
+}
+
+func (ops *GoRedisStandaloneOps) SDiff(keys ...string) ([]string, error) {
+	return ops.client.SDiff(ctx, keys...).Result()
+}
+
+func (ops *GoRedisStandaloneOps) SCard(key string) (int64, error) {
+	return ops.client.SCard(ctx, key).Result()
+}
+
+func (ops *GoRedisStandaloneOps) SInter(keys ...string) ([]string, error) {
+	return ops.client.SInter(ctx, keys...).Result()
+}
+
+func (ops *GoRedisStandaloneOps) SInterStore(destination string, keys ...string) (int64, error) {
+	return ops.client.SInterStore(ctx, destination, keys...).Result()
+}
+
+func (ops *GoRedisStandaloneOps) SIsMember(key string, member interface{}) (bool, error) {
+	return ops.client.SIsMember(ctx, key, member).Result()
+}
+
+func (ops *GoRedisStandaloneOps) SMembers(key string) ([]string, error) {
+	return ops.client.SMembers(ctx, key).Result()
+}
+
+func (ops *GoRedisStandaloneOps) SMove(source string, destination string, member interface{}) (bool, error) {
+	return ops.client.SMove(ctx, source, destination, member).Result()
+}
+
+func (ops *GoRedisStandaloneOps) SPop(key string) (string, error) {
+	return ops.client.SPop(ctx, key).Result()
+}
+
+func (ops *GoRedisStandaloneOps) SRandMembers(key string, count int64) ([]string, error) {
+	return ops.client.SRandMemberN(ctx, key, count).Result()
+}
+
+func (ops *GoRedisStandaloneOps) SRem(key string, members ...interface{}) (int64, error) {
+	return ops.client.SRem(ctx, key, members...).Result()
+}
+
+func (ops *GoRedisStandaloneOps) SUnion(keys ...string) ([]string, error) {
+	return ops.client.SUnion(ctx, keys...).Result()
+}
+
+func (ops *GoRedisStandaloneOps) SUnionStore(destination string, keys ...string) (int64, error) {
+	return ops.client.SUnionStore(ctx, destination, keys...).Result()
+}

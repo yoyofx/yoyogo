@@ -38,4 +38,17 @@ type Ops interface {
 	GeoDist(key string, member1, member2, unit string) *redis.FloatCmd
 	GeoRadius(key string, longitude, latitude float64, query *redis.GeoRadiusQuery) *redis.GeoLocationCmd
 	GeoRadiusByMember(key string, member string, query *redis.GeoRadiusQuery) *redis.GeoLocationCmd
+	SAdd(key string, members ...interface{}) (int64, error)
+	SDiff(keys ...string) ([]string, error)
+	SCard(key string) (int64, error)
+	SInter(keys ...string) ([]string, error)
+	SInterStore(destination string, keys ...string) (int64, error)
+	SIsMember(key string, member interface{}) (bool, error)
+	SMembers(key string) ([]string, error)
+	SMove(source string, destination string, member interface{}) (bool, error)
+	SPop(key string) (string, error)
+	SRandMembers(key string, count int64) ([]string, error)
+	SRem(key string, members ...interface{}) (int64, error)
+	SUnion(keys ...string) ([]string, error)
+	SUnionStore(destination string, keys ...string) (int64, error)
 }
