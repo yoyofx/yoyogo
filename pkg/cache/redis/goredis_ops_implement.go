@@ -2,6 +2,7 @@ package redis
 
 import (
 	"context"
+	"errors"
 	"github.com/go-redis/redis/v8"
 	"time"
 )
@@ -115,23 +116,101 @@ func (ops *GoRedisStandaloneOps) LPush(key string, values ...interface{}) (int64
 //--------------------------------------------------------------------------------------------------
 //geo ops
 
-func (ops *GoRedisStandaloneOps) GeoAddArr(key string, geoLocation ...*redis.GeoLocation) *redis.IntCmd {
-	return ops.client.GeoAdd(ctx, key, geoLocation...)
+func (ops *GoRedisStandaloneOps) GeoAddArr(key string, geoLocation ...GeoPosition) int64 {
+	var geoList = make([]*redis.GeoLocation, 0)
+	for _, x := range geoLocation {
+		geoEle := redis.GeoLocation{
+			Longitude: x.Longitude,
+			Latitude:  x.Latitude,
+			Name:      x.Member,
+		}
+		geoList = append(geoList, &geoEle)
+	}
+	return ops.client.GeoAdd(ctx, key, geoList...).Val()
 }
 
-func (ops *GoRedisStandaloneOps) GeoPos(key string, member ...string) *redis.GeoPosCmd {
-	return ops.client.GeoPos(ctx, key, member...)
+func (ops *GoRedisStandaloneOps) GeoPos(key string, members ...string) (error, []GeoPosition) {
+	resList := ops.client.GeoPos(ctx, key, members...)
+	if len(resList.Val()) == 0 {
+		return errors.New("not find any geo info"), make([]GeoPosition, 0)
+	}
+	resGeoList := make([]GeoPosition, 0)
+	resListVal := resList.Val()
+	for i, x := range members {
+		resValEle := resListVal[i]
+		if resValEle != nil {
+			resGeoList = append(resGeoList, GeoPosition{Longitude: resValEle.Longitude, Latitude: resValEle.Latitude, Member: x})
+		}
+	}
+	return nil, resGeoList
 }
 
-func (ops *GoRedisStandaloneOps) GeoDist(key string, member1, member2, unit string) *redis.FloatCmd {
-	return ops.client.GeoDist(ctx, key, member1, member2, unit)
+func (ops *GoRedisStandaloneOps) GeoDist(key string, member1, member2 string, unit GeoUnit) (error, GeoDistInfo) {
+	unitStr := getUnit(unit)
+	if unitStr == "" {
+		return errors.New("error unit"), GeoDistInfo{}
+	}
+	res := ops.client.GeoDist(ctx, key, member1, member2, unitStr).Val()
+	return nil, GeoDistInfo{Unit: unit, Dist: res}
 }
 
-func (ops *GoRedisStandaloneOps) GeoRadius(key string, longitude, latitude float64, query *redis.GeoRadiusQuery) *redis.GeoLocationCmd {
-	return ops.client.GeoRadius(ctx, key, longitude, latitude, query)
+func (ops *GoRedisStandaloneOps) GeoRadius(key string, query GeoRadiusQuery) (error, []GeoPosition) {
+	unitStr := getUnit(query.Unit)
+	if unitStr == "" {
+		return errors.New("error unit"), make([]GeoPosition, 0)
+	}
+	res := ops.client.GeoRadius(ctx, key, query.Longitude, query.Latitude, &redis.GeoRadiusQuery{
+		Radius:      query.Radius,
+		Unit:        unitStr,
+		WithCoord:   query.WithCoord,
+		WithDist:    query.WithDist,
+		WithGeoHash: query.WithGeoHash,
+		Count:       query.Count,
+		Sort:        GetSort(query.Sort),
+		Store:       query.Store,
+		StoreDist:   query.StoreDist,
+	})
+	geoList := make([]GeoPosition, 0)
+	for _, x := range res.Val() {
+		geoList = append(geoList, GeoPosition{
+			Member:    x.Name,
+			Longitude: x.Longitude,
+			Latitude:  x.Latitude,
+			Dist:      x.Dist,
+			GeoHash:   x.GeoHash,
+			Unit:      query.Unit,
+		})
+	}
+	return nil, geoList
 }
-func (ops *GoRedisStandaloneOps) GeoRadiusByMember(key string, member string, query *redis.GeoRadiusQuery) *redis.GeoLocationCmd {
-	return ops.client.GeoRadiusByMember(ctx, key, member, query)
+func (ops *GoRedisStandaloneOps) GeoRadiusByMember(key string, member string,  query GeoRadiusByMemberQuery) (error, []GeoPosition) {
+
+	unitStr := getUnit(query.Unit)
+	if unitStr == "" {
+		return errors.New("error unit"), make([]GeoPosition, 0)
+	}
+	res := ops.client.GeoRadiusByMember(ctx, key, member, &redis.GeoRadiusQuery{
+		Radius:      query.Radius,
+		Unit:        unitStr,
+		WithCoord:   query.WithCoord,
+		WithDist:    query.WithDist,
+		WithGeoHash: query.WithGeoHash,
+		Count:       query.Count,
+		Sort:        GetSort(query.Sort),
+		Store:       query.Store,
+		StoreDist:   query.StoreDist,
+	})
+	geoList := make([]GeoPosition, 0)
+	for _, x := range res.Val() {
+		geoList = append(geoList, GeoPosition{
+			Member:    x.Name,
+			Longitude: x.Longitude,
+			Latitude:  x.Latitude,
+			Dist:      x.Dist,
+			GeoHash:   x.GeoHash,
+		})
+	}
+	return nil, geoList
 }
 
 func (ops *GoRedisStandaloneOps) LRange(key string, start int64, end int64) ([]string, error) {

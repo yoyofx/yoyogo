@@ -1,7 +1,6 @@
 package redis
 
 import (
-	"github.com/go-redis/redis/v8"
 	"time"
 )
 
@@ -33,11 +32,11 @@ type Ops interface {
 	LSet(key string, index int64, value interface{}) error
 	LSize(key string) (int64, error)
 	LRemove(key string, count int64, value interface{}) (int64, error)
-	GeoAddArr(key string, geoLocation ...*redis.GeoLocation) *redis.IntCmd
-	GeoPos(key string, member ...string) *redis.GeoPosCmd
-	GeoDist(key string, member1, member2, unit string) *redis.FloatCmd
-	GeoRadius(key string, longitude, latitude float64, query *redis.GeoRadiusQuery) *redis.GeoLocationCmd
-	GeoRadiusByMember(key string, member string, query *redis.GeoRadiusQuery) *redis.GeoLocationCmd
+	GeoAddArr(key string, geoLocation ...GeoPosition) int64
+	GeoPos(key string, members ...string) (error, []GeoPosition)
+	GeoDist(key string, member1, member2 string, unit GeoUnit) (error,GeoDistInfo)
+	GeoRadius(key string, query GeoRadiusQuery) (error, []GeoPosition)
+	GeoRadiusByMember(key string, member string, query GeoRadiusByMemberQuery)(error, []GeoPosition)
 	SAdd(key string, members ...interface{}) (int64, error)
 	SDiff(keys ...string) ([]string, error)
 	SCard(key string) (int64, error)
