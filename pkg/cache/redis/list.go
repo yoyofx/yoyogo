@@ -1,5 +1,10 @@
 package redis
 
+import (
+	"github.com/yoyofxteam/reflectx"
+	"reflect"
+)
+
 //the List elements type is string
 type List struct {
 	ops        Ops
@@ -38,7 +43,7 @@ func (ls List) RightPop(key string) (string, error) {
 
 //RightPush right push element to key List
 func (ls List) RightPush(key string, values ...interface{}) (int64, error) {
-	return ls.ops.RPush(key, values)
+	return ls.ops.RPush(key, values...)
 }
 
 //Set set element to key List by index
@@ -62,14 +67,48 @@ func (ls List) Clear(key string) (bool, error) {
 	return c > 0, e
 }
 
-func (ls List) AddElement(key string, values interface{}) error {
-	return nil
+//AddElements add serialization elements to key list
+func (ls List) AddElements(key string, values ...interface{}) error {
+	var rets []interface{}
+	for _, value := range values {
+		bytes, _ := ls.serializer.Serialization(value)
+		rets = append(rets, bytes)
+	}
+	_, err := ls.RightPush(key, rets)
+	return err
 }
 
+//GetElement get serialization element for key list
 func (ls List) GetElement(key string, index int64, elem interface{}) error {
-	return nil
+	strElem, _ := ls.Index(key, index)
+	return ls.serializer.Deserialization([]byte(strElem), elem)
 }
 
-func (ls List) GetElements(key string, index int64, elements []interface{}) error {
-	return nil
+//GetElements get serialization elements for key list
+func (ls List) GetElements(key string, startIndex int64, endIndex int64, elements interface{}) {
+	et := reflect.TypeOf(elements)
+	if et.Kind() == reflect.Ptr {
+		et = et.Elem()
+	} else {
+		panic("elements must be pointer!")
+	}
+	if et.Kind() == reflect.Slice {
+		et = et.Elem()
+	} else {
+		panic("elements must be slice!")
+	}
+
+	arrayPointer := reflect.ValueOf(elements).Elem()
+	elementType := reflect.TypeOf(elements).Elem().Elem()
+	arrayValues := make([]reflect.Value, 0)
+
+	strElemArray, _ := ls.Range(key, startIndex, endIndex)
+
+	for _, strElem := range strElemArray {
+		elem := reflectx.CreateInstance(elementType)
+		_ = ls.serializer.Deserialization([]byte(strElem), elem)
+		arrayValues = append(arrayValues, reflect.ValueOf(elem).Elem())
+	}
+	valArray := reflect.Append(arrayPointer, arrayValues...)
+	arrayPointer.Set(valArray)
 }

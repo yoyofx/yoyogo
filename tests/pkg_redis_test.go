@@ -49,6 +49,22 @@ func Test_RedisValueOps(t *testing.T) {
 	fmt.Println(s1)
 }
 
+func Test_RedisListOps(t *testing.T) {
+	key := "go2list"
+	client.SetSerializer(&redis.JsonSerializer{})
+	listOps := client.GetListOps()
+	_, _ = listOps.Clear(key)
+	_ = listOps.AddElements(key, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+	var list []int
+	listOps.GetElements(key, 0, 2, &list)
+	assert.Equal(t, len(list) > 0, true)
+	var a1 int
+	_ = listOps.GetElement(key, 0, &a1)
+	assert.Equal(t, a1, 1)
+	size, _ := listOps.Size(key)
+	assert.Equal(t, size, int64(9))
+}
+
 var geoKey = "Geo"
 
 func TestRedisGeo(t *testing.T) {
