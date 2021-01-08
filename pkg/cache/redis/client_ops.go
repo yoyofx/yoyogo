@@ -34,9 +34,9 @@ type Ops interface {
 	LRemove(key string, count int64, value interface{}) (int64, error)
 	GeoAddArr(key string, geoLocation ...GeoPosition) int64
 	GeoPos(key string, members ...string) (error, []GeoPosition)
-	GeoDist(key string, member1, member2 string, unit GeoUnit) (error,GeoDistInfo)
+	GeoDist(key string, member1, member2 string, unit GeoUnit) (error, GeoDistInfo)
 	GeoRadius(key string, query GeoRadiusQuery) (error, []GeoPosition)
-	GeoRadiusByMember(key string, member string, query GeoRadiusByMemberQuery)(error, []GeoPosition)
+	GeoRadiusByMember(key string, member string, query GeoRadiusByMemberQuery) (error, []GeoPosition)
 	SAdd(key string, members ...interface{}) (int64, error)
 	SDiff(keys ...string) ([]string, error)
 	SCard(key string) (int64, error)
@@ -50,4 +50,16 @@ type Ops interface {
 	SRem(key string, members ...interface{}) (int64, error)
 	SUnion(keys ...string) ([]string, error)
 	SUnionStore(destination string, keys ...string) (int64, error)
+
+	HDel(key string, fields ...string) (int64, error)
+	HExists(key string, field string) (bool, error)
+	HGet(key string, field string) (string, error)
+	HGetAll(key string) (map[string]string, error)
+	HIncrBy(key string, field string, increment int64) (int64, error)
+	HKeys(key string) ([]string, error)
+	HLen(key string) (int64, error)
+	HMGet(key string, fields ...string) ([]interface{}, error)
+	HSet(key string, field string, value interface{}) (int64, error)
+	HSetNX(key string, field string, value interface{}) (bool, error)
+	HVals(key string) ([]string, error)
 }

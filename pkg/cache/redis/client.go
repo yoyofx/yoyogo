@@ -54,6 +54,7 @@ func (c *Client) GetListOps() List {
 
 //GetHashOps Returns the operations performed on hash values.
 func (c *Client) GetHashOps() Hash {
+	c.hash.serializer = c.valueSerializer
 	return c.hash
 }
 
