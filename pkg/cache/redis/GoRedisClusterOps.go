@@ -18,6 +18,10 @@ func NewClusterOps(options *Options) *GoRedisClusterOps {
 	return &GoRedisClusterOps{client: client}
 }
 
+func (ops *GoRedisClusterOps) Close() error {
+	return ops.client.Close()
+}
+
 func (ops *GoRedisClusterOps) Ping() (string, error) {
 	return ops.client.Ping(ctx).Result()
 }

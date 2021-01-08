@@ -5,6 +5,7 @@ import (
 )
 
 type Ops interface {
+	Close() error
 	Ping() (string, error)
 	DeleteKey(keys ...string) (int64, error)
 	Exists(key string) (bool, error)

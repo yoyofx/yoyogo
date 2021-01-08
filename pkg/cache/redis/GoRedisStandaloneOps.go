@@ -28,6 +28,10 @@ func (ops *GoRedisStandaloneOps) Ping() (string, error) {
 	return ops.client.Ping(ctx).Result()
 }
 
+func (ops *GoRedisStandaloneOps) Close() error {
+	return ops.client.Close()
+}
+
 // value ops
 
 func (ops *GoRedisStandaloneOps) GetRange(key string, start int64, end int64) (string, error) {

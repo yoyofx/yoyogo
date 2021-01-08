@@ -14,7 +14,6 @@ require (
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/golang/protobuf v1.4.2
-	github.com/gomodule/redigo v1.8.3
 	github.com/google/uuid v1.1.1
 	github.com/hashicorp/consul/api v1.1.0
 	github.com/hudl/fargo v1.3.0
