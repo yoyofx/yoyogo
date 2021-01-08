@@ -133,7 +133,7 @@ func TestGeoDist(t *testing.T) {
 	ops := client.GetGeoOps()
 	ERR, res := ops.GeoDist(geoKey, "国贸", "四惠", redis.M)
 	assert.Equal(t, ERR, nil)
-	assert.Equal(t, res.Dist, float64(1128.2414))
+	assert.Equal(t, res.Dist, 2863.586)
 }
 
 func TestGeoRadius(t *testing.T) {
