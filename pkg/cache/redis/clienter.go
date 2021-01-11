@@ -20,7 +20,7 @@ type IClient interface {
 	GetGeoOps() Geo
 	//GetLockOps Returns the operations performed on locker values.
 	GetLockOps() Lock
-
+	Close() error
 	// SetExpire cmd by expire
 	Ping() (string, error)
 	// SetExpire cmd by expire

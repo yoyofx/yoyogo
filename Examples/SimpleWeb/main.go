@@ -4,6 +4,7 @@ import (
 	"SimpleWeb/contollers"
 	"SimpleWeb/models"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/dependencyinjection"

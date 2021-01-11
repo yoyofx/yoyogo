@@ -176,6 +176,45 @@ func TestGetLock(t *testing.T) {
 	assert.Equal(t, success, true)
 }
 
+func TestHashSet(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	client.SetSerializer(&redis.JsonSerializer{})
+	key := "hashset:app"
+	client.Delete(key)
+	hashOps := client.GetHashOps()
+	err := hashOps.Put(key, "a1", 1)
+	assert.Equal(t, err, nil)
+	b, _ := hashOps.PutIfAbsent(key, "a1", 2)
+	assert.Equal(t, b, false)
+	a1Value := hashOps.Increment(key, "a1", 1)
+	assert.Equal(t, a1Value, int64(2))
+
+	doctor := &Doctor{Name: "hash_doctor", Age: 0}
+	hasDoc1, _ := hashOps.PutIfAbsent(key, "doc1", doctor)
+	assert.Equal(t, hasDoc1, true)
+	var a1 int64
+	err = hashOps.Get(key, "a1", &a1)
+	assert.Equal(t, err, nil)
+	assert.Equal(t, a1, int64(2))
+	var doctor1 Doctor
+	_ = hashOps.Get(key, "doc1", &doctor1)
+	assert.Equal(t, doctor1.Name, "hash_doctor")
+	keys, _ := hashOps.GetHashKeys(key)
+	assert.Equal(t, int64(len(keys)), hashOps.Size(key))
+
+	assert.Equal(t, hashOps.Exists(key, "doc1"), true)
+
+	_ = hashOps.Put(key, "doc2", "my dcoker")
+	str, _ := hashOps.GetString(key, "doc2")
+	assert.Equal(t, str, "my dcoker")
+	m, _ := hashOps.GetEntries(key)
+	assert.Equal(t, m != nil, true)
+}
+
 const (
 	ZSetKey  = "ZSETKEY"
 	ZSetKey2 = "ZSETKEY2"

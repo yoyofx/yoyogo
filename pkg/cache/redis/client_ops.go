@@ -5,6 +5,7 @@ import (
 )
 
 type Ops interface {
+	Close() error
 	Ping() (string, error)
 	DeleteKey(keys ...string) (int64, error)
 	Exists(key string) (bool, error)
@@ -50,6 +51,17 @@ type Ops interface {
 	SRem(key string, members ...interface{}) (int64, error)
 	SUnion(keys ...string) ([]string, error)
 	SUnionStore(destination string, keys ...string) (int64, error)
+	HDel(key string, fields ...string) (int64, error)
+	HExists(key string, field string) (bool, error)
+	HGet(key string, field string) (string, error)
+	HGetAll(key string) (map[string]string, error)
+	HIncrBy(key string, field string, increment int64) (int64, error)
+	HKeys(key string) ([]string, error)
+	HLen(key string) (int64, error)
+	HMGet(key string, fields ...string) ([]interface{}, error)
+	HSet(key string, field string, value interface{}) (int64, error)
+	HSetNX(key string, field string, value interface{}) (bool, error)
+	HVals(key string) ([]string, error)
 	ZAdd(key string, member ZMember) int64
 	ZCard(key string) int64
 	ZCount(key,  min, max string) int64

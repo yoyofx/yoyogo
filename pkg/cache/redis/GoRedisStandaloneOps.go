@@ -28,6 +28,10 @@ func (ops *GoRedisStandaloneOps) Ping() (string, error) {
 	return ops.client.Ping(ctx).Result()
 }
 
+func (ops *GoRedisStandaloneOps) Close() error {
+	return ops.client.Close()
+}
+
 // value ops
 
 func (ops *GoRedisStandaloneOps) GetRange(key string, start int64, end int64) (string, error) {
@@ -291,6 +295,58 @@ func (ops *GoRedisStandaloneOps) SUnion(keys ...string) ([]string, error) {
 
 func (ops *GoRedisStandaloneOps) SUnionStore(destination string, keys ...string) (int64, error) {
 	return ops.client.SUnionStore(ctx, destination, keys...).Result()
+}
+
+func (ops *GoRedisStandaloneOps) HDel(key string, fields ...string) (int64, error) {
+	return ops.client.HDel(ctx, key, fields...).Result()
+}
+
+func (ops *GoRedisStandaloneOps) HExists(key string, field string) (bool, error) {
+	return ops.client.HExists(ctx, key, field).Result()
+}
+
+func (ops *GoRedisStandaloneOps) HGet(key string, field string) (string, error) {
+	return ops.client.HGet(ctx, key, field).Result()
+}
+
+func (ops *GoRedisStandaloneOps) HGetInt64(key string, field string) (int64, error) {
+	return ops.client.HGet(ctx, key, field).Int64()
+}
+
+func (ops *GoRedisStandaloneOps) HGetFloat64(key string, field string) (float64, error) {
+	return ops.client.HGet(ctx, key, field).Float64()
+}
+
+func (ops *GoRedisStandaloneOps) HGetAll(key string) (map[string]string, error) {
+	return ops.client.HGetAll(ctx, key).Result()
+}
+
+func (ops *GoRedisStandaloneOps) HIncrBy(key string, field string, increment int64) (int64, error) {
+	return ops.client.HIncrBy(ctx, key, field, increment).Result()
+}
+
+func (ops *GoRedisStandaloneOps) HKeys(key string) ([]string, error) {
+	return ops.client.HKeys(ctx, key).Result()
+}
+
+func (ops *GoRedisStandaloneOps) HLen(key string) (int64, error) {
+	return ops.client.HLen(ctx, key).Result()
+}
+
+func (ops *GoRedisStandaloneOps) HMGet(key string, fields ...string) ([]interface{}, error) {
+	return ops.client.HMGet(ctx, key, fields...).Result()
+}
+
+func (ops *GoRedisStandaloneOps) HSet(key string, field string, value interface{}) (int64, error) {
+	return ops.client.HSet(ctx, key, field, value).Result()
+}
+
+func (ops *GoRedisStandaloneOps) HSetNX(key string, field string, value interface{}) (bool, error) {
+	return ops.client.HSetNX(ctx, key, field, value).Result()
+}
+
+func (ops *GoRedisStandaloneOps) HVals(key string) ([]string, error) {
+	return ops.client.HVals(ctx, key).Result()
 }
 
 func (ops *GoRedisStandaloneOps) ZAdd(key string, member ZMember) int64 {
