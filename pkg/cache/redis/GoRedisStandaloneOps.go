@@ -348,3 +348,99 @@ func (ops *GoRedisStandaloneOps) HSetNX(key string, field string, value interfac
 func (ops *GoRedisStandaloneOps) HVals(key string) ([]string, error) {
 	return ops.client.HVals(ctx, key).Result()
 }
+
+func (ops *GoRedisStandaloneOps) ZAdd(key string, member ZMember) int64 {
+	return ops.client.ZAdd(ctx, key, &redis.Z{Score: member.Score, Member: member.Member}).Val()
+}
+
+func (ops *GoRedisStandaloneOps) ZCard(key string) int64 {
+	return ops.client.ZCard(ctx, key).Val()
+}
+
+func (ops *GoRedisStandaloneOps) ZCount(key,min, max string) int64 {
+	return ops.client.ZCount(ctx, key, min, max).Val()
+}
+
+func (ops *GoRedisStandaloneOps) ZIncrby(key string, incr float64, member string) float64 {
+	return ops.client.ZIncrBy(ctx, key, incr, member).Val()
+}
+
+func (ops *GoRedisStandaloneOps) ZInterStore(destination string, store []ZStore, arg ZStoreEnum) int64 {
+	keyArr := make([]string, 0)
+	weightArr := make([]float64, 0)
+	for _, x := range store {
+		keyArr = append(keyArr, x.Key)
+		weightArr = append(weightArr, x.Weight)
+	}
+	var argStr = ""
+	switch arg {
+	case MAX:
+		argStr = "MAX"
+	case MIN:
+		argStr = "MIN"
+	case SUM:
+		argStr = "SUM"
+	default:
+		argStr = "SUM"
+	}
+	return ops.client.ZInterStore(ctx, destination, &redis.ZStore{
+		Keys:      keyArr,
+		Weights:   weightArr,
+		Aggregate: argStr,
+	}).Val()
+}
+
+func (ops *GoRedisStandaloneOps) ZLexCount(key, min, max string) int64 {
+	return ops.client.ZLexCount(ctx, key, min, max).Val()
+}
+
+func (ops *GoRedisStandaloneOps) ZRange(key string, start, stop int64) []string {
+	return ops.client.ZRange(ctx, key, start, stop).Val()
+}
+
+func (ops *GoRedisStandaloneOps) ZRangeByLex(key, min, max string, offset int64, count int64) []string {
+	return ops.client.ZRangeByLex(ctx, key, &redis.ZRangeBy{
+		Min:    min,
+		Max:    max,
+		Offset: offset,
+		Count:  count,
+	}).Val()
+}
+
+func (ops *GoRedisStandaloneOps) ZRangeByScore(key, min, max string, offset int64, count int64) []string {
+	return ops.client.ZRangeByScore(ctx, key, &redis.ZRangeBy{
+		Min:    min,
+		Max:    max,
+		Offset: offset,
+		Count:  count,
+	}).Val()
+}
+
+func (ops *GoRedisStandaloneOps) ZRank(key, member string) int64 {
+	return ops.client.ZRank(ctx, key, member).Val()
+}
+
+func (ops *GoRedisStandaloneOps) ZRem(key string, member ...string) int64 {
+	return ops.client.ZRem(ctx, key, member).Val()
+}
+
+func (ops *GoRedisStandaloneOps) ZRemRangeByLex(key, min, max string) int64 {
+	return ops.client.ZRemRangeByLex(ctx, key, min, max).Val()
+}
+
+func (ops *GoRedisStandaloneOps) ZRemRangeByRank(key string, start, stop int64) int64 {
+	return ops.client.ZRemRangeByRank(ctx, key, start, stop).Val()
+}
+
+func (ops *GoRedisStandaloneOps) ZRevRange(key string, start, stop int64) []string {
+	return ops.client.ZRevRange(ctx, key, start, stop).Val()
+}
+
+func (ops *GoRedisStandaloneOps) ZRevRank(key, member string) int64 {
+	return ops.client.ZRevRank(ctx, key, member).Val()
+}
+
+func (ops *GoRedisStandaloneOps) ZScore(key, member string) float64{
+	return ops.client.ZScore(ctx,key,member).Val()
+}
+
