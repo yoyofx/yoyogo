@@ -3,10 +3,10 @@ package redis
 import (
 	"errors"
 	"fmt"
-	"github.com/gomodule/redigo/redis"
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/pool"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
+	"github.com/yoyofx/yoyogo/pkg/cache/redis"
 	"github.com/yoyofx/yoyogo/pkg/datasources"
 	"sync"
 	"time"
@@ -118,35 +118,30 @@ func createReidsPool(redisdatasourcesConfig redisConfig, log xlog.ILogger) pool.
 
 	// connRedis 建立连接
 	connRedis := func() (interface{}, error) {
-		conn, err := redis.Dial("tcp", redisdatasourcesConfig.Url)
-		if err != nil {
-			return nil, err
-		}
+		options := &redis.Options{}
+
+		options.Addr = redisdatasourcesConfig.Url
+
 		if redisdatasourcesConfig.Password != "" {
-			_, err := conn.Do("AUTH", redisdatasourcesConfig.Password)
-			if err != nil {
-				return nil, err
-			}
+			options.Password = redisdatasourcesConfig.Password
 		}
 		if redisdatasourcesConfig.DB > 0 {
-			_, err := conn.Do("SELECT", redisdatasourcesConfig.DB)
-			if err != nil {
-				return nil, err
-			}
+			options.DB = redisdatasourcesConfig.DB
 		}
-		return conn, err
+
+		return redis.NewClient(options), nil
 	}
 
 	// closeRedis 关闭连接
 	closeRedis := func(v interface{}) error {
-		return v.(redis.Conn).Close()
+		return v.(redis.IClient).Close()
 	}
 
 	// pingRedis 检测连接连通性
 	pingRedis := func(v interface{}) error {
-		conn := v.(redis.Conn)
+		conn := v.(redis.IClient)
 
-		val, err := redis.String(conn.Do("PING"))
+		val, err := conn.Ping()
 
 		if err != nil {
 			return err

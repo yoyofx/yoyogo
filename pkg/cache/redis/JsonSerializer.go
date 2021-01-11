@@ -24,6 +24,8 @@ func (serializer JsonSerializer) Serialization(value interface{}) ([]byte, error
 		return []byte(strconv.FormatInt(v.Int(), 10)), nil
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 		return []byte(strconv.FormatUint(v.Uint(), 10)), nil
+	case reflect.String:
+		return []byte(value.(string)), nil
 	case reflect.Map:
 	}
 	k, err := json.Marshal(value)

@@ -22,7 +22,7 @@ func NewClient(options *Options) IClient {
 	if options.Addrs == nil {
 		ops = NewStandaloneOps(options)
 	} else {
-
+		ops = NewClusterOps(options)
 	}
 	kv := KV{ops: ops}
 	list := List{ops: ops}
@@ -54,6 +54,7 @@ func (c *Client) GetListOps() List {
 
 //GetHashOps Returns the operations performed on hash values.
 func (c *Client) GetHashOps() Hash {
+	c.hash.serializer = c.valueSerializer
 	return c.hash
 }
 
@@ -107,4 +108,9 @@ func (c *Client) HasKey(key string) bool {
 // RandomKey return random Key for db
 func (c *Client) RandomKey() (string, error) {
 	return c.ops.RandomKey()
+}
+
+// RandomKey return random Key for db
+func (c *Client) Close() error {
+	return c.ops.Close()
 }
