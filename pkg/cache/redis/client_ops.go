@@ -34,9 +34,9 @@ type Ops interface {
 	LRemove(key string, count int64, value interface{}) (int64, error)
 	GeoAddArr(key string, geoLocation ...GeoPosition) int64
 	GeoPos(key string, members ...string) (error, []GeoPosition)
-	GeoDist(key string, member1, member2 string, unit GeoUnit) (error,GeoDistInfo)
+	GeoDist(key string, member1, member2 string, unit GeoUnit) (error, GeoDistInfo)
 	GeoRadius(key string, query GeoRadiusQuery) (error, []GeoPosition)
-	GeoRadiusByMember(key string, member string, query GeoRadiusByMemberQuery)(error, []GeoPosition)
+	GeoRadiusByMember(key string, member string, query GeoRadiusByMemberQuery) (error, []GeoPosition)
 	SAdd(key string, members ...interface{}) (int64, error)
 	SDiff(keys ...string) ([]string, error)
 	SCard(key string) (int64, error)
@@ -50,4 +50,20 @@ type Ops interface {
 	SRem(key string, members ...interface{}) (int64, error)
 	SUnion(keys ...string) ([]string, error)
 	SUnionStore(destination string, keys ...string) (int64, error)
+	ZAdd(key string, member ZMember) int64
+	ZCard(key string) int64
+	ZCount(key,  min, max string) int64
+	ZIncrby(key string, incr float64, member string) float64
+	ZInterStore(destination string, store []ZStore, arg ZStoreEnum) int64
+	ZLexCount(key, min, max string) int64
+	ZRange(key string, start, stop int64) []string
+	ZRangeByLex(key, min, max string, offset int64, count int64) []string
+	ZRangeByScore(key, min, max string, offset int64, count int64) []string
+	ZRank(key, member string) int64
+	ZRem(key string, member ...string) int64
+	ZRemRangeByLex(key, min, max string) int64
+	ZRemRangeByRank(key string, start, stop int64) int64
+	ZRevRange(key string, start, stop int64) []string
+	ZRevRank(key, member string) int64
+	ZScore(key, member string) float64
 }

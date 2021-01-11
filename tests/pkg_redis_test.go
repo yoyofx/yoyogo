@@ -175,3 +175,308 @@ func TestGetLock(t *testing.T) {
 	assert.Equal(t, err, nil)
 	assert.Equal(t, success, true)
 }
+
+const (
+	ZSetKey  = "ZSETKEY"
+	ZSetKey2 = "ZSETKEY2"
+)
+
+
+func TestZAdd(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetZSetOps()
+	ops.ZRem(ZSetKey,"小白")
+	res := ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小白",
+		Score:  1.23,
+	})
+	assert.Equal(t, res, int64(1))
+}
+func TestZCard(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetZSetOps()
+	TestZAdd(t)
+	res := ops.ZCard(ZSetKey)
+	assert.NotZero(t, res)
+}
+
+func TestZCount(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetZSetOps()
+	 ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小白",
+		Score:  1.23,
+	})
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小红",
+		Score:  1.23,
+	})
+	 ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小明",
+		Score:  1.23,
+	})
+	res := ops.ZCount(ZSetKey, 1.0, 1.5)
+	assert.NotZero(t, res)
+
+}
+func TestZIncrby(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetZSetOps()
+	addRes := ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小白",
+		Score:  1.23,
+	})
+	fmt.Println(addRes)
+	res := ops.ZIncrby(ZSetKey, 1.1, "小白")
+	assert.NotZero(t, res)
+}
+func TestZInterStore(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetZSetOps()
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小白",
+		Score:  1.23,
+	})
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小红",
+		Score:  1.23,
+	})
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小明",
+		Score:  1.23,
+	})
+	ops.ZAdd(ZSetKey2, redis.ZMember{
+		Member: "小白",
+		Score:  1.23,
+	})
+	ops.ZAdd(ZSetKey2, redis.ZMember{
+		Member: "小红",
+		Score:  1.23,
+	})
+	ops.ZAdd(ZSetKey2, redis.ZMember{
+		Member: "小绿",
+		Score:  1.23,
+	})
+	storeArr := make([]redis.ZStore, 2)
+	storeArr[0] = redis.ZStore{
+		Key: ZSetKey,
+	}
+	storeArr[1] = redis.ZStore{
+		Key: ZSetKey2,
+	}
+	res := ops.ZInterStore("ZSET3", storeArr, redis.SUM)
+	assert.NotZero(t, res)
+}
+func TestZLexCount(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetZSetOps()
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小白",
+		Score:  1.23,
+	})
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小红",
+		Score:  1.23,
+	})
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小明",
+		Score:  1.23,
+	})
+	res := ops.ZLexCount(ZSetKey, "[小白", "[小红")
+	assert.Equal(t, res, int64(2))
+}
+func TestZRange(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetZSetOps()
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小白",
+		Score:  1.23,
+	})
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小红",
+		Score:  1.23,
+	})
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小明",
+		Score:  1.23,
+	})
+	res := ops.ZRange(ZSetKey, 0, 2)
+	assert.Equal(t, len(res), 3)
+}
+func TestZRangeByLex(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetZSetOps()
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小白",
+		Score:  1.21,
+	})
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小红",
+		Score:  1.22,
+	})
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小明",
+		Score:  1.23,
+	})
+	res := ops.ZRangeByLex(ZSetKey, "-", "[小红", 0, 0)
+	assert.Equal(t, len(res), 3)
+}
+
+func TestZRank(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetZSetOps()
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小白",
+		Score:  1.23,
+	})
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小红",
+		Score:  1.23,
+	})
+	res := ops.ZRank(ZSetKey, "小红")
+	assert.NotZero(t, res)
+}
+func TestZRem(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetZSetOps()
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小白",
+		Score:  1.23,
+	})
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小红",
+		Score:  1.23,
+	})
+	res := ops.ZRem(ZSetKey, "小白")
+	assert.NotZero(t, res)
+}
+func TestZRemRangeByLex(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetZSetOps()
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小白",
+		Score:  1.23,
+	})
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小红",
+		Score:  1.23,
+	})
+	res := ops.ZRemRangeByLex(ZSetKey, "-", "[小红")
+	assert.NotZero(t, res)
+}
+func TestZRemRangeByRank(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetZSetOps()
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小白",
+		Score:  1.23,
+	})
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小红",
+		Score:  1.23,
+	})
+	res := ops.ZRemRangeByRank(ZSetKey, 0, 1)
+	assert.NotZero(t, res)
+}
+func TestZRevRange(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetZSetOps()
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小白",
+		Score:  1.23,
+	})
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小红",
+		Score:  1.23,
+	})
+	res := ops.ZRevRange(ZSetKey, 0, 1)
+	assert.NotZero(t, len(res))
+}
+func TestZRevRank(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetZSetOps()
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小白",
+		Score:  1.23,
+	})
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小红",
+		Score:  1.24,
+	})
+	res := ops.ZRevRank(ZSetKey, "小白")
+	assert.Equal(t, res, int64(1))
+}
+func TestZScore(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetZSetOps()
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小白",
+		Score:  1.23,
+	})
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小红",
+		Score:  1.24,
+	})
+	res := ops.ZScore(ZSetKey, "小白")
+	assert.Equal(t, res, 1.23)
+}
