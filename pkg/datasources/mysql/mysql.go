@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/pool"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"

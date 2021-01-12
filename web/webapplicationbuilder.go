@@ -16,12 +16,13 @@ import (
 
 //application builder struct
 type ApplicationBuilder struct {
-	hostContext     *abstractions.HostBuilderContext // host build 's context
-	routerBuilder   router.IRouterBuilder            // route builder of interface
-	middleware      middleware
-	handlers        []MiddlewareHandler
-	routeConfigures []func(router.IRouterBuilder)          // endpoints router configure functions
-	mvcConfigures   []func(builder *mvc.ControllerBuilder) // mvc router configure functions
+	hostContext       *abstractions.HostBuilderContext // host build 's context
+	routerBuilder     router.IRouterBuilder            // route builder of interface
+	middleware        middlewares.Middleware
+	handlersProviders []interface{}                          // handlers ctor functions
+	handlers          []middlewares.MiddlewareHandler        // middleware lists
+	routeConfigures   []func(router.IRouterBuilder)          // endpoints router configure functions
+	mvcConfigures     []func(builder *mvc.ControllerBuilder) // mvc router configure functions
 }
 
 // create classic application builder
@@ -58,7 +59,7 @@ func CreateBlankWebBuilder() *WebHostBuilder {
 }
 
 // create application builder when combo all handlers to middleware
-func New(handlers ...MiddlewareHandler) *ApplicationBuilder {
+func New(handlers ...middlewares.MiddlewareHandler) *ApplicationBuilder {
 	return &ApplicationBuilder{
 		handlers: handlers,
 	}
@@ -134,12 +135,17 @@ func (this *ApplicationBuilder) buildMvc() {
 }
 
 func (this *ApplicationBuilder) buildMiddleware() {
+	var mids []middlewares.MiddlewareHandler
+	_ = this.hostContext.HostServices.GetService(&mids)
+	this.handlers = append(mids, this.handlers...)
+
 	for _, handler := range this.handlers {
 		if configurationMdw, ok := handler.(middlewares.IConfigurationMiddleware); ok {
 			configurationMdw.SetConfiguration(this.hostContext.Configuration)
 		}
 	}
-	this.middleware = build(this.handlers)
+
+	this.middleware = middlewares.Build(this.handlers)
 }
 
 //  this time is not build host.context.HostServices , that add services define
@@ -148,6 +154,13 @@ func (this *ApplicationBuilder) innerConfigures() {
 		ApplicationServicesDef.
 		AddSingletonByNameAndImplements("viewEngine", view.CreateViewEngine, new(view.IViewEngine))
 	//-------------------------  view engine ----------------------------------
+
+	for _, provider := range this.handlersProviders {
+		this.hostContext.
+			ApplicationServicesDef.AddSingletonByImplements(provider, new(middlewares.MiddlewareHandler))
+	}
+	//-------------------------  middleware provider ----------------------------------
+
 }
 
 // build and combo all middleware to request delegate (ServeHTTP(w http.ResponseWriter, r *http.Request))
@@ -170,12 +183,26 @@ func (this *ApplicationBuilder) SetHostBuildContext(context *abstractions.HostBu
 	}
 }
 
+func (app *ApplicationBuilder) Use(provider interface{}) {
+	app.handlersProviders = append(app.handlersProviders, provider)
+}
+
 // apply middleware in builder
-func (app *ApplicationBuilder) UseMiddleware(handler MiddlewareHandler) {
+func (app *ApplicationBuilder) UseMiddleware(handler middlewares.MiddlewareHandler) {
 	if handler == nil {
 		panic("handler cannot be nil")
 	}
 	app.handlers = append(app.handlers, handler)
+}
+
+// apply middleware in builder
+func (app *ApplicationBuilder) UseMiddlewareFront(handler middlewares.MiddlewareHandler) {
+	if handler == nil {
+		panic("handler cannot be nil")
+	}
+	app.handlers = append(app.handlers, nil)
+	copy(app.handlers[0+1:], app.handlers[0:])
+	app.handlers[0] = handler
 }
 
 // apply static middleware in builder
@@ -189,16 +216,16 @@ func (app *ApplicationBuilder) UseStaticAssets() {
 
 // apply handler middleware in builder
 func (app *ApplicationBuilder) UseHandler(handler http.Handler) {
-	app.UseMiddleware(wrap(handler))
+	app.UseMiddleware(middlewares.Wrap(handler))
 }
 
 // apply handler func middleware in builder
 func (app *ApplicationBuilder) UseHandlerFunc(handlerFunc func(rw http.ResponseWriter, r *http.Request)) {
-	app.UseMiddleware(wrapFunc(handlerFunc))
+	app.UseMiddleware(middlewares.WrapFunc(handlerFunc))
 }
 
 // apply handler func middleware in builder
-func (app *ApplicationBuilder) UseFunc(handlerFunc MiddlewareHandlerFunc) {
+func (app *ApplicationBuilder) UseFunc(handlerFunc middlewares.MiddlewareHandlerFunc) {
 	app.UseMiddleware(handlerFunc)
 }
 

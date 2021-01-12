@@ -9,7 +9,7 @@ const (
 
 // MIME types
 const (
-	MIMEApplicationJSON                  = "application/extension"
+	MIMEApplicationJSON                  = "application/json"
 	MIMEApplicationJSONCharsetUTF8       = MIMEApplicationJSON + "; " + CharsetUTF8
 	MIMEApplicationJavaScript            = "application/javascript"
 	MIMEApplicationJavaScriptCharsetUTF8 = MIMEApplicationJavaScript + "; " + CharsetUTF8

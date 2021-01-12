@@ -28,7 +28,7 @@ func (builder *ControllerBuilder) AddViews(option *view.Option) {
 // AddViewsByConfig add views by config
 func (builder *ControllerBuilder) AddViewsByConfig() {
 	if builder.configuration != nil {
-		section := builder.configuration.GetSection("yoyogo.application.server.views")
+		section := builder.configuration.GetSection("yoyogo.application.server.mvc.views")
 		option := &view.Option{}
 		section.Unmarshal(option)
 		builder.mvcRouterHandler.Options.ViewOption = option

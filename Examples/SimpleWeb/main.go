@@ -4,6 +4,7 @@ import (
 	"SimpleWeb/contollers"
 	"SimpleWeb/models"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/dependencyinjection"
@@ -17,6 +18,9 @@ import (
 	"github.com/yoyofx/yoyogo/web/middlewares"
 	"github.com/yoyofx/yoyogo/web/mvc"
 	"github.com/yoyofx/yoyogo/web/router"
+	"github.com/yoyofx/yoyogo/web/session"
+	"github.com/yoyofx/yoyogo/web/session/identity"
+	"github.com/yoyofx/yoyogo/web/session/store"
 )
 
 func SimpleDemo() {
@@ -47,6 +51,7 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 	return web.NewWebHostBuilder().
 		UseConfiguration(configuration).
 		Configure(func(app *web.ApplicationBuilder) {
+			app.Use(middlewares.NewSessionWith)
 			app.UseMiddleware(middlewares.NewCORS())
 			//web.UseMiddleware(middlewares.NewRequestTracker())
 			app.UseStaticAssets()
@@ -65,6 +70,10 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 			//eureka.UseServiceDiscovery(serviceCollection)
 			//consul.UseServiceDiscovery(serviceCollection)
 			nacos.UseServiceDiscovery(serviceCollection)
+			session.UseSession(serviceCollection, func(options *session.Options) {
+				options.AddSessionMemoryStore(store.NewMemory())
+				options.AddSessionIdentity(identity.NewCookie())
+			})
 		}).
 		OnApplicationLifeEvent(getApplicationLifeEvent)
 }
@@ -72,32 +81,44 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 //*/
 
 //region router config function
-func registerEndpointRouterConfig(routerBuilder router.IRouterBuilder) {
-	endpoints.UseHealth(routerBuilder)
-	endpoints.UseViz(routerBuilder)
-	endpoints.UsePrometheus(routerBuilder)
-	endpoints.UsePprof(routerBuilder)
-	endpoints.UseReadiness(routerBuilder)
-	endpoints.UseLiveness(routerBuilder)
-	endpoints.UseJwt(routerBuilder)
+func registerEndpointRouterConfig(rb router.IRouterBuilder) {
+	endpoints.UseHealth(rb)
+	endpoints.UseViz(rb)
+	endpoints.UsePrometheus(rb)
+	endpoints.UsePprof(rb)
+	endpoints.UseReadiness(rb)
+	endpoints.UseLiveness(rb)
+	endpoints.UseJwt(rb)
 
-	routerBuilder.GET("/error", func(ctx *context.HttpContext) {
+	rb.GET("/error", func(ctx *context.HttpContext) {
 		panic("http get error")
 	})
 
-	routerBuilder.POST("/info/:id", PostInfo)
+	rb.POST("/info/:id", PostInfo)
 
-	routerBuilder.Group("/v1/api", func(routergroup *router.RouterGroup) {
-		routergroup.GET("/info", GetInfo)
+	rb.Group("/v1/api", func(rg *router.RouterGroup) {
+		rg.GET("/info", GetInfo)
 	})
 
-	routerBuilder.GET("/", GetInfo)
+	rb.GET("/", GetInfo)
 
-	routerBuilder.GET("/info", GetInfo)
-	routerBuilder.GET("/ioc", GetInfoByIOC)
+	rb.GET("/info", GetInfo)
+	rb.GET("/ioc", GetInfoByIOC)
+	rb.GET("/session", TestSession)
+	rb.GET("/newsession", SetSession)
 }
 
 //endregion
+
+func SetSession(ctx *context.HttpContext) {
+	ctx.GetSession().SetValue("user", "yoyogo")
+	ctx.JSON(200, context.H{"ok": true})
+}
+
+func TestSession(ctx *context.HttpContext) {
+	ret := ctx.GetSession().GetString("user")
+	ctx.JSON(200, context.H{"user": ret})
+}
 
 //region Http Request Methods
 
