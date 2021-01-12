@@ -1,9 +1,10 @@
 package identity
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/base64"
-	"github.com/yoyofx/yoyogo/web/context"
+	webhttp "github.com/yoyofx/yoyogo/web/context"
 	"io"
 	"net/http"
 	"strconv"
@@ -13,7 +14,7 @@ import (
 // Cookie cookie provider for identity store
 type Cookie struct {
 	sessionCookieName string
-	httpContext       *context.HttpContext
+	httpContext       *webhttp.HttpContext
 	mMaxLifeTime      int64
 }
 
@@ -30,7 +31,7 @@ func NewCookie() *Cookie {
 
 //SetContext set http context
 func (c *Cookie) SetContext(cxt interface{}) {
-	c.httpContext = cxt.(*context.HttpContext)
+	c.httpContext = cxt.(*webhttp.HttpContext)
 }
 
 //SetName Set cookie name
@@ -45,9 +46,15 @@ func (c *Cookie) SetMaxLifeTime(liftTime int64) {
 
 //SetID set session id
 func (c Cookie) SetID(sessionId string) {
-	//让浏览器cookie设置过期时间
-	cookie := http.Cookie{Name: c.sessionCookieName, Value: sessionId, Path: "/", HttpOnly: true, MaxAge: int(c.mMaxLifeTime)}
-	c.httpContext.Output.Response.Header().Add("Set-Cookie", cookie.String())
+	ctx, cancel := context.WithTimeout(c.httpContext.Input.Request.Context(), 1500)
+	select {
+	case <-ctx.Done():
+		//让浏览器cookie设置过期时间
+		cookie := http.Cookie{Name: c.sessionCookieName, Value: sessionId, Path: "/", HttpOnly: true, MaxAge: int(c.mMaxLifeTime)}
+		c.httpContext.Output.Response.Header().Add("Set-Cookie", cookie.String())
+		cancel()
+	}
+
 }
 
 // GetID get session id
