@@ -1,7 +1,6 @@
 package identity
 
 import (
-	"context"
 	"crypto/rand"
 	"encoding/base64"
 	webhttp "github.com/yoyofx/yoyogo/web/context"
@@ -46,15 +45,8 @@ func (c *Cookie) SetMaxLifeTime(liftTime int64) {
 
 //SetID set session id
 func (c Cookie) SetID(sessionId string) {
-	ctx, cancel := context.WithTimeout(c.httpContext.Input.Request.Context(), 1500)
-	select {
-	case <-ctx.Done():
-		//让浏览器cookie设置过期时间
-		cookie := http.Cookie{Name: c.sessionCookieName, Value: sessionId, Path: "/", HttpOnly: true, MaxAge: int(c.mMaxLifeTime)}
-		c.httpContext.Output.Response.Header().Add("Set-Cookie", cookie.String())
-		cancel()
-	}
-
+	cookie := &http.Cookie{Name: c.sessionCookieName, Value: sessionId, Path: "/", HttpOnly: true, MaxAge: int(c.mMaxLifeTime)}
+	http.SetCookie(c.httpContext.Output.Response, cookie)
 }
 
 // GetID get session id

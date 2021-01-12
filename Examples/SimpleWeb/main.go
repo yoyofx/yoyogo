@@ -51,7 +51,7 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 	return web.NewWebHostBuilder().
 		UseConfiguration(configuration).
 		Configure(func(app *web.ApplicationBuilder) {
-			//app.Use(middlewares.NewSessionWith)
+			app.Use(middlewares.NewSessionWith)
 			app.UseMiddleware(middlewares.NewCORS())
 			//web.UseMiddleware(middlewares.NewRequestTracker())
 			app.UseStaticAssets()

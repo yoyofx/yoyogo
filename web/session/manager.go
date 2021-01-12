@@ -53,6 +53,10 @@ func (mgr *Manager) Load(provider interface{}) string {
 	return mgr.store.NewID(sessionId)
 }
 
+func (mgr *Manager) NewSession(sessionId string) string {
+	return mgr.store.NewID(sessionId)
+}
+
 // Clear clear session
 func (mgr *Manager) Clear(provider interface{}) {
 	id, _ := provider.(identity.IProvider)
