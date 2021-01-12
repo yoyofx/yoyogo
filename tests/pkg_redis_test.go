@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"github.com/yoyofx/yoyogo/pkg/cache/redis"
+	"math/rand"
 	"strconv"
 	"testing"
 	"time"
@@ -545,4 +546,18 @@ func TestZScore(t *testing.T) {
 	})
 	res := ops.ZScore(ZSetKey, "小白")
 	assert.Equal(t, res, 1.23)
+}
+
+func TestBucketId(test *testing.T) {
+	key := "reidis:bigkey:abc:123456"
+	for ix := 0; ix < 10; ix++ {
+
+		key1 := key + strconv.Itoa(ix)
+		bs := redis.GetBucketId([]byte(key1), 32)
+		fmt.Println(string(bs))
+	}
+
+	key = key + strconv.Itoa(rand.Int())
+	bs := redis.GetBucketId([]byte(key), 31)
+	assert.Equal(test, bs != nil, true)
 }
