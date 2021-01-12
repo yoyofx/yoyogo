@@ -41,6 +41,7 @@ func NewClient(options *Options) IClient {
 }
 
 /* getBucketId
+https://www.cnblogs.com/colorfulkoala/p/5783556.html
 过程变化简单描述为：get(key1) -> hget(md5(key1), key1) 从而得到value1。
 如果我们通过预先计算，让很多key可以在BucketId空间里碰撞，那么可以认为一个BucketId下面挂了多个key。比如平均每个BucketId下面挂10个key，那么理论上我们将会减少超过90%的redis key的个数。
 具体实现起来有一些麻烦，而且用这个方法之前你要想好容量规模。我们通常使用的md5是32位的hexString（16进制字符），它的空间是128bit，这个量级太大了，我们需要存储的是百亿级，大约是33bit，所以我们需要有一种机制计算出合适位数的散列，而且为了节约内存，我们需要利用全部字符类型（ASCII码在0~127之间）来填充，而不用HexString，这样Key的长度可以缩短到一半。
