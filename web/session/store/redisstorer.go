@@ -14,26 +14,28 @@ type Redis struct {
 	mMaxLifeTime int64
 }
 
-func NewRedis() ISessionStore {
-	return &Redis{mMaxLifeTime: 3600}
-}
+//func NewRedis(client *RedisDataSource) ISessionStore {
+//	//return &Redis{ client: client , mMaxLifeTime: 3600 }
+//	return nil
+//}
 
 func (r *Redis) NewID(id string) string {
-	return ""
+	return id
 }
 
 func (r *Redis) GC() {}
 
 func (r *Redis) SetValue(sessionID string, key string, value interface{}) {
-	panic("implement me")
+	_ = r.client.GetHashOps().Put(keyPrefix+sessionID, key, value)
 }
 
 func (r *Redis) GetValue(sessionID string, key string) (interface{}, bool) {
-	panic("implement me")
+	value, err := r.client.GetHashOps().GetString(keyPrefix+sessionID, key)
+	return value, err == nil
 }
 
 func (r *Redis) GetAllSessionId() []string {
-	panic("Not support method")
+	return nil
 }
 
 func (r *Redis) Clear() {
@@ -49,5 +51,5 @@ func (r *Redis) UpdateLastTimeAccessed(sessionId string) {
 }
 
 func (r *Redis) SetMaxLifeTime(lifetime int64) {
-	panic("implement me")
+	r.mMaxLifeTime = lifetime
 }
