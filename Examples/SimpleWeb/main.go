@@ -43,7 +43,6 @@ func main() {
 
 //* Create the builder of Web host
 func CreateCustomBuilder() *abstractions.HostBuilder {
-
 	configuration := abstractions.NewConfigurationBuilder().
 		AddEnvironment().
 		AddYamlFile("config").Build()
