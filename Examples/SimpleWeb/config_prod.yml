@@ -7,17 +7,20 @@ yoyogo:
       address: ":8080"
       path: "app"
       max_request_size: 2096157
+      session:
+        name: "YOYOGO_SESSIONID"
+        timeout: 3600
       tls:
         cert: ""
         key: ""
       mvc:
         template: "v1/{controller}/{action}"
+        views:
+          path: "./Static/templates"
+          includes: [ "","" ]
       static:
         patten: "/"
         webroot: "./Static"
-      views:
-        path: "./Static/templates"
-        includes: ["",""]
       jwt:
         header: "Authorization"
         secret: "12391JdeOW^%$#@"
@@ -66,7 +69,7 @@ yoyogo:
         idle_timeout : 5
     redis:
       name: reids1
-      url: 127.0.0.1:6379
+      url: 62.234.6.120:31379
       password:
       db: 0
       pool:
