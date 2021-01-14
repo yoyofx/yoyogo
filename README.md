@@ -34,15 +34,14 @@ go get github.com/yoyofx/yoyogo
 ```bash
 window 下在 cmd 中执行：
 set GO111MODULE=on
-set  GOPROXY=https://goproxy.cn
-
+set GOPROXY=https://goproxy.io,direct,https://mirrors.aliyun.com/goproxy/,https://goproxy.cn,https://athens.azurefd.net,https://gonexus.dev 
 linux  下执行：
 export GO111MODULE=on
 export GOPROXY=https://goproxy.cn
 ```
 ##  go version >= 1.13
 ```
-go env -w GOPROXY=https://goproxy.cn,direct
+go env -w GOPROXY=https://goproxy.io,direct,https://mirrors.aliyun.com/goproxy/,https://goproxy.cn,https://athens.azurefd.net,https://gonexus.dev
 ```
 ### vendor
 ```

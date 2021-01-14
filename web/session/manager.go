@@ -50,7 +50,8 @@ func (mgr *Manager) Load(provider interface{}) string {
 	if sessionId == "" {
 		return ""
 	}
-	return mgr.store.NewID(sessionId)
+	return sessionId
+	//return mgr.store.NewID(sessionId)
 }
 
 func (mgr *Manager) NewSession(sessionId string) string {

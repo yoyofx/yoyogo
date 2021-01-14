@@ -2,6 +2,7 @@ package store
 
 import (
 	"github.com/yoyofx/yoyogo/pkg/cache/redis"
+	redisdb "github.com/yoyofx/yoyogo/pkg/datasources/redis"
 	"time"
 )
 
@@ -14,10 +15,11 @@ type Redis struct {
 	mMaxLifeTime int64
 }
 
-//func NewRedis(client *RedisDataSource) ISessionStore {
-//	//return &Redis{ client: client , mMaxLifeTime: 3600 }
-//	return nil
-//}
+func NewRedis(client *redisdb.RedisDataSource) ISessionStore {
+	conn, _, _ := client.Open()
+	redisClient := conn.(redis.IClient)
+	return &Redis{client: redisClient, mMaxLifeTime: 3600}
+}
 
 func (r *Redis) NewID(id string) string {
 	return id
@@ -27,6 +29,7 @@ func (r *Redis) GC() {}
 
 func (r *Redis) SetValue(sessionID string, key string, value interface{}) {
 	_ = r.client.GetHashOps().Put(keyPrefix+sessionID, key, value)
+	_, _ = r.client.SetExpire(keyPrefix+sessionID, time.Duration(r.mMaxLifeTime)*time.Second)
 }
 
 func (r *Redis) GetValue(sessionID string, key string) (interface{}, bool) {

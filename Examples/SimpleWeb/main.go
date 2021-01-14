@@ -70,8 +70,8 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 			//consul.UseServiceDiscovery(serviceCollection)
 			nacos.UseServiceDiscovery(serviceCollection)
 			session.UseSession(serviceCollection, func(options *session.Options) {
-				//options.AddSessionStoreFactory(store.NewRedis)
-				options.AddSessionMemoryStore(store.NewMemory())
+				options.AddSessionStoreFactory(store.NewRedis)
+				//options.AddSessionMemoryStore(store.NewMemory())
 				options.AddSessionIdentity(identity.NewCookie())
 			})
 		}).
