@@ -12,7 +12,7 @@ type Memory struct {
 	mSessions    map[string]*session
 }
 
-func NewMemory() *Memory {
+func NewMemory() ISessionStore {
 	return &Memory{
 		mMaxLifeTime: 3600,
 		mSessions:    make(map[string]*session),

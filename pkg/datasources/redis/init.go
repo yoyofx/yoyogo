@@ -8,6 +8,7 @@ import (
 func init() {
 	abstractions.RegisterConfigurationProcessor(
 		func(config abstractions.IConfiguration, serviceCollection *dependencyinjection.ServiceCollection) {
-			serviceCollection.AddSingletonByImplementsAndName("redis1", NewRedis, new(abstractions.IDataSource))
+			serviceCollection.AddSingletonByImplementsAndName("redis-master", NewRedis, new(abstractions.IDataSource))
+			serviceCollection.AddSingleton(NewRedis)
 		})
 }

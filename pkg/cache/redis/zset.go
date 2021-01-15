@@ -80,6 +80,10 @@ func (zSet *ZSet) ZRevRange(key string, start, stop int64) []string {
 	return zSet.ops.ZRevRange(key, start, stop)
 }
 
+func (zSet *ZSet) ZRevRangeWithScores(key string, start, stop int64) ([]ZMember, error) {
+	return zSet.ops.ZRevRangeWithScores(key, start, stop)
+}
+
 func (zSet *ZSet) ZRevRank(key, member string) int64 {
 	return zSet.ops.ZRevRank(key, member)
 }

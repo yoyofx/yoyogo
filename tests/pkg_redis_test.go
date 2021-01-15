@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"github.com/yoyofx/yoyogo/pkg/cache/redis"
+	"math/rand"
 	"strconv"
 	"testing"
 	"time"
@@ -47,9 +48,16 @@ func Test_RedisValueOps(t *testing.T) {
 	assert.Equal(t, int64(t1) > 0, true)
 	s1, _ := client.RandomKey()
 	fmt.Println(s1)
+	er := client.Close()
+	assert.Nil(t, er)
 }
 
 func Test_RedisListOps(t *testing.T) {
+	var client = redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
 	key := "go2list"
 	client.SetSerializer(&redis.JsonSerializer{})
 	listOps := client.GetListOps()
@@ -220,7 +228,6 @@ const (
 	ZSetKey2 = "ZSETKEY2"
 )
 
-
 func TestZAdd(t *testing.T) {
 	client := redis.NewClient(&redis.Options{
 		Addr:     "62.234.6.120:31379",
@@ -228,7 +235,7 @@ func TestZAdd(t *testing.T) {
 		DB:       0,
 	})
 	ops := client.GetZSetOps()
-	ops.ZRem(ZSetKey,"小白")
+	ops.ZRem(ZSetKey, "小白")
 	res := ops.ZAdd(ZSetKey, redis.ZMember{
 		Member: "小白",
 		Score:  1.23,
@@ -254,7 +261,7 @@ func TestZCount(t *testing.T) {
 		DB:       0,
 	})
 	ops := client.GetZSetOps()
-	 ops.ZAdd(ZSetKey, redis.ZMember{
+	ops.ZAdd(ZSetKey, redis.ZMember{
 		Member: "小白",
 		Score:  1.23,
 	})
@@ -262,7 +269,7 @@ func TestZCount(t *testing.T) {
 		Member: "小红",
 		Score:  1.23,
 	})
-	 ops.ZAdd(ZSetKey, redis.ZMember{
+	ops.ZAdd(ZSetKey, redis.ZMember{
 		Member: "小明",
 		Score:  1.23,
 	})
@@ -465,6 +472,7 @@ func TestZRemRangeByRank(t *testing.T) {
 	res := ops.ZRemRangeByRank(ZSetKey, 0, 1)
 	assert.NotZero(t, res)
 }
+
 func TestZRevRange(t *testing.T) {
 	client := redis.NewClient(&redis.Options{
 		Addr:     "62.234.6.120:31379",
@@ -483,6 +491,26 @@ func TestZRevRange(t *testing.T) {
 	res := ops.ZRevRange(ZSetKey, 0, 1)
 	assert.NotZero(t, len(res))
 }
+
+func TestZRevRangeWithScores(t *testing.T) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "62.234.6.120:31379",
+		Password: "",
+		DB:       0,
+	})
+	ops := client.GetZSetOps()
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小白",
+		Score:  1.23,
+	})
+	ops.ZAdd(ZSetKey, redis.ZMember{
+		Member: "小红",
+		Score:  1.23,
+	})
+	res, _ := ops.ZRevRangeWithScores(ZSetKey, 0, 1)
+	assert.Equal(t, res[0].Score, 1.23)
+}
+
 func TestZRevRank(t *testing.T) {
 	client := redis.NewClient(&redis.Options{
 		Addr:     "62.234.6.120:31379",
@@ -518,4 +546,18 @@ func TestZScore(t *testing.T) {
 	})
 	res := ops.ZScore(ZSetKey, "小白")
 	assert.Equal(t, res, 1.23)
+}
+
+func TestBucketId(test *testing.T) {
+	key := "reidis:bigkey:abc:123456"
+	for ix := 0; ix < 10; ix++ {
+
+		key1 := key + strconv.Itoa(ix)
+		bs := redis.GetBucketId([]byte(key1), 32)
+		fmt.Println(string(bs))
+	}
+
+	key = key + strconv.Itoa(rand.Int())
+	bs := redis.GetBucketId([]byte(key), 31)
+	assert.Equal(test, bs != nil, true)
 }

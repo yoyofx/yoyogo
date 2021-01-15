@@ -6,6 +6,7 @@ import (
 	"github.com/yoyofx/yoyogo/web/session"
 	"github.com/yoyofx/yoyogo/web/session/identity"
 	"github.com/yoyofx/yoyogo/web/session/store"
+	"sync"
 )
 
 type SessionMiddleware struct {
@@ -15,6 +16,7 @@ type SessionMiddleware struct {
 	identity     identity.IProvider
 	sessionName  string
 	mMaxLifeTime int64
+	lock         sync.Mutex
 }
 
 type SessionConfig struct {
@@ -37,8 +39,12 @@ func NewSessionWith(provider identity.IProvider, store store.ISessionStore, conf
 }
 
 func (sessionMid *SessionMiddleware) Inovke(ctx *context.HttpContext, next func(ctx *context.HttpContext)) {
+	sessionMid.lock.Lock()
 	sessionMid.identity.SetContext(ctx)
 	sessionId := sessionMid.sessionMgr.Load(sessionMid.identity)
+	sessionMid.lock.Unlock()
+
+	sessionId = sessionMid.sessionMgr.NewSession(sessionId)
 	if sessionId != "" {
 		ctx.SetItem("sessionId", sessionId)
 		ctx.SetItem("sessionMgr", sessionMid.sessionMgr)

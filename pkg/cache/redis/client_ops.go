@@ -64,7 +64,7 @@ type Ops interface {
 	HVals(key string) ([]string, error)
 	ZAdd(key string, member ZMember) int64
 	ZCard(key string) int64
-	ZCount(key,  min, max string) int64
+	ZCount(key, min, max string) int64
 	ZIncrby(key string, incr float64, member string) float64
 	ZInterStore(destination string, store []ZStore, arg ZStoreEnum) int64
 	ZLexCount(key, min, max string) int64
@@ -76,6 +76,7 @@ type Ops interface {
 	ZRemRangeByLex(key, min, max string) int64
 	ZRemRangeByRank(key string, start, stop int64) int64
 	ZRevRange(key string, start, stop int64) []string
+	ZRevRangeWithScores(key string, start, stop int64) ([]ZMember, error)
 	ZRevRank(key, member string) int64
 	ZScore(key, member string) float64
 }

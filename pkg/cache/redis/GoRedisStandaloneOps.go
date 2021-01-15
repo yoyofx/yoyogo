@@ -12,7 +12,7 @@ var (
 )
 
 type GoRedisStandaloneOps struct {
-	client *redis.Client
+	client redis.Cmdable
 }
 
 func NewStandaloneOps(options *Options) *GoRedisStandaloneOps {
@@ -29,7 +29,7 @@ func (ops *GoRedisStandaloneOps) Ping() (string, error) {
 }
 
 func (ops *GoRedisStandaloneOps) Close() error {
-	return ops.client.Close()
+	return ops.client.(*redis.Client).Close()
 }
 
 // value ops
@@ -357,7 +357,7 @@ func (ops *GoRedisStandaloneOps) ZCard(key string) int64 {
 	return ops.client.ZCard(ctx, key).Val()
 }
 
-func (ops *GoRedisStandaloneOps) ZCount(key,min, max string) int64 {
+func (ops *GoRedisStandaloneOps) ZCount(key, min, max string) int64 {
 	return ops.client.ZCount(ctx, key, min, max).Val()
 }
 
@@ -436,11 +436,24 @@ func (ops *GoRedisStandaloneOps) ZRevRange(key string, start, stop int64) []stri
 	return ops.client.ZRevRange(ctx, key, start, stop).Val()
 }
 
+func (ops *GoRedisStandaloneOps) ZRevRangeWithScores(key string, start, stop int64) ([]ZMember, error) {
+	zArray, err := ops.client.ZRevRangeWithScores(ctx, key, start, stop).Result()
+	if err == nil {
+		zmArray := make([]ZMember, len(zArray))
+		for i, z := range zArray {
+			zmArray[i].Member = z.Member.(string)
+			zmArray[i].Score = z.Score
+		}
+		return zmArray, err
+	} else {
+		return nil, err
+	}
+}
+
 func (ops *GoRedisStandaloneOps) ZRevRank(key, member string) int64 {
 	return ops.client.ZRevRank(ctx, key, member).Val()
 }
 
-func (ops *GoRedisStandaloneOps) ZScore(key, member string) float64{
-	return ops.client.ZScore(ctx,key,member).Val()
+func (ops *GoRedisStandaloneOps) ZScore(key, member string) float64 {
+	return ops.client.ZScore(ctx, key, member).Val()
 }
-
