@@ -18,6 +18,15 @@ func UseSession(sc *dependencyinjection.ServiceCollection, opFunc func(options *
 	opFunc(option)
 }
 
+func (op *Options) AddSessionStoreFactory(storeFactoryCtor interface{}) {
+	op.di.AddSingletonByImplements(storeFactoryCtor, new(store.ISessionStore))
+}
+
+func (op *Options) AddSessionIdentityFactory(identityFactoryCtor interface{}) {
+	//identity.NewCookie("")
+	op.di.AddSingletonByImplements(identityFactoryCtor, new(identity.IProvider))
+}
+
 func (op *Options) AddSessionMemoryStore(storer store.ISessionStore) {
 	//store.NewMemory(3600)
 	op.di.AddSingletonByImplements(func() store.ISessionStore { return storer }, new(store.ISessionStore))

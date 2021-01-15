@@ -29,6 +29,7 @@ func NewClient(options *Options) IClient {
 	} else {
 		ops = NewClusterOps(options)
 	}
+
 	kv := KV{ops: ops}
 	list := List{ops: ops}
 	hash := Hash{ops: ops}
@@ -37,7 +38,7 @@ func NewClient(options *Options) IClient {
 	geo := Geo{ops: ops}
 	lock := Lock{ops: ops}
 
-	return &Client{ops: ops, kv: kv, list: list, hash: hash, set: set, zset: zset, geo: geo, lock: lock}
+	return &Client{ops: ops, valueSerializer: DefaultSerializer, kv: kv, list: list, hash: hash, set: set, zset: zset, geo: geo, lock: lock}
 }
 
 /* getBucketId

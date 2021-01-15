@@ -43,7 +43,6 @@ func main() {
 
 //* Create the builder of Web host
 func CreateCustomBuilder() *abstractions.HostBuilder {
-
 	configuration := abstractions.NewConfigurationBuilder().
 		AddEnvironment().
 		AddYamlFile("config").Build()
@@ -71,7 +70,8 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 			//consul.UseServiceDiscovery(serviceCollection)
 			nacos.UseServiceDiscovery(serviceCollection)
 			session.UseSession(serviceCollection, func(options *session.Options) {
-				options.AddSessionMemoryStore(store.NewMemory())
+				options.AddSessionStoreFactory(store.NewRedis)
+				//options.AddSessionMemoryStore(store.NewMemory())
 				options.AddSessionIdentity(identity.NewCookie())
 			})
 		}).
