@@ -1,6 +1,8 @@
+<img src="https://mnur-prod-public.oss-cn-beijing.aliyuncs.com/0/tech/yoyogo.png" width = "380px" height = "120px" alt="" align=center />
+  
+[中文](https://github.com/yoyofx/yoyogo/blob/master/README.md)  / [English](https://github.com/yoyofx/yoyogo/blob/master/README_En.md) 文档
 
-![](https://mnur-prod-public.oss-cn-beijing.aliyuncs.com/0/tech/logo.png) [中文](https://github.com/yoyofx/yoyogo/blob/master/README.md)  / [English](https://github.com/yoyofx/yoyogo/blob/master/README_En.md)
-一个简单、轻量、快速、基于依赖注入的微服务框架
+yoyogo 是一个简单、轻量、快速、基于依赖注入的微服务框架
 
 * 文档： https://github.com/yoyofx/yoyogo/wiki
 
@@ -22,7 +24,7 @@ QQ交流群： [780385870](https://qm.qq.com/cgi-bin/qm/qr?k=xP5ZSGZaLLgJIjK0P89
 
 也可以加入我的公众号，通过公众号入群菜单进入微信群
 
-[![](https://mnur-prod-public.oss-cn-beijing.aliyuncs.com/0/tech/20201209184239.png)](https://sourcerer.io/yoyofx)
+<a href="https://sourcerer.io/yoyofx"><img src="https://mnur-prod-public.oss-cn-beijing.aliyuncs.com/0/tech/20201209184239.png" width = "240px" height = "240px" alt="" align=center /></a>
 
 感兴趣的朋友
 
