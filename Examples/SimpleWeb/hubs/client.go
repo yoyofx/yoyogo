@@ -66,7 +66,6 @@ type Client struct {
 func (c *Client) readPump() {
 	defer func() {
 		c.hub.unregister <- c
-		_ = c.conn.Close()
 	}()
 	c.conn.SetReadLimit(maxMessageSize)
 	_ = c.conn.SetReadDeadline(time.Now().Add(pongWait))
@@ -94,38 +93,43 @@ func (c *Client) writePump() {
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
 		ticker.Stop()
-		_ = c.conn.Close()
+		//_ = c.conn.Close()
 	}()
 	for {
 		select {
 		case message, ok := <-c.send:
-			//_ = c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+			_ = c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
 				// The hub closed the channel.
-				_ = c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+				if c.conn != nil {
+					_ = c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+				}
 				return
 			}
+			if c.conn != nil {
+				w, err := c.conn.NextWriter(websocket.TextMessage)
+				if err != nil {
+					return
+				}
+				_, _ = w.Write(message)
 
-			w, err := c.conn.NextWriter(websocket.TextMessage)
-			if err != nil {
-				return
-			}
-			_, _ = w.Write(message)
+				// Add queued chat messages to the current websocket message.
+				n := len(c.send)
+				for i := 0; i < n; i++ {
+					_, _ = w.Write(newline)
+					_, _ = w.Write(<-c.send)
+				}
 
-			// Add queued chat messages to the current websocket message.
-			n := len(c.send)
-			for i := 0; i < n; i++ {
-				_, _ = w.Write(newline)
-				_, _ = w.Write(<-c.send)
-			}
-
-			if err := w.Close(); err != nil {
-				return
+				if err := w.Close(); err != nil {
+					return
+				}
 			}
 		case <-ticker.C:
-			_ = c.conn.SetWriteDeadline(time.Now().Add(writeWait))
-			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
-				return
+			if c.conn != nil {
+				_ = c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+				if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+					return
+				}
 			}
 		}
 	}
@@ -142,9 +146,9 @@ func ServeWs(hub *Hub, w context.IResponseWriter, r *http.Request) {
 		err = e
 		registerClient(hub, conn)
 	} else { //fasthttp
-		err = fasthttpUpgrader.Upgrade(responseWriter.Ctx, func(conn *websocket.Conn) {
+		responseWriter.Callback = func(conn *websocket.Conn) {
 			registerClient(hub, conn)
-		})
+		}
 	}
 
 	if err != nil {
@@ -157,5 +161,5 @@ func registerClient(hub *Hub, conn *websocket.Conn) {
 	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256)}
 	client.hub.register <- client
 	go client.writePump()
-	go client.readPump()
+	client.readPump()
 }

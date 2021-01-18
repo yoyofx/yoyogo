@@ -1,6 +1,7 @@
 package web
 
 import (
+	"github.com/fasthttp/websocket"
 	"github.com/valyala/fasthttp"
 	"io"
 	"net/http"
@@ -44,7 +45,17 @@ func NewFastHTTPHandler(h http.Handler) fasthttp.RequestHandler {
 
 		w := &NetHTTPResponseWriter{Ctx: ctx}
 		h.ServeHTTP(w, r.WithContext(ctx))
-
+		if w.Callback != nil {
+			fasthttpUpgrader := websocket.FastHTTPUpgrader{
+				CheckOrigin: func(ctx *fasthttp.RequestCtx) bool {
+					return true
+				},
+				ReadBufferSize:  1024,
+				WriteBufferSize: 1024,
+			}
+			_ = fasthttpUpgrader.Upgrade(ctx, w.Callback)
+			return
+		}
 		ctx.SetStatusCode(w.StatusCode())
 		haveContentType := false
 		for k, vv := range w.Header() {
@@ -93,6 +104,7 @@ type NetHTTPResponseWriter struct {
 	statusCode int
 	h          http.Header
 	body       []byte
+	Callback   func(conn *websocket.Conn)
 }
 
 func (w *NetHTTPResponseWriter) StatusCode() int {
