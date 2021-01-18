@@ -157,5 +157,5 @@ func registerClient(hub *Hub, conn *websocket.Conn) {
 	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256)}
 	client.hub.register <- client
 	go client.writePump()
-	client.readPump()
+	go client.readPump()
 }

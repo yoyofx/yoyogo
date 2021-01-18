@@ -3,7 +3,7 @@ yoyogo:
     name: yoyogo_demo_dev
     metadata: "develop"
     server:
-      type: "fasthttp"
+      type: "http"
       address: ":8080"
       path: "app"
       max_request_size: 2096157
