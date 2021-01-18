@@ -2,6 +2,7 @@ package main
 
 import (
 	"SimpleWeb/contollers"
+	"SimpleWeb/hubs"
 	"SimpleWeb/models"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
@@ -34,9 +35,12 @@ func SimpleDemo() {
 	}).Build().Run()
 }
 
+var hub = hubs.NewHub()
+
 func main() {
 	//SimpleDemo()
 
+	go hub.Run()
 	webHost := CreateCustomBuilder().Build()
 	webHost.Run()
 }
@@ -106,6 +110,11 @@ func registerEndpointRouterConfig(rb router.IRouterBuilder) {
 	rb.GET("/ioc", GetInfoByIOC)
 	rb.GET("/session", TestSession)
 	rb.GET("/newsession", SetSession)
+
+	rb.GET("/ws", func(ctx *context.HttpContext) {
+		hubs.ServeWs(hub, ctx.Output.GetWriter(), ctx.Input.GetReader())
+		ctx.Output.SetStatus(200)
+	})
 }
 
 //endregion
