@@ -135,6 +135,7 @@ func (c *Client) writePump() {
 func ServeWs(hub *Hub, w context.IResponseWriter, r *http.Request) {
 	writer := w.(*context.CResponseWriter)
 	responseWriter, ok := writer.ResponseWriter.(*web.NetHTTPResponseWriter)
+
 	var err error
 	if !ok { //http
 		conn, e := httpUpgrader.Upgrade(w, r, nil)
@@ -145,6 +146,7 @@ func ServeWs(hub *Hub, w context.IResponseWriter, r *http.Request) {
 			registerClient(hub, conn)
 		})
 	}
+
 	if err != nil {
 		log.Println(err)
 		return
