@@ -18,8 +18,12 @@ func NewServiceCollection() *ServiceCollection {
 //Scoped
 //Transient
 func (sc *ServiceCollection) AddServiceDescriptor(sd *ServiceDescriptor) {
-	typeName, _ := reflectx.GetCtorFuncOutTypeName(sd.Provider)
-	typeName = strings.ToLower(typeName)
+	typeName := sd.Name
+	if typeName == "" {
+		typeName, _ = reflectx.GetCtorFuncOutTypeName(sd.Provider)
+		typeName = strings.ToLower(typeName)
+	}
+
 	index := len(sc.serviceDescriptors)
 	defIndex, exist := sc.serviceDescriptorMaps[typeName]
 	if exist {

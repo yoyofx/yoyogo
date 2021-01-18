@@ -38,8 +38,12 @@ type RedisDataSource struct {
 	log              xlog.ILogger
 }
 
+func NewRedisCache(configuration abstractions.IConfiguration) *RedisDataSource {
+	return NewRedis(configuration).(*RedisDataSource)
+}
+
 // NewMysqlDataSource 初始化MySQL数据源
-func NewRedis(configuration abstractions.IConfiguration) *RedisDataSource {
+func NewRedis(configuration abstractions.IConfiguration) abstractions.IDataSource {
 	redisConfigSection := configuration.GetSection("yoyogo.datasource.redis")
 	var redisdatasourcesConfig redisConfig
 	redisConfigSection.Unmarshal(&redisdatasourcesConfig)
