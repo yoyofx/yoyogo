@@ -1,7 +1,6 @@
 package web
 
 import (
-	"github.com/fasthttp/websocket"
 	"github.com/valyala/fasthttp"
 	"io"
 	"net/http"
@@ -43,17 +42,9 @@ func NewFastHTTPHandler(h http.Handler) fasthttp.RequestHandler {
 		}
 		r.URL = rURL
 
-		w := &NetHTTPResponseWriter{Ctx: ctx}
-		h.ServeHTTP(w, r.WithContext(ctx))
-		if w.Callback != nil {
-			fasthttpUpgrader := websocket.FastHTTPUpgrader{
-				CheckOrigin: func(ctx *fasthttp.RequestCtx) bool {
-					return true
-				},
-				ReadBufferSize:  1024,
-				WriteBufferSize: 1024,
-			}
-			_ = fasthttpUpgrader.Upgrade(ctx, w.Callback)
+		w := NetHTTPResponseWriter{Ctx: ctx}
+		h.ServeHTTP(&w, r.WithContext(ctx))
+		if w.IsHijackerConn {
 			return
 		}
 		ctx.SetStatusCode(w.StatusCode())
@@ -100,11 +91,11 @@ func (r *netHTTPBody) Close() error {
 }
 
 type NetHTTPResponseWriter struct {
-	Ctx        *fasthttp.RequestCtx
-	statusCode int
-	h          http.Header
-	body       []byte
-	Callback   func(conn *websocket.Conn)
+	Ctx            *fasthttp.RequestCtx
+	statusCode     int
+	h              http.Header
+	body           []byte
+	IsHijackerConn bool
 }
 
 func (w *NetHTTPResponseWriter) StatusCode() int {
@@ -130,6 +121,6 @@ func (w *NetHTTPResponseWriter) Write(p []byte) (int, error) {
 	return len(p), nil
 }
 
-//func (w *netHTTPResponseWriter) Hijack() (net.Conn, *bufio.ReadWriter, error) {
-//	w.ctx.h
+//func (w *NetHTTPResponseWriter) SetContext(ctx interface{}){
+//	w.Ctx = ctx
 //}

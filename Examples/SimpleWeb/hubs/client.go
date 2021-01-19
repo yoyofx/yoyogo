@@ -136,7 +136,9 @@ func (c *Client) writePump() {
 }
 
 // serveWs handles websocket requests from the peer.
-func ServeWs(hub *Hub, w context.IResponseWriter, r *http.Request) {
+func ServeWs(hub *Hub, ctx *context.HttpContext) {
+	w := ctx.Output.GetWriter()
+	r := ctx.Input.GetReader()
 	writer := w.(*context.CResponseWriter)
 	responseWriter, ok := writer.ResponseWriter.(*web.NetHTTPResponseWriter)
 
@@ -146,9 +148,10 @@ func ServeWs(hub *Hub, w context.IResponseWriter, r *http.Request) {
 		err = e
 		registerClient(hub, conn)
 	} else { //fasthttp
-		responseWriter.Callback = func(conn *websocket.Conn) {
+		responseWriter.IsHijackerConn = true
+		_ = fasthttpUpgrader.Upgrade(responseWriter.Ctx, func(conn *websocket.Conn) {
 			registerClient(hub, conn)
-		}
+		})
 	}
 
 	if err != nil {

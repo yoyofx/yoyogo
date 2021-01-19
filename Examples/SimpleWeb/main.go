@@ -112,8 +112,8 @@ func registerEndpointRouterConfig(rb router.IRouterBuilder) {
 	rb.GET("/newsession", SetSession)
 
 	rb.GET("/ws", func(ctx *context.HttpContext) {
-		hubs.ServeWs(hub, ctx.Output.GetWriter(), ctx.Input.GetReader())
-		//ctx.Output.SetStatus(200)
+		hubs.ServeWs(hub, ctx)
+		ctx.Output.SetStatus(200)
 	})
 }
 
