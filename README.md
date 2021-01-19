@@ -1,5 +1,6 @@
-# YoyoGo [English](https://github.com/yoyofx/yoyogo/blob/master/README_En.md "中文介绍")
-YoyoGo 一个简单、轻量、快速、基于依赖注入的微服务框架
+<img src="https://mnur-prod-public.oss-cn-beijing.aliyuncs.com/0/tech/yoyogo.png" width = "380px" height = "120px" alt="" align=center />[中文](https://github.com/yoyofx/yoyogo/blob/master/README.md)  / [English](https://github.com/yoyofx/yoyogo/blob/master/README_En.md)
+
+YoyoGo 简单、轻量、快速、基于依赖注入的微服务框架
 
 * 文档： https://github.com/yoyofx/yoyogo/wiki
 
@@ -17,11 +18,11 @@ YoyoGo 一个简单、轻量、快速、基于依赖注入的微服务框架
 - 微服务框架抽象了分层，在一个框架体系兼容各种server实现，如 rest,grpc等
 - 受到许多出色的 Go Web 框架的启发，server可替换，目前实现了 **fasthttp** 和 **net.http**
 
-QQ交流群： [780385870](https://qm.qq.com/cgi-bin/qm/qr?k=xP5ZSGZaLLgJIjK0P89gen8V-p5b1cHg&jump_from=webapi) (Go浪文学院)
+QQ交流群： [780385870](https://qm.qq.com/cgi-bin/qm/qr?k=xP5ZSGZaLLgJIjK0P89gen8V-p5b1cHg&jump_from=webapi) (Go浪文学院) , 在这里感谢**贾国锦**帮忙设计的logo很漂亮。
 
 也可以加入我的公众号，通过公众号入群菜单进入微信群
 
-[![](https://mnur-prod-public.oss-cn-beijing.aliyuncs.com/0/tech/20201209184239.png)](https://sourcerer.io/yoyofx)
+<a href="https://sourcerer.io/yoyofx"><img src="https://mnur-prod-public.oss-cn-beijing.aliyuncs.com/0/tech/20201209184239.png" width = "240px" height = "240px" alt="" align=center /></a>
 
 感兴趣的朋友
 

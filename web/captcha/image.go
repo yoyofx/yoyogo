@@ -20,3 +20,8 @@ func CreateImage(n int, size ...int) (text string, md5 string, imgByte []byte) {
 
 	return text, textMd5, imgByte
 }
+
+func Validation(text string, md5 string) bool {
+	textMd5 := utils.Md5String(strings.ToUpper(text))
+	return textMd5 == md5
+}

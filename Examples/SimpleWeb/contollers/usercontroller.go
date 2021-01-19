@@ -66,8 +66,15 @@ func (controller UserController) GetSD() mvc.ApiResult {
 	return controller.OK(serviceList)
 }
 
-func (controller UserController) GetCaptcha() actionresult.IActionResult {
-	text, md5, bytes := captcha.CreateImage(6)
-	_, _ = text, md5
+func (controller UserController) GetCaptcha(ctx *context.HttpContext) actionresult.IActionResult {
+	_, md5, bytes := captcha.CreateImage(6)
+	ctx.GetSession().SetValue("cimg_md5", md5)
 	return actionresult.Image{Data: bytes}
+}
+
+func (controller UserController) GetValidation(ctx *context.HttpContext) mvc.ApiResult {
+	text := ctx.Input.Query("val")
+	md5 := ctx.GetSession().GetString("cimg_md5")
+	ok := captcha.Validation(text, md5)
+	return controller.OK(context.H{"validation": ok})
 }
