@@ -5,6 +5,7 @@ import (
 	"SimpleWeb/hubs"
 	"SimpleWeb/models"
 	"fmt"
+	"github.com/fasthttp/websocket"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
@@ -111,10 +112,13 @@ func registerEndpointRouterConfig(rb router.IRouterBuilder) {
 	rb.GET("/session", TestSession)
 	rb.GET("/newsession", SetSession)
 
-	rb.GET("/ws", func(ctx *context.HttpContext) {
-		hubs.ServeWs(hub, ctx)
-		ctx.Output.SetStatus(200)
-	})
+	rb.GET("/ws", web.UpgradeHandler(func(conn *websocket.Conn) {
+		client := &hubs.Client{Hub: hub, Conn: conn, Send: make(chan []byte, 256)}
+		client.Hub.Register <- client
+		go client.WritePump()
+		client.ReadPump()
+	}))
+
 }
 
 //endregion
