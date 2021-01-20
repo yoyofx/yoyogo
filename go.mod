@@ -7,7 +7,7 @@ require (
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/clbanning/x2j v0.0.0-20191024224557-825249438eec // indirect
 	github.com/defval/inject/v2 v2.2.2
-	github.com/fasthttp/websocket v1.4.3
+	github.com/fasthttp/websocket v1.4.1
 	github.com/fogleman/gg v1.3.0
 	github.com/franela/goblin v0.0.0-20201006155558-6240afcb2eb7 // indirect
 	github.com/franela/goreq v0.0.0-20171204163338-bcd34c9993f8 // indirect
