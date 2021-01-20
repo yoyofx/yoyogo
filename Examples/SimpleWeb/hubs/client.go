@@ -26,23 +26,6 @@ var (
 	space   = []byte{' '}
 )
 
-//
-//var httpUpgrader = socket.Upgrader{
-//	CheckOrigin: func(r *http.Request) bool {
-//		return true
-//	},
-//	ReadBufferSize:  1024,
-//	WriteBufferSize: 1024,
-//}
-//
-//var fasthttpUpgrader = socket.FastHTTPUpgrader{
-//	CheckOrigin: func(ctx *fasthttp.RequestCtx) bool {
-//		return true
-//	},
-//	ReadBufferSize:  1024,
-//	WriteBufferSize: 1024,
-//}
-
 // Client is a middleman between the socket connection and the hub.
 type Client struct {
 	Id  string
@@ -131,28 +114,3 @@ func (c *Client) WritePump() {
 		}
 	}
 }
-
-// serveWs handles socket requests from the peer.
-//func ServeWs(hub *Hub, ctx *context.HttpContext) {
-//	w := ctx.Output.GetWriter()
-//	r := ctx.Input.GetReader()
-//	writer := w.(*context.CResponseWriter)
-//	responseWriter, ok := writer.ResponseWriter.(*web.NetHTTPResponseWriter)
-//
-//	var err error
-//	if !ok { //http
-//		conn, e := httpUpgrader.Upgrade(w, r, nil)
-//		err = e
-//		registerClient(hub, conn)
-//	} else { //fasthttp
-//		responseWriter.IsHijackerConn = true
-//		_ = fasthttpUpgrader.Upgrade(responseWriter.Ctx, func(conn *socket.Conn) {
-//			registerClient(hub, conn)
-//		})
-//	}
-//
-//	if err != nil {
-//		log.Println(err)
-//		return
-//	}
-//}

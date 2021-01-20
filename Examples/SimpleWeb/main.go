@@ -5,7 +5,6 @@ import (
 	"SimpleWeb/hubs"
 	"SimpleWeb/models"
 	"fmt"
-	"github.com/fasthttp/websocket"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
@@ -36,12 +35,9 @@ func SimpleDemo() {
 	}).Build().Run()
 }
 
-var hub = hubs.NewHub()
-
 func main() {
 	//SimpleDemo()
 
-	go hub.Run()
 	webHost := CreateCustomBuilder().Build()
 	webHost.Run()
 }
@@ -65,11 +61,13 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 				//builder.AddViews(&view.Option{Path: "./Static/templates"})
 				builder.AddViewsByConfig()
 				builder.AddController(contollers.NewUserController)
+				builder.AddController(contollers.NewHubController)
 				builder.AddFilter("/v1/user/info", &contollers.TestActionFilter{})
 			})
 		}).
 		ConfigureServices(func(serviceCollection *dependencyinjection.ServiceCollection) {
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
+			serviceCollection.AddSingleton(hubs.NewHub) // add websocket hubs
 
 			//eureka.UseServiceDiscovery(serviceCollection)
 			//consul.UseServiceDiscovery(serviceCollection)
@@ -111,13 +109,6 @@ func registerEndpointRouterConfig(rb router.IRouterBuilder) {
 	rb.GET("/ioc", GetInfoByIOC)
 	rb.GET("/session", TestSession)
 	rb.GET("/newsession", SetSession)
-
-	rb.GET("/ws", web.UpgradeHandler(func(conn *websocket.Conn) {
-		client := &hubs.Client{Hub: hub, Conn: conn, Send: make(chan []byte, 256)}
-		client.Hub.Register <- client
-		go client.WritePump()
-		client.ReadPump()
-	}))
 
 }
 
