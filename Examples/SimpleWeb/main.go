@@ -35,12 +35,9 @@ func SimpleDemo() {
 	}).Build().Run()
 }
 
-var hub = hubs.NewHub()
-
 func main() {
 	//SimpleDemo()
 
-	go hub.Run()
 	webHost := CreateCustomBuilder().Build()
 	webHost.Run()
 }
@@ -64,11 +61,13 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 				//builder.AddViews(&view.Option{Path: "./Static/templates"})
 				builder.AddViewsByConfig()
 				builder.AddController(contollers.NewUserController)
+				builder.AddController(contollers.NewHubController)
 				builder.AddFilter("/v1/user/info", &contollers.TestActionFilter{})
 			})
 		}).
 		ConfigureServices(func(serviceCollection *dependencyinjection.ServiceCollection) {
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
+			serviceCollection.AddSingleton(hubs.NewHub) // add websocket hubs
 
 			//eureka.UseServiceDiscovery(serviceCollection)
 			//consul.UseServiceDiscovery(serviceCollection)
@@ -111,10 +110,6 @@ func registerEndpointRouterConfig(rb router.IRouterBuilder) {
 	rb.GET("/session", TestSession)
 	rb.GET("/newsession", SetSession)
 
-	rb.GET("/ws", func(ctx *context.HttpContext) {
-		hubs.ServeWs(hub, ctx)
-		ctx.Output.SetStatus(200)
-	})
 }
 
 //endregion
