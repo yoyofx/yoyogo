@@ -83,3 +83,42 @@ func TestRedisList(t *testing.T) {
 	values, _ := client.LRange(ctx, listKey, 0, 1).Result()
 	assert.Equal(t, len(values), 2)
 }
+
+func TestAddTodoList(t *testing.T) {
+	client := newClient()
+	defer client.Close()
+
+	json := `[{
+  "id": 0,
+  "status": "STATUS_TODO",
+  "content": "每周七天阅读五次，每次阅读完要做100字的读书笔记",
+  "title": "小夏"
+}, {
+  "id": 1,
+  "status": "STATUS_TODO",
+  "content": "每周七天健身4次，每次健身时间需要大于20分钟",
+  "title": "橘子🍊"
+}, {
+  "id": 2,
+  "status": "STATUS_TODO",
+  "content": "单词*100",
+  "title": "┑(￣Д ￣)┍"
+}, {
+  "id": 3,
+  "status": "STATUS_TODO",
+  "content": "单词*150",
+  "title": "┑(￣Д ￣)┍"
+}, {
+  "id": 4,
+  "status": "STATUS_TODO",
+  "content": "单词*200",
+  "title": "┑(￣Д ￣)┍"
+}, {
+  "id": 5,
+  "status": "STATUS_TODO",
+  "content": "单词*250",
+  "title": "┑(￣Д ￣)┍"
+}]`
+	client.Set(ctx, "yoyogo:todolist", json, 0)
+
+}

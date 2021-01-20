@@ -18,7 +18,7 @@ const (
 	pingPeriod = (pongWait * 9) / 10
 
 	// Maximum message size allowed from peer.
-	maxMessageSize = 512
+	maxMessageSize = 65535
 )
 
 var (
@@ -36,6 +36,8 @@ type Client struct {
 
 	// Buffered channel of outbound messages.
 	Send chan []byte
+
+	MaxMessageSize int64
 }
 
 // ReadPump pumps messages from the socket connection to the Hub.
@@ -47,7 +49,7 @@ func (c *Client) ReadPump() {
 	defer func() {
 		c.Hub.unregister <- c
 	}()
-	c.Conn.SetReadLimit(maxMessageSize)
+	c.Conn.SetReadLimit(c.MaxMessageSize)
 	_ = c.Conn.SetReadDeadline(time.Now().Add(pongWait))
 	c.Conn.SetPongHandler(func(string) error { _ = c.Conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 	for {
