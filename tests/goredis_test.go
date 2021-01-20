@@ -92,32 +92,32 @@ func TestAddTodoList(t *testing.T) {
   "id": 0,
   "status": "STATUS_TODO",
   "content": "每周七天阅读五次，每次阅读完要做100字的读书笔记",
-  "title": "小夏"
+  "editable": false
 }, {
   "id": 1,
   "status": "STATUS_TODO",
   "content": "每周七天健身4次，每次健身时间需要大于20分钟",
-  "title": "橘子🍊"
+  "editable": false
 }, {
   "id": 2,
   "status": "STATUS_TODO",
   "content": "单词*100",
-  "title": "┑(￣Д ￣)┍"
+  "editable": false
 }, {
   "id": 3,
   "status": "STATUS_TODO",
   "content": "单词*150",
-  "title": "┑(￣Д ￣)┍"
+  "editable": false
 }, {
   "id": 4,
   "status": "STATUS_TODO",
   "content": "单词*200",
-  "title": "┑(￣Д ￣)┍"
+  "editable": false
 }, {
   "id": 5,
   "status": "STATUS_TODO",
   "content": "单词*250",
-  "title": "┑(￣Д ￣)┍"
+  "editable": false
 }]`
 	client.Set(ctx, "yoyogo:todolist", json, 0)
 
