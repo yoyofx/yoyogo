@@ -2,6 +2,7 @@ package main
 
 import (
 	"SimpleWeb/contollers"
+	"SimpleWeb/hubs"
 	"SimpleWeb/models"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
@@ -60,11 +61,13 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 				//builder.AddViews(&view.Option{Path: "./Static/templates"})
 				builder.AddViewsByConfig()
 				builder.AddController(contollers.NewUserController)
+				builder.AddController(contollers.NewHubController)
 				builder.AddFilter("/v1/user/info", &contollers.TestActionFilter{})
 			})
 		}).
 		ConfigureServices(func(serviceCollection *dependencyinjection.ServiceCollection) {
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
+			serviceCollection.AddSingleton(hubs.NewHub) // add websocket hubs
 
 			//eureka.UseServiceDiscovery(serviceCollection)
 			//consul.UseServiceDiscovery(serviceCollection)
@@ -106,6 +109,7 @@ func registerEndpointRouterConfig(rb router.IRouterBuilder) {
 	rb.GET("/ioc", GetInfoByIOC)
 	rb.GET("/session", TestSession)
 	rb.GET("/newsession", SetSession)
+
 }
 
 //endregion

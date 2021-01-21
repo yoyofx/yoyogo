@@ -42,7 +42,7 @@ func (handler *RouterHandler) Invoke(ctx *context.HttpContext, pathComponents []
 		actionDescriptor, foundAction = controllerDescriptor.GetActionDescriptorByName(strings.ToLower(ctx.Input.Method()) + actionName)
 	}
 
-	if foundAction && actionDescriptor.ActionMethod != "any" && strings.ToLower(ctx.Input.Method()) != actionDescriptor.ActionMethod {
+	if foundAction && actionDescriptor.ActionMethod != "any" && strings.ToLower(ctx.Input.Method()) != "options" && strings.ToLower(ctx.Input.Method()) != actionDescriptor.ActionMethod {
 		ctx.Output.SetStatus(http.StatusMethodNotAllowed)
 		panic(fmt.Sprintf("Status method not allowed ! Request method is %s ,that define with %s .", ctx.Input.Method(),
 			strings.ToUpper(actionDescriptor.ActionMethod)))

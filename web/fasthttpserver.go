@@ -2,7 +2,6 @@ package web
 
 import (
 	"github.com/valyala/fasthttp"
-	"github.com/valyala/fasthttp/fasthttpadaptor"
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/hostenv"
 	"log"
@@ -37,10 +36,11 @@ func (server *FastHttpServer) GetAddr() string {
 
 func (server *FastHttpServer) Run(context *abstractions.HostBuilderContext) (e error) {
 
-	fastHttpHandler := fasthttpadaptor.NewFastHTTPHandler(context.RequestDelegate.(IRequestDelegate))
+	fastHttpHandler := NewFastHTTPHandler(context.RequestDelegate.(IRequestDelegate))
 
 	server.webserver = &fasthttp.Server{
-		Handler: fastHttpHandler,
+		Handler:           fastHttpHandler,
+		KeepHijackedConns: true,
 	}
 
 	addr := server.Addr
