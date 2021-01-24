@@ -1,4 +1,4 @@
-package WechatRequests
+package wechatrequests
 
 type MarkdownMessage struct {
 	Markdown struct {

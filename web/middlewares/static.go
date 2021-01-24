@@ -38,7 +38,7 @@ func NewStaticWithConfig(configuration abstractions.IConfiguration) *Static {
 		path := config.Get("webroot").(string)
 		return NewStatic(patten, path)
 	} else {
-		return NewStatic("/", "./Static")
+		return NewStatic("/", "./static")
 	}
 }
 

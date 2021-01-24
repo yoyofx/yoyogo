@@ -35,7 +35,7 @@ func CreateHttpBuilder(routerConfig func(router router.IRouterBuilder)) *abstrac
 	return NewWebHostBuilder().
 		UseServer(DefaultHttpServer(DefaultAddress)).
 		Configure(func(app *ApplicationBuilder) {
-			app.UseStatic("/Static", "./Static")
+			app.UseStatic("/static", "./static")
 			app.UseEndpoints(routerConfig)
 		})
 }

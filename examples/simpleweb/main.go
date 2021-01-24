@@ -1,9 +1,6 @@
 package main
 
 import (
-	"SimpleWeb/contollers"
-	"SimpleWeb/hubs"
-	"SimpleWeb/models"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/yoyofx/yoyogo/abstractions"
@@ -22,6 +19,9 @@ import (
 	"github.com/yoyofx/yoyogo/web/session"
 	"github.com/yoyofx/yoyogo/web/session/identity"
 	"github.com/yoyofx/yoyogo/web/session/store"
+	"simpleweb/contollers"
+	"simpleweb/hubs"
+	"simpleweb/models"
 )
 
 func SimpleDemo() {
@@ -58,7 +58,7 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 			app.UseEndpoints(registerEndpointRouterConfig)
 			app.SetJsonSerializer(extension.CamelJson())
 			app.UseMvc(func(builder *mvc.ControllerBuilder) {
-				//builder.AddViews(&view.Option{Path: "./Static/templates"})
+				//builder.AddViews(&view.Option{Path: "./static/templates"})
 				builder.AddViewsByConfig()
 				builder.AddController(contollers.NewUserController)
 				builder.AddController(contollers.NewHubController)

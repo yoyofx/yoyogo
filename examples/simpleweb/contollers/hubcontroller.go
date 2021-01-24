@@ -1,7 +1,6 @@
 package contollers
 
 import (
-	"SimpleWeb/hubs"
 	"github.com/fasthttp/websocket"
 	"github.com/yoyofx/yoyogo/pkg/cache/redis"
 	redisdb "github.com/yoyofx/yoyogo/pkg/datasources/redis"
@@ -9,6 +8,7 @@ import (
 	"github.com/yoyofx/yoyogo/web/actionresult"
 	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofx/yoyogo/web/mvc"
+	"simpleweb/hubs"
 )
 
 // websocket hub

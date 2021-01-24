@@ -1,4 +1,4 @@
-module SimpleWeb
+module simpleweb
 
 go 1.15
 
