@@ -119,6 +119,6 @@ func TestAddTodoList(t *testing.T) {
   "content": "单词*250",
   "editable": false
 }]`
-	client.Set(ctx, "yoyogo:todolist", json, 0)
-
+	//client.Set(ctx, "yoyogo:todolist", json, 0)
+	_ = json
 }

@@ -91,7 +91,7 @@ func main() {
 
 ## Features
 * [X] configtion
-* [ ] WebSocket
+* [X] WebSocket
 * [X] JWT 
 * [ ] swagger
 * [ ] GRpc
@@ -122,7 +122,7 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 			app.UseStaticAssets()
 			app.UseEndpoints(registerEndpointRouterConfig)
 			app.UseMvc(func(builder *mvc.ControllerBuilder) {
-				//builder.AddViews(&view.Option{Path: "./Static/templates"})
+				//builder.AddViews(&view.Option{Path: "./static/templates"})
 				builder.AddViewsByConfig()
 				builder.AddController(contollers.NewUserController)
 				builder.AddFilter("/v1/user/info", &contollers.TestActionFilter{})
@@ -130,9 +130,6 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 		}).
 		ConfigureServices(func(serviceCollection *dependencyinjection.ServiceCollection) {
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
-			serviceCollection.AddSingletonByImplementsAndName("db1", datasources.NewMysqlDataSource, new(abstractions.IDataSource))
-			serviceCollection.AddSingletonByImplementsAndName("redis1", datasources.NewRedis, new(abstractions.IDataSource))
-
 			//eureka.UseServiceDiscovery(serviceCollection)
 			//consul.UseServiceDiscovery(serviceCollection)
 			nacos.UseServiceDiscovery(serviceCollection)

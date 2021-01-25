@@ -1,7 +1,7 @@
 yoyogo:
   application:
-    name: yoyogo_demo_prod
-    metadata: "prod"
+    name: yoyogo_demo_test
+    metadata: "test"
     server:
       type: "fasthttp"
       address: ":8080"
@@ -16,11 +16,11 @@ yoyogo:
       mvc:
         template: "v1/{controller}/{action}"
         views:
-          path: "./Static/templates"
+          path: "./static/templates"
           includes: [ "","" ]
       static:
         patten: "/"
-        webroot: "./Static"
+        webroot: "./static"
       jwt:
         header: "Authorization"
         secret: "12391JdeOW^%$#@"

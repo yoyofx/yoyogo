@@ -1,12 +1,12 @@
 package contollers
 
 import (
-	"SimpleWeb/models"
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/web/actionresult"
 	"github.com/yoyofx/yoyogo/web/captcha"
 	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofx/yoyogo/web/mvc"
+	"simpleweb/models"
 )
 
 type UserController struct {

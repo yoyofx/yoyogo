@@ -1,0 +1,17 @@
+yoyogo:
+  application:
+    name: Alert
+    metadata: ""
+    server:
+      type: "fasthttp"
+      address: ":8089"
+      max_request_size: 2096157
+
+# alert通过 tag识别节点值
+alert:
+  jishi:    # grafana alert 中的 tag
+    webhook_url: #企业微信webhook
+    link_url:  #聊天内容连接
+  znbk:
+    webhook_url:
+    link_url:

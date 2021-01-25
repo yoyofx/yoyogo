@@ -8,7 +8,7 @@ import (
 
 func (ctx *HttpContext) HTML(code int, name string, obj interface{}) {
 	htmlRender := actionresult.HTMLDebug{Files: nil,
-		Glob:    "../Static/template/**",
+		Glob:    "../static/template/**",
 		Delims:  actionresult.Delims{Left: "{{", Right: "}}"},
 		FuncMap: nil,
 	}

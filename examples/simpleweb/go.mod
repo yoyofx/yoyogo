@@ -1,11 +1,10 @@
-module SimpleWeb
+module simpleweb
 
 go 1.15
 
 require (
 	github.com/fasthttp/websocket v1.4.3
 	github.com/go-sql-driver/mysql v1.5.0
-	github.com/valyala/fasthttp v1.17.0
 	github.com/yoyofx/yoyogo v0.0.0
 )
 

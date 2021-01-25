@@ -1,4 +1,4 @@
-package WechatRequests
+package wechatrequests
 
 import "strconv"
 
