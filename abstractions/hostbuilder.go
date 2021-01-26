@@ -120,11 +120,14 @@ func buildingHostEnvironmentSetting(serviceCollection *dependencyinjection.Servi
 	if hostEnv.Profile == "" {
 		hostEnv.Profile = hostenv.Dev
 	}
-	httpserverConfig := config.Server.Tls
-	httpserverConfig.Addr = hostEnv.Addr
-	if httpserverConfig.CertFile != "" && httpserverConfig.KeyFile != "" {
-		httpserverConfig.IsTLS = true
+	httpserverConfig := hostenv.HttpServerConfig{}
+	if config != nil {
+		httpserverConfig := config.Server.Tls
+		if httpserverConfig.CertFile != "" && httpserverConfig.KeyFile != "" {
+			httpserverConfig.IsTLS = true
+		}
 	}
+	httpserverConfig.Addr = hostEnv.Addr
 	serviceCollection.AddSingleton(func() hostenv.HttpServerConfig { return httpserverConfig })
 }
 
