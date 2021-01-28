@@ -45,8 +45,10 @@ func NewRedisCache(configuration abstractions.IConfiguration) *RedisDataSource {
 // NewMysqlDataSource 初始化MySQL数据源
 func NewRedis(configuration abstractions.IConfiguration) abstractions.IDataSource {
 	redisConfigSection := configuration.GetSection("yoyogo.datasource.redis")
+	poolConfig := configuration.GetSection("yoyogo.datasource.pool")
 	var redisdatasourcesConfig redisConfig
 	redisConfigSection.Unmarshal(&redisdatasourcesConfig)
+	poolConfig.Unmarshal(&redisdatasourcesConfig.Pool)
 	log := xlog.GetXLogger("RedisDataSource")
 
 	p := createReidsPool(redisdatasourcesConfig, log)

@@ -34,9 +34,11 @@ type MySqlDataSource struct {
 
 // NewMysqlDataSource 初始化MySQL数据源
 func NewMysqlDataSource(configuration abstractions.IConfiguration) *MySqlDataSource {
-	databaseConfig := configuration.GetSection("yoyogo.datasource.mysql")
+	databaseConfig := configuration.GetSection("yoyogo.datasource.db")
+	poolConfig := configuration.GetSection("yoyogo.datasource.pool")
 	var datasourcesConfig dataSourceConfig
 	databaseConfig.Unmarshal(&datasourcesConfig)
+	poolConfig.Unmarshal(&datasourcesConfig.Pool)
 	log := xlog.GetXLogger("MysqlDataSource")
 
 	p := createMysqlPool(datasourcesConfig, log)
