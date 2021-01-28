@@ -35,15 +35,19 @@ func NewClient() *Client {
 func (c *Client) WithFormRequest(params map[string]interface{}) *Request {
 	defaultHeader := make(http.Header)
 	defaultHeader.Set("Content-Type", "application/x-www-form-urlencoded")
-	request := &Request{header: defaultHeader, contentType: "application/x-www-form-urlencoded", params: params}
+	request := &Request{header: defaultHeader, contentType: "application/x-www-form-urlencoded", params: params, timeout: 5}
 	return request
+}
+
+func (c *Client) WithRequest() *Request {
+	return &Request{header: make(http.Header), timeout: 5}
 }
 
 // WithFormRequest 快速配置表单请求类型
 func (c *Client) WithJsonRequest(json string) *Request {
 	defaultHeader := make(http.Header)
 	defaultHeader.Set("Content-Type", "application/json")
-	request := &Request{header: defaultHeader, contentType: "application/json", requestBody: []byte(json)}
+	request := &Request{header: defaultHeader, contentType: "application/json", requestBody: []byte(json), timeout: 5}
 	return request
 }
 

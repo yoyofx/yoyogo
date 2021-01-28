@@ -43,17 +43,19 @@ func (c *Request) Header(key, value string) *Request {
 	return c
 }
 
-func (c *Request) POST() *Request {
+func (c *Request) POST(url string) *Request {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.method = "POST"
+	c.url = url
 	return c
 }
 
-func (c *Request) GET() *Request {
+func (c *Request) GET(url string) *Request {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
-	c.method = "POST"
+	c.method = "GET"
+	c.url = url
 	return c
 }
 
