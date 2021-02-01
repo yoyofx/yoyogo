@@ -3,16 +3,13 @@ package mysql
 import (
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/dependencyinjection"
-	//_ "gorm.io/gorm"
 )
 
 func init() {
 	abstractions.RegisterConfigurationProcessor(
 		func(config abstractions.IConfiguration, serviceCollection *dependencyinjection.ServiceCollection) {
-			serviceCollection.AddSingletonByImplementsAndName("db1", NewMysqlDataSource, new(abstractions.IDataSource))
+			serviceCollection.AddSingletonByImplementsAndName("mysql-master", NewMysqlDataSource, new(abstractions.IDataSource))
+			serviceCollection.AddTransient(NewGormDb)
 		})
 
-	//gormDB, err := gorm.Open(mysql.New(mysql.Config{
-	//	Conn: sqlDB,
-	//}), &gorm.Config{})
 }
