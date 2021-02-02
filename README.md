@@ -2,7 +2,7 @@
 
 YoyoGo 简单、轻量、快速、基于依赖注入的微服务框架
 
-* 文档： https://github.com/yoyofx/yoyogo/wiki
+* 文档： https://yoyofxteam.github.io/docs/
 
 ![Release](https://img.shields.io/github/v/tag/yoyofx/yoyogo.svg?color=24B898&label=release&logo=github&sort=semver)
 ![Go](https://github.com/yoyofx/yoyogo/workflows/Go/badge.svg)
@@ -123,7 +123,7 @@ func main() {
 
 ## 扩展
 * [X] 配置
-* [ ] WebSocket
+* [X] WebSocket
 * [X] JWT 
 * [ ] swagger
 * [ ] GRpc	 
@@ -158,7 +158,7 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 			app.UseStaticAssets()
 			app.UseEndpoints(registerEndpointRouterConfig)
 			app.UseMvc(func(builder *mvc.ControllerBuilder) {
-				//builder.AddViews(&view.Option{Path: "./Static/templates"})
+				//builder.AddViews(&view.Option{Path: "./static/templates"})
 				builder.AddViewsByConfig()
 				builder.AddController(contollers.NewUserController)
 				builder.AddFilter("/v1/user/info", &contollers.TestActionFilter{})
@@ -166,9 +166,6 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 		}).
 		ConfigureServices(func(serviceCollection *dependencyinjection.ServiceCollection) {
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
-			serviceCollection.AddSingletonByImplementsAndName("db1", datasources.NewMysqlDataSource, new(abstractions.IDataSource))
-			serviceCollection.AddSingletonByImplementsAndName("redis1", datasources.NewRedis, new(abstractions.IDataSource))
-
 			//eureka.UseServiceDiscovery(serviceCollection)
 			//consul.UseServiceDiscovery(serviceCollection)
 			nacos.UseServiceDiscovery(serviceCollection)

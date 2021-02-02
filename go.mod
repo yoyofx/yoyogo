@@ -36,4 +36,6 @@ require (
 	gopkg.in/gcfg.v1 v1.2.3 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v2 v2.3.0
+	gorm.io/driver/mysql v1.0.4
+	gorm.io/gorm v1.20.12
 )

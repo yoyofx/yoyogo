@@ -12,7 +12,7 @@ import (
 //import (
 //	"fmt"
 //	"github.com/stretchr/testify/assert"
-//	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/contollers"
+//	"github.com/yoyofx/yoyogo/examples/simpleweb/contollers"
 //	"github.com/yoyofx/yoyogo/utils"
 //	"github.com/yoyofx/yoyogo/utils/Reflect"
 //	"github.com/yoyofx/yoyogo/web/context"
