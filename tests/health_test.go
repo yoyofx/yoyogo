@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"github.com/stretchr/testify/assert"
 	abshealth "github.com/yoyofx/yoyogo/abstractions/health"
-	"github.com/yoyofx/yoyogo/pkg/health"
-
 	"testing"
 )
 
@@ -25,7 +23,7 @@ func (u upHealth) Health() abshealth.ComponentStatus {
 
 func TestHealth(t *testing.T) {
 	var indicatorList []abshealth.Indicator
-	indicatorList = append(indicatorList, downHealth{}, upHealth{}, health.DiskHealthIndicator{})
+	indicatorList = append(indicatorList, downHealth{}, upHealth{}, abshealth.NewDiskHealthIndicator())
 	builder := abshealth.NewHealthIndicator(indicatorList)
 	m := builder.Build()
 	bytes, _ := json.Marshal(m)
