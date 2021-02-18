@@ -184,6 +184,6 @@ func (registrar *Registrar) Destroy() error {
 	return err
 }
 
-func (registrar *Registrar) Watch(opts ...servicediscovery.WatchOptions) (servicediscovery.Watcher, error) {
-	return nil, nil
+func (registrar *Registrar) Watch(opts ...servicediscovery.WatchOption) (servicediscovery.Watcher, error) {
+	return NewWatcher(registrar, opts...)
 }

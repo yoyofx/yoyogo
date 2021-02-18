@@ -8,5 +8,5 @@ type IServiceDiscovery interface {
 	GetHealthyInstances(serviceName string) []ServiceInstance
 	GetAllInstances(serviceName string) []ServiceInstance
 	Destroy() error
-	Watch(opts ...WatchOptions) (Watcher, error)
+	Watch(opts ...WatchOption) (Watcher, error)
 }

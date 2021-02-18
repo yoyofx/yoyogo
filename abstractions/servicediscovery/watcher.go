@@ -11,6 +11,8 @@ type Watcher interface {
 	Stop()
 }
 
+type WatchOption func(*WatchOptions)
+
 type Result struct {
 	Action  string
 	Service *Service

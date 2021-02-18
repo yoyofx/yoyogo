@@ -54,6 +54,6 @@ func (registrar *Registrar) Destroy() error {
 	panic("implement me")
 }
 
-func (registrar *Registrar) Watch(opts ...servicediscovery.WatchOptions) (servicediscovery.Watcher, error) {
+func (registrar *Registrar) Watch(opts ...servicediscovery.WatchOption) (servicediscovery.Watcher, error) {
 	return nil, nil
 }

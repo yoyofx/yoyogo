@@ -124,6 +124,6 @@ func (registrar *Registrar) GetName() string {
 	return "consul"
 }
 
-func (registrar *Registrar) Watch(opts ...servicediscovery.WatchOptions) (servicediscovery.Watcher, error) {
+func (registrar *Registrar) Watch(opts ...servicediscovery.WatchOption) (servicediscovery.Watcher, error) {
 	return nil, nil
 }
