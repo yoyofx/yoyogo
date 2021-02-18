@@ -2,7 +2,7 @@
 
 YoyoGo 简单、轻量、快速、基于依赖注入的微服务框架
 
-* 文档： https://github.com/yoyofx/yoyogo/wiki
+* 文档： https://yoyofxteam.github.io/docs/
 
 ![Release](https://img.shields.io/github/v/tag/yoyofx/yoyogo.svg?color=24B898&label=release&logo=github&sort=semver)
 ![Go](https://github.com/yoyofx/yoyogo/workflows/Go/badge.svg)

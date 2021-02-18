@@ -114,3 +114,7 @@ func (registrar *Registrar) GetAllInstances(serviceName string) []servicediscove
 func (registrar *Registrar) Destroy() error {
 	return registrar.Unregister()
 }
+
+func (registrar *Registrar) Watch(opts ...servicediscovery.WatchOptions) (servicediscovery.Watcher, error) {
+	return nil, nil
+}
