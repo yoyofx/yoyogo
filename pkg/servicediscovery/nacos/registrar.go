@@ -81,81 +81,81 @@ func NewServerDiscovery(option Config) servicediscovery.IServiceDiscovery {
 	return nacosRegister
 }
 
-func (register Registrar) GetName() string {
+func (registrar Registrar) GetName() string {
 	return "nacos"
 }
 
-func (register *Registrar) Register() error {
-	register.cacheLocalInstance = sd.CreateServiceInstance(register.config.ENV)
-	success, err := register.client.RegisterInstance(vo.RegisterInstanceParam{
-		Ip:          register.cacheLocalInstance.GetHost(),
-		Port:        register.cacheLocalInstance.GetPort(),
-		ServiceName: register.cacheLocalInstance.GetServiceName(),
+func (registrar *Registrar) Register() error {
+	registrar.cacheLocalInstance = sd.CreateServiceInstance(registrar.config.ENV)
+	success, err := registrar.client.RegisterInstance(vo.RegisterInstanceParam{
+		Ip:          registrar.cacheLocalInstance.GetHost(),
+		Port:        registrar.cacheLocalInstance.GetPort(),
+		ServiceName: registrar.cacheLocalInstance.GetServiceName(),
 		Weight:      10,
-		ClusterName: register.config.ClusterName,
-		GroupName:   register.config.GroupName,
+		ClusterName: registrar.config.ClusterName,
+		GroupName:   registrar.config.GroupName,
 		Enable:      true,
 		Healthy:     true,
 		Ephemeral:   true,
 		Metadata: map[string]string{
-			"VERSION": register.config.ENV.Version,
+			"VERSION": registrar.config.ENV.Version,
 		},
 	})
 	if err != nil {
-		register.logger.Error(err.Error())
+		registrar.logger.Error(err.Error())
 	}
-	register.logger.Debug("Registrar IP: %s , Success: %v", register.config.ENV.Host, success)
+	registrar.logger.Debug("Registrar IP: %s , Success: %v", registrar.config.ENV.Host, success)
 	return err
 }
 
-func (register Registrar) Update() error {
+func (registrar *Registrar) Update() error {
 
 	return nil
 }
 
-func (register Registrar) Unregister() error {
-	if register.cacheLocalInstance == nil {
+func (registrar *Registrar) Unregister() error {
+	if registrar.cacheLocalInstance == nil {
 		return nil
 	}
-	_, err := register.client.DeregisterInstance(vo.DeregisterInstanceParam{
-		Ip:          register.cacheLocalInstance.GetHost(),
-		Port:        register.cacheLocalInstance.GetPort(),
-		Cluster:     register.cacheLocalInstance.GetClusterName(),
-		ServiceName: register.cacheLocalInstance.GetServiceName(),
-		GroupName:   register.cacheLocalInstance.GetGroupName(),
+	_, err := registrar.client.DeregisterInstance(vo.DeregisterInstanceParam{
+		Ip:          registrar.cacheLocalInstance.GetHost(),
+		Port:        registrar.cacheLocalInstance.GetPort(),
+		Cluster:     registrar.cacheLocalInstance.GetClusterName(),
+		ServiceName: registrar.cacheLocalInstance.GetServiceName(),
+		GroupName:   registrar.cacheLocalInstance.GetGroupName(),
 		Ephemeral:   true,
 	})
 	if err != nil {
-		register.logger.Error(err.Error())
+		registrar.logger.Error(err.Error())
 	}
 	return err
 }
 
-func (register Registrar) GetHealthyInstances(serviceName string) []servicediscovery.ServiceInstance {
+func (registrar *Registrar) GetHealthyInstances(serviceName string) []servicediscovery.ServiceInstance {
 	// SelectInstances only return the instances of healthy=${HealthyOnly},enable=true and weight>0
-	instances, err := register.client.SelectInstances(vo.SelectInstancesParam{
+	instances, err := registrar.client.SelectInstances(vo.SelectInstancesParam{
 		ServiceName: serviceName,
-		GroupName:   register.config.GroupName,             // default value is DEFAULT_GROUP
-		Clusters:    []string{register.config.ClusterName}, // default value is DEFAULT
+		GroupName:   registrar.config.GroupName,             // default value is DEFAULT_GROUP
+		Clusters:    []string{registrar.config.ClusterName}, // default value is DEFAULT
 		HealthyOnly: true,
 	})
 	if err != nil {
 		return nil
 	}
-	return convInstance(register.config.GroupName, instances)
+	return convInstance(registrar.config.GroupName, instances)
 }
 
-func (register Registrar) GetAllInstances(serviceName string) []servicediscovery.ServiceInstance {
-	instances, err := register.client.SelectAllInstances(vo.SelectAllInstancesParam{
+func (registrar *Registrar) GetAllInstances(serviceName string) []servicediscovery.ServiceInstance {
+	instances, err := registrar.client.SelectAllInstances(vo.SelectAllInstancesParam{
 		ServiceName: serviceName,
-		GroupName:   register.config.GroupName,             // default value is DEFAULT_GROUP
-		Clusters:    []string{register.config.ClusterName}, // default value is DEFAULT
+		GroupName:   registrar.config.GroupName,             // default value is DEFAULT_GROUP
+		Clusters:    []string{registrar.config.ClusterName}, // default value is DEFAULT
 	})
 
 	if err != nil {
 		return nil
 	}
-	return convInstance(register.config.GroupName, instances)
+	return convInstance(registrar.config.GroupName, instances)
 }
 
 func convInstance(groupName string, sourceInstances []model.Instance) []servicediscovery.ServiceInstance {
@@ -178,8 +178,12 @@ func convInstance(groupName string, sourceInstances []model.Instance) []serviced
 	return serviceList
 }
 
-func (register Registrar) Destroy() error {
-	register.logger.Debug("Destroy")
-	err := register.Unregister()
+func (registrar *Registrar) Destroy() error {
+	registrar.logger.Debug("Destroy")
+	err := registrar.Unregister()
 	return err
+}
+
+func (registrar *Registrar) Watch(opts ...servicediscovery.WatchOptions) (servicediscovery.Watcher, error) {
+	return nil, nil
 }
