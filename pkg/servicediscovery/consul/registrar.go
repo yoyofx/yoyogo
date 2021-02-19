@@ -125,5 +125,5 @@ func (registrar *Registrar) GetName() string {
 }
 
 func (registrar *Registrar) Watch(opts ...servicediscovery.WatchOption) (servicediscovery.Watcher, error) {
-	return nil, nil
+	return newWatcher(registrar.client.consul, opts...)
 }
