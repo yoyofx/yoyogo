@@ -23,7 +23,7 @@ type Watcher struct {
 	logger         xlog.ILogger
 }
 
-func NewWatcher(registrar *Registrar, opts ...servicediscovery.WatchOption) (servicediscovery.Watcher, error) {
+func newWatcher(client naming_client.INamingClient, log xlog.ILogger, opts ...servicediscovery.WatchOption) (servicediscovery.Watcher, error) {
 	var wo servicediscovery.WatchOptions
 	for _, o := range opts {
 		o(&wo)
@@ -31,8 +31,8 @@ func NewWatcher(registrar *Registrar, opts ...servicediscovery.WatchOption) (ser
 
 	w := &Watcher{
 		serviceName:  wo.Service,
-		namingClient: registrar.client,
-		logger:       registrar.logger,
+		namingClient: client,
+		logger:       log,
 		done:         make(chan bool),
 		results:      make(chan *servicediscovery.Result),
 		instanceMap:  map[string]model.Instance{},

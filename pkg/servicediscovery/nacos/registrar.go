@@ -185,5 +185,5 @@ func (registrar *Registrar) Destroy() error {
 }
 
 func (registrar *Registrar) Watch(opts ...servicediscovery.WatchOption) (servicediscovery.Watcher, error) {
-	return NewWatcher(registrar, opts...)
+	return newWatcher(registrar.client, registrar.logger, opts...)
 }
