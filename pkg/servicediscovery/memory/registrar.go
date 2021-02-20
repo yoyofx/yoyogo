@@ -55,5 +55,9 @@ func (registrar *Registrar) Destroy() error {
 }
 
 func (registrar *Registrar) Watch(opts ...servicediscovery.WatchOption) (servicediscovery.Watcher, error) {
+	return NewWatcher(), nil
+}
+
+func (registrar *Registrar) GetAllServices() ([]*servicediscovery.Service, error) {
 	return nil, nil
 }

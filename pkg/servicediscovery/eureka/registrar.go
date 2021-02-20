@@ -118,3 +118,12 @@ func (registrar *Registrar) Destroy() error {
 func (registrar *Registrar) Watch(opts ...servicediscovery.WatchOption) (servicediscovery.Watcher, error) {
 	return newWatcher(registrar.eurekaConnection, registrar.logger, opts...)
 }
+
+func (registrar *Registrar) GetAllServices() ([]*servicediscovery.Service, error) {
+	apps, err := registrar.eurekaConnection.GetApps()
+	services := make([]*servicediscovery.Service, 0)
+	for _, app := range apps {
+		services = append(services, &servicediscovery.Service{Name: app.Name})
+	}
+	return services, err
+}

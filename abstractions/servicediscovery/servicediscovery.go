@@ -9,4 +9,5 @@ type IServiceDiscovery interface {
 	GetAllInstances(serviceName string) []ServiceInstance
 	Destroy() error
 	Watch(opts ...WatchOption) (Watcher, error)
+	GetAllServices() ([]*Service, error)
 }

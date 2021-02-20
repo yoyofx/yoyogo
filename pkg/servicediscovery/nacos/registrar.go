@@ -187,3 +187,18 @@ func (registrar *Registrar) Destroy() error {
 func (registrar *Registrar) Watch(opts ...servicediscovery.WatchOption) (servicediscovery.Watcher, error) {
 	return newWatcher(registrar.client, registrar.logger, opts...)
 }
+
+func (registrar *Registrar) GetAllServices() ([]*servicediscovery.Service, error) {
+	serviceList, _ := registrar.client.GetAllServicesInfo(vo.GetAllServiceInfoParam{
+		NameSpace: registrar.config.NamespaceId,
+		GroupName: registrar.config.GroupName,
+		PageNo:    1,
+		PageSize:  1000,
+	})
+
+	services := make([]*servicediscovery.Service, 0)
+	for _, serviceName := range serviceList.Doms {
+		services = append(services, &servicediscovery.Service{Name: serviceName})
+	}
+	return services, nil
+}

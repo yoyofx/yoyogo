@@ -43,3 +43,12 @@ func (c *Client) Deregister(r *consul.AgentServiceRegistration) error {
 func (c *Client) GetService(service, tag string, passingOnly bool, queryOpts *consul.QueryOptions) ([]*consul.ServiceEntry, *consul.QueryMeta, error) {
 	return c.consul.Health().Service(service, tag, passingOnly, queryOpts)
 }
+
+func (c *Client) GetServices(queryOpts *consul.QueryOptions) []string {
+	sMap, _, _ := c.consul.Catalog().Services(queryOpts)
+	services := make([]string, 0, len(sMap))
+	for s, _ := range sMap {
+		services = append(services, s)
+	}
+	return services
+}

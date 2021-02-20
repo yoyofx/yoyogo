@@ -127,3 +127,12 @@ func (registrar *Registrar) GetName() string {
 func (registrar *Registrar) Watch(opts ...servicediscovery.WatchOption) (servicediscovery.Watcher, error) {
 	return newWatcher(registrar.client.consul, opts...)
 }
+
+func (registrar *Registrar) GetAllServices() ([]*servicediscovery.Service, error) {
+	serviceNames := registrar.client.GetServices(&consul.QueryOptions{})
+	services := make([]*servicediscovery.Service, 0)
+	for _, serviceName := range serviceNames {
+		services = append(services, &servicediscovery.Service{Name: serviceName})
+	}
+	return services, nil
+}
