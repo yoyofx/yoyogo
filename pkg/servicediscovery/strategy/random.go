@@ -1,4 +1,4 @@
-package loadbalancing
+package strategy
 
 import (
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
@@ -11,7 +11,7 @@ type random struct {
 }
 
 // NewRandom returns a load balancer that selects services randomly.
-func NewRandom(sd servicediscovery.IServiceDiscovery, seed int64) servicediscovery.Balancer {
+func NewRandom(sd servicediscovery.IServiceDiscovery, seed int64) servicediscovery.Strategy {
 	return &random{
 		s: sd,
 		r: rand.New(rand.NewSource(seed)),

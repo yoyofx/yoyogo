@@ -22,10 +22,21 @@ func (c *Client) GetAllServices() ([]*servicediscovery.Service, error) {
 	return serviceList, nil
 }
 
-func (c *Client) GetAllServiceNames() ([]*servicediscovery.Service, error) {
-	return c.discoveryClient.GetAllServices()
+func (c *Client) GetAllServiceNames() ([]string, error) {
+	names := make([]string, 0)
+	serviceList, _ := c.discoveryClient.GetAllServices()
+	for _, service := range serviceList {
+		names = append(names, service.Name)
+	}
+	return names, nil
 }
 
 func (c *Client) Watch(opts ...servicediscovery.WatchOption) (servicediscovery.Watcher, error) {
 	return c.discoveryClient.Watch(opts...)
+}
+
+func (c *Client) GetService(serviceName string) (*servicediscovery.Service, error) {
+	service := &servicediscovery.Service{Name: serviceName}
+	service.Nodes = c.discoveryClient.GetAllInstances(serviceName)
+	return service, nil
 }
