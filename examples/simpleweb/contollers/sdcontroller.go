@@ -8,10 +8,10 @@ import (
 type SDController struct {
 	mvc.ApiController
 
-	discoveryClient servicediscovery.IServiceDiscovery
+	discoveryClient servicediscovery.IServiceDiscoveryClient
 }
 
-func NewSDController(sd servicediscovery.IServiceDiscovery) *SDController {
+func NewSDController(sd servicediscovery.IServiceDiscoveryClient) *SDController {
 	return &SDController{discoveryClient: sd}
 }
 
@@ -22,8 +22,5 @@ func (controller SDController) GetSD() mvc.ApiResult {
 
 func (controller SDController) GetServices() mvc.ApiResult {
 	serviceList, _ := controller.discoveryClient.GetAllServices()
-	for _, service := range serviceList {
-		service.Nodes = controller.discoveryClient.GetAllInstances(service.Name)
-	}
 	return controller.OK(serviceList)
 }
