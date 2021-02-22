@@ -20,6 +20,7 @@ type fargoConnection interface {
 	HeartBeatInstance(instance *fargo.Instance) error
 	ScheduleAppUpdates(name string, await bool, done <-chan struct{}) <-chan fargo.AppUpdate
 	GetApp(name string) (*fargo.Application, error)
+	GetApps() (map[string]*fargo.Application, error)
 }
 
 type fargoUnsuccessfulHTTPResponse struct {

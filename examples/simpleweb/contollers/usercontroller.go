@@ -26,7 +26,6 @@ type RegisterRequest struct {
 }
 
 func (controller UserController) Register(ctx *context.HttpContext, request *RegisterRequest) mvc.ApiResult {
-
 	return mvc.ApiResult{Success: true, Message: "ok", Data: request}
 }
 
@@ -37,7 +36,6 @@ func (controller UserController) GetUserName(ctx *context.HttpContext, request *
 }
 
 func (controller UserController) PostUserInfo(ctx *context.HttpContext, request *RegisterRequest) actionresult.IActionResult {
-
 	return actionresult.Json{Data: mvc.ApiResult{Success: true, Message: "ok", Data: context.H{
 		"user":    ctx.GetUser(),
 		"request": request,

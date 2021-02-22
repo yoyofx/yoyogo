@@ -85,7 +85,7 @@ func (registrar *Registrar) Unregister() error {
 }
 
 func (registrar *Registrar) GetHealthyInstances(serviceName string) []servicediscovery.ServiceInstance {
-	panic("implement me")
+	return registrar.GetAllInstances(serviceName)
 }
 
 func (registrar *Registrar) GetAllInstances(serviceName string) []servicediscovery.ServiceInstance {
@@ -115,6 +115,15 @@ func (registrar *Registrar) Destroy() error {
 	return registrar.Unregister()
 }
 
-func (registrar *Registrar) Watch(opts ...servicediscovery.WatchOptions) (servicediscovery.Watcher, error) {
-	return nil, nil
+func (registrar *Registrar) Watch(opts ...servicediscovery.WatchOption) (servicediscovery.Watcher, error) {
+	return newWatcher(registrar.eurekaConnection, registrar.logger, opts...)
+}
+
+func (registrar *Registrar) GetAllServices() ([]*servicediscovery.Service, error) {
+	apps, err := registrar.eurekaConnection.GetApps()
+	services := make([]*servicediscovery.Service, 0)
+	for _, app := range apps {
+		services = append(services, &servicediscovery.Service{Name: app.Name})
+	}
+	return services, err
 }

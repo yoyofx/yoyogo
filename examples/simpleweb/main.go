@@ -63,6 +63,7 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 				builder.AddController(contollers.NewUserController)
 				builder.AddController(contollers.NewHubController)
 				builder.AddController(contollers.NewDbController)
+				builder.AddController(contollers.NewSDController)
 				builder.AddFilter("/v1/user/info", &contollers.TestActionFilter{})
 			})
 		}).
