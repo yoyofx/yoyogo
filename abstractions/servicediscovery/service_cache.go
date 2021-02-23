@@ -75,7 +75,5 @@ func (cache *ServiceCache) GetService(serviceName string) ([]ServiceInstance, er
 	return services, nil
 }
 
-func ()  {
-	
-}
+
 
