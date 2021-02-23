@@ -6,6 +6,7 @@ require (
 	github.com/SkyAPM/go2sky v0.6.0
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/clbanning/x2j v0.0.0-20191024224557-825249438eec // indirect
+	github.com/coreos/etcd v3.3.13+incompatible
 	github.com/defval/inject/v2 v2.2.2
 	github.com/fasthttp/websocket v1.4.1
 	github.com/fogleman/gg v1.3.0
@@ -33,6 +34,7 @@ require (
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	golang.org/x/image v0.0.0-20190802002840-cff245a6509b
 	golang.org/x/net v0.0.0-20201202161906-c7110b5ffcbb
+	golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f
 	gopkg.in/gcfg.v1 v1.2.3 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v2 v2.3.0
