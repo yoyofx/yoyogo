@@ -12,6 +12,7 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	sd "github.com/yoyofx/yoyogo/pkg/servicediscovery"
+	"strings"
 )
 
 type Registrar struct {
@@ -46,14 +47,22 @@ func NewServerDiscoveryWithDI(configuration abstractions.IConfiguration, env *ab
 func NewServerDiscovery(option Config) servicediscovery.IServiceDiscovery {
 	logger := xlog.GetXLogger("Server Discovery nacos")
 	nacosRegister := &Registrar{}
-
-	serverConfigs := []constant.ServerConfig{
-		{
-			IpAddr:      option.Url,
+	var serverConfigs []constant.ServerConfig
+	urls := strings.Split(option.Url, ";")
+	for _, url := range urls {
+		serverConfigs = append(serverConfigs, constant.ServerConfig{
 			ContextPath: "/nacos",
+			IpAddr:      url,
 			Port:        option.Port,
-		},
+		})
 	}
+	//serverConfigs = []constant.ServerConfig{
+	//	{
+	//		IpAddr:      option.Url,
+	//		ContextPath: "/nacos",
+	//		Port:        option.Port,
+	//	},
+	//}
 
 	clientConfig := constant.ClientConfig{
 		NamespaceId:         option.NamespaceId,

@@ -8,6 +8,7 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	sd "github.com/yoyofx/yoyogo/pkg/servicediscovery"
+	"strings"
 )
 
 type Option struct {
@@ -41,7 +42,7 @@ func NewServerDiscovery(option Option) servicediscovery.IServiceDiscovery {
 	logger := xlog.GetXLogger("Server Discovery eureka")
 	eurekaRegister := &Registrar{}
 	var fargoConfig fargo.Config
-	fargoConfig.Eureka.ServiceUrls = []string{option.Address}
+	fargoConfig.Eureka.ServiceUrls = strings.Split(option.Address, ";")
 	// 订阅服务器应轮询更新的频率。
 	fargoConfig.Eureka.PollIntervalSeconds = 30
 	fargoConnection := fargo.NewConnFromConfig(fargoConfig)

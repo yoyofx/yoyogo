@@ -56,6 +56,11 @@ yoyogo:
 #      type: "eureka"
 #      metadata:
 #        address: "http://localhost:5000/eureka"
+#      type: "etcd"
+#      metadata:
+#        address: "127.0.0.1:2379"
+#        namespace: "public"
+#        ttl: 15
   datasource:
       pool:
         init_cap: 2
