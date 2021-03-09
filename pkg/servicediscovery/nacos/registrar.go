@@ -2,7 +2,6 @@ package nacos
 
 import (
 	"errors"
-	"github.com/google/uuid"
 	"github.com/nacos-group/nacos-sdk-go/clients"
 	"github.com/nacos-group/nacos-sdk-go/clients/naming_client"
 	"github.com/nacos-group/nacos-sdk-go/common/constant"
@@ -171,7 +170,7 @@ func convInstance(groupName string, sourceInstances []model.Instance) []serviced
 	var serviceList []servicediscovery.ServiceInstance
 	for _, s := range sourceInstances {
 		instance := &servicediscovery.DefaultServiceInstance{
-			Id:          uuid.New().String(),
+			Id:          s.InstanceId,
 			ServiceName: s.ServiceName,
 			Host:        s.Ip,
 			Port:        s.Port,

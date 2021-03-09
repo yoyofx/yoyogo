@@ -3,6 +3,7 @@ package servicediscovery
 import (
 	"errors"
 	"github.com/nacos-group/nacos-sdk-go/common/logger"
+	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"math"
 	"math/rand"
 	"sync"
@@ -10,11 +11,11 @@ import (
 )
 
 var (
-	DefaultTTL = time.Minute
+	DefaultTTL = 5 * time.Minute
 )
 
 type Cache interface {
-	GetService(serviceName string) ([]*Service, error)
+	GetService(serviceName string) (*Service, error)
 	// stop the cache of watcher
 	Stop()
 }
@@ -25,7 +26,7 @@ type Options struct {
 }
 type Option func(o *Options)
 
-func New(r IServiceDiscoveryClient, opts ...Option) Cache {
+func NewCache(r IServiceDiscoveryClient, opts ...Option) Cache {
 	rand.Seed(time.Now().UnixNano())
 	options := Options{
 		TTL: DefaultTTL,
@@ -42,6 +43,7 @@ func New(r IServiceDiscoveryClient, opts ...Option) Cache {
 		cache:           make(map[string][]*Service),
 		ttls:            make(map[string]time.Time),
 		exit:            make(chan bool),
+		log:             xlog.GetXLogger("servicediscovery.cache"),
 	}
 }
 
@@ -57,6 +59,7 @@ type cache struct {
 	exit    chan bool
 	running bool
 	status  error
+	log     xlog.ILogger
 }
 
 func backoff(attempts int) time.Duration {
@@ -66,7 +69,7 @@ func backoff(attempts int) time.Duration {
 	return time.Duration(math.Pow(10, float64(attempts))) * time.Millisecond
 }
 
-func (c *cache) GetService(serviceName string) ([]*Service, error) {
+func (c *cache) GetService(serviceName string) (*Service, error) {
 	// get the service
 	services, err := c.get(serviceName)
 	if err != nil {
@@ -79,7 +82,7 @@ func (c *cache) GetService(serviceName string) ([]*Service, error) {
 	}
 
 	// return services
-	return services, nil
+	return services[0], nil
 }
 
 func (c *cache) Stop() {
@@ -160,11 +163,12 @@ func (c *cache) get(service string) ([]*Service, error) {
 	cp := Copy(services)
 
 	if c.isValid(cp, ttl) {
+		c.log.Debug("get by service with cache: %s", service)
 		c.RUnlock()
 		// return services
 		return cp, nil
 	}
-
+	c.log.Debug("get by service without cache: %s", service)
 	get := func(service string, cached []*Service) ([]*Service, error) {
 		val, err := c.discoveryClient.GetService(service)
 		services := []*Service{val}
@@ -204,7 +208,7 @@ func (c *cache) get(service string) ([]*Service, error) {
 
 		// only kick it off if not running
 		if !c.running {
-			go c.run()
+			go c.run(service)
 		}
 
 		c.Unlock()
@@ -214,7 +218,7 @@ func (c *cache) get(service string) ([]*Service, error) {
 	return get(service, cp)
 }
 
-func (c *cache) run() {
+func (c *cache) run(serviceName string) {
 	c.Lock()
 	c.running = true
 	c.Unlock()
@@ -238,7 +242,9 @@ func (c *cache) run() {
 		time.Sleep(time.Duration(j) * time.Millisecond)
 
 		// create new watcher
-		w, err := c.discoveryClient.Watch()
+		w, err := c.discoveryClient.Watch(func(options *WatchOptions) {
+			options.Service = serviceName
+		})
 		if err != nil {
 			if c.quit() {
 				return

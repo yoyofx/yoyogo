@@ -48,9 +48,12 @@ func (w *Watcher) Next() (*servicediscovery.Result, error) {
 		case <-w.done:
 			w.logger.Warning("nacos listener is close!")
 			return nil, errors.New("listener stopped")
-
 		case e := <-w.results:
-			w.logger.Debug("got nacos event %s", e)
+			id := e.Service.Name
+			if len(e.Service.Nodes) > 0 {
+				id = e.Service.Nodes[0].GetId()
+			}
+			w.logger.Debug("got nacos %s event by servicename: %s", e.Action, id)
 			return e, nil
 		}
 	}
