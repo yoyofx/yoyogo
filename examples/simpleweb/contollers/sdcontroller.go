@@ -11,8 +11,8 @@ type SDController struct {
 	discoveryClient servicediscovery.IServiceDiscoveryClient
 }
 
-func NewSDController(sd servicediscovery.IServiceDiscoveryClient) *SDController {
-	return &SDController{discoveryClient: sd, discoveryCache: servicediscovery.NewCache(sd)}
+func NewSDController(sd servicediscovery.IServiceDiscoveryClient, cache servicediscovery.Cache) *SDController {
+	return &SDController{discoveryClient: sd, discoveryCache: cache}
 }
 
 func (controller SDController) GetSD() mvc.ApiResult {

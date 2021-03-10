@@ -20,21 +20,21 @@ type Cache interface {
 	Stop()
 }
 
-type Options struct {
+type CacheOptions struct {
 	// TTL is the cache TTL
 	TTL time.Duration
 }
-type Option func(o *Options)
+type Option func(o *CacheOptions)
 
-func NewCache(r IServiceDiscoveryClient, opts ...Option) Cache {
+func NewCache(r IServiceDiscoveryClient) Cache {
 	rand.Seed(time.Now().UnixNano())
-	options := Options{
+	options := CacheOptions{
 		TTL: DefaultTTL,
 	}
 
-	for _, o := range opts {
-		o(&options)
-	}
+	//for _, o := range opts {
+	//	o(&options)
+	//}
 
 	return &cache{
 		discoveryClient: r,
@@ -49,7 +49,7 @@ func NewCache(r IServiceDiscoveryClient, opts ...Option) Cache {
 
 type cache struct {
 	discoveryClient IServiceDiscoveryClient
-	opts            Options
+	opts            CacheOptions
 	// registry cache
 	sync.RWMutex
 	cache   map[string][]*Service
@@ -86,6 +86,7 @@ func (c *cache) GetService(serviceName string) (*Service, error) {
 }
 
 func (c *cache) Stop() {
+	c.log.Debug("cache stopped!")
 	c.Lock()
 	defer c.Unlock()
 

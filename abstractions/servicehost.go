@@ -36,8 +36,13 @@ func startServerDiscovery(log xlog.ILogger, context *HostBuilderContext) {
 
 func endServerDiscovery(log xlog.ILogger, context *HostBuilderContext) {
 	var sd servicediscovery.IServiceDiscovery
-	_ = context.HostServices.GetService(&sd)
-	if sd != nil {
+	var sdcache servicediscovery.Cache
+	err := context.HostServices.GetService(&sdcache)
+	if err == nil {
+		sdcache.Stop()
+	}
+	err = context.HostServices.GetService(&sd)
+	if err == nil {
 		_ = sd.Destroy()
 	}
 }
