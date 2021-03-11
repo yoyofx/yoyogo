@@ -152,7 +152,7 @@ func appToService(app *fargo.Application) []*servicediscovery.Service {
 			ServiceName: service.Name,
 			Host:        instance.IPAddr,
 			Port:        uint64(instance.Port),
-			ClusterName: "",
+			ClusterName: instance.DataCenterInfo.Name,
 			Enable:      true,
 			Weight:      10,
 			Healthy:     true,

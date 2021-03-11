@@ -2,7 +2,6 @@ package servicediscovery
 
 import (
 	"errors"
-	"github.com/nacos-group/nacos-sdk-go/common/logger"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"math"
 	"math/rand"
@@ -11,7 +10,8 @@ import (
 )
 
 var (
-	DefaultTTL = 5 * time.Minute
+	//DefaultTTL = 5 * time.Minute
+	DefaultTTL = 30 * time.Second
 )
 
 type Cache interface {
@@ -26,15 +26,15 @@ type CacheOptions struct {
 }
 type Option func(o *CacheOptions)
 
-func NewCache(r IServiceDiscoveryClient) Cache {
+func NewCache(r IServiceDiscoveryClient, options *CacheOptions) Cache {
 	rand.Seed(time.Now().UnixNano())
-	options := CacheOptions{
-		TTL: DefaultTTL,
-	}
-
-	//for _, o := range opts {
-	//	o(&options)
+	//options := CacheOptions{
+	//	TTL: DefaultTTL,
 	//}
+	//
+	////for _, o := range opts {
+	////	o(&options)
+	////}
 
 	return &cache{
 		discoveryClient: r,
@@ -49,7 +49,7 @@ func NewCache(r IServiceDiscoveryClient) Cache {
 
 type cache struct {
 	discoveryClient IServiceDiscoveryClient
-	opts            CacheOptions
+	opts            *CacheOptions
 	// registry cache
 	sync.RWMutex
 	cache   map[string][]*Service
@@ -255,7 +255,7 @@ func (c *cache) run(serviceName string) {
 			c.setStatus(err)
 
 			if a > 3 {
-				logger.Debug("rcache: ", err, " backing off ", d)
+				c.log.Debug("rcache: ", err, " backing off ", d)
 				a = 0
 			}
 
@@ -277,7 +277,7 @@ func (c *cache) run(serviceName string) {
 			c.setStatus(err)
 
 			if b > 3 {
-				logger.Debug("rcache: ", err, " backing off ", d)
+				c.log.Debug("rcache: ", err, " backing off ", d)
 				b = 0
 			}
 

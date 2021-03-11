@@ -8,7 +8,7 @@ import (
 	"github.com/yoyofx/yoyogo/dependencyinjection"
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/mysql"
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/redis"
-	"github.com/yoyofx/yoyogo/pkg/servicediscovery/nacos"
+	"github.com/yoyofx/yoyogo/pkg/servicediscovery/eureka"
 	web "github.com/yoyofx/yoyogo/web"
 	"github.com/yoyofx/yoyogo/web/actionresult/extension"
 	"github.com/yoyofx/yoyogo/web/context"
@@ -71,9 +71,9 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
 			serviceCollection.AddSingleton(hubs.NewHub) // add websocket hubs
 
-			//eureka.UseServiceDiscovery(serviceCollection)
+			eureka.UseServiceDiscovery(serviceCollection)
 			//consul.UseServiceDiscovery(serviceCollection)
-			nacos.UseServiceDiscovery(serviceCollection)
+			//nacos.UseServiceDiscovery(serviceCollection)
 			//etcd.UseServiceDiscovery(serviceCollection)
 			session.UseSession(serviceCollection, func(options *session.Options) {
 				options.AddSessionStoreFactory(store.NewRedis)

@@ -41,21 +41,25 @@ yoyogo:
       skyworking:
         address: localhost:11800
     discovery:
-      type: "nacos"
-      metadata:
-        url: "120.53.133.30"
-        port: 80
-        namespace: "public"
-        group_name: ""
+      cache:
+        ttl: 30     # seconds
+#      type: "nacos"
+#      metadata:
+#        url: "120.53.133.30"
+#        port: 80
+#        namespace: "public"
+#        group_name: ""
     #    clusters: [""]
 #      type: "consul"
 #      metadata:
 #        address: "localhost:8500"
 #        health_check: "/actuator/health"
 #        tags: [""]
-#      type: "eureka"
-#      metadata:
-#        address: "http://localhost:5000/eureka"
+      type: "eureka"
+      metadata:
+         datacenter: ""
+         address: "http://sd.yoyogo.run/eureka"
+         ttl: 30   # seconds
 #      type: "etcd"
 #      metadata:
 #        address: "127.0.0.1:2379"
