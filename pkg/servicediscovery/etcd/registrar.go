@@ -9,6 +9,7 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	sd "github.com/yoyofx/yoyogo/pkg/servicediscovery"
+	"github.com/yoyofx/yoyogo/utils"
 	"strconv"
 	"strings"
 	"time"
@@ -59,15 +60,22 @@ func (r *Registrar) GetName() string {
 	return "ETCD"
 }
 
+func nodePath(namespace string, serviceName string, nodeId string) string {
+	return fmt.Sprintf("/%s/%s#%s", namespace,
+		serviceName, nodeId)
+}
+
 func (r *Registrar) Register() error {
+	if r.config.Ttl < 5 {
+		panic("etcd ttl value must be bigger than 5")
+	}
 	r.cacheLocalInstance = sd.CreateServiceInstance(r.config.ENV)
 	if r.client != nil {
-		ticker := time.NewTicker(time.Second * time.Duration(r.config.Ttl))
+		ticker := time.NewTicker(time.Second * time.Duration(r.config.Ttl-1))
 		go func() {
 			for {
 				addr := fmt.Sprintf("%s:%v", r.cacheLocalInstance.GetHost(), r.cacheLocalInstance.GetPort())
-				r.servicePath = fmt.Sprintf("/%s/%s/%s", r.config.Namespace,
-					r.cacheLocalInstance.GetServiceName(), r.cacheLocalInstance.GetId())
+				r.servicePath = nodePath(r.config.Namespace, r.cacheLocalInstance.GetServiceName(), r.cacheLocalInstance.GetId())
 				getResp, err := r.client.Get(context.Background(), r.servicePath)
 				if err != nil {
 					r.logger.Error("Register:%s", err)
@@ -75,6 +83,8 @@ func (r *Registrar) Register() error {
 					err = withAlive(r.client, r.servicePath, addr, r.config.Ttl)
 					if err != nil {
 						r.logger.Error("keep alive:%s", err)
+					} else {
+						r.logger.Debug("ETCD Register: %s", r.servicePath)
 					}
 				}
 				<-ticker.C
@@ -112,6 +122,11 @@ func (r *Registrar) Update() error {
 func (r *Registrar) Unregister() error {
 	if r.client != nil {
 		_, err := r.client.Delete(context.Background(), r.servicePath)
+
+		if err == nil {
+			r.logger.Debug("ETCD UnRegister Succeeded: %s", r.servicePath)
+		}
+
 		return err
 	}
 	return nil
@@ -122,8 +137,11 @@ func (r *Registrar) GetHealthyInstances(serviceName string) []servicediscovery.S
 }
 
 func (r *Registrar) GetAllInstances(serviceName string) []servicediscovery.ServiceInstance {
+	if !strings.Contains(serviceName, r.config.Namespace) {
+		serviceName = fmt.Sprintf("/%s/%s", r.config.Namespace, serviceName)
+	}
 	var serviceList []servicediscovery.ServiceInstance
-	serviceRoot := fmt.Sprintf("/%s/%s", r.config.Namespace, serviceName)
+	serviceRoot := serviceName
 	getResp, err := r.client.Get(context.Background(), serviceRoot, clientv3.WithPrefix())
 	if err != nil {
 		r.logger.Error("etcd get path error:%s ", err)
@@ -142,6 +160,7 @@ func (r *Registrar) GetAllInstances(serviceName string) []servicediscovery.Servi
 				Enable:      true,
 				Weight:      0,
 				Healthy:     true,
+				ClusterName: r.config.Namespace,
 			}
 			serviceList = append(serviceList, instance)
 		}
@@ -154,46 +173,24 @@ func (r *Registrar) Destroy() error {
 }
 
 func (r *Registrar) Watch(opts ...servicediscovery.WatchOption) (servicediscovery.Watcher, error) {
-	panic("implement me")
-	//getResp, err := cli.Get(context.Background(), keyPrefix, clientv3.WithPrefix())
-	//if err != nil {
-	//	log.Println(err)
-	//} else {
-	//	for i := range getResp.Kvs {
-	//		addrList = append(addrList, resolver.Address{Addr: strings.TrimPrefix(string(getResp.Kvs[i].Key), keyPrefix)})
-	//	}
-	//}
-	//
-	//r.cc.NewAddress(addrList)
-	//
-	//rch := cli.Watch(context.Background(), keyPrefix, clientv3.WithPrefix())
-	//for n := range rch {
-	//	for _, ev := range n.Events {
-	//		addr := strings.TrimPrefix(string(ev.Kv.Key), keyPrefix)
-	//		switch ev.Type {
-	//		case mvccpb.PUT:
-	//			if !exist(addrList, addr) {
-	//				addrList = append(addrList, resolver.Address{Addr: addr})
-	//				r.cc.NewAddress(addrList)
-	//			}
-	//		case mvccpb.DELETE:
-	//			if s, ok := remove(addrList, addr); ok {
-	//				addrList = s
-	//				r.cc.NewAddress(addrList)
-	//			}
-	//		}
-	//		//log.Printf("%s %q : %q\n", ev.Type, ev.Kv.Key, ev.Kv.Value)
-	//	}
-	//}
+	return newWatcher(r.client, r.config.Namespace, opts...)
 }
 
 func (r *Registrar) GetAllServices() ([]*servicediscovery.Service, error) {
 	services := make([]*servicediscovery.Service, 0)
-	getResp, _ := r.client.Get(context.Background(), r.config.Namespace, clientv3.WithPrefix())
-
+	serviceRoot := fmt.Sprintf("/%s", r.config.Namespace)
+	getResp, _ := r.client.Get(context.Background(), serviceRoot, clientv3.WithPrefix(), clientv3.WithSerializable())
+	servicesMap := make(map[string]string)
 	for i := range getResp.Kvs {
 		serviceName := string(getResp.Kvs[i].Key)
-		services = append(services, &servicediscovery.Service{Name: serviceName})
+		slastIdx := strings.Index(serviceName, "#")
+		serviceName = utils.Substr(serviceName, 0, slastIdx)
+		_, ok := servicesMap[serviceName]
+		if !ok {
+			servicesMap[serviceName] = serviceName
+			services = append(services, &servicediscovery.Service{Name: serviceName})
+		}
+
 	}
 	return services, nil
 }
