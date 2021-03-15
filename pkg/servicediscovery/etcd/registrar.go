@@ -137,11 +137,11 @@ func (r *Registrar) GetHealthyInstances(serviceName string) []servicediscovery.S
 }
 
 func (r *Registrar) GetAllInstances(serviceName string) []servicediscovery.ServiceInstance {
+	serviceRoot := serviceName
 	if !strings.Contains(serviceName, r.config.Namespace) {
-		serviceName = fmt.Sprintf("/%s/%s", r.config.Namespace, serviceName)
+		serviceRoot = fmt.Sprintf("/%s/%s", r.config.Namespace, serviceName)
 	}
 	var serviceList []servicediscovery.ServiceInstance
-	serviceRoot := serviceName
 	getResp, err := r.client.Get(context.Background(), serviceRoot, clientv3.WithPrefix())
 	if err != nil {
 		r.logger.Error("etcd get path error:%s ", err)
@@ -181,10 +181,12 @@ func (r *Registrar) GetAllServices() ([]*servicediscovery.Service, error) {
 	serviceRoot := fmt.Sprintf("/%s", r.config.Namespace)
 	getResp, _ := r.client.Get(context.Background(), serviceRoot, clientv3.WithPrefix(), clientv3.WithSerializable())
 	servicesMap := make(map[string]string)
+	nslen := len(serviceRoot) + 1
 	for i := range getResp.Kvs {
 		serviceName := string(getResp.Kvs[i].Key)
 		slastIdx := strings.Index(serviceName, "#")
 		serviceName = utils.Substr(serviceName, 0, slastIdx)
+		serviceName = utils.Substr(serviceName, nslen, len(serviceName))
 		_, ok := servicesMap[serviceName]
 		if !ok {
 			servicesMap[serviceName] = serviceName

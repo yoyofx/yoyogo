@@ -6,17 +6,18 @@ import (
 	"fmt"
 	"github.com/coreos/etcd/clientv3"
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
-	"github.com/yoyofx/yoyogo/utils"
 	"strconv"
 	"strings"
 	"time"
 )
 
 type Watcher struct {
-	stop    chan bool
-	watcher clientv3.WatchChan
-	client  *clientv3.Client
-	timeout time.Duration
+	serviceName string
+	namespace   string
+	stop        chan bool
+	watcher     clientv3.WatchChan
+	client      *clientv3.Client
+	timeout     time.Duration
 }
 
 func newWatcher(client *clientv3.Client, namespace string, opts ...servicediscovery.WatchOption) (servicediscovery.Watcher, error) {
@@ -32,18 +33,22 @@ func newWatcher(client *clientv3.Client, namespace string, opts ...servicediscov
 		<-stop
 		cancel()
 	}()
+
 	if wo.Service == "" {
 		panic("service is not nil")
 	}
+	serviceName := wo.Service
 	if !strings.Contains(wo.Service, namespace) {
 		wo.Service = fmt.Sprintf("/%s/%s#", namespace, wo.Service)
 	}
 	watchPath := wo.Service
 	watcher := client.Watch(ctx, watchPath, clientv3.WithPrefix(), clientv3.WithPrevKV())
 	return &Watcher{
-		stop:    stop,
-		watcher: watcher,
-		client:  client,
+		serviceName: serviceName,
+		namespace:   namespace,
+		stop:        stop,
+		watcher:     watcher,
+		client:      client,
 	}, nil
 }
 
@@ -58,7 +63,7 @@ func (w *Watcher) Next() (*servicediscovery.Result, error) {
 		for _, ev := range eps.Events {
 			var action string
 
-			service := appToService(string(ev.Kv.Key), string(ev.Kv.Value))
+			service := appToService(w.namespace, w.serviceName, string(ev.Kv.Key), string(ev.Kv.Value))
 			switch ev.Type {
 			case clientv3.EventTypePut:
 				if ev.IsCreate() {
@@ -69,7 +74,7 @@ func (w *Watcher) Next() (*servicediscovery.Result, error) {
 			case clientv3.EventTypeDelete:
 				action = "delete"
 				// get service from prevKv
-				service = appToService(string(ev.PrevKv.Key), string(ev.PrevKv.Value))
+				service = appToService(w.namespace, w.serviceName, string(ev.PrevKv.Key), string(ev.PrevKv.Value))
 			}
 
 			if service == nil {
@@ -94,16 +99,16 @@ func (w *Watcher) Stop() {
 	}
 }
 
-func appToService(key string, value string) *servicediscovery.Service {
-	serviceNameEndIndex := strings.LastIndex(key, "#")
-	serviceName := utils.Substr(key, 0, serviceNameEndIndex)
+func appToService(namespace string, serviceName string, key string, value string) *servicediscovery.Service {
+	//serviceNameEndIndex := strings.LastIndex(key, "#")
+	//serviceName := utils.Substr(key, 0, serviceNameEndIndex)
 
 	service := &servicediscovery.Service{
 		Name: serviceName,
 	}
 	var ip string
 	var port int
-	names := strings.Split(serviceName, "/")
+	//names := strings.Split(serviceName, "/")
 	if value != "" {
 		serviceAddr := value
 		address := strings.Split(serviceAddr, ":")
@@ -115,7 +120,7 @@ func appToService(key string, value string) *servicediscovery.Service {
 		ServiceName: service.Name,
 		Host:        ip,
 		Port:        uint64(port),
-		ClusterName: names[1],
+		ClusterName: namespace,
 		Enable:      true,
 		Weight:      10,
 		Healthy:     true,
