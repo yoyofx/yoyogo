@@ -62,7 +62,7 @@ yoyogo:
 #         ttl: 30   # seconds
       type: "etcd"
       metadata:
-        address: "127.0.0.1:2379"
+        address: "81.70.154.55:32379"
         namespace: "public"
         ttl: 60
   datasource:
