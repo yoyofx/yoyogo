@@ -40,10 +40,17 @@ func NewServerDiscoveryWithDI(configuration abstractions.IConfiguration, env *ab
 
 func NewServerDiscovery(option Config) servicediscovery.IServiceDiscovery {
 	logger := xlog.GetXLogger("Service Discovery ETCD")
-	cli, err := clientv3.New(clientv3.Config{
-		Endpoints:   strings.Split(option.Address, ";"),
+
+	v3config := clientv3.Config{
+		Endpoints:   option.Address,
 		DialTimeout: 15 * time.Second,
-	})
+	}
+	if option.Auth != nil && option.Auth.Enable {
+		v3config.Username = option.Auth.User
+		v3config.Password = option.Auth.Password
+	}
+
+	cli, err := clientv3.New(v3config)
 	if err != nil {
 		logger.Error("connect to etcd err:%s", err)
 		return nil

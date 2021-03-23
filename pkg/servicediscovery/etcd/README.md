@@ -20,3 +20,9 @@ etcdctl version: 3.1.0
 API version: 3
 ```
 
+```bash
+etcdctl role add root
+etcdctl user add root
+etcdctl user  grant-role  root root
+etcdctl auth enable
+```

@@ -43,13 +43,17 @@ yoyogo:
     discovery:
       cache:
         ttl: 30     # seconds
-#      type: "nacos"
-#      metadata:
-#        url: "120.53.133.30"
-#        port: 80
-#        namespace: "public"
-#        group_name: ""
-    #    clusters: [""]
+      type: "nacos"
+      metadata:
+        url: "120.53.133.30"
+        port: 80
+        namespace: "a3ae02e6-79e9-4150-bcfd-93eb8f9b0235"
+        group: "mygroup1"
+        cluster: ""
+        auth:
+          enable: true
+          username: "root"
+          password: "1234"
 #      type: "consul"
 #      metadata:
 #        address: "localhost:8500"
@@ -60,11 +64,16 @@ yoyogo:
 #         datacenter: ""
 #         address: "http://sd.yoyogo.run/eureka"
 #         ttl: 30   # seconds
-      type: "etcd"
-      metadata:
-        address: "81.70.154.55:32379"
-        namespace: "public"
-        ttl: 60
+#      type: "etcd"
+#      metadata:
+#        address:
+#          - "81.70.154.55:32379"
+#        namespace: "public"
+#        ttl: 60
+#        auth:
+#          enable: true
+#          username: "root"
+#          password: "5z1fLbYw8A"
   datasource:
       pool:
         init_cap: 2

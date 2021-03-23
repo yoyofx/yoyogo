@@ -42,7 +42,7 @@ func endServerDiscovery(log xlog.ILogger, context *HostBuilderContext) {
 		sdcache.Stop()
 	}
 	err = context.HostServices.GetService(&sd)
-	if err == nil {
+	if err == nil && sd != nil {
 		_ = sd.Destroy()
 	}
 }

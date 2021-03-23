@@ -21,21 +21,23 @@ type Watcher struct {
 	instanceMap    map[string]model.Instance //Instance map of host for key
 	subscribeParam *vo.SubscribeParam
 	logger         xlog.ILogger
+	serviceConfig  *Config
 }
 
-func newWatcher(client naming_client.INamingClient, log xlog.ILogger, opts ...servicediscovery.WatchOption) (servicediscovery.Watcher, error) {
+func newWatcher(client naming_client.INamingClient, config *Config, log xlog.ILogger, opts ...servicediscovery.WatchOption) (servicediscovery.Watcher, error) {
 	var wo servicediscovery.WatchOptions
 	for _, o := range opts {
 		o(&wo)
 	}
 
 	w := &Watcher{
-		serviceName:  wo.Service,
-		namingClient: client,
-		logger:       log,
-		done:         make(chan bool),
-		results:      make(chan *servicediscovery.Result),
-		instanceMap:  map[string]model.Instance{},
+		serviceName:   wo.Service,
+		namingClient:  client,
+		logger:        log,
+		done:          make(chan bool),
+		results:       make(chan *servicediscovery.Result),
+		instanceMap:   map[string]model.Instance{},
+		serviceConfig: config,
 	}
 
 	err := w.start()
@@ -68,7 +70,7 @@ func (w *Watcher) start() error {
 	if w.namingClient == nil {
 		return errors.New("nacos naming client is nil")
 	}
-	w.subscribeParam = &vo.SubscribeParam{ServiceName: w.serviceName, SubscribeCallback: w.callback}
+	w.subscribeParam = &vo.SubscribeParam{ServiceName: w.serviceName, GroupName: w.serviceConfig.GroupName, Clusters: []string{w.serviceConfig.Cluster}, SubscribeCallback: w.callback}
 	go func() {
 		_ = w.namingClient.Subscribe(w.subscribeParam)
 	}()
