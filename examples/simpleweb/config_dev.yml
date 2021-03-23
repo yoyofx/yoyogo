@@ -62,7 +62,8 @@ yoyogo:
 #      type: "eureka"
 #      metadata:
 #         datacenter: ""
-#         address: "http://sd.yoyogo.run/eureka"
+#         address:
+#           - "http://sd.yoyogo.run/eureka"
 #         ttl: 30   # seconds
 #      type: "etcd"
 #      metadata:
