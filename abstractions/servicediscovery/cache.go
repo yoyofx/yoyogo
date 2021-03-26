@@ -5,6 +5,7 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"math"
 	"math/rand"
+	"strings"
 	"sync"
 	"time"
 )
@@ -71,7 +72,7 @@ func backoff(attempts int) time.Duration {
 
 func (c *cache) GetService(serviceName string) (*Service, error) {
 	// get the service
-	services, err := c.get(serviceName)
+	services, err := c.get(strings.ToUpper(serviceName))
 	if err != nil {
 		return nil, err
 	}

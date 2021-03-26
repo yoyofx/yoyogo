@@ -5,6 +5,7 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"strconv"
+	"strings"
 )
 
 func CreateServiceInstance(environment *abstractions.HostEnvironment) servicediscovery.ServiceInstance {
@@ -12,7 +13,7 @@ func CreateServiceInstance(environment *abstractions.HostEnvironment) servicedis
 
 	return &servicediscovery.DefaultServiceInstance{
 		Id:          uuid.New().String(),
-		ServiceName: environment.ApplicationName,
+		ServiceName: strings.ToUpper(environment.ApplicationName),
 		Host:        environment.Host,
 		Port:        uint64(port),
 		Enable:      true,
