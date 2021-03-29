@@ -47,8 +47,8 @@ yoyogo:
       metadata:
         url: "120.53.133.30"
         port: 80
-        namespace: "a3ae02e6-79e9-4150-bcfd-93eb8f9b0235"
-        group: "MY_GROUP"
+        namespace: "public"
+        group: ""
         cluster: ""
         auth:
           enable: true
