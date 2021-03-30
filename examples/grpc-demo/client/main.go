@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"google.golang.org/grpc"
-	_ "google.golang.org/grpc/balancer/roundrobin"
+	//_ "google.golang.org/grpc/balancer/roundrobin"
 	pb "grpc-demo/proto/helloworld"
 	"io"
 	"log"
@@ -14,7 +14,7 @@ func main() {
 
 	conn, err := grpc.Dial("sd://public/demo1",
 		grpc.WithInsecure(),
-		//grpc.WithDefaultServiceConfig()
+		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robin"}`),
 		grpc.WithResolvers(NewResolverBuilder()),
 	)
 	defer conn.Close()
