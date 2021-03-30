@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -16,14 +15,14 @@ import (
 
 func main() {
 	opts := []grpc.ServerOption{
-		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+		grpc.ChainUnaryInterceptor(
 			grpc_recovery.UnaryServerInterceptor(),
 			UnaryAccessLog,
-		)),
-		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
+		),
+		grpc.ChainStreamInterceptor(
 			grpc_recovery.StreamServerInterceptor(),
 			StreamAccessLog,
-		)),
+		),
 	}
 
 	server := grpc.NewServer(opts...)

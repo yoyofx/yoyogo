@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"google.golang.org/grpc"
+	_ "google.golang.org/grpc/balancer/roundrobin"
 	pb "grpc-demo/proto/helloworld"
 	"io"
 	"log"
@@ -11,8 +12,16 @@ import (
 
 func main() {
 
-	conn, _ := grpc.Dial(":31127", grpc.WithInsecure())
+	conn, err := grpc.Dial("sd://public/demo1",
+		grpc.WithInsecure(),
+		//grpc.WithDefaultServiceConfig()
+		grpc.WithResolvers(NewResolverBuilder()),
+	)
 	defer conn.Close()
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	client := pb.NewGreeterClient(conn)
 	//_ = SayHello(client)
