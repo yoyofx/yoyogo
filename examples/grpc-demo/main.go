@@ -15,13 +15,14 @@ func main() {
 		AddYamlFile("config").Build()
 
 	hosting := yrpc.NewHostBuilder().
-		UseConfiguration(configuration).Configure(func(app *yrpc.ApplicationBuilder) {
-		//app.AddUnaryServerInterceptor( logger.UnaryServerInterceptor() )
-		//app.AddStreamServerInterceptor( logger.StreamServerInterceptor() )
-		app.AddGrpcService(func(server *grpc.Server, ctx *yrpc.ServiceContext) {
-			pb.RegisterGreeterServer(server, services.NewGreeterServer())
-		})
-	}).
+		UseConfiguration(configuration).
+		Configure(func(app *yrpc.ApplicationBuilder) {
+			//app.AddUnaryServerInterceptor( logger.UnaryServerInterceptor() )
+			//app.AddStreamServerInterceptor( logger.StreamServerInterceptor() )
+			app.AddGrpcService(func(server *grpc.Server, ctx *yrpc.ServiceContext) {
+				pb.RegisterGreeterServer(server, services.NewGreeterServer())
+			})
+		}).
 		ConfigureServices(func(collection *dependencyinjection.ServiceCollection) {
 
 		}).Build()
