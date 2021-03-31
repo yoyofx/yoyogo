@@ -1,6 +1,8 @@
 package servicediscovery
 
-import "github.com/yoyofx/yoyogo/abstractions/servicediscovery"
+import (
+	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
+)
 
 type Client struct {
 	discoveryClient servicediscovery.IServiceDiscovery

@@ -74,6 +74,7 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 			//eureka.UseServiceDiscovery(serviceCollection)
 			//consul.UseServiceDiscovery(serviceCollection)
 			nacos.UseServiceDiscovery(serviceCollection)
+			//etcd.UseServiceDiscovery(serviceCollection)
 			session.UseSession(serviceCollection, func(options *session.Options) {
 				options.AddSessionStoreFactory(store.NewRedis)
 				//options.AddSessionMemoryStore(store.NewMemory())

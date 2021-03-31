@@ -2,6 +2,7 @@ package tests
 
 import (
 	"github.com/stretchr/testify/assert"
+	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/pkg/httpclient"
 	"io/ioutil"
 	"net/http"
@@ -47,4 +48,18 @@ func TestGetHttp(t *testing.T) {
 
 	assert.Equal(t, resp.GetRequestTime().Seconds() < 5, true)
 	assert.Equal(t, string(resp.Body), "hello")
+}
+
+func TestUriParser(t *testing.T) {
+
+	url := "http://[DEMO1]/app/v1/getuser?id=1"
+
+	parser := servicediscovery.NewUriParser(url)
+
+	assert.Equal(t, parser.GetUriEntry().Protocol, "http")
+
+	url1 := parser.Generate("127.0.0.1:8080")
+
+	assert.Equal(t, url1, "http://127.0.0.1:8080/app/v1/getuser?id=1")
+
 }

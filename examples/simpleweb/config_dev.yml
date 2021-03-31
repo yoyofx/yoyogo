@@ -41,13 +41,19 @@ yoyogo:
       skyworking:
         address: localhost:11800
     discovery:
+      cache:
+        ttl: 30     # seconds
       type: "nacos"
       metadata:
         url: "120.53.133.30"
         port: 80
         namespace: "public"
-        group_name: ""
-    #    clusters: [""]
+        group: ""
+        cluster: ""
+        auth:
+          enable: true
+          username: "root"
+          password: "1234"
 #      type: "consul"
 #      metadata:
 #        address: "localhost:8500"
@@ -55,7 +61,20 @@ yoyogo:
 #        tags: [""]
 #      type: "eureka"
 #      metadata:
-#        address: "http://localhost:5000/eureka"
+#         datacenter: ""
+#         address:
+#           - "http://sd.yoyogo.run/eureka"
+#         ttl: 30   # seconds
+#      type: "etcd"
+#      metadata:
+#        address:
+#          - "81.70.154.55:32379"
+#        namespace: "public"
+#        ttl: 60
+#        auth:
+#          enable: true
+#          username: "root"
+#          password: "5z1fLbYw8A"
   datasource:
       pool:
         init_cap: 2

@@ -4,21 +4,25 @@ import (
 	"errors"
 	"fmt"
 	"github.com/hudl/fargo"
+	"github.com/op/go-logging"
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	sd "github.com/yoyofx/yoyogo/pkg/servicediscovery"
+	"github.com/yoyofx/yoyogo/utils"
 )
 
 type Option struct {
-	ENV     *abstractions.HostEnvironment
-	Address string `mapstructure:"address"`
+	ENV        *abstractions.HostEnvironment
+	Address    []string `mapstructure:"address"`
+	Ttl        int      `mapstructure:"ttl"`
+	DataCenter string   `mapstructure:"datacenter"`
 }
 
 type Registrar struct {
 	cacheLocalInstance servicediscovery.ServiceInstance
 	logger             xlog.ILogger
-	config             Option
+	config             *Option
 	client             *Client
 	eurekaConnection   *fargo.EurekaConnection
 }
@@ -35,20 +39,28 @@ func NewServerDiscoveryWithDI(configuration abstractions.IConfiguration, env *ab
 	option := Option{}
 	section.Unmarshal(&option)
 	option.ENV = env
-	return NewServerDiscovery(option)
+	return NewServerDiscovery(&option)
 }
-func NewServerDiscovery(option Option) servicediscovery.IServiceDiscovery {
+func NewServerDiscovery(option *Option) servicediscovery.IServiceDiscovery {
 	logger := xlog.GetXLogger("Server Discovery eureka")
+	if option.DataCenter == "" {
+		option.DataCenter = fargo.MyOwn
+	}
 	eurekaRegister := &Registrar{}
 	var fargoConfig fargo.Config
-	fargoConfig.Eureka.ServiceUrls = []string{option.Address}
+	fargoConfig.Eureka.ServiceUrls = option.Address
 	// 订阅服务器应轮询更新的频率。
-	fargoConfig.Eureka.PollIntervalSeconds = 30
+	fargoConfig.Eureka.PollIntervalSeconds = option.Ttl
 	fargoConnection := fargo.NewConnFromConfig(fargoConfig)
+	logging.SetLevel(logging.WARNING, "fargo")
 	eurekaRegister.logger = logger
 	eurekaRegister.eurekaConnection = &fargoConnection
 	eurekaRegister.config = option
 	return eurekaRegister
+}
+
+func (registrar *Registrar) getId() string {
+	return utils.Md5String(fmt.Sprintf("%s#%s#%s:%v", registrar.config.DataCenter, registrar.cacheLocalInstance.GetServiceName(), registrar.cacheLocalInstance.GetHost(), registrar.cacheLocalInstance.GetPort()))
 }
 
 func (registrar *Registrar) GetName() string {
@@ -59,14 +71,14 @@ func (registrar *Registrar) Register() error {
 	registrar.cacheLocalInstance = sd.CreateServiceInstance(registrar.config.ENV)
 	if registrar.client == nil {
 		instance := &fargo.Instance{
-			InstanceId:     registrar.cacheLocalInstance.GetId(),
+			InstanceId:     registrar.getId(),
 			HostName:       registrar.cacheLocalInstance.GetHost(),
 			Port:           int(registrar.cacheLocalInstance.GetPort()),
 			App:            registrar.cacheLocalInstance.GetServiceName(),
 			IPAddr:         registrar.cacheLocalInstance.GetHost(),
 			HealthCheckUrl: fmt.Sprintf("http://%s:%d%s", registrar.cacheLocalInstance.GetHost(), registrar.cacheLocalInstance.GetPort(), "/actuator/health"),
 			Status:         fargo.UP,
-			DataCenterInfo: fargo.DataCenterInfo{Name: fargo.MyOwn},
+			DataCenterInfo: fargo.DataCenterInfo{Name: registrar.config.DataCenter},
 			LeaseInfo:      fargo.LeaseInfo{RenewalIntervalInSecs: 1},
 		}
 		registrar.client = NewClient(registrar.eurekaConnection, instance)
@@ -102,6 +114,7 @@ func (registrar *Registrar) GetAllInstances(serviceName string) []servicediscove
 			ServiceName: service.App,
 			Host:        service.IPAddr,
 			Port:        uint64(service.Port),
+			ClusterName: registrar.config.DataCenter,
 			Enable:      true,
 			Weight:      0,
 			Healthy:     true,

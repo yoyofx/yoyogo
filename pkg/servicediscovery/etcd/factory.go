@@ -1,4 +1,4 @@
-package consul
+package etcd
 
 import (
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
@@ -10,5 +10,4 @@ func UseServiceDiscovery(serviceCollection *dependencyinjection.ServiceCollectio
 	sd.UseGeneralServiceDiscovery(serviceCollection)
 	serviceCollection.AddSingletonByImplements(NewServerDiscoveryWithDI, new(servicediscovery.IServiceDiscovery))
 	//serviceCollection.AddSingletonByImplements(sd.NewClient, new(servicediscovery.IServiceDiscoveryClient))
-
 }
