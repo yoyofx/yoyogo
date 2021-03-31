@@ -6,7 +6,7 @@ type HostBuilder struct {
 	abstractions.HostBuilder
 }
 
-func NewWebHostBuilder() *HostBuilder {
+func NewHostBuilder() *HostBuilder {
 	builder := &HostBuilder{
 		abstractions.HostBuilder{
 			Context:   &abstractions.HostBuilderContext{HostingEnvironment: &abstractions.HostEnvironment{}},

@@ -11,6 +11,7 @@ type HostEnvironment struct {
 	Port            string
 	Host            string
 	PID             int
+	Server          string
 	MetaData        map[string]string
 }
 
