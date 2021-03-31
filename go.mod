@@ -21,7 +21,7 @@ require (
 	github.com/magiconair/properties v1.8.1
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d
 	github.com/nacos-group/nacos-sdk-go v1.0.3
-	github.com/op/go-logging v0.0.0-20160315200505-970db520ece7 // indirect
+	github.com/op/go-logging v0.0.0-20160315200505-970db520ece7
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v0.9.3
 	github.com/sirupsen/logrus v1.2.0
@@ -35,6 +35,7 @@ require (
 	golang.org/x/image v0.0.0-20190802002840-cff245a6509b
 	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110
 	golang.org/x/sys v0.0.0-20210309074719-68d13333faf2
+	google.golang.org/grpc v1.29.1 // indirect
 	gopkg.in/gcfg.v1 v1.2.3 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v2 v2.3.0
