@@ -1,7 +1,6 @@
 package abstractions
 
 import (
-	"encoding/base64"
 	"fmt"
 	"github.com/yoyofx/yoyogo"
 	"github.com/yoyofx/yoyogo/abstractions/platform/consolecolors"
@@ -48,8 +47,8 @@ func endServerDiscovery(log xlog.ILogger, context *HostBuilderContext) {
 }
 
 func PrintLogo(l xlog.ILogger, env *HostEnvironment) {
-	logo, _ := base64.StdEncoding.DecodeString(yoyogo.Logo)
-
+	//logo, _ := base64.StdEncoding.DecodeString(yoyogo.Logo)
+	logo := yoyogo.Logo
 	fmt.Println(consolecolors.Blue(string(logo)))
 	fmt.Println(" ")
 	fmt.Printf("%s   (version:  %s)", consolecolors.Green(":: YoyoGo ::"), consolecolors.Blue(env.Version))
