@@ -51,8 +51,13 @@ func PrintLogo(l xlog.ILogger, env *HostEnvironment) {
 	logo, _ := base64.StdEncoding.DecodeString(yoyogo.Logo)
 
 	fmt.Println(consolecolors.Blue(string(logo)))
-	fmt.Printf("%s                   (%s)", consolecolors.Green(":: YoyoGo ::"), consolecolors.Blue(env.Version))
 	fmt.Println(" ")
+	fmt.Printf("%s   (version:  %s)", consolecolors.Green(":: YoyoGo ::"), consolecolors.Blue(env.Version))
+
+	fmt.Print(consolecolors.Blue(`
+light and fast , dependency injection based micro-service framework written in Go.
+`))
+
 	fmt.Println(" ")
 	l.Info(consolecolors.Green("Welcome to YoyoGo, starting application ..."))
 	l.Info("yoyogo framework version :  %s", consolecolors.Blue(env.Version))
