@@ -17,6 +17,43 @@ type IServiceHost interface {
 	SetAppMode(mode string)
 }
 
+// host base
+type ServiceHost struct {
+	HostContext *HostBuilderContext
+	Server      IServer
+	logger      xlog.ILogger
+}
+
+func NewServiceHost(server IServer, hostContext *HostBuilderContext) ServiceHost {
+	return ServiceHost{Server: server, HostContext: hostContext, logger: xlog.GetXLogger("Application")}
+}
+
+func (host ServiceHost) Run() {
+	hostEnv := host.HostContext.HostingEnvironment
+	host.logger.SetCustomLogFormat(nil)
+	RunningHostEnvironmentSetting(hostEnv)
+	PrintLogo(host.logger, hostEnv)
+	//exithooksignals.HookSignals(host)
+	HostRunning(host.logger, host.HostContext)
+	//application running
+	_ = host.Server.Run(host.HostContext)
+	//application ending
+	HostEnding(host.logger, host.HostContext)
+}
+
+func (host ServiceHost) Shutdown() {
+	host.Server.Shutdown()
+}
+
+func (host ServiceHost) StopApplicationNotify() {
+	HostEnding(host.logger, host.HostContext)
+	host.HostContext.ApplicationCycle.StopApplication()
+}
+
+func (host ServiceHost) SetAppMode(mode string) {
+	host.HostContext.HostingEnvironment.Profile = mode
+}
+
 func HostRunning(log xlog.ILogger, context *HostBuilderContext) {
 	go startServerDiscovery(log, context)
 }

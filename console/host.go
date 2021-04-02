@@ -1,4 +1,4 @@
-package grpc
+package console
 
 import (
 	"github.com/yoyofx/yoyogo/abstractions"
@@ -10,6 +10,8 @@ type Host struct {
 }
 
 func NewHost(server abstractions.IServer, hostContext *abstractions.HostBuilderContext) Host {
+	hostContext.HostingEnvironment.Server = "console"
+	hostContext.HostingEnvironment.Port = "0"
 	return Host{abstractions.NewServiceHost(server, hostContext)}
 }
 
