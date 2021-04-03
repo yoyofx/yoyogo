@@ -6,23 +6,23 @@ import (
 )
 
 type random struct {
-	s servicediscovery.IServiceDiscovery
+	//s servicediscovery.IServiceDiscovery
 	r *rand.Rand
 }
 
 // NewRandom returns a load balancer that selects services randomly.
 func NewRandom(sd servicediscovery.IServiceDiscovery, seed int64) servicediscovery.Strategy {
 	return &random{
-		s: sd,
+		//s: sd,
 		r: rand.New(rand.NewSource(seed)),
 	}
 }
 
-func (rand *random) Next(serviceName string) (servicediscovery.ServiceInstance, error) {
-	endpoints := rand.s.GetAllInstances(serviceName)
+func (rand *random) Next(instanceList []servicediscovery.ServiceInstance) (servicediscovery.ServiceInstance, error) {
+	//endpoints := rand.s.GetAllInstances(serviceName)
 
-	if len(endpoints) <= 0 {
+	if len(instanceList) <= 0 {
 		return nil, servicediscovery.ErrNoEndpoints
 	}
-	return endpoints[rand.r.Intn(len(endpoints))], nil
+	return instanceList[rand.r.Intn(len(instanceList))], nil
 }
