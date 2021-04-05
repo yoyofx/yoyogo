@@ -18,7 +18,6 @@ type serviceDuration struct {
 }
 
 type WeightedResponseTime struct {
-	s servicediscovery.IServiceDiscovery
 }
 
 func ping(host servicediscovery.ServiceInstance, channel chan serviceDuration, curIndex int, endIndex int) {

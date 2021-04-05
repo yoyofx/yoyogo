@@ -11,7 +11,7 @@ type roundRobin struct {
 }
 
 // NewRandom returns a load balancer that selects services randomly.
-func NewRound(sd servicediscovery.IServiceDiscovery) servicediscovery.Strategy {
+func NewRound() servicediscovery.Strategy {
 	return &roundRobin{
 		//s: sd,
 		c: 0,
