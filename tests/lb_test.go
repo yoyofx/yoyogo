@@ -13,13 +13,13 @@ func TestLb(t *testing.T) {
 	sd := memory.NewServerDiscovery("demo", services)
 	selector := strategy.NewRandom(sd, 10)
 	for i := 0; i < 6; i++ {
-		i1, _ := selector.Next("demo")
+		i1, _ := selector.Next(sd.GetAllInstances("demo"))
 		fmt.Println(i1.GetHost())
 	}
 	fmt.Println("-------------------------------------")
 	selector = strategy.NewRound(sd)
 	for i := 0; i < 10; i++ {
-		i1, _ := selector.Next("demo")
+		i1, _ := selector.Next(sd.GetAllInstances("demo"))
 		fmt.Println(i1.GetHost())
 	}
 
