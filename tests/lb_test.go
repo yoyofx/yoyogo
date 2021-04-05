@@ -17,7 +17,7 @@ func TestLb(t *testing.T) {
 		fmt.Println(i1.GetHost())
 	}
 	fmt.Println("-------------------------------------")
-	selector = strategy.NewRound(sd)
+	selector = strategy.NewRound()
 	for i := 0; i < 10; i++ {
 		i1, _ := selector.Next(sd.GetAllInstances("demo"))
 		fmt.Println(i1.GetHost())
