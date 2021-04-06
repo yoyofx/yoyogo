@@ -1,4 +1,4 @@
-package grpc
+package console
 
 import "github.com/yoyofx/yoyogo/abstractions"
 

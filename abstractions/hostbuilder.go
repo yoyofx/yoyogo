@@ -104,11 +104,15 @@ func buildingHostEnvironmentSetting(serviceCollection *dependencyinjection.Servi
 		hostEnv.MetaData = make(map[string]string)
 		hostEnv.MetaData["config.path"] = context.Configuration.GetConfDir()
 		hostEnv.MetaData["server.path"] = context.Configuration.GetString("yoyogo.application.server.path")
-		hostEnv.MetaData["mvc.template"] = context.Configuration.GetString("yoyogo.application.server.mvc.template")
+		mvc_template := context.Configuration.GetString("yoyogo.application.server.mvc.template")
+		if mvc_template != "" {
+			hostEnv.MetaData["mvc.template"] = mvc_template
+		}
 	}
 	config := context.HostConfiguration
 	if config != nil {
 		hostEnv.ApplicationName = config.Name
+		hostEnv.Server = config.Server.ServerType
 		if config.Server.Address != "" {
 			hostEnv.Addr = config.Server.Address
 		}

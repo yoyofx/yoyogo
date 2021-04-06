@@ -1,7 +1,6 @@
 package abstractions
 
 import (
-	"encoding/base64"
 	"fmt"
 	"github.com/yoyofx/yoyogo"
 	"github.com/yoyofx/yoyogo/abstractions/platform/consolecolors"
@@ -16,6 +15,43 @@ type IServiceHost interface {
 	Shutdown()
 	StopApplicationNotify()
 	SetAppMode(mode string)
+}
+
+// host base
+type ServiceHost struct {
+	HostContext *HostBuilderContext
+	Server      IServer
+	logger      xlog.ILogger
+}
+
+func NewServiceHost(server IServer, hostContext *HostBuilderContext) ServiceHost {
+	return ServiceHost{Server: server, HostContext: hostContext, logger: xlog.GetXLogger("Application")}
+}
+
+func (host ServiceHost) Run() {
+	hostEnv := host.HostContext.HostingEnvironment
+	host.logger.SetCustomLogFormat(nil)
+	RunningHostEnvironmentSetting(hostEnv)
+	PrintLogo(host.logger, hostEnv)
+	//exithooksignals.HookSignals(host)
+	HostRunning(host.logger, host.HostContext)
+	//application running
+	_ = host.Server.Run(host.HostContext)
+	//application ending
+	HostEnding(host.logger, host.HostContext)
+}
+
+func (host ServiceHost) Shutdown() {
+	host.Server.Shutdown()
+}
+
+func (host ServiceHost) StopApplicationNotify() {
+	HostEnding(host.logger, host.HostContext)
+	host.HostContext.ApplicationCycle.StopApplication()
+}
+
+func (host ServiceHost) SetAppMode(mode string) {
+	host.HostContext.HostingEnvironment.Profile = mode
 }
 
 func HostRunning(log xlog.ILogger, context *HostBuilderContext) {
@@ -48,23 +84,29 @@ func endServerDiscovery(log xlog.ILogger, context *HostBuilderContext) {
 }
 
 func PrintLogo(l xlog.ILogger, env *HostEnvironment) {
-	logo, _ := base64.StdEncoding.DecodeString(yoyogo.Logo)
-
+	//logo, _ := base64.StdEncoding.DecodeString(yoyogo.Logo)
+	logo := yoyogo.Logo
 	fmt.Println(consolecolors.Blue(string(logo)))
-	fmt.Printf("%s                   (%s)", consolecolors.Green(":: YoyoGo ::"), consolecolors.Blue(env.Version))
 	fmt.Println(" ")
-	fmt.Println(" ")
-	l.Debug(consolecolors.Green("Welcome to YoyoGo, starting application ..."))
-	l.Debug("yoyogo framework version :  %s", consolecolors.Blue(env.Version))
-	l.Debug("machine host ip          :  %s", consolecolors.Blue(env.Host))
-	l.Debug("listening on port        :  %s", consolecolors.Blue(env.Port))
-	l.Debug("application running pid  :  %s", consolecolors.Blue(strconv.Itoa(env.PID)))
-	l.Debug("application name         :  %s", consolecolors.Blue(env.ApplicationName))
-	l.Debug("application exec path    :  %s", consolecolors.Yellow(utils.GetCurrentDirectory()))
-	l.Debug("application config path  :  %s", consolecolors.Yellow(env.MetaData["config.path"]))
-	l.Debug("application environment  :  %s", consolecolors.Yellow(consolecolors.Blue(env.Profile)))
-	l.Debug("running in %s mode , change (Dev,tests,Prod) mode by HostBuilder.SetEnvironment .", consolecolors.Red(env.Profile))
-	l.Debug(consolecolors.Green("Starting server..."))
-	l.Debug("server setting map       :  %v", env.MetaData)
+	fmt.Printf("%s   (version:  %s)", consolecolors.Green(":: YoyoGo ::"), consolecolors.Blue(env.Version))
 
+	fmt.Print(consolecolors.Blue(`
+light and fast , dependency injection based micro-service framework written in Go.
+`))
+
+	fmt.Println(" ")
+	l.Info(consolecolors.Green("Welcome to YoyoGo, starting application ..."))
+	l.Info("yoyogo framework version :  %s", consolecolors.Blue(env.Version))
+	l.Info("server & protocol        :  %s", consolecolors.Green(env.Server))
+	l.Info("machine host ip          :  %s", consolecolors.Blue(env.Host))
+	l.Info("listening on port        :  %s", consolecolors.Blue(env.Port))
+	l.Info("application running pid  :  %s", consolecolors.Blue(strconv.Itoa(env.PID)))
+	l.Info("application name         :  %s", consolecolors.Blue(env.ApplicationName))
+	l.Info("application exec path    :  %s", consolecolors.Yellow(utils.GetCurrentDirectory()))
+	l.Info("application config path  :  %s", consolecolors.Yellow(env.MetaData["config.path"]))
+	l.Info("application environment  :  %s", consolecolors.Yellow(consolecolors.Blue(env.Profile)))
+	l.Info("running in %s mode , change (Dev,tests,Prod) mode by HostBuilder.SetEnvironment .", consolecolors.Red(env.Profile))
+	l.Info(consolecolors.Green("Starting server..."))
+	l.Info("server setting map       :  %v", env.MetaData)
+	l.Info(consolecolors.Green("Server is Started."))
 }
