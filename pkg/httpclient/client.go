@@ -13,6 +13,7 @@ import (
 
 type Client struct {
 	defaultTransport *http.Transport
+	Request          *Request
 }
 
 func NewClient() *Client {
@@ -182,6 +183,15 @@ func (c *Client) Do(request *Request) (clientResp *Response, err error) {
 		clientResp, err = c.Get(request)
 	} else { // POST
 		clientResp, err = c.Post(request)
+	}
+	return clientResp, err
+}
+
+func (c *Client) Send() (clientResp *Response, err error) {
+	if c.Request.method == "GET" {
+		clientResp, err = c.Get(c.Request)
+	} else { // POST
+		clientResp, err = c.Post(c.Request)
 	}
 	return clientResp, err
 }

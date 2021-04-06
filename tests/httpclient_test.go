@@ -63,3 +63,13 @@ func TestUriParser(t *testing.T) {
 	assert.Equal(t, url1, "http://127.0.0.1:8080/app/v1/getuser?id=1")
 
 }
+
+func TestHttpCleintFactory(t *testing.T) {
+	url := "https://mnurtestapi.mengniu.com.cn/operations/v1/0/user-info/role"
+	factory := httpclient.ClientFactory{}
+	client, err := factory.CreatHttpClient(url)
+	if err != nil {
+		panic(err)
+	}
+	client.Send()
+}
