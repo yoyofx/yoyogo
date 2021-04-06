@@ -20,6 +20,7 @@ type fargoConnection interface {
 	HeartBeatInstance(instance *fargo.Instance) error
 	ScheduleAppUpdates(name string, await bool, done <-chan struct{}) <-chan fargo.AppUpdate
 	GetApp(name string) (*fargo.Application, error)
+	GetApps() (map[string]*fargo.Application, error)
 }
 
 type fargoUnsuccessfulHTTPResponse struct {
@@ -102,6 +103,8 @@ func (r *Client) loop() {
 		case q := <-r.quitc:
 			if err := r.conn.DeregisterInstance(r.instance); err != nil {
 				r.logger.Error("during", "Deregister", "err", err)
+			} else {
+				r.logger.Info("Eureka Deregister")
 			}
 			close(q)
 			return

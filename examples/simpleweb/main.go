@@ -63,6 +63,7 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 				builder.AddController(contollers.NewUserController)
 				builder.AddController(contollers.NewHubController)
 				builder.AddController(contollers.NewDbController)
+				builder.AddController(contollers.NewSDController)
 				builder.AddFilter("/v1/user/info", &contollers.TestActionFilter{})
 			})
 		}).
@@ -73,6 +74,7 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 			//eureka.UseServiceDiscovery(serviceCollection)
 			//consul.UseServiceDiscovery(serviceCollection)
 			nacos.UseServiceDiscovery(serviceCollection)
+			//etcd.UseServiceDiscovery(serviceCollection)
 			session.UseSession(serviceCollection, func(options *session.Options) {
 				options.AddSessionStoreFactory(store.NewRedis)
 				//options.AddSessionMemoryStore(store.NewMemory())

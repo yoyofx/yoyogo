@@ -46,16 +46,16 @@ func NewServerDiscovery(option Option) servicediscovery.IServiceDiscovery {
 	}
 }
 
-func (register *Registrar) Register() error {
-	register.cacheLocalInstance = sd.CreateServiceInstance(register.config.ENV)
+func (registrar *Registrar) Register() error {
+	registrar.cacheLocalInstance = sd.CreateServiceInstance(registrar.config.ENV)
 
 	registration := new(consul.AgentServiceRegistration)
-	registration.ID = register.cacheLocalInstance.GetId()
-	registration.Name = register.cacheLocalInstance.GetServiceName()
-	registration.Port = int(register.cacheLocalInstance.GetPort())
-	registration.Tags = register.config.Tags
-	registration.Address = register.cacheLocalInstance.GetHost()
-	registration.Tags = register.config.Tags
+	registration.ID = registrar.cacheLocalInstance.GetId()
+	registration.Name = registrar.cacheLocalInstance.GetServiceName()
+	registration.Port = int(registrar.cacheLocalInstance.GetPort())
+	registration.Tags = registrar.config.Tags
+	registration.Address = registrar.cacheLocalInstance.GetHost()
+	registration.Tags = registrar.config.Tags
 
 	registration.Check = &consul.AgentServiceCheck{ // 健康检查
 		HTTP:                           fmt.Sprintf("http://%s:%d%s", registration.Address, registration.Port, "/actuator/health"),
@@ -65,38 +65,38 @@ func (register *Registrar) Register() error {
 		// GRPC:     fmt.Sprintf("%v:%v/%v", IP, r.Port, r.Service),// grpc 支持，执行健康检查的地址，service 会传到 Health.Check 函数中
 	}
 
-	err := register.client.Register(registration)
-	register.logger.Debug("Registrar IP: %s , Success: %v", register.config.ENV.Host, err == nil)
+	err := registrar.client.Register(registration)
+	registrar.logger.Debug("Registrar IP: %s , Success: %v", registrar.config.ENV.Host, err == nil)
 	return err
 }
 
-func (register Registrar) Update() error {
+func (registrar *Registrar) Update() error {
 	panic("implement me")
 }
 
-func (register Registrar) Unregister() error {
-	if register.cacheLocalInstance == nil {
+func (registrar *Registrar) Unregister() error {
+	if registrar.cacheLocalInstance == nil {
 		return nil
 	}
 	registration := new(consul.AgentServiceRegistration)
-	registration.ID = register.cacheLocalInstance.GetId()
-	register.logger.Debug("unregister id: %s , success", registration.ID)
-	return register.client.Deregister(registration)
+	registration.ID = registrar.cacheLocalInstance.GetId()
+	registrar.logger.Debug("unregister id: %s , success", registration.ID)
+	return registrar.client.Deregister(registration)
 }
 
-func (register Registrar) GetHealthyInstances(serviceName string) []servicediscovery.ServiceInstance {
-	return register.GetAllInstances(serviceName)
+func (registrar *Registrar) GetHealthyInstances(serviceName string) []servicediscovery.ServiceInstance {
+	return registrar.GetAllInstances(serviceName)
 }
 
-func (register Registrar) GetAllInstances(serviceName string) []servicediscovery.ServiceInstance {
+func (registrar *Registrar) GetAllInstances(serviceName string) []servicediscovery.ServiceInstance {
 	tag := ""
-	if register.config.Tags != nil && len(register.config.Tags) > 0 {
-		tag = register.config.Tags[0]
+	if registrar.config.Tags != nil && len(registrar.config.Tags) > 0 {
+		tag = registrar.config.Tags[0]
 	}
-	services, _, err := register.client.GetService(serviceName, tag, true, &consul.QueryOptions{})
+	services, _, err := registrar.client.GetService(serviceName, tag, true, &consul.QueryOptions{})
 
 	if err != nil {
-		register.logger.Error("error retrieving instances from consul: %s", err.Error())
+		registrar.logger.Error("error retrieving instances from consul: %s", err.Error())
 	}
 	var serviceList []servicediscovery.ServiceInstance
 	for _, service := range services {
@@ -116,10 +116,23 @@ func (register Registrar) GetAllInstances(serviceName string) []servicediscovery
 	return serviceList
 }
 
-func (register Registrar) Destroy() error {
-	return register.Unregister()
+func (registrar *Registrar) Destroy() error {
+	return registrar.Unregister()
 }
 
-func (register Registrar) GetName() string {
+func (registrar *Registrar) GetName() string {
 	return "consul"
+}
+
+func (registrar *Registrar) Watch(opts ...servicediscovery.WatchOption) (servicediscovery.Watcher, error) {
+	return newWatcher(registrar.client.consul, opts...)
+}
+
+func (registrar *Registrar) GetAllServices() ([]*servicediscovery.Service, error) {
+	serviceNames := registrar.client.GetServices(&consul.QueryOptions{})
+	services := make([]*servicediscovery.Service, 0)
+	for _, serviceName := range serviceNames {
+		services = append(services, &servicediscovery.Service{Name: serviceName})
+	}
+	return services, nil
 }

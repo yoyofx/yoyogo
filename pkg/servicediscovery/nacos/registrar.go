@@ -2,7 +2,6 @@ package nacos
 
 import (
 	"errors"
-	"github.com/google/uuid"
 	"github.com/nacos-group/nacos-sdk-go/clients"
 	"github.com/nacos-group/nacos-sdk-go/clients/naming_client"
 	"github.com/nacos-group/nacos-sdk-go/common/constant"
@@ -12,12 +11,13 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	sd "github.com/yoyofx/yoyogo/pkg/servicediscovery"
+	"strings"
 )
 
 type Registrar struct {
 	cacheLocalInstance servicediscovery.ServiceInstance
 	logger             xlog.ILogger
-	config             Config
+	config             *Config
 	client             naming_client.INamingClient
 }
 
@@ -30,31 +30,31 @@ func NewServerDiscoveryWithDI(configuration abstractions.IConfiguration, env *ab
 	if section == nil {
 		panic(errors.New("yoyogo.cloud.discovery.metadata is not config node"))
 	}
-	option := Config{}
+	option := &Config{}
 	section.Unmarshal(&option)
 	if option.GroupName == "" {
 		option.GroupName = GroupName
 	}
-	if option.ClusterName == "" {
-		option.ClusterName = Cluster
+	if option.Cluster == "" {
+		option.Cluster = Cluster
 	}
 	option.ENV = env
 
 	return NewServerDiscovery(option)
 }
 
-func NewServerDiscovery(option Config) servicediscovery.IServiceDiscovery {
+func NewServerDiscovery(option *Config) servicediscovery.IServiceDiscovery {
 	logger := xlog.GetXLogger("Server Discovery nacos")
 	nacosRegister := &Registrar{}
-
-	serverConfigs := []constant.ServerConfig{
-		{
-			IpAddr:      option.Url,
+	var serverConfigs []constant.ServerConfig
+	urls := strings.Split(option.Url, ";")
+	for _, url := range urls {
+		serverConfigs = append(serverConfigs, constant.ServerConfig{
 			ContextPath: "/nacos",
+			IpAddr:      url,
 			Port:        option.Port,
-		},
+		})
 	}
-
 	clientConfig := constant.ClientConfig{
 		NamespaceId:         option.NamespaceId,
 		TimeoutMs:           5000,
@@ -62,6 +62,10 @@ func NewServerDiscovery(option Config) servicediscovery.IServiceDiscovery {
 		RotateTime:          "1h",
 		MaxAge:              3,
 		LogLevel:            "info",
+	}
+	if option.Auth != nil && option.Auth.Enable {
+		clientConfig.Username = option.Auth.User
+		clientConfig.Password = option.Auth.Password
 	}
 
 	namingClient, err := clients.CreateNamingClient(map[string]interface{}{
@@ -77,92 +81,92 @@ func NewServerDiscovery(option Config) servicediscovery.IServiceDiscovery {
 	nacosRegister.config = option
 	nacosRegister.logger = logger
 
-	logger.Debug("url:%s, namespace:%s", option.Url, option.NamespaceId)
+	logger.Debug("url:%s, namespace:%s , group:%s , cluster:%s ;", option.Url, option.NamespaceId, option.GroupName, option.Cluster)
 	return nacosRegister
 }
 
-func (register Registrar) GetName() string {
+func (registrar Registrar) GetName() string {
 	return "nacos"
 }
 
-func (register *Registrar) Register() error {
-	register.cacheLocalInstance = sd.CreateServiceInstance(register.config.ENV)
-	success, err := register.client.RegisterInstance(vo.RegisterInstanceParam{
-		Ip:          register.cacheLocalInstance.GetHost(),
-		Port:        register.cacheLocalInstance.GetPort(),
-		ServiceName: register.cacheLocalInstance.GetServiceName(),
+func (registrar *Registrar) Register() error {
+	registrar.cacheLocalInstance = sd.CreateServiceInstance(registrar.config.ENV)
+	success, err := registrar.client.RegisterInstance(vo.RegisterInstanceParam{
+		Ip:          registrar.cacheLocalInstance.GetHost(),
+		Port:        registrar.cacheLocalInstance.GetPort(),
+		ServiceName: registrar.cacheLocalInstance.GetServiceName(),
 		Weight:      10,
-		ClusterName: register.config.ClusterName,
-		GroupName:   register.config.GroupName,
+		ClusterName: registrar.config.Cluster,
+		GroupName:   registrar.config.GroupName,
 		Enable:      true,
 		Healthy:     true,
 		Ephemeral:   true,
 		Metadata: map[string]string{
-			"VERSION": register.config.ENV.Version,
+			"VERSION": registrar.config.ENV.Version,
 		},
 	})
 	if err != nil {
-		register.logger.Error(err.Error())
+		registrar.logger.Error(err.Error())
 	}
-	register.logger.Debug("Registrar IP: %s , Success: %v", register.config.ENV.Host, success)
+	registrar.logger.Debug("Registrar IP: %s , Success: %v", registrar.config.ENV.Host, success)
 	return err
 }
 
-func (register Registrar) Update() error {
+func (registrar *Registrar) Update() error {
 
 	return nil
 }
 
-func (register Registrar) Unregister() error {
-	if register.cacheLocalInstance == nil {
+func (registrar *Registrar) Unregister() error {
+	if registrar.cacheLocalInstance == nil {
 		return nil
 	}
-	_, err := register.client.DeregisterInstance(vo.DeregisterInstanceParam{
-		Ip:          register.cacheLocalInstance.GetHost(),
-		Port:        register.cacheLocalInstance.GetPort(),
-		Cluster:     register.cacheLocalInstance.GetClusterName(),
-		ServiceName: register.cacheLocalInstance.GetServiceName(),
-		GroupName:   register.cacheLocalInstance.GetGroupName(),
+	_, err := registrar.client.DeregisterInstance(vo.DeregisterInstanceParam{
+		Ip:          registrar.cacheLocalInstance.GetHost(),
+		Port:        registrar.cacheLocalInstance.GetPort(),
+		Cluster:     registrar.cacheLocalInstance.GetClusterName(),
+		ServiceName: registrar.cacheLocalInstance.GetServiceName(),
+		GroupName:   registrar.cacheLocalInstance.GetGroupName(),
 		Ephemeral:   true,
 	})
 	if err != nil {
-		register.logger.Error(err.Error())
+		registrar.logger.Error(err.Error())
 	}
 	return err
 }
 
-func (register Registrar) GetHealthyInstances(serviceName string) []servicediscovery.ServiceInstance {
+func (registrar *Registrar) GetHealthyInstances(serviceName string) []servicediscovery.ServiceInstance {
 	// SelectInstances only return the instances of healthy=${HealthyOnly},enable=true and weight>0
-	instances, err := register.client.SelectInstances(vo.SelectInstancesParam{
+	instances, err := registrar.client.SelectInstances(vo.SelectInstancesParam{
 		ServiceName: serviceName,
-		GroupName:   register.config.GroupName,             // default value is DEFAULT_GROUP
-		Clusters:    []string{register.config.ClusterName}, // default value is DEFAULT
+		GroupName:   registrar.config.GroupName,         // default value is DEFAULT_GROUP
+		Clusters:    []string{registrar.config.Cluster}, // default value is DEFAULT
 		HealthyOnly: true,
 	})
 	if err != nil {
 		return nil
 	}
-	return convInstance(register.config.GroupName, instances)
+	return convInstance(registrar.config.GroupName, instances)
 }
 
-func (register Registrar) GetAllInstances(serviceName string) []servicediscovery.ServiceInstance {
-	instances, err := register.client.SelectAllInstances(vo.SelectAllInstancesParam{
+func (registrar *Registrar) GetAllInstances(serviceName string) []servicediscovery.ServiceInstance {
+	instances, err := registrar.client.SelectAllInstances(vo.SelectAllInstancesParam{
 		ServiceName: serviceName,
-		GroupName:   register.config.GroupName,             // default value is DEFAULT_GROUP
-		Clusters:    []string{register.config.ClusterName}, // default value is DEFAULT
+		GroupName:   registrar.config.GroupName,         // default value is DEFAULT_GROUP
+		Clusters:    []string{registrar.config.Cluster}, // default value is DEFAULT
 	})
 
 	if err != nil {
 		return nil
 	}
-	return convInstance(register.config.GroupName, instances)
+	return convInstance(registrar.config.GroupName, instances)
 }
 
 func convInstance(groupName string, sourceInstances []model.Instance) []servicediscovery.ServiceInstance {
 	var serviceList []servicediscovery.ServiceInstance
 	for _, s := range sourceInstances {
 		instance := &servicediscovery.DefaultServiceInstance{
-			Id:          uuid.New().String(),
+			Id:          s.InstanceId,
 			ServiceName: s.ServiceName,
 			Host:        s.Ip,
 			Port:        s.Port,
@@ -178,8 +182,27 @@ func convInstance(groupName string, sourceInstances []model.Instance) []serviced
 	return serviceList
 }
 
-func (register Registrar) Destroy() error {
-	register.logger.Debug("Destroy")
-	err := register.Unregister()
+func (registrar *Registrar) Destroy() error {
+	registrar.logger.Debug("Destroy")
+	err := registrar.Unregister()
 	return err
+}
+
+func (registrar *Registrar) Watch(opts ...servicediscovery.WatchOption) (servicediscovery.Watcher, error) {
+	return newWatcher(registrar.client, registrar.config, registrar.logger, opts...)
+}
+
+func (registrar *Registrar) GetAllServices() ([]*servicediscovery.Service, error) {
+	serviceList, _ := registrar.client.GetAllServicesInfo(vo.GetAllServiceInfoParam{
+		NameSpace: registrar.config.NamespaceId,
+		GroupName: registrar.config.GroupName,
+		PageNo:    1,
+		PageSize:  1000,
+	})
+
+	services := make([]*servicediscovery.Service, 0)
+	for _, serviceName := range serviceList.Doms {
+		services = append(services, &servicediscovery.Service{Name: serviceName})
+	}
+	return services, nil
 }

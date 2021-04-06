@@ -14,6 +14,13 @@ type Config struct {
 	Url         string `mapstructure:"url"`
 	Port        uint64 `mapstructure:"port"`
 	NamespaceId string `mapstructure:"namespace"`
-	GroupName   string `mapstructure:"group_name"`
-	ClusterName string `mapstructure:"cluster_name"`
+	GroupName   string `mapstructure:"group"`
+	Cluster     string `mapstructure:"cluster"`
+	Auth        *Auth  `mapstructure:"auth"`
+}
+
+type Auth struct {
+	Enable   bool   `mapstructure:"enable"`
+	User     string `mapstructure:"username"`
+	Password string `mapstructure:"password"`
 }

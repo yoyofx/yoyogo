@@ -41,13 +41,19 @@ yoyogo:
       skyworking:
         address: localhost:11800
     discovery:
+      cache:
+        ttl: 30     # seconds
       type: "nacos"
       metadata:
         url: "120.53.133.30"
         port: 80
-        namespace: "public"
-        group_name: ""
-    #    clusters: [""]
+        namespace: "a3ae02e6-79e9-4150-bcfd-93eb8f9b0235"
+        group: "mygroup1"
+        cluster: ""
+        auth:
+          enable: true
+          username: "root"
+          password: "1234"
   #      type: "consul"
   #      metadata:
   #        address: "localhost:8500"
@@ -55,24 +61,34 @@ yoyogo:
   #        tags: [""]
   #      type: "eureka"
   #      metadata:
-  #        address: "http://localhost:5000/eureka"
+  #         datacenter: ""
+  #         address:
+  #           - "http://sd.yoyogo.run/eureka"
+  #         ttl: 30   # seconds
+  #      type: "etcd"
+  #      metadata:
+  #        address:
+  #          - "81.70.154.55:32379"
+  #        namespace: "public"
+  #        ttl: 60
+  #        auth:
+  #          enable: true
+  #          username: "root"
+  #          password: "5z1fLbYw8A"
   datasource:
-    mysql:
+    pool:
+      init_cap: 2
+      max_cap: 5
+      idle_timeout: 5
+    db:
       name: db1
+      type: mysql
       url: tcp(cdb-amqub3mo.bj.tencentcdb.com:10042)/yoyoBlog?charset=utf8&parseTime=True
       username: root
       password: 1234abcd
       debug: true
-      pool:
-        init_cap: 2
-        max_cap: 5
-        idle_timeout : 5
     redis:
       name: reids1
       url: 62.234.6.120:31379
       password:
       db: 0
-      pool:
-        init_cap: 2
-        max_cap: 5
-        idle_timeout: 5

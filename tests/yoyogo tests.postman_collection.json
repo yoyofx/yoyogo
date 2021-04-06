@@ -1,666 +1,465 @@
 {
-	"id": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-	"name": "yoyogo tests",
-	"description": "",
-	"order": [
-		"5039b740-2083-e78f-f4e7-0faf9421d1cf",
-		"a6d459e9-f60f-0925-fe6a-7d68525e6e16",
-		"69bf2d60-b261-cd0f-a37d-9af94f4e91c0",
-		"5901bf90-a3ff-2133-b056-9be9ddb888c2",
-		"3c2a7c51-1c2e-8dcb-de1a-fd18479cb954"
-	],
-	"folders": [
-		{
-			"name": "Endpoint",
-			"description": "",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"order": [
-				"5bcd4f27-154f-2d60-abe6-9100600896f8",
-				"89384dec-686e-fb3a-b495-bfb956199385",
-				"13ea8538-8177-ce37-5835-03732268d540",
-				"b0c794c2-aec6-6dd0-c907-b4060ac5f922"
-			],
-			"owner": 0,
-			"folders_order": [],
-			"id": "e942d40a-75d9-14b7-407a-956c57ff3d8a"
-		},
+	"variables": [],
+	"info": {
+		"name": "yoyogo tests",
+		"_postman_id": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
 		{
 			"name": "Mvc",
 			"description": "",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"order": [
-				"e85ba0cd-543a-2465-a6e5-4bd22f4684ac",
-				"a6896eed-83d6-07e4-8143-24d52672272f",
-				"6889840a-19ea-dd0b-6a8c-39f0590bc5b9",
-				"7a9b7cb3-6f6b-f54f-2940-8250e164df0f",
-				"cd89869a-c604-1ec5-8a8f-1f9489820dd3",
-				"7286c873-f476-0006-32d6-f119b9837532",
-				"d1978a16-9999-22aa-6572-d81b3dd90598",
-				"9fb0fc12-ba5c-0494-973c-379dba602b79",
-				"eebb47aa-ebb5-6c50-4a8f-e9d8b3935ddf",
-				"743cfe69-7075-784b-96b3-dbc51ce1236e",
-				"4b8b9475-7813-5c97-ee58-6376ba1171aa"
-			],
-			"owner": 0,
-			"folders_order": [],
-			"id": "bd4d44a0-3ce8-21df-5f28-a25b37f67af9"
-		}
-	],
-	"folders_order": [
-		"bd4d44a0-3ce8-21df-5f28-a25b37f67af9",
-		"e942d40a-75d9-14b7-407a-956c57ff3d8a"
-	],
-	"timestamp": 1576554457088,
-	"owner": 0,
-	"public": false,
-	"requests": [
-		{
-			"id": "13ea8538-8177-ce37-5835-03732268d540",
-			"headers": "Content-Type: application/json\n",
-			"headerData": [
+			"item": [
 				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": true
+					"name": "get c:user/a:register (MVC)",
+					"request": {
+						"url": {
+							"raw": "http://localhost:8080/app/v1/usercontroller/Register?UserName=max&Password=123",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"app",
+								"v1",
+								"usercontroller",
+								"Register"
+							],
+							"query": [
+								{
+									"key": "UserName",
+									"value": "max",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "Password",
+									"value": "123",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/user/GetInfo",
+					"request": {
+						"url": "http://localhost:8080/app/v1/user/GetInfo",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/v1/user/info",
+					"request": {
+						"url": "http://localhost:8080/app/v1/user/getinfo",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/v1/user/username?username=max&password=123",
+					"request": {
+						"url": {
+							"raw": "http://localhost:8080/app/v1/user/getusername?UserName=max&Password=123",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"app",
+								"v1",
+								"user",
+								"getusername"
+							],
+							"query": [
+								{
+									"key": "UserName",
+									"value": "max",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "Password",
+									"value": "123",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/v1/user/postuserinfo",
+					"request": {
+						"url": "http://localhost:8080/app/v1/user/postuserinfo",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": "",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "UserName",
+									"value": "zl",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "Password",
+									"value": "123",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/v1/user/gethtmlhello",
+					"request": {
+						"url": "http://localhost:8080/app/v1/user/gethtmlhello",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTgxNzQxODAsImlzcyI6InlveW8iLCJ1aWQiOjIyLCJhZG1pbiI6ZmFsc2V9.Wk6bXDjuOMLRbb_rQRuxZrRr2B2MG7Ot4iHmAxzJC1Q",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/v1/user/postuserinfo",
+					"request": {
+						"url": "http://localhost:8080/app/v1/user/postuserinfo",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTgxNjYwNzIsImlzcyI6IllEUSIsInVpZCI6MjIyMiwiYWRtaW4iOmZhbHNlfQ.fS_cDhbuZVLbrSI_fN1zT3_ZU59HdOpcvuzaQkWHeLE",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"UserName\":\"zl\",\"Password\":\"123\"}"
+						},
+						"description": "json body"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/v1/user/GetSD",
+					"request": {
+						"url": "http://localhost:8080/app/v1/user/GetSD",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "获取服务发现实例"
+					},
+					"response": []
+				},
+				{
+					"name": "get c:user/a:register (MVC)",
+					"request": {
+						"url": {
+							"raw": "http://localhost:8080/app/v1/usercontroller/Register?username=max&password=123",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"app",
+								"v1",
+								"usercontroller",
+								"Register"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "max",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "password",
+									"value": "123",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/app/v1/user/captcha",
+					"request": {
+						"url": "http://localhost:8080/app/v1/user/captcha",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/app/v1/db/mysql",
+					"request": {
+						"url": "http://localhost:8080/app/v1/db/mysql",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/app/v1/sd/services",
+					"request": {
+						"url": "http://localhost:8080/app/v1/sd/services",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/app/v1/sd/cacheservices",
+					"request": {
+						"url": "http://localhost:8080/app/v1/sd/cacheservices",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "sd by cache"
+					},
+					"response": []
 				}
-			],
-			"url": "http://localhost:8080/app/auth/token",
-			"folder": "e942d40a-75d9-14b7-407a-956c57ff3d8a",
-			"queryParams": [],
-			"preRequestScript": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "POST",
-			"data": [],
-			"dataMode": "raw",
-			"version": 2,
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1605167867254,
-			"name": "http://localhost:8080/auth/token",
+			]
+		},
+		{
+			"name": "Endpoint",
 			"description": "",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"responses": [],
-			"rawModeData": "{ \"id\":\"22\" , \"name\":\"yoyo\"  }",
-			"collection_id": "3397485e-5db5-2dd7-5300-2c161e271ca1"
+			"item": [
+				{
+					"name": "http://localhost:8080/actuator/health",
+					"request": {
+						"url": "http://localhost:8080/app/actuator/health",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/actuator/graph?type=viz",
+					"request": {
+						"url": {
+							"raw": "http://localhost:8080/app/actuator/graph?type=viz",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"app",
+								"actuator",
+								"graph"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "viz",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/auth/token",
+					"request": {
+						"url": "http://localhost:8080/app/auth/token",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"id\":\"22\" , \"name\":\"yoyo\"  }"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/app/actuator/health/readiness",
+					"request": {
+						"url": "http://localhost:8080/app/actuator/health/readiness",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "",
+								"disabled": true
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
 		},
 		{
-			"id": "3c2a7c51-1c2e-8dcb-de1a-fd18479cb954",
-			"headers": "",
-			"headerData": [],
-			"url": "http://localhost:8080/app/session",
-			"queryParams": [],
-			"preRequestScript": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "GET",
-			"data": null,
-			"dataMode": "params",
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1610990138197,
-			"name": "http://localhost:8080/app/session",
-			"description": "get session",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"responses": []
-		},
-		{
-			"id": "4b8b9475-7813-5c97-ee58-6376ba1171aa",
-			"headers": "",
-			"headerData": [],
-			"url": "http://localhost:8080/app/v1/user/validation?val=jnefys",
-			"queryParams": [
-				{
-					"key": "val",
-					"value": "jnefys",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				}
-			],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"preRequestScript": null,
-			"method": "GET",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"data": null,
-			"dataMode": "params",
-			"name": "http://localhost:8080/app/v1/user/validation?val=jnefys",
-			"description": "vallidation captcha image by session",
-			"descriptionFormat": "html",
-			"time": 1610992172147,
-			"version": 2,
-			"responses": [],
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"folder": "bd4d44a0-3ce8-21df-5f28-a25b37f67af9"
-		},
-		{
-			"id": "5039b740-2083-e78f-f4e7-0faf9421d1cf",
-			"headers": "Content-Type: application/json\n",
-			"headerData": [
-				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": true
-				}
-			],
-			"url": "http://localhost:8080/app/info/1?q1=1231232",
-			"queryParams": [
-				{
-					"key": "q1",
-					"value": "1231232",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				}
-			],
-			"preRequestScript": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "POST",
-			"data": [],
-			"dataMode": "raw",
-			"version": 2,
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1605166825915,
 			"name": "post /info/:id  (params binding)",
-			"description": "Post /info/:id querystring is q1  body { username: \"xxx\"  }",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"responses": [],
-			"rawModeData": "{\n\t\"username\":\"zl\"\n}",
-			"collection_id": "3397485e-5db5-2dd7-5300-2c161e271ca1"
-		},
-		{
-			"id": "5901bf90-a3ff-2133-b056-9be9ddb888c2",
-			"headers": "",
-			"headerData": [],
-			"url": "http://localhost:8080/app/newsession",
-			"queryParams": [],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"preRequestScript": null,
-			"method": "GET",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"data": null,
-			"dataMode": "params",
-			"name": "http://localhost:8080/app/newsession",
-			"description": "new session",
-			"descriptionFormat": "html",
-			"time": 1610990119034,
-			"version": 2,
-			"responses": [],
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {}
-		},
-		{
-			"id": "5bcd4f27-154f-2d60-abe6-9100600896f8",
-			"headers": "",
-			"headerData": [],
-			"url": "http://localhost:8080/app/actuator/health",
-			"folder": "e942d40a-75d9-14b7-407a-956c57ff3d8a",
-			"queryParams": [],
-			"preRequestScript": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "GET",
-			"data": null,
-			"dataMode": "params",
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1605166783087,
-			"name": "http://localhost:8080/actuator/health",
-			"description": "",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"responses": [],
-			"collection_id": "3397485e-5db5-2dd7-5300-2c161e271ca1"
-		},
-		{
-			"id": "6889840a-19ea-dd0b-6a8c-39f0590bc5b9",
-			"headers": "",
-			"headerData": [],
-			"url": "http://localhost:8080/app/v1/user/getinfo",
-			"folder": "bd4d44a0-3ce8-21df-5f28-a25b37f67af9",
-			"queryParams": [],
-			"preRequestScript": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "GET",
-			"data": null,
-			"dataMode": "params",
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1605167789332,
-			"name": "http://localhost:8080/v1/user/info",
-			"description": "",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"responses": [],
-			"collection_id": "3397485e-5db5-2dd7-5300-2c161e271ca1"
-		},
-		{
-			"id": "69bf2d60-b261-cd0f-a37d-9af94f4e91c0",
-			"headers": "Origin: localhost\n",
-			"headerData": [
-				{
-					"key": "Origin",
-					"value": "localhost",
-					"description": "",
-					"enabled": true
-				}
-			],
-			"url": "http://localhost:8080/app/info",
-			"queryParams": [],
-			"preRequestScript": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "GET",
-			"data": null,
-			"dataMode": "params",
-			"version": 2,
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1605168119089,
-			"name": "get /info",
-			"description": "get /info",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"responses": [],
-			"collection_id": "3397485e-5db5-2dd7-5300-2c161e271ca1"
-		},
-		{
-			"id": "7286c873-f476-0006-32d6-f119b9837532",
-			"headers": "Authorization: Bearer 1eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTgxNzQxODAsImlzcyI6InlveW8iLCJ1aWQiOjIyLCJhZG1pbiI6ZmFsc2V9.Wk6bXDjuOMLRbb_rQRuxZrRr2B2MG7Ot4iHmAxzJC1Q\n",
-			"headerData": [
-				{
-					"key": "Authorization",
-					"value": "Bearer 1eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTgxNzQxODAsImlzcyI6InlveW8iLCJ1aWQiOjIyLCJhZG1pbiI6ZmFsc2V9.Wk6bXDjuOMLRbb_rQRuxZrRr2B2MG7Ot4iHmAxzJC1Q",
-					"description": "",
-					"enabled": true
-				}
-			],
-			"url": "http://localhost:8080/app/v1/user/gethtmlhello",
-			"folder": "bd4d44a0-3ce8-21df-5f28-a25b37f67af9",
-			"queryParams": [],
-			"preRequestScript": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "GET",
-			"data": null,
-			"dataMode": "params",
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1605167819508,
-			"name": "http://localhost:8080/v1/user/gethtmlhello",
-			"description": "",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"responses": [],
-			"collection_id": "3397485e-5db5-2dd7-5300-2c161e271ca1"
-		},
-		{
-			"id": "743cfe69-7075-784b-96b3-dbc51ce1236e",
-			"headers": "",
-			"headerData": [],
-			"url": "http://localhost:8080/app/v1/user/captcha",
-			"queryParams": [],
-			"preRequestScript": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "GET",
-			"data": null,
-			"dataMode": "params",
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1608537355263,
-			"name": "http://localhost:8080/app/v1/user/captcha",
-			"description": "",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"responses": [],
-			"collection_id": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"folder": "bd4d44a0-3ce8-21df-5f28-a25b37f67af9"
-		},
-		{
-			"id": "7a9b7cb3-6f6b-f54f-2940-8250e164df0f",
-			"headers": "",
-			"headerData": [],
-			"url": "http://localhost:8080/app/v1/user/getusername?UserName=max&Password=123",
-			"folder": "bd4d44a0-3ce8-21df-5f28-a25b37f67af9",
-			"queryParams": [
-				{
-					"key": "UserName",
-					"value": "max",
-					"equals": true,
-					"description": "",
-					"enabled": true
+			"request": {
+				"url": {
+					"raw": "http://localhost:8080/app/info/1?q1=1231232",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"app",
+						"info",
+						"1"
+					],
+					"query": [
+						{
+							"key": "q1",
+							"value": "1231232",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
 				},
-				{
-					"key": "Password",
-					"value": "123",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				}
-			],
-			"preRequestScript": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "GET",
-			"data": null,
-			"dataMode": "params",
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1605167802933,
-			"name": "http://localhost:8080/v1/user/username?username=max&password=123",
-			"description": "",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"responses": [],
-			"collection_id": "3397485e-5db5-2dd7-5300-2c161e271ca1"
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\":\"zl\"\n}"
+				},
+				"description": "Post /info/:id querystring is q1  body { username: \"xxx\"  }"
+			},
+			"response": []
 		},
 		{
-			"id": "89384dec-686e-fb3a-b495-bfb956199385",
-			"headers": "",
-			"headerData": [],
-			"url": "http://localhost:8080/app/actuator/graph?type=viz",
-			"folder": "e942d40a-75d9-14b7-407a-956c57ff3d8a",
-			"queryParams": [
-				{
-					"key": "type",
-					"value": "viz",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				}
-			],
-			"preRequestScript": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "GET",
-			"data": null,
-			"dataMode": "params",
-			"version": 2,
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1605167857781,
-			"name": "http://localhost:8080/actuator/graph?type=viz",
-			"description": "",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"responses": [],
-			"collection_id": "3397485e-5db5-2dd7-5300-2c161e271ca1"
-		},
-		{
-			"id": "9fb0fc12-ba5c-0494-973c-379dba602b79",
-			"headers": "",
-			"headerData": [],
-			"url": "http://localhost:8080/app/v1/user/GetSD",
-			"folder": "bd4d44a0-3ce8-21df-5f28-a25b37f67af9",
-			"queryParams": [],
-			"preRequestScript": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "GET",
-			"data": null,
-			"dataMode": "params",
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1605167840310,
-			"name": "http://localhost:8080/v1/user/GetSD",
-			"description": "获取服务发现实例",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"responses": [],
-			"collection_id": "3397485e-5db5-2dd7-5300-2c161e271ca1"
-		},
-		{
-			"id": "a6896eed-83d6-07e4-8143-24d52672272f",
-			"headers": "",
-			"headerData": [],
-			"url": "http://localhost:8080/app/v1/user/GetInfo",
-			"folder": "bd4d44a0-3ce8-21df-5f28-a25b37f67af9",
-			"queryParams": [],
-			"preRequestScript": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "GET",
-			"data": null,
-			"dataMode": "params",
-			"version": 2,
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1605167763328,
-			"name": "http://localhost:8080/user/GetInfo",
-			"description": "",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"responses": [],
-			"collection_id": "3397485e-5db5-2dd7-5300-2c161e271ca1"
-		},
-		{
-			"id": "a6d459e9-f60f-0925-fe6a-7d68525e6e16",
-			"headers": "",
-			"headerData": [],
-			"url": "http://localhost:8080/app/v1/api/info",
-			"queryParams": [],
-			"preRequestScript": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "GET",
-			"data": null,
-			"dataMode": "params",
-			"version": 2,
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1605166778988,
 			"name": "get /v1/api/info (group)",
-			"description": "group by /v1/api/info",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"responses": [],
-			"collection_id": "3397485e-5db5-2dd7-5300-2c161e271ca1"
+			"request": {
+				"url": "http://localhost:8080/app/v1/api/info",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "group by /v1/api/info"
+			},
+			"response": []
 		},
 		{
-			"id": "b0c794c2-aec6-6dd0-c907-b4060ac5f922",
-			"headers": "//Content-Type: application/json\n",
-			"headerData": [
-				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": false
-				}
-			],
-			"url": "http://localhost:8080/app/actuator/health/readiness",
-			"folder": "e942d40a-75d9-14b7-407a-956c57ff3d8a",
-			"queryParams": [],
-			"preRequestScript": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "GET",
-			"data": null,
-			"dataMode": "params",
-			"version": 2,
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1608205376222,
-			"name": "http://localhost:8080/app/actuator/health/readiness",
-			"description": "",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"responses": [],
-			"collection_id": "3397485e-5db5-2dd7-5300-2c161e271ca1"
+			"name": "get /info",
+			"request": {
+				"url": "http://localhost:8080/app/info",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Origin",
+						"value": "localhost",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "get /info"
+			},
+			"response": []
 		},
 		{
-			"id": "cd89869a-c604-1ec5-8a8f-1f9489820dd3",
-			"headers": "//Content-Type: application/x-www-form-urlencoded\n",
-			"headerData": [
-				{
-					"key": "Content-Type",
-					"value": "application/x-www-form-urlencoded",
-					"description": "",
-					"enabled": false
-				}
-			],
-			"url": "http://localhost:8080/app/v1/user/postuserinfo",
-			"folder": "bd4d44a0-3ce8-21df-5f28-a25b37f67af9",
-			"queryParams": [],
-			"preRequestScript": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "POST",
-			"data": [
-				{
-					"key": "UserName",
-					"value": "zl",
-					"description": "",
-					"type": "text",
-					"enabled": true
-				},
-				{
-					"key": "Password",
-					"value": "123",
-					"description": "",
-					"type": "text",
-					"enabled": true
-				}
-			],
-			"dataMode": "params",
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1605167810097,
-			"name": "http://localhost:8080/v1/user/postuserinfo",
-			"description": "",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"responses": [],
-			"collection_id": "3397485e-5db5-2dd7-5300-2c161e271ca1"
+			"name": "http://localhost:8080/app/newsession",
+			"request": {
+				"url": "http://localhost:8080/app/newsession",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
 		},
 		{
-			"id": "d1978a16-9999-22aa-6572-d81b3dd90598",
-			"headers": "Content-Type: application/json\nAuthorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTgxNjYwNzIsImlzcyI6IllEUSIsInVpZCI6MjIyMiwiYWRtaW4iOmZhbHNlfQ.fS_cDhbuZVLbrSI_fN1zT3_ZU59HdOpcvuzaQkWHeLE\n",
-			"headerData": [
-				{
-					"key": "Content-Type",
-					"value": "application/json",
-					"description": "",
-					"enabled": true
-				},
-				{
-					"key": "Authorization",
-					"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTgxNjYwNzIsImlzcyI6IllEUSIsInVpZCI6MjIyMiwiYWRtaW4iOmZhbHNlfQ.fS_cDhbuZVLbrSI_fN1zT3_ZU59HdOpcvuzaQkWHeLE",
-					"description": "",
-					"enabled": true
-				}
-			],
-			"url": "http://localhost:8080/app/v1/user/postuserinfo",
-			"folder": "bd4d44a0-3ce8-21df-5f28-a25b37f67af9",
-			"queryParams": [],
-			"preRequestScript": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "POST",
-			"data": [],
-			"dataMode": "raw",
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1605167831550,
-			"name": "http://localhost:8080/v1/user/postuserinfo",
-			"description": "json body",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"responses": [],
-			"rawModeData": "{\"UserName\":\"zl\",\"Password\":\"123\"}",
-			"collection_id": "3397485e-5db5-2dd7-5300-2c161e271ca1"
-		},
-		{
-			"id": "e85ba0cd-543a-2465-a6e5-4bd22f4684ac",
-			"headers": "",
-			"headerData": [],
-			"url": "http://localhost:8080/app/v1/usercontroller/Register?UserName=max&Password=123",
-			"folder": "bd4d44a0-3ce8-21df-5f28-a25b37f67af9",
-			"queryParams": [
-				{
-					"key": "UserName",
-					"value": "max",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				},
-				{
-					"key": "Password",
-					"value": "123",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				}
-			],
-			"preRequestScript": null,
-			"pathVariables": {},
-			"pathVariableData": [],
-			"method": "GET",
-			"data": null,
-			"dataMode": "params",
-			"version": 2,
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"time": 1605167753420,
-			"name": "get c:user/a:register (MVC)",
-			"description": "",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"responses": [],
-			"collection_id": "3397485e-5db5-2dd7-5300-2c161e271ca1"
-		},
-		{
-			"id": "eebb47aa-ebb5-6c50-4a8f-e9d8b3935ddf",
-			"headers": "",
-			"headerData": [],
-			"url": "http://localhost:8080/app/v1/usercontroller/Register?username=max&password=123",
-			"queryParams": [
-				{
-					"key": "username",
-					"value": "max",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				},
-				{
-					"key": "password",
-					"value": "123",
-					"equals": true,
-					"description": "",
-					"enabled": true
-				}
-			],
-			"pathVariables": {},
-			"pathVariableData": [],
-			"preRequestScript": null,
-			"method": "GET",
-			"collectionId": "3397485e-5db5-2dd7-5300-2c161e271ca1",
-			"data": null,
-			"dataMode": "params",
-			"name": "get c:user/a:register (MVC)",
-			"description": "",
-			"descriptionFormat": "html",
-			"time": 1605167736636,
-			"version": 2,
-			"responses": [],
-			"tests": null,
-			"currentHelper": "normal",
-			"helperAttributes": {},
-			"folder": "bd4d44a0-3ce8-21df-5f28-a25b37f67af9",
-			"collection_id": "3397485e-5db5-2dd7-5300-2c161e271ca1"
+			"name": "http://localhost:8080/app/session",
+			"request": {
+				"url": "http://localhost:8080/app/session",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }

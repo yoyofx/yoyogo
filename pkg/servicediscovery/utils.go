@@ -18,7 +18,7 @@ func CreateServiceInstance(environment *abstractions.HostEnvironment) servicedis
 		Enable:      true,
 		Healthy:     true,
 		Metadata: map[string]string{
-			"VERSION": environment.Version,
+			"version": environment.Version,
 		},
 	}
 }

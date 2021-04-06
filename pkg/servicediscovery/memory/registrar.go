@@ -26,30 +26,38 @@ func NewServerDiscovery(serviceName string, serviceList []string) servicediscove
 	return &Registrar{services: services}
 }
 
-func (r Registrar) GetName() string {
+func (registrar *Registrar) GetName() string {
 	return "memory"
 }
 
-func (r Registrar) Register() error {
+func (registrar *Registrar) Register() error {
 	panic("implement me")
 }
 
-func (r Registrar) Update() error {
+func (registrar *Registrar) Update() error {
 	panic("implement me")
 }
 
-func (r Registrar) Unregister() error {
+func (registrar *Registrar) Unregister() error {
 	panic("implement me")
 }
 
-func (r Registrar) GetHealthyInstances(serviceName string) []servicediscovery.ServiceInstance {
-	return r.services
+func (registrar *Registrar) GetHealthyInstances(serviceName string) []servicediscovery.ServiceInstance {
+	return registrar.services
 }
 
-func (r Registrar) GetAllInstances(serviceName string) []servicediscovery.ServiceInstance {
-	return r.services
+func (registrar *Registrar) GetAllInstances(serviceName string) []servicediscovery.ServiceInstance {
+	return registrar.services
 }
 
-func (r Registrar) Destroy() error {
+func (registrar *Registrar) Destroy() error {
 	panic("implement me")
+}
+
+func (registrar *Registrar) Watch(opts ...servicediscovery.WatchOption) (servicediscovery.Watcher, error) {
+	return NewWatcher(), nil
+}
+
+func (registrar *Registrar) GetAllServices() ([]*servicediscovery.Service, error) {
+	return nil, nil
 }

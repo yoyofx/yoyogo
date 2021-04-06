@@ -1,4 +1,4 @@
-package loadbalancing
+package strategy
 
 import (
 	"bytes"
@@ -18,7 +18,6 @@ type serviceDuration struct {
 }
 
 type WeightedResponseTime struct {
-	s servicediscovery.IServiceDiscovery
 }
 
 func ping(host servicediscovery.ServiceInstance, channel chan serviceDuration, curIndex int, endIndex int) {
@@ -63,16 +62,15 @@ func ping(host servicediscovery.ServiceInstance, channel chan serviceDuration, c
 
 }
 
-func (w *WeightedResponseTime) Next(serviceName string) (servicediscovery.ServiceInstance, error) {
+func (w *WeightedResponseTime) Next(instanceList []servicediscovery.ServiceInstance) (servicediscovery.ServiceInstance, error) {
 	//获取服务节点
 	var errorMsg error = nil
-	endpoints := w.s.GetAllInstances(serviceName)
 	//初始化服务信息切片
-	serviceDurationSlice := make([]serviceDuration, len(endpoints))
+	serviceDurationSlice := make([]serviceDuration, len(instanceList))
 	channel := make(chan serviceDuration)
 	//多线程ping
-	for i, v := range endpoints {
-		go ping(v, channel, i, len(endpoints)-1)
+	for i, v := range instanceList {
+		go ping(v, channel, i, len(instanceList)-1)
 	}
 	for v := range channel {
 		if v.duration == 0 || v.service == nil {
