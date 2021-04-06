@@ -4,11 +4,13 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/yoyofx/yoyogo/abstractions"
+	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/dependencyinjection"
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/mysql"
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/redis"
 	"github.com/yoyofx/yoyogo/pkg/servicediscovery/nacos"
+	"github.com/yoyofx/yoyogo/pkg/servicediscovery/strategy"
 	web "github.com/yoyofx/yoyogo/web"
 	"github.com/yoyofx/yoyogo/web/actionresult/extension"
 	"github.com/yoyofx/yoyogo/web/context"
@@ -75,6 +77,8 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 			//consul.UseServiceDiscovery(serviceCollection)
 			nacos.UseServiceDiscovery(serviceCollection)
 			//etcd.UseServiceDiscovery(serviceCollection)
+			serviceCollection.AddSingletonByImplements(strategy.NewRandom, new(servicediscovery.Strategy))
+
 			session.UseSession(serviceCollection, func(options *session.Options) {
 				options.AddSessionStoreFactory(store.NewRedis)
 				//options.AddSessionMemoryStore(store.NewMemory())

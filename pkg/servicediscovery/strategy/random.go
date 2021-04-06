@@ -3,6 +3,7 @@ package strategy
 import (
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"math/rand"
+	"time"
 )
 
 type random struct {
@@ -11,10 +12,10 @@ type random struct {
 }
 
 // NewRandom returns a load balancer that selects services randomly.
-func NewRandom(seed int64) servicediscovery.Strategy {
+func NewRandom() servicediscovery.Strategy {
 	return &random{
 		//s: sd,
-		r: rand.New(rand.NewSource(seed)),
+		r: rand.New(rand.NewSource(time.Now().Unix())),
 	}
 }
 

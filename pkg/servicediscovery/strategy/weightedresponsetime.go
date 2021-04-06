@@ -20,6 +20,10 @@ type serviceDuration struct {
 type WeightedResponseTime struct {
 }
 
+func NewWeightedResponseTime() servicediscovery.Strategy {
+	return &WeightedResponseTime{}
+}
+
 func ping(host servicediscovery.ServiceInstance, channel chan serviceDuration, curIndex int, endIndex int) {
 	destAddress := net.IPAddr{IP: net.ParseIP(host.GetHost())}
 	//初始化ICMP协议头

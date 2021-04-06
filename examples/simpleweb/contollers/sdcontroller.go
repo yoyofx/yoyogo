@@ -7,12 +7,13 @@ import (
 
 type SDController struct {
 	mvc.ApiController
-	discoveryCache  servicediscovery.Cache
-	discoveryClient servicediscovery.IServiceDiscoveryClient
+	discoveryCache    servicediscovery.Cache
+	discoveryClient   servicediscovery.IServiceDiscoveryClient
+	discoverySelector servicediscovery.ISelector
 }
 
-func NewSDController(sd servicediscovery.IServiceDiscoveryClient, cache servicediscovery.Cache) *SDController {
-	return &SDController{discoveryClient: sd, discoveryCache: cache}
+func NewSDController(sd servicediscovery.IServiceDiscoveryClient, cache servicediscovery.Cache, selector servicediscovery.ISelector) *SDController {
+	return &SDController{discoveryClient: sd, discoveryCache: cache, discoverySelector: selector}
 }
 
 func (controller SDController) GetSD() mvc.ApiResult {
@@ -27,5 +28,10 @@ func (controller SDController) GetServices() mvc.ApiResult {
 
 func (controller SDController) GetCacheServices() mvc.ApiResult {
 	serviceList, _ := controller.discoveryCache.GetService("yoyogo_demo_dev")
+	return controller.OK(serviceList)
+}
+
+func (controller SDController) GetOne() mvc.ApiResult {
+	serviceList, _ := controller.discoverySelector.Select("yoyogo_demo_dev")
 	return controller.OK(serviceList)
 }
