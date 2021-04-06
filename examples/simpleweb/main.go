@@ -75,6 +75,8 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 			//consul.UseServiceDiscovery(serviceCollection)
 			nacos.UseServiceDiscovery(serviceCollection)
 			//etcd.UseServiceDiscovery(serviceCollection)
+			//serviceCollection.AddSingletonByImplements(strategy.NewRandom, new(servicediscovery.Strategy))
+
 			session.UseSession(serviceCollection, func(options *session.Options) {
 				options.AddSessionStoreFactory(store.NewRedis)
 				//options.AddSessionMemoryStore(store.NewMemory())

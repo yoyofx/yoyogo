@@ -2,10 +2,17 @@ package servicediscovery
 
 import "errors"
 
+type ISelector interface {
+	Select(serviceName string) (ServiceInstance, error)
+}
+
 type Selector struct {
 	discoveryCache Cache    //service discovery cache
 	strategy       Strategy //load balancing strategy
+}
 
+func NewSelector(discoveryCache Cache, strategy Strategy) *Selector {
+	return &Selector{discoveryCache, strategy}
 }
 
 // will set strategy and cache options

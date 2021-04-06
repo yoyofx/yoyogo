@@ -269,6 +269,28 @@
 						"description": ""
 					},
 					"response": []
+				},
+				{
+					"name": "http://localhost:8080/app/v1/sd/cacheservices",
+					"request": {
+						"url": "http://localhost:8080/app/v1/sd/cacheservices",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "sd by cache"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/app/v1/sd/one",
+					"request": {
+						"url": "http://localhost:8080/app/v1/sd/one",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "服务发现selector"
+					},
+					"response": []
 				}
 			]
 		},
