@@ -4,6 +4,7 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/dependencyinjection"
+	"github.com/yoyofx/yoyogo/pkg/servicediscovery/strategy"
 	"time"
 )
 
@@ -18,5 +19,17 @@ func init() {
 			serviceCollection.AddSingleton(func() *servicediscovery.CacheOptions {
 				return &servicediscovery.CacheOptions{TTL: ttlDuration}
 			})
+
+			// selector (LB) Strategy
+			sdStrategy := config.GetString("yoyogo.cloud.discovery.strategy")
+			// round-robin  , weight-time ,  random
+			switch sdStrategy {
+			case "random":
+				serviceCollection.AddSingletonByImplements(strategy.NewRandom, new(servicediscovery.Strategy))
+			case "weight-time":
+				serviceCollection.AddSingletonByImplements(strategy.NewWeightedResponseTime(), new(servicediscovery.Strategy))
+			default:
+				serviceCollection.AddSingletonByImplements(strategy.NewRound, new(servicediscovery.Strategy))
+			}
 		})
 }

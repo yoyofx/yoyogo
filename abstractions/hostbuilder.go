@@ -145,12 +145,12 @@ func (host *HostBuilder) Build() IServiceHost {
 	innerConfigures(host.Context, services)
 	host.Decorator.OverrideIOCInnerConfigures(services)
 
-	for _, configure := range host.servicesConfigures {
-		configure(services)
-	}
-
 	for _, configProcessorRegFunc := range configurationProcessors {
 		configProcessorRegFunc(host.Context.Configuration, services)
+	}
+
+	for _, configure := range host.servicesConfigures {
+		configure(services)
 	}
 
 	applicationBuilder := host.Decorator.OverrideNewApplicationBuilder(host.Context)
