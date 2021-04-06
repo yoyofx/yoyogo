@@ -65,11 +65,11 @@ func TestUriParser(t *testing.T) {
 }
 
 func TestHttpCleintFactory(t *testing.T) {
-	url := "https://mnurtestapi.mengniu.com.cn/operations/v1/0/user-info/role"
-	factory := httpclient.ClientFactory{}
-	client, err := factory.CreatHttpClient(url)
-	if err != nil {
-		panic(err)
-	}
-	client.Send()
+	//url := "https://mnurtestapi.mengniu.com.cn/operations/v1/0/user-info/role"
+	//factory := httpclient.ClientFactory{}
+	//client, err := factory.CreatHttpClient(url)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//client.Send()
 }
