@@ -1,9 +1,12 @@
 package tests
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/pkg/httpclient"
+	"github.com/yoyofx/yoyogo/pkg/servicediscovery/memory"
+	"github.com/yoyofx/yoyogo/pkg/servicediscovery/strategy"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -65,11 +68,13 @@ func TestUriParser(t *testing.T) {
 }
 
 func TestHttpCleintFactory(t *testing.T) {
-	//url := "https://mnurtestapi.mengniu.com.cn/operations/v1/0/user-info/role"
-	//factory := httpclient.ClientFactory{}
-	//client, err := factory.CreatHttpClient(url)
-	//if err != nil {
-	//	panic(err)
-	//}
-	//client.Send()
+	url := "https://[operations]/operations/v1/0/user-info/role"
+	factory := httpclient.ClientFactory{Selector: servicediscovery.Selector{DiscoveryCache: &memory.MemoryCache{}, Strategy: strategy.NewRandom()}}
+	client, err := factory.CreatHttpClient(url)
+	if err != nil {
+		panic(err)
+	}
+	res, err := client.Send()
+	fmt.Print(res)
+	assert.NotNil(t, err)
 }

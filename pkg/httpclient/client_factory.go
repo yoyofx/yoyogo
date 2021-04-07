@@ -3,6 +3,7 @@ package httpclient
 import (
 	"errors"
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
+	"net/http"
 	"strings"
 )
 
@@ -33,6 +34,7 @@ func (cf *ClientFactory) CreatHttpClient(url string) (*Client, error) {
 	client.Request = &Request{
 		url:    targeUrl,
 		method: "GET",
+		header: http.Header{},
 	}
 	return client, nil
 }

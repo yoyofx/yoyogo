@@ -7,8 +7,8 @@ type ISelector interface {
 }
 
 type Selector struct {
-	discoveryCache Cache    //service discovery cache
-	strategy       Strategy //load balancing strategy
+	DiscoveryCache Cache    //service discovery cache
+	Strategy       Strategy //load balancing strategy
 }
 
 func NewSelector(discoveryCache Cache, strategy Strategy) *Selector {
@@ -18,12 +18,12 @@ func NewSelector(discoveryCache Cache, strategy Strategy) *Selector {
 // will set strategy and cache options
 // Selector( strategy ,  cache ).Select(serviceName).(ServiceInstance)
 func (s *Selector) Select(serviceName string) (ServiceInstance, error) {
-	service, err := s.discoveryCache.GetService(serviceName)
+	service, err := s.DiscoveryCache.GetService(serviceName)
 	if err != nil {
 		return nil, err
 	}
 	if len(service.Nodes) == 0 {
 		return nil, errors.New("this service don't have any instance")
 	}
-	return s.strategy.Next(service.Nodes)
+	return s.Strategy.Next(service.Nodes)
 }
