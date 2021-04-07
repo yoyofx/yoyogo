@@ -2,6 +2,7 @@ package httpclient
 
 import (
 	"errors"
+	"fmt"
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"net/http"
 	"strings"
@@ -28,13 +29,15 @@ func (cf *ClientFactory) CreatHttpClient(url string) (*Client, error) {
 	}
 	//根据服务名称进行url转化
 	parser := servicediscovery.NewUriParser(url)
-	targeUrl := parser.Generate(serverInstance.GetHost())
+
+	targeUrl := parser.Generate(fmt.Sprintf("%s:%v", serverInstance.GetHost(), serverInstance.GetPort()))
 	//创建http 客户端
 	client := NewClient()
 	client.Request = &Request{
-		url:    targeUrl,
-		method: "GET",
-		header: http.Header{},
+		url:     targeUrl,
+		method:  "GET",
+		header:  http.Header{},
+		timeout: 5,
 	}
 	return client, nil
 }
