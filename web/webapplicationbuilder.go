@@ -108,6 +108,8 @@ func (this *ApplicationBuilder) buildEndPoints() {
 func (this *ApplicationBuilder) buildMvc() {
 	if this.routerBuilder.IsMvc() {
 		controllerBuilder := this.routerBuilder.GetMvcBuilder()
+		this.hostContext.
+			ApplicationServicesDef.AddSingleton(this.routerBuilder.GetMvcBuilder)
 		// add config for controller builder
 		controllerBuilder.SetConfiguration(this.hostContext.Configuration)
 		for _, configure := range this.mvcConfigures {

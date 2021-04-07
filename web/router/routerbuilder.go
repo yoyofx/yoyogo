@@ -53,4 +53,6 @@ type IRouterBuilder interface {
 	SetConfiguration(config abstractions.IConfiguration)
 
 	GetConfiguration() abstractions.IConfiguration
+
+	GetRouteInfo() []Info
 }

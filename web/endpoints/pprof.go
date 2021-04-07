@@ -13,7 +13,7 @@ func pprofHandler(h http.HandlerFunc) web.HandlerFunc {
 	handler := http.HandlerFunc(h)
 	return func(c *context.HttpContext) {
 		c.Output.SetStatus(200)
-		if c.Input.Path() == "/debug/pprof/" {
+		if c.Input.Path() == "/actuator/debug/pprof/" {
 			c.Output.Header(context.HeaderContentType, context.MIMETextHTML)
 		}
 		handler.ServeHTTP(c.Output.GetWriter(), c.Input.GetReader())
@@ -23,7 +23,7 @@ func pprofHandler(h http.HandlerFunc) web.HandlerFunc {
 func UsePprof(routerBuilder router.IRouterBuilder) {
 	xlog.GetXLogger("Endpoint").Debug("loaded pprof endpoint.")
 
-	routerBuilder.Group("/debug/pprof", func(prefixRouter *router.RouterGroup) {
+	routerBuilder.Group("/actuator/debug/pprof", func(prefixRouter *router.RouterGroup) {
 		prefixRouter.GET("/", pprofHandler(pprof.Index))
 		prefixRouter.GET("/cmdline", pprofHandler(pprof.Cmdline))
 		prefixRouter.GET("/profile", pprofHandler(pprof.Profile))
