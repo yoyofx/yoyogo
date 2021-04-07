@@ -10,6 +10,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
+	"strings"
 	"testing"
 )
 
@@ -68,13 +70,36 @@ func TestUriParser(t *testing.T) {
 }
 
 func TestHttpCleintFactory(t *testing.T) {
-	url := "https://[operations]/operations/v1/0/user-info/role"
-	factory := httpclient.ClientFactory{Selector: servicediscovery.Selector{DiscoveryCache: &memory.MemoryCache{}, Strategy: strategy.NewRandom()}}
-	client, err := factory.CreatHttpClient(url)
+	//test server
+	httpServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		_, _ = w.Write([]byte("ok"))
+	}))
+	//httpServer.URL = "http://127.0.0.1:8080"
+	defer httpServer.Close()
+
+	//test client
+	url := httpServer.URL
+	uri := strings.Split(url, ":")
+	port, _ := strconv.ParseUint(uri[2], 10, 64)
+	url = strings.Replace(url, "127.0.0.1", "[operations]", -1)
+	factory := httpclient.ClientFactory{
+		Selector: servicediscovery.Selector{DiscoveryCache: &memory.MemoryCache{Services: []string{"127.0.0.1", "localhost"}, Port: port},
+			Strategy: strategy.NewRound()}}
+
+	client1, err := factory.CreatHttpClient(url)
 	if err != nil {
 		panic(err)
 	}
-	res, err := client.Send()
-	fmt.Print(res)
-	assert.NotNil(t, err)
+	assert.Equal(t, client1.Request.GetUrl(), fmt.Sprintf("http://127.0.0.1:%v", port))
+
+	client2, err := factory.CreatHttpClient(url)
+	if err != nil {
+		panic(err)
+	}
+	assert.Equal(t, client2.Request.GetUrl(), fmt.Sprintf("http://localhost:%v", port))
+
+	res, err := client1.Send()
+
+	assert.Equal(t, string(res.Body), "ok")
 }
