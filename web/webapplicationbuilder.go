@@ -157,6 +157,9 @@ func (this *ApplicationBuilder) innerConfigures() {
 		AddSingletonByNameAndImplements("viewEngine", view.CreateViewEngine, new(view.IViewEngine))
 	//-------------------------  view engine ----------------------------------
 
+	this.hostContext.
+		ApplicationServicesDef.AddSingleton(func() router.IRouterBuilder { return this.routerBuilder })
+
 	for _, provider := range this.handlersProviders {
 		this.hostContext.
 			ApplicationServicesDef.AddSingletonByImplements(provider, new(middlewares.MiddlewareHandler))
