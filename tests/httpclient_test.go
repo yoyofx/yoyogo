@@ -69,7 +69,7 @@ func TestUriParser(t *testing.T) {
 
 }
 
-func TestHttpCleintFactory(t *testing.T) {
+func TestHttpCleintFactoryCreateServiceDiscoveryCleint(t *testing.T) {
 	//test server
 	httpServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
@@ -77,28 +77,22 @@ func TestHttpCleintFactory(t *testing.T) {
 	}))
 	//httpServer.URL = "http://127.0.0.1:8080"
 	defer httpServer.Close()
-
 	//test client
 	url := httpServer.URL
 	uri := strings.Split(url, ":")
 	port, _ := strconv.ParseUint(uri[2], 10, 64)
 	url = strings.Replace(url, "127.0.0.1", "[operations]", -1)
-	factory := httpclient.ClientFactory{
-		Selector: servicediscovery.Selector{DiscoveryCache: &memory.MemoryCache{Services: []string{"localhost"}, Port: port},
-			Strategy: strategy.NewRound()}}
-	req, err := factory.BuilderSelectorRequest(url, "GET")
+	factory := httpclient.ClientFactory{}
+	selector := servicediscovery.Selector{DiscoveryCache: &memory.MemoryCache{Services: []string{"localhost"}, Port: port},
+		Strategy: strategy.NewRound()}
+	client, err := factory.CreateServiceDiscoveryCleint("", selector)
 	if err != nil {
 		panic(err)
 	}
-	assert.Equal(t, req.GetUrl(), fmt.Sprintf("http://localhost:%v", port))
-	httpclient.AddHttpClient("operations", func(options *httpclient.ClientOptions) {
-		options.AddClientBaseUrl("http://localhost")
-	})
-	client, err := factory.CreateClient("operations")
-	if err != nil {
-		panic(err)
-	}
-	assert.Equal(t, req.GetUrl(), fmt.Sprintf("http://localhost:%v", port))
+	req := &httpclient.Request{}
+	req.GET(url)
+	req.SetTimeout(10)
+	assert.Equal(t, req.GetUrl(), fmt.Sprintf("http://[operations]:%v", port))
 	res, err := client.Do(req)
 	assert.Equal(t, string(res.Body), "ok")
 }
@@ -111,11 +105,8 @@ func TestHttpClientFactoryBaseUrl(t *testing.T) {
 	fmt.Print(httpServer.URL)
 	//httpServer.URL = "http://127.0.0.1:8080"
 	defer httpServer.Close()
-	httpclient.AddHttpClient("demo", func(options *httpclient.ClientOptions) {
-		options.AddClientBaseUrl(httpServer.URL)
-	})
 	factory := httpclient.ClientFactory{}
-	client, err := factory.CreateClient("demo")
+	client, err := factory.CreateClient(httpServer.URL)
 	if err != nil {
 		panic(err)
 	}
