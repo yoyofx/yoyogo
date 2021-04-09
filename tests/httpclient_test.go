@@ -84,22 +84,45 @@ func TestHttpCleintFactory(t *testing.T) {
 	port, _ := strconv.ParseUint(uri[2], 10, 64)
 	url = strings.Replace(url, "127.0.0.1", "[operations]", -1)
 	factory := httpclient.ClientFactory{
-		Selector: servicediscovery.Selector{DiscoveryCache: &memory.MemoryCache{Services: []string{"127.0.0.1", "localhost"}, Port: port},
+		Selector: servicediscovery.Selector{DiscoveryCache: &memory.MemoryCache{Services: []string{"localhost"}, Port: port},
 			Strategy: strategy.NewRound()}}
-
-	client1, err := factory.CreatHttpClient(url)
+	req, err := factory.BuilderSelectorRequest(url, "GET")
 	if err != nil {
 		panic(err)
 	}
-	assert.Equal(t, client1.Request.GetUrl(), fmt.Sprintf("http://127.0.0.1:%v", port))
-
-	client2, err := factory.CreatHttpClient(url)
+	assert.Equal(t, req.GetUrl(), fmt.Sprintf("http://localhost:%v", port))
+	httpclient.AddHttpClient("operations", func(options *httpclient.ClientOptions) {
+		options.AddClientBaseUrl("http://localhost")
+	})
+	client, err := factory.CreateClient("operations")
 	if err != nil {
 		panic(err)
 	}
-	assert.Equal(t, client2.Request.GetUrl(), fmt.Sprintf("http://localhost:%v", port))
+	assert.Equal(t, req.GetUrl(), fmt.Sprintf("http://localhost:%v", port))
+	res, err := client.Do(req)
+	assert.Equal(t, string(res.Body), "ok")
+}
 
-	res, err := client1.Send()
-
+func TestHttpClientFactoryBaseUrl(t *testing.T) {
+	httpServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		_, _ = w.Write([]byte("ok"))
+	}))
+	fmt.Print(httpServer.URL)
+	//httpServer.URL = "http://127.0.0.1:8080"
+	defer httpServer.Close()
+	httpclient.AddHttpClient("demo", func(options *httpclient.ClientOptions) {
+		options.AddClientBaseUrl(httpServer.URL)
+	})
+	factory := httpclient.ClientFactory{}
+	client, err := factory.CreateClient("demo")
+	if err != nil {
+		panic(err)
+	}
+	req := &httpclient.Request{}
+	req.GET("")
+	req.SetTimeout(10)
+	res, err := client.Do(req)
+	fmt.Print(res)
 	assert.Equal(t, string(res.Body), "ok")
 }
