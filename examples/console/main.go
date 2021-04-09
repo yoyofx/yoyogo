@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/yoyofx/yoyogo/abstractions"
+	"github.com/yoyofx/yoyogo/abstractions/hosting"
 	"github.com/yoyofx/yoyogo/console"
 	"github.com/yoyofx/yoyogo/dependencyinjection"
 )
@@ -12,16 +12,20 @@ func main() {
 	//	AddEnvironment().
 	//	AddYamlFile("config").Build()
 
-	hosting := console.NewHostBuilder().
-		//UseConfiguration(configuration).
-		//Configure(func(app *console.ApplicationBuilder) {
-		//}).
+	//hosting := console.NewHostBuilder().
+	//UseConfiguration(configuration).
+	//Configure(func(app *console.ApplicationBuilder) {
+	//}).
+	//	ConfigureServices(func(collection *dependencyinjection.ServiceCollection) {
+	//		hosting.AddHostService(collection, NewService)
+	//	}).Build()
+	//
+	//hosting.Run()
+
+	console.NewHostBuilder().
 		ConfigureServices(func(collection *dependencyinjection.ServiceCollection) {
-			abstractions.AddHostService(collection, NewService)
-		}).Build()
-
-	hosting.Run()
-
+			hosting.AddHostService(collection, NewService)
+		}).Build().Run()
 }
 
 type Service1 struct {
