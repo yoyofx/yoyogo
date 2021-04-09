@@ -5,6 +5,8 @@ import (
 	"context"
 	"crypto/tls"
 	"errors"
+	"fmt"
+	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -15,6 +17,8 @@ import (
 type Client struct {
 	defaultTransport *http.Transport
 	BaseUrl          string
+	selector         servicediscovery.Selector
+	hasSelector      bool
 }
 
 func NewClient() *Client {
@@ -179,9 +183,27 @@ func (c *Client) Post(request *Request) (clientResp *Response, err error) {
 }
 
 func (c *Client) Do(request *Request) (clientResp *Response, err error) {
+
 	if request.method == "" {
 		return nil, errors.New("this request is no method set.")
 	}
+	//如果设置了selector需要去匹配服务
+	if c.hasSelector {
+		//获取当前服务名称
+		serverName := strings.Split(strings.Split(request.url, "[")[1], "]")[0]
+		if serverName == "" {
+			return nil, errors.New("url don't contans serveName")
+		}
+		//获取服务实例
+		serverInstance, err := c.selector.Select(serverName)
+		if err != nil {
+			return nil, err
+		}
+		//根据服务名称进行url转化
+		parser := servicediscovery.NewUriParser(request.url)
+		request.url = parser.Generate(fmt.Sprintf("%s:%v", serverInstance.GetHost(), serverInstance.GetPort()))
+	}
+	//如果Url没有包含http，则认为需要添加baseUrl
 	if !strings.HasPrefix(request.url, "http") {
 		if c.BaseUrl == "" {
 			return nil, errors.New("url don't have host and client don't config baseUrl please config")
