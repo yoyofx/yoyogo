@@ -40,15 +40,15 @@ func TestGetHttp(t *testing.T) {
 	defer httpServer.Close()
 
 	c := httpclient.NewClient()
-	request := c.WithJsonRequest(`{"aid":1002,"auth":"ss"}`).POST(httpServer.URL)
+	request := httpclient.WithJsonRequest(`{"aid":1002,"auth":"ss"}`).POST(httpServer.URL)
 	_, _ = c.Do(request)
 
-	request1 := c.WithFormRequest(map[string]interface{}{
+	request1 := httpclient.WithFormRequest(map[string]interface{}{
 		"word": "你好",
 	}).POST(httpServer.URL)
 	_, _ = c.Do(request1)
 
-	request2 := c.WithRequest().Header("Content-Type", "application/text").GET(httpServer.URL)
+	request2 := httpclient.WithRequest().Header("Content-Type", "application/text").GET(httpServer.URL)
 	resp, _ := c.Do(request2)
 
 	assert.Equal(t, resp.GetRequestTime().Seconds() < 5, true)
@@ -82,16 +82,17 @@ func TestHttpCleintFactoryCreateServiceDiscoveryCleint(t *testing.T) {
 	uri := strings.Split(url, ":")
 	port, _ := strconv.ParseUint(uri[2], 10, 64)
 	url = strings.Replace(url, "127.0.0.1", "[operations]", -1)
-	factory := httpclient.ClientFactory{}
+
 	selector := servicediscovery.Selector{DiscoveryCache: &memory.MemoryCache{Services: []string{"localhost"}, Port: port},
 		Strategy: strategy.NewRound()}
-	client, err := factory.CreateServiceDiscoveryCleint("", selector)
+	factory := httpclient.NewDiscoveryClientFactory(selector)
+
+	client, err := factory.Create("")
 	if err != nil {
 		panic(err)
 	}
-	req := &httpclient.Request{}
-	req.GET(url)
-	req.SetTimeout(10)
+	req := httpclient.WithRequest().SetTimeout(10).GET(url)
+
 	assert.Equal(t, req.GetUrl(), fmt.Sprintf("http://[operations]:%v", port))
 	res, err := client.Do(req)
 	assert.Equal(t, string(res.Body), "ok")
@@ -105,15 +106,15 @@ func TestHttpClientFactoryBaseUrl(t *testing.T) {
 	fmt.Print(httpServer.URL)
 	//httpServer.URL = "http://127.0.0.1:8080"
 	defer httpServer.Close()
-	factory := httpclient.ClientFactory{}
-	client, err := factory.CreateClient(httpServer.URL)
+	factory := httpclient.NewFactory()
+	client, err := factory.Create(httpServer.URL)
 	if err != nil {
 		panic(err)
 	}
-	req := &httpclient.Request{}
+	req := httpclient.WithRequest()
 	req.GET("")
 	req.SetTimeout(10)
 	res, err := client.Do(req)
-	fmt.Print(res)
+	fmt.Print(string(res.Body))
 	assert.Equal(t, string(res.Body), "ok")
 }
