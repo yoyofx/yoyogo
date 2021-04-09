@@ -8,12 +8,13 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"strings"
 	"time"
 )
 
 type Client struct {
 	defaultTransport *http.Transport
-	Request          *Request
+	BaseUrl          string
 }
 
 func NewClient() *Client {
@@ -84,7 +85,9 @@ func (c *Client) Get(request *Request) (clientResp *Response, err error) {
 	if request.host != "" {
 		req.Host = request.host
 	}
-
+	if request.header == nil {
+		request.header = http.Header{}
+	}
 	request.header.Set("Cookie", "")
 	req.Header = request.header
 
@@ -179,19 +182,16 @@ func (c *Client) Do(request *Request) (clientResp *Response, err error) {
 	if request.method == "" {
 		return nil, errors.New("this request is no method set.")
 	}
+	if !strings.HasPrefix(request.url, "http") {
+		if c.BaseUrl == "" {
+			return nil, errors.New("url don't have host and client don't config baseUrl please config")
+		}
+		request.url = c.BaseUrl + request.url
+	}
 	if request.method == "GET" {
 		clientResp, err = c.Get(request)
 	} else { // POST
 		clientResp, err = c.Post(request)
-	}
-	return clientResp, err
-}
-
-func (c *Client) Send() (clientResp *Response, err error) {
-	if c.Request.method == "GET" {
-		clientResp, err = c.Get(c.Request)
-	} else { // POST
-		clientResp, err = c.Post(c.Request)
 	}
 	return clientResp, err
 }
