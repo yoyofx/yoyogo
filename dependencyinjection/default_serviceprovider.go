@@ -28,3 +28,7 @@ func (d DefaultServiceProvider) GetGraph() string {
 
 	return graph.String() // use string representation
 }
+
+func (d DefaultServiceProvider) InvokeService(fn interface{}) error {
+	return d.container.Invoke(fn)
+}

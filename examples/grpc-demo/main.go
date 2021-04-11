@@ -20,12 +20,13 @@ func main() {
 			//app.AddUnaryServerInterceptor( logger.UnaryServerInterceptor() )
 			//app.AddStreamServerInterceptor( logger.StreamServerInterceptor() )
 			app.AddGrpcService(func(server *grpc.Server, ctx *yrpc.ServiceContext) {
-				pb.RegisterGreeterServer(server, services.NewGreeterServer())
+				ctx.Register(pb.RegisterGreeterServer) // register grpc service
 			})
 
 		}).
 		ConfigureServices(func(collection *dependencyinjection.ServiceCollection) {
-
+			collection.AddSingleton(services.NewGreeterServer) // add grpc service
+			collection.AddSingleton(services.NewIOCDemo)
 		}).Build()
 
 	hosting.Run()

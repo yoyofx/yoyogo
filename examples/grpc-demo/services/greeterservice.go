@@ -3,23 +3,24 @@ package services
 import (
 	"context"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
-	"github.com/yoyofx/yoyogo/dependencyinjection"
 	pb "grpc-demo/proto/helloworld"
 	"io"
 	"strconv"
 )
 
 type GreeterServer struct {
-	log                 xlog.ILogger
-	ApplicationServices dependencyinjection.IServiceProvider
+	log  xlog.ILogger
+	demo *IOCDemo
 }
 
-func NewGreeterServer() *GreeterServer {
-	return &GreeterServer{log: xlog.GetXLogger("GreeterServer")}
+func NewGreeterServer(dd *IOCDemo) pb.GreeterServer {
+	log := xlog.GetXLogger("GreeterServer")
+	log.SetCustomLogFormat(nil)
+	return &GreeterServer{log: log, demo: dd}
 }
 
 func (s *GreeterServer) SayHello(ctx context.Context, r *pb.HelloRequest) (*pb.HelloReply, error) {
-	s.log.Debug("server.SayHello")
+	s.log.Debug("server.SayHello ," + s.demo.Print())
 	return &pb.HelloReply{Message: "hello.world.at.server: " + r.Name}, nil
 }
 
