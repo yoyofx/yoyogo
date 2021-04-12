@@ -291,6 +291,17 @@
 						"description": "服务发现selector"
 					},
 					"response": []
+				},
+				{
+					"name": "http://localhost:8080/app/v1/sd/httptest",
+					"request": {
+						"url": "http://localhost:8080/app/v1/sd/httptest",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
 				}
 			]
 		},
