@@ -101,6 +101,10 @@ func (c *Client) Get(request *Request) (clientResp *Response, err error) {
 	}
 	defer resp.Body.Close()
 
+	if request.cookieData == nil {
+		request.cookieData = make(map[string]*http.Cookie)
+	}
+
 	for _, item := range resp.Cookies() {
 		request.setCookieData(item.Name, item)
 	}
@@ -167,6 +171,9 @@ func (c *Client) Post(request *Request) (clientResp *Response, err error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
+	if request.cookieData == nil {
+		request.cookieData = make(map[string]*http.Cookie)
+	}
 	for _, item := range resp.Cookies() {
 		request.setCookieData(item.Name, item)
 	}
@@ -187,6 +194,13 @@ func (c *Client) Do(request *Request) (clientResp *Response, err error) {
 	if request.method == "" {
 		return nil, errors.New("this request is no method set.")
 	}
+	//如果Url没有包含http，则认为需要添加baseUrl
+	if !strings.HasPrefix(request.url, "http") {
+		if c.BaseUrl == "" {
+			return nil, errors.New("url don't have host and client don't config baseUrl please config")
+		}
+		request.url = c.BaseUrl + request.url
+	}
 	//如果设置了selector需要去匹配服务
 	if c.hasSelector {
 		//获取当前服务名称
@@ -203,13 +217,7 @@ func (c *Client) Do(request *Request) (clientResp *Response, err error) {
 		parser := servicediscovery.NewUriParser(request.url)
 		request.url = parser.Generate(fmt.Sprintf("%s:%v", serverInstance.GetHost(), serverInstance.GetPort()))
 	}
-	//如果Url没有包含http，则认为需要添加baseUrl
-	if !strings.HasPrefix(request.url, "http") {
-		if c.BaseUrl == "" {
-			return nil, errors.New("url don't have host and client don't config baseUrl please config")
-		}
-		request.url = c.BaseUrl + request.url
-	}
+
 	if request.method == "GET" {
 		clientResp, err = c.Get(request)
 	} else { // POST
