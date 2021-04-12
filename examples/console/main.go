@@ -2,9 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/yoyofx/yoyogo/abstractions/hosting"
 	"github.com/yoyofx/yoyogo/console"
-	"github.com/yoyofx/yoyogo/dependencyinjection"
 )
 
 func main() {
@@ -23,9 +21,11 @@ func main() {
 	//hosting.Run()
 
 	console.NewHostBuilder().
-		ConfigureServices(func(collection *dependencyinjection.ServiceCollection) {
-			hosting.AddHostService(collection, NewService)
-		}).Build().Run()
+		UseStartup(Startup).
+		//ConfigureServices(func(collection *dependencyinjection.ServiceCollection) {
+		//	hosting.AddHostService(collection, NewService)
+		//}).
+		Build().Run()
 }
 
 type Service1 struct {
