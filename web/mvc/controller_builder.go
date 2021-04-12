@@ -67,10 +67,10 @@ func (builder *ControllerBuilder) AddController(controllerCtor interface{}) {
 	// Create Controller and Action descriptors
 	descriptor := NewControllerDescriptor(controllerName, controllerType, controllerCtor)
 	builder.mvcRouterHandler.ControllerDescriptors[controllerName] = descriptor
-
-	logger.Debug("add mvc controller: %s", controllerName)
+	logger.Debug("add mvc controller: [%s]", controllerName)
 	for _, desc := range descriptor.GetActionDescriptors() {
-		logger.Debug("add mvc controller action: %s", desc.ActionName)
+		//logger.Debug("add mvc controller action: %s", desc.ActionName)
+		logger.Debug("add mvc controller action:{[%s/%s],menthods=[%s]}", strings.Replace(controllerName, "controller", "", -1), desc.ActionName, strings.ToUpper(desc.ActionMethod))
 	}
 }
 

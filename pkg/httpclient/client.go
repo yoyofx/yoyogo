@@ -41,19 +41,19 @@ func NewClient() *Client {
 func WithFormRequest(params map[string]interface{}) *Request {
 	defaultHeader := make(http.Header)
 	defaultHeader.Set("Content-Type", "application/x-www-form-urlencoded")
-	request := &Request{header: defaultHeader, contentType: "application/x-www-form-urlencoded", params: params, timeout: 5}
+	request := &Request{header: defaultHeader, contentType: "application/x-www-form-urlencoded", params: params, timeout: 5, cookieData: make(map[string]*http.Cookie)}
 	return request
 }
 
 func WithRequest() *Request {
-	return &Request{header: make(http.Header), timeout: 5}
+	return &Request{header: make(http.Header), timeout: 5, cookieData: make(map[string]*http.Cookie)}
 }
 
 // WithFormRequest 快速配置表单请求类型
 func WithJsonRequest(json string) *Request {
 	defaultHeader := make(http.Header)
 	defaultHeader.Set("Content-Type", "application/json")
-	request := &Request{header: defaultHeader, contentType: "application/json", requestBody: []byte(json), timeout: 5}
+	request := &Request{header: defaultHeader, contentType: "application/json", requestBody: []byte(json), timeout: 5, cookieData: make(map[string]*http.Cookie)}
 	return request
 }
 
@@ -167,6 +167,7 @@ func (c *Client) Post(request *Request) (clientResp *Response, err error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
+
 	for _, item := range resp.Cookies() {
 		request.setCookieData(item.Name, item)
 	}
@@ -187,6 +188,13 @@ func (c *Client) Do(request *Request) (clientResp *Response, err error) {
 	if request.method == "" {
 		return nil, errors.New("this request is no method set.")
 	}
+	//如果Url没有包含http，则认为需要添加baseUrl
+	if !strings.HasPrefix(request.url, "http") {
+		if c.BaseUrl == "" {
+			return nil, errors.New("url don't have host and client don't config baseUrl please config")
+		}
+		request.url = c.BaseUrl + request.url
+	}
 	//如果设置了selector需要去匹配服务
 	if c.hasSelector {
 		//获取当前服务名称
@@ -203,13 +211,7 @@ func (c *Client) Do(request *Request) (clientResp *Response, err error) {
 		parser := servicediscovery.NewUriParser(request.url)
 		request.url = parser.Generate(fmt.Sprintf("%s:%v", serverInstance.GetHost(), serverInstance.GetPort()))
 	}
-	//如果Url没有包含http，则认为需要添加baseUrl
-	if !strings.HasPrefix(request.url, "http") {
-		if c.BaseUrl == "" {
-			return nil, errors.New("url don't have host and client don't config baseUrl please config")
-		}
-		request.url = c.BaseUrl + request.url
-	}
+
 	if request.method == "GET" {
 		clientResp, err = c.Get(request)
 	} else { // POST
