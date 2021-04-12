@@ -9,8 +9,8 @@ import (
 
 type ApplicationBuilder struct {
 	hostBuilderContext *abstractions.HostBuilderContext
-	serviceConfigures  []func(server *grpc.Server, ctx *ServiceContext)
-	serverContext      *ServerBuilderContext
+
+	serverContext *ServerBuilderContext
 }
 
 func NewApplicationBuilder() *ApplicationBuilder {
@@ -33,7 +33,7 @@ func (builder *ApplicationBuilder) AddStreamServerInterceptor(interceptor ...grp
 }
 
 func (builder *ApplicationBuilder) AddGrpcService(configure func(server *grpc.Server, ctx *ServiceContext)) *ApplicationBuilder {
-	builder.serviceConfigures = append(builder.serviceConfigures, configure)
+	builder.serverContext.serviceConfigures = append(builder.serverContext.serviceConfigures, configure)
 	return builder
 }
 
@@ -53,9 +53,7 @@ func (builder *ApplicationBuilder) Build() interface{} {
 
 	server := grpc.NewServer(opts...)
 	svrCtx := NewServiceContext(builder.hostBuilderContext.HostServices, builder.hostBuilderContext.Configuration)
-	for _, configure := range builder.serviceConfigures {
-		configure(server, svrCtx)
-	}
+	builder.serverContext.context = svrCtx
 
 	builder.serverContext.server = server
 	return builder.serverContext
@@ -70,7 +68,7 @@ func (builder *ApplicationBuilder) SetHostBuildContext(context *abstractions.Hos
 
 //  this time is not build host.context.HostServices , that add services define
 func (builder *ApplicationBuilder) innerConfigures() {
-	//builder.hostBuilderContext.
-	//	ApplicationServicesDef.
-	//	AddSingletonByNameAndImplements("grpcService", f, new(f))
+	builder.hostBuilderContext.
+		ApplicationServicesDef.
+		AddSingleton(func() *grpc.Server { return builder.serverContext.server })
 }

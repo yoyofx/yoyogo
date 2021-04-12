@@ -378,6 +378,17 @@
 						"description": ""
 					},
 					"response": []
+				},
+				{
+					"name": "http://localhost:8080/app/actuator/route/info",
+					"request": {
+						"url": "http://localhost:8080/app/actuator/route/info",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
 				}
 			]
 		},

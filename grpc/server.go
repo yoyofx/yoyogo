@@ -38,6 +38,10 @@ func (server *Server) Run(context *abstractions.HostBuilderContext) (e error) {
 
 	server.serverContext = context.RequestDelegate.(*ServerBuilderContext)
 
+	for _, configure := range server.serverContext.serviceConfigures {
+		configure(server.serverContext.server, server.serverContext.context)
+	}
+
 	reflection.Register(server.serverContext.server)
 
 	lis, _ := net.Listen("tcp", addr)

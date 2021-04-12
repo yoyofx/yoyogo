@@ -4,20 +4,23 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 )
 
-type ClientFactory struct {
+type Factory struct {
+	selector     servicediscovery.Selector
+	hasDiscovery bool
 }
 
-func (cf *ClientFactory) CreateClient(baseUrl string) (*Client, error) {
-	client := NewClient()
-	client.hasSelector = false
-	client.BaseUrl = baseUrl
-	return client, nil
+func NewDiscoveryClientFactory(selector servicediscovery.Selector) *Factory {
+	return &Factory{selector: selector, hasDiscovery: true}
 }
 
-func (cf *ClientFactory) CreateServiceDiscoveryCleint(baseUrl string, selector servicediscovery.Selector) (*Client, error) {
+func NewFactory() *Factory {
+	return &Factory{hasDiscovery: false}
+}
+
+func (cf *Factory) Create(baseUrl string) (*Client, error) {
 	client := NewClient()
-	client.hasSelector = true
-	client.selector = selector
+	client.hasSelector = cf.hasDiscovery
+	client.selector = cf.selector
 	client.BaseUrl = baseUrl
 	return client, nil
 }
