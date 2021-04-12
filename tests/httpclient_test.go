@@ -83,7 +83,7 @@ func TestHttpCleintFactoryCreateServiceDiscoveryCleint(t *testing.T) {
 	port, _ := strconv.ParseUint(uri[2], 10, 64)
 	url = strings.Replace(url, "127.0.0.1", "[operations]", -1)
 
-	selector := servicediscovery.Selector{DiscoveryCache: &memory.MemoryCache{Services: []string{"localhost"}, Port: port},
+	selector := &servicediscovery.Selector{DiscoveryCache: &memory.MemoryCache{Services: []string{"localhost"}, Port: port},
 		Strategy: strategy.NewRound()}
 	factory := httpclient.NewDiscoveryClientFactory(selector)
 

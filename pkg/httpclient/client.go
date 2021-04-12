@@ -17,7 +17,7 @@ import (
 type Client struct {
 	defaultTransport *http.Transport
 	BaseUrl          string
-	selector         servicediscovery.Selector
+	selector         servicediscovery.ISelector
 	hasSelector      bool
 }
 

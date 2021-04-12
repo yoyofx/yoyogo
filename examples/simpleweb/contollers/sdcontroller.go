@@ -2,6 +2,8 @@ package contollers
 
 import (
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
+	"github.com/yoyofx/yoyogo/pkg/httpclient"
+	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofx/yoyogo/web/mvc"
 )
 
@@ -10,28 +12,37 @@ type SDController struct {
 	discoveryCache    servicediscovery.Cache
 	discoveryClient   servicediscovery.IServiceDiscoveryClient
 	discoverySelector servicediscovery.ISelector
+	httpFactory       httpclient.IDiscoveryClientFactory
 }
 
-func NewSDController(sd servicediscovery.IServiceDiscoveryClient, cache servicediscovery.Cache, selector servicediscovery.ISelector) *SDController {
-	return &SDController{discoveryClient: sd, discoveryCache: cache, discoverySelector: selector}
+func NewSDController(sd servicediscovery.IServiceDiscoveryClient, cache servicediscovery.Cache, selector servicediscovery.ISelector, factory httpclient.IDiscoveryClientFactory) *SDController {
+	return &SDController{discoveryClient: sd, discoveryCache: cache, discoverySelector: selector, httpFactory: factory}
 }
 
-func (controller SDController) GetSD() mvc.ApiResult {
+func (controller *SDController) GetSD() mvc.ApiResult {
 	serviceList := controller.discoveryClient.GetAllInstances("yoyogo_demo_dev")
 	return controller.OK(serviceList)
 }
 
-func (controller SDController) GetServices() mvc.ApiResult {
+func (controller *SDController) GetServices() mvc.ApiResult {
 	serviceList, _ := controller.discoveryClient.GetAllServices()
 	return controller.OK(serviceList)
 }
 
-func (controller SDController) GetCacheServices() mvc.ApiResult {
+func (controller *SDController) GetCacheServices() mvc.ApiResult {
 	serviceList, _ := controller.discoveryCache.GetService("yoyogo_demo_dev")
 	return controller.OK(serviceList)
 }
 
-func (controller SDController) GetOne() mvc.ApiResult {
+func (controller *SDController) GetOne() mvc.ApiResult {
 	serviceList, _ := controller.discoverySelector.Select("yoyogo_demo_dev")
 	return controller.OK(serviceList)
+}
+
+func (controller *SDController) HttpTest() mvc.ApiResult {
+	client, _ := controller.httpFactory.Create("http://[yoyogo_demo_dev]")
+	request := httpclient.WithRequest().GET("/app/v1/user/getinfo")
+	response, _ := client.Do(request)
+
+	return controller.OK(context.H{"request_url": request.GetUrl(), "response_body": string(response.Body)})
 }
