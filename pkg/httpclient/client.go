@@ -41,19 +41,19 @@ func NewClient() *Client {
 func WithFormRequest(params map[string]interface{}) *Request {
 	defaultHeader := make(http.Header)
 	defaultHeader.Set("Content-Type", "application/x-www-form-urlencoded")
-	request := &Request{header: defaultHeader, contentType: "application/x-www-form-urlencoded", params: params, timeout: 5}
+	request := &Request{header: defaultHeader, contentType: "application/x-www-form-urlencoded", params: params, timeout: 5, cookieData: make(map[string]*http.Cookie)}
 	return request
 }
 
 func WithRequest() *Request {
-	return &Request{header: make(http.Header), timeout: 5}
+	return &Request{header: make(http.Header), timeout: 5, cookieData: make(map[string]*http.Cookie)}
 }
 
 // WithFormRequest 快速配置表单请求类型
 func WithJsonRequest(json string) *Request {
 	defaultHeader := make(http.Header)
 	defaultHeader.Set("Content-Type", "application/json")
-	request := &Request{header: defaultHeader, contentType: "application/json", requestBody: []byte(json), timeout: 5}
+	request := &Request{header: defaultHeader, contentType: "application/json", requestBody: []byte(json), timeout: 5, cookieData: make(map[string]*http.Cookie)}
 	return request
 }
 
@@ -100,10 +100,6 @@ func (c *Client) Get(request *Request) (clientResp *Response, err error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-
-	if request.cookieData == nil {
-		request.cookieData = make(map[string]*http.Cookie)
-	}
 
 	for _, item := range resp.Cookies() {
 		request.setCookieData(item.Name, item)
@@ -171,9 +167,7 @@ func (c *Client) Post(request *Request) (clientResp *Response, err error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	if request.cookieData == nil {
-		request.cookieData = make(map[string]*http.Cookie)
-	}
+
 	for _, item := range resp.Cookies() {
 		request.setCookieData(item.Name, item)
 	}
