@@ -41,8 +41,11 @@ func (controller *SDController) GetOne() mvc.ApiResult {
 
 func (controller *SDController) HttpTest() mvc.ApiResult {
 	client, _ := controller.httpFactory.Create("http://[yoyogo_demo_dev]")
-	request := httpclient.WithRequest().GET("/app/v1/user/getinfo")
-	response, _ := client.Do(request)
-
-	return controller.OK(context.H{"request_url": request.GetUrl(), "response_body": string(response.Body)})
+	request := httpclient.WithRequest().GET("/app/v1/user/getinfo").SetTimeout(2)
+	response, err := client.Do(request)
+	if err != nil {
+		return controller.OK(context.H{"request_url": request.GetUrl(), "response_body": "", "err": err.Error()})
+	} else {
+		return controller.OK(context.H{"request_url": request.GetUrl(), "response_body": string(response.Body)})
+	}
 }
