@@ -40,7 +40,10 @@ func (controller *SDController) GetOne() mvc.ApiResult {
 }
 
 func (controller *SDController) HttpTest() mvc.ApiResult {
-	client, _ := controller.httpFactory.Create("http://[yoyogo_demo_dev]")
+	client, err := controller.httpFactory.Create("http://[yoyogo_demo_dev]")
+	if err != nil {
+		panic(err)
+	}
 	request := httpclient.WithRequest().GET("/app/v1/user/getinfo").SetTimeout(2)
 	response, err := client.Do(request)
 	if err != nil {
