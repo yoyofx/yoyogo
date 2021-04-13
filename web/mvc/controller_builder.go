@@ -70,7 +70,7 @@ func (builder *ControllerBuilder) AddController(controllerCtor interface{}) {
 	logger.Debug("add mvc controller: [%s]", controllerName)
 	for _, desc := range descriptor.GetActionDescriptors() {
 		//logger.Debug("add mvc controller action: %s", desc.ActionName)
-		logger.Debug("add mvc controller action:{[%s/%s],menthods=[%s]}", strings.Replace(controllerName, "controller", "", -1), desc.ActionName, strings.ToUpper(desc.ActionMethod))
+		logger.Debug("add mvc controller action:{[%s/%s],method=[%s]}", strings.Replace(controllerName, "controller", "", -1), strings.ToLower(desc.ActionName), strings.ToUpper(desc.ActionMethod))
 	}
 }
 

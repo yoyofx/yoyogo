@@ -118,3 +118,33 @@ func TestHttpClientFactoryBaseUrl(t *testing.T) {
 	fmt.Print(string(res.Body))
 	assert.Equal(t, string(res.Body), "ok")
 }
+
+func TestBaseUrlSplicingUrl(t *testing.T) {
+	factory := httpclient.NewFactory()
+	client1, err := factory.Create("http")
+	if err == nil {
+		panic("fail")
+	}
+	_, err2 := factory.Create("http://www.baidu.com")
+	if err2 != nil {
+		panic("fail")
+	}
+	_, err3 := factory.Create("http/www.baidu.com")
+	if err3 == nil {
+		panic("fail")
+	}
+	_, err4 := factory.Create("http://c.cn")
+	if err4 != nil {
+		panic("fail")
+	}
+
+	res := client1.SplicingUrl("http://www.baidu.com", "/v1/user")
+	assert.Equal(t, "http://www.baidu.com/v1/user", res)
+
+	res = client1.SplicingUrl("http://www.baidu.com/", "/v1/user")
+	assert.Equal(t, "http://www.baidu.com/v1/user", res)
+
+	res = client1.SplicingUrl("http://www.baidu.com/", "/v1/user/")
+	assert.Equal(t, "http://www.baidu.com/v1/user", res)
+
+}
