@@ -179,12 +179,10 @@ func (c *Client) Post(request *Request) (clientResp *Response, err error) {
 	clientResp.BodyRaw = resp
 	clientResp.Body = body
 	clientResp.RequestTime = requestTime
-
 	return clientResp, err
 }
 
 func (c *Client) Do(request *Request) (clientResp *Response, err error) {
-
 	if request.method == "" {
 		return nil, errors.New("this request is no method set.")
 	}
@@ -193,14 +191,14 @@ func (c *Client) Do(request *Request) (clientResp *Response, err error) {
 		if c.BaseUrl == "" {
 			return nil, errors.New("url don't have host and client don't config baseUrl please config")
 		}
-		request.url = c.BaseUrl + request.url
+		request.url = c.SplicingUrl(c.BaseUrl, request.url)
 	}
 	//如果设置了selector需要去匹配服务
 	if c.hasSelector {
 		//获取当前服务名称
 		serverName := strings.Split(strings.Split(request.url, "[")[1], "]")[0]
 		if serverName == "" {
-			return nil, errors.New("url don't contans serveName")
+			return nil, errors.New("url don't contains serveName")
 		}
 		//获取服务实例
 		serverInstance, err := c.selector.Select(serverName)
@@ -218,4 +216,19 @@ func (c *Client) Do(request *Request) (clientResp *Response, err error) {
 		clientResp, err = c.Post(request)
 	}
 	return clientResp, err
+}
+
+func (*Client) SplicingUrl(baseUrl string, url string) string {
+	if baseUrl != "" && url != "" {
+		baeLastStr := baseUrl[len(baseUrl)-1:]
+		urlFirstStr := url[:1]
+		urlLastStr := url[len(url)-1:]
+		if baeLastStr == "/" && urlFirstStr == "/" {
+			baseUrl = baseUrl[:len(baseUrl)-1]
+		}
+		if urlLastStr == "/" {
+			url = url[:len(url)-1]
+		}
+	}
+	return baseUrl + url
 }
