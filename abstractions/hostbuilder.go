@@ -26,6 +26,16 @@ func (host *HostBuilder) SetEnvironment(mode string) *HostBuilder {
 	return host
 }
 
+func (host *HostBuilder) UseStartup(startupFunc func() IStartup) *HostBuilder {
+	if startupFunc != nil {
+		startup := startupFunc()
+		host.ConfigureServices(func(collection *dependencyinjection.ServiceCollection) {
+			startup.ConfigureServices(collection)
+		})
+	}
+	return host
+}
+
 // Configure function func(IApplicationBuilder)
 func (host *HostBuilder) Configure(configure interface{}) *HostBuilder {
 	host.configures = append(host.configures, configure)
