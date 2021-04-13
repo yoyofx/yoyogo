@@ -5,20 +5,20 @@ import (
 	"sync/atomic"
 )
 
-type roundRobin struct {
+type RoundRobin struct {
 	//s servicediscovery.IServiceDiscovery
 	c uint64
 }
 
 // NewRandom returns a load balancer that selects services randomly.
 func NewRound() servicediscovery.Strategy {
-	return &roundRobin{
+	return &RoundRobin{
 		//s: sd,
 		c: 0,
 	}
 }
 
-func (r *roundRobin) Next(instanceList []servicediscovery.ServiceInstance) (servicediscovery.ServiceInstance, error) {
+func (r *RoundRobin) Next(instanceList []servicediscovery.ServiceInstance) (servicediscovery.ServiceInstance, error) {
 	//endpoints := r.s.GetAllInstances(serviceName)
 	if len(instanceList) <= 0 {
 		return nil, servicediscovery.ErrNoEndpoints

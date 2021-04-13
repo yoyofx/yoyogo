@@ -108,6 +108,8 @@ func (this *ApplicationBuilder) buildEndPoints() {
 func (this *ApplicationBuilder) buildMvc() {
 	if this.routerBuilder.IsMvc() {
 		controllerBuilder := this.routerBuilder.GetMvcBuilder()
+		this.hostContext.
+			ApplicationServicesDef.AddSingleton(this.routerBuilder.GetMvcBuilder)
 		// add config for controller builder
 		controllerBuilder.SetConfiguration(this.hostContext.Configuration)
 		for _, configure := range this.mvcConfigures {
@@ -154,6 +156,9 @@ func (this *ApplicationBuilder) innerConfigures() {
 		ApplicationServicesDef.
 		AddSingletonByNameAndImplements("viewEngine", view.CreateViewEngine, new(view.IViewEngine))
 	//-------------------------  view engine ----------------------------------
+
+	this.hostContext.
+		ApplicationServicesDef.AddSingleton(func() router.IRouterBuilder { return this.routerBuilder })
 
 	for _, provider := range this.handlersProviders {
 		this.hostContext.

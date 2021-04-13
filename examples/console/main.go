@@ -1,8 +1,8 @@
 package main
 
 import (
+	"fmt"
 	"github.com/yoyofx/yoyogo/console"
-	"github.com/yoyofx/yoyogo/dependencyinjection"
 )
 
 func main() {
@@ -10,14 +10,37 @@ func main() {
 	//	AddEnvironment().
 	//	AddYamlFile("config").Build()
 
-	hosting := console.NewHostBuilder().
-		//UseConfiguration(configuration).
-		//Configure(func(app *console.ApplicationBuilder) {
+	//hosting := console.NewHostBuilder().
+	//UseConfiguration(configuration).
+	//Configure(func(app *console.ApplicationBuilder) {
+	//}).
+	//	ConfigureServices(func(collection *dependencyinjection.ServiceCollection) {
+	//		hosting.AddHostService(collection, NewService)
+	//	}).Build()
+	//
+	//hosting.Run()
+
+	console.NewHostBuilder().
+		UseStartup(Startup).
+		//ConfigureServices(func(collection *dependencyinjection.ServiceCollection) {
+		//	hosting.AddHostService(collection, NewService)
 		//}).
-		ConfigureServices(func(collection *dependencyinjection.ServiceCollection) {
+		Build().Run()
+}
 
-		}).Build()
+type Service1 struct {
+}
 
-	hosting.Run()
+func NewService() *Service1 {
+	return &Service1{}
+}
 
+func (s *Service1) Run() error {
+	fmt.Println("host service Running")
+	return nil
+}
+
+func (s *Service1) Stop() error {
+	fmt.Println("host service Stopping")
+	return nil
 }

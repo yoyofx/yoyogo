@@ -9,14 +9,14 @@ type Registrar struct {
 	services []servicediscovery.ServiceInstance
 }
 
-func NewServerDiscovery(serviceName string, serviceList []string) servicediscovery.IServiceDiscovery {
+func NewServerDiscovery(serviceName string, serviceList []string, port uint64) servicediscovery.IServiceDiscovery {
 	var services []servicediscovery.ServiceInstance
 	for _, service := range serviceList {
 		instance := &servicediscovery.DefaultServiceInstance{
 			Id:          uuid.New().String(),
 			ServiceName: serviceName,
 			Host:        service,
-			Port:        8080,
+			Port:        port,
 			Enable:      true,
 			Weight:      0,
 			Healthy:     true,

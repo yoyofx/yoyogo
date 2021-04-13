@@ -12,6 +12,7 @@ import (
 )
 
 type DefaultRouterBuilder struct {
+	routeInfoList         []Info
 	mvcControllerBuilder  *mvc.ControllerBuilder
 	endPointRouterHandler *EndPointRouterHandler
 	configuration         abstractions.IConfiguration
@@ -59,6 +60,10 @@ func (router *DefaultRouterBuilder) SetConfiguration(config abstractions.IConfig
 
 }
 
+func (router *DefaultRouterBuilder) GetRouteInfo() []Info {
+	return router.routeInfoList
+}
+
 func (router *DefaultRouterBuilder) GetConfiguration() abstractions.IConfiguration {
 	return router.configuration
 }
@@ -92,6 +97,11 @@ func (router *DefaultRouterBuilder) Search(ctx *context.HttpContext, components 
 }
 
 func (router *DefaultRouterBuilder) MapSet(method, path string, handler func(ctx *context.HttpContext)) {
+	routeInfo := Info{Method: method, Path: path, Type: "normal"}
+	if strings.HasPrefix(path, "/actuator") {
+		routeInfo.Type = "actuator"
+	}
+	router.routeInfoList = append(router.routeInfoList, routeInfo)
 	router.endPointRouterHandler.Insert(method, path, handler)
 }
 

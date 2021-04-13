@@ -43,6 +43,7 @@ yoyogo:
     discovery:
       cache:
         ttl: 30     # seconds
+      strategy: "round-robin"    # round-robin  , weight-time ,  random
       type: "nacos"
       metadata:
         url: "120.53.133.30"
