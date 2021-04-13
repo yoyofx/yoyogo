@@ -50,6 +50,10 @@ func verificationBaseUrl(baseUrl string) bool {
 	}
 	reg := regexp.MustCompile(httpExpr)
 	if !reg.MatchString(baseUrl) {
+		//针对服务间调用的http调用进行特殊化处理
+		if (strings.HasPrefix(baseUrl, "http://") || strings.HasPrefix(baseUrl, "https://")) && (strings.Contains(baseUrl, "[") && strings.Contains(baseUrl, "]")) {
+			return true
+		}
 		return false
 	}
 	return true
