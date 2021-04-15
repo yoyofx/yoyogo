@@ -17,6 +17,10 @@ func main() {
 		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robin"}`),
 		grpc.WithResolvers(NewResolverBuilder()),
 	)
+	// call java service
+	//conn, err := grpc.Dial("localhost:6565",
+	//	grpc.WithInsecure(),
+	//)
 	defer conn.Close()
 
 	if err != nil {
