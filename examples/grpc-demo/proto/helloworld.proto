@@ -2,6 +2,9 @@ syntax = "proto3";
 
 package helloworld;
 
+option csharp_namespace = "grpcdemo";
+option java_package = "com.examples.grpcdemo.helloworld";
+option java_multiple_files = true;
 option go_package = "proto/helloworld;helloworld";
 
 service Greeter {

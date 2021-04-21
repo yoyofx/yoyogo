@@ -24,6 +24,11 @@ go get -u google.golang.org/grpc@v1.29.1
 protoc --go_out=plugins=grpc:. ./proto/*.proto
 ```
 
+## java 代码生成
+```bash
+protoc --java_out=./ XX.proto
+```
+
 ## grpc调试
 ```bash
 go install github.com/fullstorydev/grpcurl/cmd/grpcurl
