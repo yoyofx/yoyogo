@@ -1,6 +1,6 @@
 yoyogo:
   application:
-    name: yoyogo_demo_dev
+    name: yoyogo_grpc_dev
     metadata: "develop"
     server:
       type: "grpc"
