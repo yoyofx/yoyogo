@@ -9,11 +9,11 @@ import (
 )
 
 type GrpcConnFactory struct {
-	selector servicediscovery.Selector
+	Selector *servicediscovery.Selector
 }
 
 type LoadBalanceResolver struct {
-	selector   servicediscovery.Selector
+	selector   *servicediscovery.Selector
 	serverName string
 }
 
@@ -26,6 +26,12 @@ func (gcf *GrpcConnFactory) CreateGrpcConn(serverUrl string, grpcOpts ...grpc.Di
 		grpcOpts...,
 	)
 	return conn, err
+}
+
+func (gcf *GrpcConnFactory) NewLoadBalanceResolver() *LoadBalanceResolver {
+	return &LoadBalanceResolver{
+		selector: gcf.Selector,
+	}
 }
 
 // ResolveNow 实现了 resolver.Resolver.ResolveNow 方法
