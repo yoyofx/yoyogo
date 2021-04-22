@@ -1,26 +1,33 @@
-package grpc_conn
+package conn
 
 import (
 	"errors"
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/resolver"
+	"strconv"
 	"strings"
 )
 
-type GrpcConnFactory struct {
-	Selector *servicediscovery.Selector
+type Factory struct {
+	discoveryCache servicediscovery.Cache
+}
+
+func NewFactory(cache servicediscovery.Cache) *Factory {
+	return &Factory{discoveryCache: cache}
 }
 
 type LoadBalanceResolver struct {
-	selector   *servicediscovery.Selector
-	serverName string
+	discoveryCache servicediscovery.Cache
+	serverName     string
 }
 
-func (gcf *GrpcConnFactory) CreateGrpcConn(serverUrl string, grpcOpts ...grpc.DialOption) (*grpc.ClientConn, error) {
-	serverName := strings.Split(strings.Split(serverUrl, "[")[1], "]")[0]
-	if serverName == "" {
-		return nil, errors.New("url don't contains serveName")
+func (gcf *Factory) CreateClientConn(serverUrl string, grpcOpts ...grpc.DialOption) (*grpc.ClientConn, error) {
+	if grpcOpts == nil {
+		grpcOpts = append(grpcOpts, grpc.WithInsecure(),
+			grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robin"}`),
+			grpc.WithResolvers(gcf.NewLoadBalanceResolver()),
+		)
 	}
 	conn, err := grpc.Dial(serverUrl,
 		grpcOpts...,
@@ -28,9 +35,9 @@ func (gcf *GrpcConnFactory) CreateGrpcConn(serverUrl string, grpcOpts ...grpc.Di
 	return conn, err
 }
 
-func (gcf *GrpcConnFactory) NewLoadBalanceResolver() *LoadBalanceResolver {
+func (gcf *Factory) NewLoadBalanceResolver() *LoadBalanceResolver {
 	return &LoadBalanceResolver{
-		selector: gcf.Selector,
+		discoveryCache: gcf.discoveryCache,
 	}
 }
 
@@ -38,11 +45,12 @@ func (gcf *GrpcConnFactory) NewLoadBalanceResolver() *LoadBalanceResolver {
 func (*LoadBalanceResolver) ResolveNow(o resolver.ResolveNowOptions) {}
 
 // Close 实现了 resolver.Resolver.Close 方法
-func (r *LoadBalanceResolver) Close() {
+func (lr *LoadBalanceResolver) Close() {
 }
 
 func (lr *LoadBalanceResolver) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
-	service, err := lr.selector.DiscoveryCache.GetService(lr.serverName)
+	serverName := strings.Split(strings.Split(target.Endpoint, "[")[1], "]")[0]
+	service, err := lr.discoveryCache.GetService(serverName)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +60,7 @@ func (lr *LoadBalanceResolver) Build(target resolver.Target, cc resolver.ClientC
 	addressList := make([]resolver.Address, len(service.Nodes))
 	for _, item := range service.Nodes {
 		addressList = append(addressList, resolver.Address{
-			Addr: item.GetHost() + ":" + string(item.GetPort()),
+			Addr: item.GetHost() + ":" + strconv.FormatUint(item.GetPort(), 10),
 		})
 	}
 	cc.UpdateState(resolver.State{Addresses: addressList})
@@ -62,5 +70,5 @@ func (lr *LoadBalanceResolver) Build(target resolver.Target, cc resolver.ClientC
 // Scheme 实现了 resolver.Builder.Scheme 方法
 // Scheme 方法定义了 sd resolver 的协议名
 func (*LoadBalanceResolver) Scheme() string {
-	return "sd"
+	return "grpc"
 }
