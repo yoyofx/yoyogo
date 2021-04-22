@@ -9,6 +9,7 @@ type ConfigurationContext struct {
 	configType string
 	configName string
 	profile    string
+	configFile string
 }
 
 type ConfigurationBuilder struct {
