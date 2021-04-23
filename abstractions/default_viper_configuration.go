@@ -28,6 +28,7 @@ func NewConfiguration(configContext *ConfigurationContext) *Configuration {
 		flag.String("app", "", "application name")
 		flag.String("port", "", "application port")
 		flag.String("profile", configContext.profile, "application profile")
+		flag.String("f", "", "config file path")
 		flag.String("conf", ".", "config dir")
 		pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
 		pflag.Parse()
@@ -42,16 +43,24 @@ func NewConfiguration(configContext *ConfigurationContext) *Configuration {
 		configContext.configDir = cf
 	}
 
-	configName := configContext.configName + "_" + configContext.profile
-	configFilePath := path.Join(configContext.configDir, configName+"."+configContext.configType)
-	exists, _ := utils.PathExists(configFilePath)
-	if !exists {
-		configName = configContext.configName
+	if configFile := defaultConfig.GetString("f"); configFile != "" {
+		configContext.configFile = configFile
+	}
+	configFilePath := configContext.configFile
+	if configFilePath == "" {
+		configName := configContext.configName + "_" + configContext.profile
+		configFilePath = path.Join(configContext.configDir, configName+"."+configContext.configType)
+		exists, _ := utils.PathExists(configFilePath)
+		if !exists {
+			configName = configContext.configName
+		}
+		defaultConfig.AddConfigPath(configContext.configDir)
+		defaultConfig.SetConfigName(configName)
+		defaultConfig.SetConfigType(configContext.configType)
+	} else {
+		defaultConfig.SetConfigFile(configFilePath)
 	}
 
-	defaultConfig.AddConfigPath(configContext.configDir)
-	defaultConfig.SetConfigName(configName)
-	defaultConfig.SetConfigType(configContext.configType)
 	if err := defaultConfig.ReadInConfig(); err != nil {
 		panic(err)
 		return nil
