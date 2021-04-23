@@ -17,6 +17,8 @@ type IServiceHost interface {
 	SetAppMode(mode string)
 }
 
+var sdRegEnable bool = true
+
 // host base
 type ServiceHost struct {
 	HostContext *HostBuilderContext
@@ -25,6 +27,12 @@ type ServiceHost struct {
 }
 
 func NewServiceHost(server IServer, hostContext *HostBuilderContext) ServiceHost {
+	var sdconfig *servicediscovery.Config
+	_ = hostContext.HostServices.GetService(&sdconfig)
+	if sdconfig != nil {
+		sdRegEnable = sdconfig.RegisterWithSelf
+	}
+
 	return ServiceHost{Server: server, HostContext: hostContext, logger: xlog.GetXLogger("Application")}
 }
 
@@ -64,10 +72,12 @@ func HostEnding(log xlog.ILogger, context *HostBuilderContext) {
 
 func hostStarting(log xlog.ILogger, context *HostBuilderContext) {
 	//Service Discovery
-	var sd servicediscovery.IServiceDiscovery
-	_ = context.HostServices.GetService(&sd)
-	if sd != nil {
-		_ = sd.Register()
+	if sdRegEnable {
+		var sd servicediscovery.IServiceDiscovery
+		_ = context.HostServices.GetService(&sd)
+		if sd != nil {
+			_ = sd.Register()
+		}
 	}
 	//---------------------------------------------------
 	//Host Services
@@ -80,15 +90,19 @@ func hostStarting(log xlog.ILogger, context *HostBuilderContext) {
 
 func hostEnding(log xlog.ILogger, context *HostBuilderContext) {
 	//Service Discovery
-	var sd servicediscovery.IServiceDiscovery
+
 	var sdcache servicediscovery.Cache
 	err := context.HostServices.GetService(&sdcache)
 	if err == nil {
 		sdcache.Stop()
 	}
-	err = context.HostServices.GetService(&sd)
-	if err == nil && sd != nil {
-		_ = sd.Destroy()
+
+	if sdRegEnable {
+		var sd servicediscovery.IServiceDiscovery
+		err = context.HostServices.GetService(&sd)
+		if err == nil && sd != nil {
+			_ = sd.Destroy()
+		}
 	}
 	//---------------------------------------------------
 	//Host Services
