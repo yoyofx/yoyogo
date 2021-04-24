@@ -3,6 +3,7 @@ package servicediscovery
 import (
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/dependencyinjection"
+	grpconn "github.com/yoyofx/yoyogo/grpc/conn"
 	"github.com/yoyofx/yoyogo/pkg/httpclient"
 )
 
@@ -13,6 +14,9 @@ func UseGeneralServiceDiscovery(serviceCollection *dependencyinjection.ServiceCo
 	serviceCollection.AddSingletonByImplements(servicediscovery.NewCache, new(servicediscovery.Cache))
 	// selector for service discovery
 	serviceCollection.AddSingletonByImplements(servicediscovery.NewSelector, new(servicediscovery.ISelector))
-	// http client facotry
+	// http client factory
 	serviceCollection.AddSingleton(httpclient.NewDiscoveryClientFactory)
+	// grpc client factory
+	serviceCollection.AddSingleton(grpconn.NewFactory)
+
 }

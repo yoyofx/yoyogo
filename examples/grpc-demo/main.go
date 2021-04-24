@@ -4,6 +4,7 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/dependencyinjection"
 	yrpc "github.com/yoyofx/yoyogo/grpc"
+	"github.com/yoyofx/yoyogo/pkg/servicediscovery/nacos"
 	"google.golang.org/grpc"
 	pb "grpc-demo/proto/helloworld"
 	"grpc-demo/services"
@@ -27,6 +28,7 @@ func main() {
 		ConfigureServices(func(collection *dependencyinjection.ServiceCollection) {
 			collection.AddSingleton(services.NewGreeterServer) // add grpc service
 			collection.AddSingleton(services.NewIOCDemo)
+			nacos.UseServiceDiscovery(collection)
 		}).Build()
 
 	hosting.Run()

@@ -14,8 +14,8 @@ require (
 	github.com/franela/goreq v0.0.0-20171204163338-bcd34c9993f8 // indirect
 	github.com/go-redis/redis/v8 v8.4.4
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
-	github.com/golang/protobuf v1.4.2
-	github.com/google/uuid v1.1.1
+	github.com/golang/protobuf v1.5.0
+	github.com/google/uuid v1.1.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.0
 	github.com/hashicorp/consul/api v1.1.0
 	github.com/hudl/fargo v1.3.0
@@ -37,6 +37,7 @@ require (
 	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110
 	golang.org/x/sys v0.0.0-20210309074719-68d13333faf2
 	google.golang.org/grpc v1.29.1
+	google.golang.org/protobuf v1.26.0
 	gopkg.in/gcfg.v1 v1.2.3 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v2 v2.3.0
