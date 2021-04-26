@@ -5,6 +5,7 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/dependencyinjection"
 	"github.com/yoyofx/yoyogo/pkg/servicediscovery/strategy"
+	"strconv"
 	"time"
 )
 
@@ -31,5 +32,14 @@ func init() {
 			default:
 				serviceCollection.AddSingletonByImplements(strategy.NewRound, new(servicediscovery.Strategy))
 			}
+
+			sdRegEnableStr := config.GetString("yoyogo.cloud.discovery.register-enable")
+			sdRegEnable := true
+			if sdRegEnableStr != "" {
+				sdRegEnable, _ = strconv.ParseBool(sdRegEnableStr)
+			}
+			sdConfig := servicediscovery.NewConfig(sdRegEnable)
+			serviceCollection.AddSingleton(func() *servicediscovery.Config { return sdConfig })
+
 		})
 }

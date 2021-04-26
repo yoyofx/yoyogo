@@ -8,6 +8,7 @@ yoyogo:
     discovery:
       cache:
         ttl: 30     # seconds
+      register-enable: false
       type: "nacos"
       metadata:
         url: "120.53.133.30"
