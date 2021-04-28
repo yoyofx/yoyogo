@@ -1,6 +1,9 @@
 package binding
 
-import "net/http"
+import (
+	"net/http"
+	"unsafe"
+)
 
 // Content-Type MIME of the most common data formats.
 const (
@@ -55,27 +58,27 @@ type StructValidator interface {
 // Validator is the default validator which implements the StructValidator
 // interface. It uses https://github.com/go-playground/validator/tree/v8.18.2
 // under the hood.
-/*var Validator StructValidator = &defaultValidator{}*/
+var Validator StructValidator = &defaultValidator{}
 
 // These implement the Binding interface and can be used to bind the data
 // present in the request to struct instances.
 var (
-	/*JSON          = jsonBinding{}
-	XML           = xmlBinding{}*/
-	Form = formBinding{}
-	/*Query         = queryBinding{}*/
+	JSON          = jsonBinding{}
+	XML           = xmlBinding{}
+	Form          = formBinding{}
+	Query         = queryBinding{}
 	FormPost      = formPostBinding{}
 	FormMultipart = formMultipartBinding{}
-	/*ProtoBuf      = protobufBinding{}
+	ProtoBuf      = protobufBinding{}
 	MsgPack       = msgpackBinding{}
 	YAML          = yamlBinding{}
 	Uri           = uriBinding{}
-	Header        = headerBinding{}*/
+	Header        = headerBinding{}
 )
 
 // Default returns the appropriate Binding instance based on the HTTP method
 // and the content type.
-/*func Default(method, contentType string) Binding {
+func Default(method, contentType string) Binding {
 	if method == http.MethodGet {
 		return Form
 	}
@@ -97,10 +100,24 @@ var (
 		return Form
 	}
 }
-*/
-/*func validate(obj interface{}) error {
+
+func validate(obj interface{}) error {
 	if Validator == nil {
 		return nil
 	}
 	return Validator.ValidateStruct(obj)
-}*/
+}
+
+func StringToBytes(s string) []byte {
+	return *(*[]byte)(unsafe.Pointer(
+		&struct {
+			string
+			Cap int
+		}{s, len(s)},
+	))
+}
+
+// BytesToString converts byte slice to string without a memory allocation.
+func BytesToString(b []byte) string {
+	return *(*string)(unsafe.Pointer(&b))
+}
