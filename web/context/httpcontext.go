@@ -21,7 +21,7 @@ const (
 type H = map[string]interface{}
 
 type HttpContext struct {
-	Input            Input
+	Input            *Input
 	Output           Output
 	RequiredServices dependencyinjection.IServiceProvider
 	store            map[string]interface{}
@@ -83,9 +83,9 @@ func (ctx *HttpContext) Bind(i interface{}) (err error) {
 	tagName := defaultTagName
 	switch {
 	case strings.HasPrefix(contentType, MIMEApplicationXML):
-		err = xml.Unmarshal(ctx.Input.FormBody, i)
+		err = xml.Unmarshal(ctx.Input.GetBody(), i)
 	case strings.HasPrefix(contentType, MIMEApplicationJSON):
-		err = json.Unmarshal(ctx.Input.FormBody, i)
+		err = json.Unmarshal(ctx.Input.GetBody(), i)
 	default:
 	}
 	err = ConvertMapToStruct(tagName, i, ctx.Input.GetAllParam())

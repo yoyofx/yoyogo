@@ -112,7 +112,7 @@ func (l *Logger) Inovke(ctx *context.HttpContext, next func(ctx *context.HttpCon
 	strBody := ""
 	bodyFormat := "%s"
 	if ctx.Input.Request.Method == "POST" {
-		body := ctx.Input.FormBody
+		body := ctx.Input.GetBody()
 		strBody = string(body[:])
 		bodyFormat = "\n%s"
 	}
