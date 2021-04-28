@@ -17,11 +17,13 @@ import (
 )
 
 type Input struct {
-	Request     *http.Request
-	RouterData  url.Values
-	bodyCache   []byte
-	queryString url.Values
-	formCache   url.Values
+	Request        *http.Request
+	RouterData     url.Values
+	bodyCache      []byte
+	queryString    url.Values
+	formCache      url.Values
+	allParamsCache url.Values
+	RequestMaxSize int64
 }
 
 // NewInput return OrangeInput.
@@ -32,10 +34,9 @@ func NewInput(request *http.Request, maxMemory int64) *Input {
 	}
 	//queryStrings, _ := url.ParseQuery(request.URL.RawQuery)
 	input := &Input{
-		Request:    request,
-		RouterData: url.Values{},
-		//FormBody:    buf,
-		//queryString: queryStrings,
+		Request:        request,
+		RouterData:     url.Values{},
+		RequestMaxSize: maxMemory,
 	}
 	return input
 }
@@ -184,7 +185,7 @@ func (input *Input) ParseFormOrMultipartForm(maxMemory int64) error {
 	return nil
 }
 
-// Get Query string
+// QueryStrings Get queryString
 func (input *Input) QueryStrings() url.Values {
 	if input.queryString == nil {
 		if input.Request != nil {
@@ -205,7 +206,7 @@ func (input *Input) GetBody() []byte {
 	return input.bodyCache
 }
 
-// Get Query String By Key
+// Query Get Query String By Key
 // GET /path?id=1234&name=Manu&value=
 // c.Query("id") == "1234"
 // c.Query("name") == "Manu"
@@ -247,19 +248,20 @@ func (input *Input) SaveFile(name, saveDir string) (string, error) {
 }
 
 func (input *Input) GetAllParam() url.Values {
-	form := url.Values{}
+	if input.allParamsCache == nil {
+		input.allParamsCache = make(url.Values)
+		err := input.ParseFormOrMultipartForm(input.RequestMaxSize)
+		if err == nil {
+			utils.MergeMap(input.allParamsCache, input.formCache)
+			if input.Request.MultipartForm != nil {
+				utils.MergeMap(input.allParamsCache, input.Request.MultipartForm.Value)
+			}
 
-	err := input.ParseFormOrMultipartForm(defaultMaxMemory)
-	if err == nil {
-		utils.MergeMap(form, input.formCache)
-		if input.Request.MultipartForm != nil {
-			utils.MergeMap(form, input.Request.MultipartForm.Value)
 		}
-
+		utils.MergeMap(input.allParamsCache, input.QueryStrings())
+		utils.MergeMap(input.allParamsCache, input.RouterData)
 	}
-	utils.MergeMap(form, input.QueryStrings())
-	utils.MergeMap(form, input.RouterData)
-	return form
+	return input.allParamsCache
 }
 
 //Get Post Param
