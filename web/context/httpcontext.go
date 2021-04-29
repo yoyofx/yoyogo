@@ -10,16 +10,18 @@ import (
 )
 
 const (
-	defaultTagName   = "param"
-	jsonTagName      = "json"
-	defaultMaxMemory = 32 << 20 // 32 MB
+	defaultTagName = "param"
+	jsonTagName    = "json"
+)
 
+var (
+	defaultMaxMemory int64 = 32 << 20 // 32 MB
 )
 
 type H = map[string]interface{}
 
 type HttpContext struct {
-	Input            Input
+	Input            *Input
 	Output           Output
 	RequiredServices dependencyinjection.IServiceProvider
 	store            map[string]interface{}
@@ -27,15 +29,18 @@ type HttpContext struct {
 	Result           interface{}
 }
 
-func NewContext(w http.ResponseWriter, r *http.Request, sp dependencyinjection.IServiceProvider) *HttpContext {
+func NewContext(w http.ResponseWriter, r *http.Request, maxRequestSizeMemory int64, sp dependencyinjection.IServiceProvider) *HttpContext {
+	if maxRequestSizeMemory <= defaultMaxMemory {
+		maxRequestSizeMemory = defaultMaxMemory
+	}
 	ctx := &HttpContext{}
-	ctx.init(w, r, sp)
+	ctx.init(w, r, maxRequestSizeMemory, sp)
 	return ctx
 }
 
-func (ctx *HttpContext) init(w http.ResponseWriter, r *http.Request, sp dependencyinjection.IServiceProvider) {
+func (ctx *HttpContext) init(w http.ResponseWriter, r *http.Request, maxRequestSizeMemory int64, sp dependencyinjection.IServiceProvider) {
 	ctx.storeMutex = new(sync.RWMutex)
-	ctx.Input = NewInput(r, 20<<32)
+	ctx.Input = NewInput(r, maxRequestSizeMemory)
 	ctx.Output = Output{Response: &CResponseWriter{w, 0, 0, nil}}
 	ctx.RequiredServices = sp
 	ctx.storeMutex.Lock()
