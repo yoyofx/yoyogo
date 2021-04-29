@@ -76,8 +76,6 @@ var (
 	Header        = headerBinding{}
 )
 
-// Default returns the appropriate Binding instance based on the HTTP method
-// and the content type.
 func Default(method, contentType string) Binding {
 	if method == http.MethodGet {
 		return Form
