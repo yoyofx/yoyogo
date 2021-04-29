@@ -7,6 +7,7 @@ import (
 	"github.com/yoyofx/yoyogo/web/context"
 	"html/template"
 	"net/http"
+	"net/url"
 	"strconv"
 	"time"
 )
@@ -117,13 +118,14 @@ func (l *Logger) Inovke(ctx *context.HttpContext, next func(ctx *context.HttpCon
 		bodyFormat = "\n%s"
 	}
 
+	enEscapeUrl, _ := url.QueryUnescape(ctx.Input.Request.URL.RequestURI())
 	logInfo := LoggerInfo{
 		StartTime: start.Format(l.dateFormat),
 		Status:    res.Status(),
 		Duration:  strconv.FormatInt(time.Since(start).Milliseconds(), 10),
 		HostName:  ctx.Input.Request.Host,
 		Method:    ctx.Input.Request.Method,
-		Path:      ctx.Input.Request.URL.RequestURI(),
+		Path:      enEscapeUrl,
 		Body:      strBody,
 	}
 
