@@ -106,6 +106,12 @@ func NewLogger() *Logger {
 }
 
 func (l *Logger) Inovke(ctx *context.HttpContext, next func(ctx *context.HttpContext)) {
+	enEscapeUrl, _ := url.QueryUnescape(ctx.Input.Request.URL.RequestURI())
+	l.ALogger.Info(fmt.Sprintf("[yoyogo] Method: %s Url: %s  Content-Type: %s , Accept: %s",
+		ctx.Input.Method(), enEscapeUrl,
+		ctx.Input.Header(context.HeaderContentType),
+		ctx.Input.Header(context.HeaderAccept)))
+
 	start := time.Now()
 	next(ctx)
 	res := ctx.Output.GetWriter()
@@ -118,7 +124,6 @@ func (l *Logger) Inovke(ctx *context.HttpContext, next func(ctx *context.HttpCon
 		bodyFormat = "\n%s"
 	}
 
-	enEscapeUrl, _ := url.QueryUnescape(ctx.Input.Request.URL.RequestURI())
 	logInfo := LoggerInfo{
 		StartTime: start.Format(l.dateFormat),
 		Status:    res.Status(),

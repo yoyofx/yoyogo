@@ -1,6 +1,7 @@
 package contollers
 
 import (
+	"fmt"
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/web/actionresult"
 	"github.com/yoyofx/yoyogo/web/captcha"
@@ -31,7 +32,7 @@ func (controller UserController) Register(ctx *context.HttpContext, request *Reg
 
 func (controller UserController) GetUserName(ctx *context.HttpContext, request *RegisterRequest) actionresult.IActionResult {
 	result := mvc.ApiResult{Success: true, Message: "ok", Data: request}
-
+	fmt.Println("hello world")
 	return actionresult.Json{Data: result}
 }
 
