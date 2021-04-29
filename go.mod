@@ -24,7 +24,7 @@ require (
 	github.com/magiconair/properties v1.8.1
 	github.com/mattn/go-isatty v0.0.12 // indirect
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d
-	github.com/nacos-group/nacos-sdk-go v1.0.3
+	github.com/nacos-group/nacos-sdk-go v1.0.7
 	github.com/op/go-logging v0.0.0-20160315200505-970db520ece7
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v0.9.3
