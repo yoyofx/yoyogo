@@ -238,5 +238,5 @@ func (app *ApplicationBuilder) UseFunc(handlerFunc middlewares.MiddlewareHandler
 middlewares of Server MiddlewareHandler , request port.
 */
 func (app *ApplicationBuilder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	app.middleware.Invoke(context.NewContext(w, r, app.hostContext.ApplicationServices))
+	app.middleware.Invoke(context.NewContext(w, r, app.hostContext.HostConfiguration.Server.MaxRequestSize, app.hostContext.ApplicationServices))
 }

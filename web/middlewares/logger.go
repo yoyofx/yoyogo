@@ -7,6 +7,7 @@ import (
 	"github.com/yoyofx/yoyogo/web/context"
 	"html/template"
 	"net/http"
+	"net/url"
 	"strconv"
 	"time"
 )
@@ -105,6 +106,12 @@ func NewLogger() *Logger {
 }
 
 func (l *Logger) Inovke(ctx *context.HttpContext, next func(ctx *context.HttpContext)) {
+	enEscapeUrl, _ := url.QueryUnescape(ctx.Input.Request.URL.RequestURI())
+	l.ALogger.Info(fmt.Sprintf("[yoyogo] Method: %s Url: %s  Content-Type: %s , Accept: %s",
+		ctx.Input.Method(), enEscapeUrl,
+		ctx.Input.Header(context.HeaderContentType),
+		ctx.Input.Header(context.HeaderAccept)))
+
 	start := time.Now()
 	next(ctx)
 	res := ctx.Output.GetWriter()
@@ -112,7 +119,7 @@ func (l *Logger) Inovke(ctx *context.HttpContext, next func(ctx *context.HttpCon
 	strBody := ""
 	bodyFormat := "%s"
 	if ctx.Input.Request.Method == "POST" {
-		body := ctx.Input.FormBody
+		body := ctx.Input.GetBody()
 		strBody = string(body[:])
 		bodyFormat = "\n%s"
 	}
@@ -123,7 +130,7 @@ func (l *Logger) Inovke(ctx *context.HttpContext, next func(ctx *context.HttpCon
 		Duration:  strconv.FormatInt(time.Since(start).Milliseconds(), 10),
 		HostName:  ctx.Input.Request.Host,
 		Method:    ctx.Input.Request.Method,
-		Path:      ctx.Input.Request.URL.RequestURI(),
+		Path:      enEscapeUrl,
 		Body:      strBody,
 	}
 
