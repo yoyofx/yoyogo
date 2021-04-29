@@ -1,8 +1,10 @@
 package contollers
 
 import (
+	"fmt"
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/web/actionresult"
+	"github.com/yoyofx/yoyogo/web/binding"
 	"github.com/yoyofx/yoyogo/web/captcha"
 	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofx/yoyogo/web/mvc"
@@ -75,4 +77,32 @@ func (controller UserController) GetValidation(ctx *context.HttpContext) mvc.Api
 	md5 := ctx.GetSession().GetString("cimg_md5")
 	ok := captcha.Validation(text, md5)
 	return controller.OK(context.H{"validation": ok})
+}
+
+type UserInfo struct {
+	UserName string
+	Number   string
+	Id       string
+}
+
+//FromBody
+func (controller UserController) DefaultBinding(ctx *context.HttpContext) {
+	userInfo := &UserInfo{}
+	ctx.Bind(userInfo)
+	fmt.Println(userInfo)
+}
+
+//FromBody
+func (controller UserController) JsonBinding(ctx *context.HttpContext) {
+	userInfo := &UserInfo{}
+	ctx.AppointBinding(userInfo, binding.JSON)
+	fmt.Println(userInfo.UserName)
+}
+
+//FromQuery
+func (controller UserController) QueryBinding(ctx *context.HttpContext) {
+	userInfo := &UserInfo{}
+	err := ctx.AppointBinding(userInfo, binding.Query)
+	fmt.Println(err)
+	fmt.Println(userInfo)
 }

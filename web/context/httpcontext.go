@@ -1,13 +1,11 @@
 package context
 
 import (
-	"encoding/json"
-	"encoding/xml"
 	"errors"
 	"github.com/yoyofx/yoyogo/dependencyinjection"
 	"github.com/yoyofx/yoyogo/web/actionresult"
+	"github.com/yoyofx/yoyogo/web/binding"
 	"net/http"
-	"strings"
 	"sync"
 )
 
@@ -72,6 +70,7 @@ func (ctx *HttpContext) GetUser() map[string]interface{} {
 	return nil
 }
 
+//BootStrap Binding
 func (ctx *HttpContext) Bind(i interface{}) (err error) {
 	req := ctx.Input.Request
 	contentType := req.Header.Get(HeaderContentType)
@@ -80,15 +79,30 @@ func (ctx *HttpContext) Bind(i interface{}) (err error) {
 		return err
 	}
 	err = errors.New("request unsupported MediaType -> " + contentType)
-	tagName := defaultTagName
-	switch {
-	case strings.HasPrefix(contentType, MIMEApplicationXML):
-		err = xml.Unmarshal(ctx.Input.FormBody, i)
-	case strings.HasPrefix(contentType, MIMEApplicationJSON):
-		err = json.Unmarshal(ctx.Input.FormBody, i)
-	default:
+	bind := binding.Default(req.Method, contentType)
+	bind.Bind(req, i)
+	return err
+}
+
+//Use Binding By Name
+func (ctx *HttpContext) AppointBinding(i interface{}, bindEnum binding.Binding) (err error) {
+	req := ctx.Input.Request
+	contentType := req.Header.Get(HeaderContentType)
+	err = errors.New("request unsupported MediaType -> " + contentType)
+	switch bindEnum.Name() {
+	case binding.JSON.Name():
+		err = binding.JSON.Bind(req, i)
+	case binding.XML.Name():
+		err = binding.XML.Bind(req, i)
+	case binding.Query.Name():
+		err = binding.Query.Bind(req, i)
+	case binding.Uri.Name():
+		err = binding.Uri.BindUri(ctx.Input.GetAllParam(), i)
+	case binding.YAML.Name():
+		err = binding.YAML.Bind(req, i)
+	case binding.FormMultipart.Name():
+		err = binding.FormMultipart.Bind(req, i)
 	}
-	err = ConvertMapToStruct(tagName, i, ctx.Input.GetAllParam())
 	return err
 }
 
