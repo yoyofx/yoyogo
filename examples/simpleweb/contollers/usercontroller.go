@@ -8,6 +8,7 @@ import (
 	"github.com/yoyofx/yoyogo/web/captcha"
 	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofx/yoyogo/web/mvc"
+	"mime/multipart"
 	"simpleweb/models"
 )
 
@@ -80,29 +81,38 @@ func (controller UserController) GetValidation(ctx *context.HttpContext) mvc.Api
 }
 
 type UserInfo struct {
-	UserName string
-	Number   string
-	Id       string
+	UserName string                `form:"user" json:"user" binding:"required"`
+	Number   int                   `form:"num" json:"num" binding:"gt=0,lt=10"`
+	Id       string                `form:"id" json:"id" binding:"required,gt=0,lt=10"`
+	Image    *multipart.FileHeader `form:"file"`
 }
 
 //FromBody
-func (controller UserController) DefaultBinding(ctx *context.HttpContext) {
+func (controller UserController) DefaultBinding(ctx *context.HttpContext) mvc.ApiResult {
 	userInfo := &UserInfo{}
-	ctx.Bind(userInfo)
-	fmt.Println(userInfo)
+	err := ctx.Bind(userInfo)
+	if err != nil {
+		return controller.Fail(err.Error())
+	}
+	return controller.OK(userInfo)
 }
 
 //FromBody
-func (controller UserController) JsonBinding(ctx *context.HttpContext) {
+func (controller UserController) JsonBinding(ctx *context.HttpContext) mvc.ApiResult {
 	userInfo := &UserInfo{}
-	ctx.AppointBinding(userInfo, binding.JSON)
-	fmt.Println(userInfo.UserName)
+	err := ctx.BindWith(userInfo, binding.JSON)
+	if err != nil {
+		return controller.Fail(err.Error())
+	}
+	return controller.OK(userInfo)
 }
 
 //FromQuery
-func (controller UserController) QueryBinding(ctx *context.HttpContext) {
+func (controller UserController) QueryBinding(ctx *context.HttpContext) mvc.ApiResult {
 	userInfo := &UserInfo{}
-	err := ctx.AppointBinding(userInfo, binding.Query)
-	fmt.Println(err)
-	fmt.Println(userInfo)
+	err := ctx.BindWith(userInfo, binding.Query)
+	if err != nil {
+		return controller.Fail(err.Error())
+	}
+	return controller.OK(userInfo)
 }

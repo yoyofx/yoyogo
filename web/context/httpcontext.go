@@ -44,11 +44,12 @@ func (ctx *HttpContext) init(w http.ResponseWriter, r *http.Request, maxRequestS
 	ctx.Output = Output{Response: &CResponseWriter{w, 0, 0, nil}}
 	ctx.RequiredServices = sp
 	ctx.storeMutex.Lock()
-	ctx.store = nil
+	ctx.store = make(map[string]interface{})
 	ctx.storeMutex.Unlock()
+	binding.SetRequestMaxMemory(maxRequestSizeMemory)
 }
 
-//Set data in context.
+//SetItem Set data in context.
 func (ctx *HttpContext) SetItem(key string, val interface{}) {
 	ctx.storeMutex.Lock()
 	if ctx.store == nil {
@@ -58,7 +59,7 @@ func (ctx *HttpContext) SetItem(key string, val interface{}) {
 	ctx.storeMutex.Unlock()
 }
 
-// Get data in context.
+// GetItem Get data in context.
 func (ctx *HttpContext) GetItem(key string) interface{} {
 	ctx.storeMutex.RLock()
 	v := ctx.store[key]
@@ -75,7 +76,7 @@ func (ctx *HttpContext) GetUser() map[string]interface{} {
 	return nil
 }
 
-//BootStrap Binding
+// Bind BootStrap Binding
 func (ctx *HttpContext) Bind(i interface{}) (err error) {
 	req := ctx.Input.Request
 	contentType := req.Header.Get(HeaderContentType)
@@ -83,17 +84,14 @@ func (ctx *HttpContext) Bind(i interface{}) (err error) {
 		err = errors.New("request body can't be empty")
 		return err
 	}
-	err = errors.New("request unsupported MediaType -> " + contentType)
 	bind := binding.Default(req.Method, contentType)
-	bind.Bind(req, i)
+	err = bind.Bind(req, i)
 	return err
 }
 
-//Use Binding By Name
-func (ctx *HttpContext) AppointBinding(i interface{}, bindEnum binding.Binding) (err error) {
+// BindWith Use Binding By Name
+func (ctx *HttpContext) BindWith(i interface{}, bindEnum binding.Binding) (err error) {
 	req := ctx.Input.Request
-	contentType := req.Header.Get(HeaderContentType)
-	err = errors.New("request unsupported MediaType -> " + contentType)
 	switch bindEnum.Name() {
 	case binding.JSON.Name():
 		err = binding.JSON.Bind(req, i)
@@ -102,11 +100,17 @@ func (ctx *HttpContext) AppointBinding(i interface{}, bindEnum binding.Binding) 
 	case binding.Query.Name():
 		err = binding.Query.Bind(req, i)
 	case binding.Uri.Name():
-		err = binding.Uri.BindUri(ctx.Input.GetAllParam(), i)
+		err = binding.Uri.BindUri(ctx.Input.QueryStrings(), i)
 	case binding.YAML.Name():
 		err = binding.YAML.Bind(req, i)
 	case binding.FormMultipart.Name():
 		err = binding.FormMultipart.Bind(req, i)
+	case binding.ProtoBuf.Name():
+		err = binding.ProtoBuf.Bind(req, i)
+	case binding.MsgPack.Name():
+		err = binding.MsgPack.Bind(req, i)
+	default: // case MIMEPOSTForm:
+		return binding.Form.Bind(req, i)
 	}
 	return err
 }
@@ -116,7 +120,7 @@ func (ctx *HttpContext) Redirect(code int, url string) {
 	http.Redirect(ctx.Output.GetWriter(), ctx.Input.GetReader(), url, code)
 }
 
-// actionresult writes the response headers and calls render.actionresult to render data.
+// Render actionresult writes the response headers and calls render.actionresult to render data.
 func (ctx *HttpContext) Render(code int, r actionresult.IActionResult) {
 
 	if !bodyAllowedForStatus(code) {
