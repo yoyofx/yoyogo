@@ -109,6 +109,8 @@ func (ctx *HttpContext) BindWith(i interface{}, bindEnum binding.Binding) (err e
 		err = binding.ProtoBuf.Bind(req, i)
 	case binding.MsgPack.Name():
 		err = binding.MsgPack.Bind(req, i)
+	case binding.Header.Name():
+		err = binding.Header.Bind(req, i)
 	default: // case MIMEPOSTForm:
 		return binding.Form.Bind(req, i)
 	}
