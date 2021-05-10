@@ -149,6 +149,7 @@ func GetInfoByIOC(ctx *context.HttpContext) {
 	ctx.JSON(200, context.H{"info": "ok " + userAction.Login("zhang")})
 }
 
+//bootstrap binding
 //HttpPost request: /info/:id ?q1=abc&username=123
 func PostInfo(ctx *context.HttpContext) {
 	qs_q1 := ctx.Input.Query("q1")

@@ -3,7 +3,7 @@ package hostenv
 type WebServerConfig struct {
 	ServerType     string           `mapstructure:"type"`
 	Address        string           `mapstructure:"address"`
-	MaxRequestSize string           `mapstructure:"max_request_size"`
+	MaxRequestSize int64            `mapstructure:"max_request_size"`
 	Static         StaticConfig     `mapstructure:"static"`
 	Tls            HttpServerConfig `mapstructure:"tls"`
 }

@@ -12,6 +12,117 @@
 			"description": "",
 			"item": [
 				{
+					"name": "binding",
+					"description": "",
+					"item": [
+						{
+							"name": "http://localhost:8080/app/v1/user/defaultbinding",
+							"request": {
+								"url": "http://localhost:8080/app/v1/user/defaultbinding",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "user",
+											"value": "zl",
+											"type": "text",
+											"description": ""
+										},
+										{
+											"key": "num",
+											"value": "9",
+											"type": "text",
+											"description": ""
+										},
+										{
+											"key": "id",
+											"value": "1",
+											"type": "text",
+											"description": ""
+										}
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/app/v1/user/jsonbinding",
+							"request": {
+								"url": "http://localhost:8080/app/v1/user/jsonbinding",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\n\t\"user\":\"zl\",\n\t\"num\": 1,\n\t\"id\":\"1\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/app/v1/user/querybinding?user=zl&id=1&num=1",
+							"request": {
+								"url": {
+									"raw": "http://localhost:8080/app/v1/user/querybinding?user=zl&id=1&num=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"app",
+										"v1",
+										"user",
+										"querybinding"
+									],
+									"query": [
+										{
+											"key": "user",
+											"value": "zl",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "id",
+											"value": "1",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "num",
+											"value": "1",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
 					"name": "get c:user/a:register (MVC)",
 					"request": {
 						"url": {

@@ -1,27 +1,27 @@
 package context
 
 import (
-	"encoding/json"
-	"encoding/xml"
 	"errors"
 	"github.com/yoyofx/yoyogo/dependencyinjection"
 	"github.com/yoyofx/yoyogo/web/actionresult"
+	"github.com/yoyofx/yoyogo/web/binding"
 	"net/http"
-	"strings"
 	"sync"
 )
 
 const (
-	defaultTagName   = "param"
-	jsonTagName      = "json"
-	defaultMaxMemory = 32 << 20 // 32 MB
+	defaultTagName = "param"
+	jsonTagName    = "json"
+)
 
+var (
+	defaultMaxMemory int64 = 32 << 20 // 32 MB
 )
 
 type H = map[string]interface{}
 
 type HttpContext struct {
-	Input            Input
+	Input            *Input
 	Output           Output
 	RequiredServices dependencyinjection.IServiceProvider
 	store            map[string]interface{}
@@ -29,23 +29,27 @@ type HttpContext struct {
 	Result           interface{}
 }
 
-func NewContext(w http.ResponseWriter, r *http.Request, sp dependencyinjection.IServiceProvider) *HttpContext {
+func NewContext(w http.ResponseWriter, r *http.Request, maxRequestSizeMemory int64, sp dependencyinjection.IServiceProvider) *HttpContext {
+	if maxRequestSizeMemory <= defaultMaxMemory {
+		maxRequestSizeMemory = defaultMaxMemory
+	}
 	ctx := &HttpContext{}
-	ctx.init(w, r, sp)
+	ctx.init(w, r, maxRequestSizeMemory, sp)
 	return ctx
 }
 
-func (ctx *HttpContext) init(w http.ResponseWriter, r *http.Request, sp dependencyinjection.IServiceProvider) {
+func (ctx *HttpContext) init(w http.ResponseWriter, r *http.Request, maxRequestSizeMemory int64, sp dependencyinjection.IServiceProvider) {
 	ctx.storeMutex = new(sync.RWMutex)
-	ctx.Input = NewInput(r, 20<<32)
+	ctx.Input = NewInput(r, maxRequestSizeMemory)
 	ctx.Output = Output{Response: &CResponseWriter{w, 0, 0, nil}}
 	ctx.RequiredServices = sp
 	ctx.storeMutex.Lock()
-	ctx.store = nil
+	ctx.store = make(map[string]interface{})
 	ctx.storeMutex.Unlock()
+	binding.SetRequestMaxMemory(maxRequestSizeMemory)
 }
 
-//Set data in context.
+//SetItem Set data in context.
 func (ctx *HttpContext) SetItem(key string, val interface{}) {
 	ctx.storeMutex.Lock()
 	if ctx.store == nil {
@@ -55,7 +59,7 @@ func (ctx *HttpContext) SetItem(key string, val interface{}) {
 	ctx.storeMutex.Unlock()
 }
 
-// Get data in context.
+// GetItem Get data in context.
 func (ctx *HttpContext) GetItem(key string) interface{} {
 	ctx.storeMutex.RLock()
 	v := ctx.store[key]
@@ -72,6 +76,7 @@ func (ctx *HttpContext) GetUser() map[string]interface{} {
 	return nil
 }
 
+// Bind BootStrap Binding
 func (ctx *HttpContext) Bind(i interface{}) (err error) {
 	req := ctx.Input.Request
 	contentType := req.Header.Get(HeaderContentType)
@@ -79,16 +84,36 @@ func (ctx *HttpContext) Bind(i interface{}) (err error) {
 		err = errors.New("request body can't be empty")
 		return err
 	}
-	err = errors.New("request unsupported MediaType -> " + contentType)
-	tagName := defaultTagName
-	switch {
-	case strings.HasPrefix(contentType, MIMEApplicationXML):
-		err = xml.Unmarshal(ctx.Input.FormBody, i)
-	case strings.HasPrefix(contentType, MIMEApplicationJSON):
-		err = json.Unmarshal(ctx.Input.FormBody, i)
-	default:
+	bind := binding.Default(req.Method, contentType)
+	err = bind.Bind(req, i)
+	return err
+}
+
+// BindWith Use Binding By Name
+func (ctx *HttpContext) BindWith(i interface{}, bindEnum binding.Binding) (err error) {
+	req := ctx.Input.Request
+	switch bindEnum.Name() {
+	case binding.JSON.Name():
+		err = binding.JSON.Bind(req, i)
+	case binding.XML.Name():
+		err = binding.XML.Bind(req, i)
+	case binding.Query.Name():
+		err = binding.Query.Bind(req, i)
+	case binding.Uri.Name():
+		err = binding.Uri.BindUri(ctx.Input.QueryStrings(), i)
+	case binding.YAML.Name():
+		err = binding.YAML.Bind(req, i)
+	case binding.FormMultipart.Name():
+		err = binding.FormMultipart.Bind(req, i)
+	case binding.ProtoBuf.Name():
+		err = binding.ProtoBuf.Bind(req, i)
+	case binding.MsgPack.Name():
+		err = binding.MsgPack.Bind(req, i)
+	case binding.Header.Name():
+		err = binding.Header.Bind(req, i)
+	default: // case MIMEPOSTForm:
+		return binding.Form.Bind(req, i)
 	}
-	err = ConvertMapToStruct(tagName, i, ctx.Input.GetAllParam())
 	return err
 }
 
@@ -97,7 +122,7 @@ func (ctx *HttpContext) Redirect(code int, url string) {
 	http.Redirect(ctx.Output.GetWriter(), ctx.Input.GetReader(), url, code)
 }
 
-// actionresult writes the response headers and calls render.actionresult to render data.
+// Render actionresult writes the response headers and calls render.actionresult to render data.
 func (ctx *HttpContext) Render(code int, r actionresult.IActionResult) {
 
 	if !bodyAllowedForStatus(code) {
