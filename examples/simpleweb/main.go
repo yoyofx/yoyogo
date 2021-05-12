@@ -45,7 +45,7 @@ func main() {
 func CreateCustomBuilder() *abstractions.HostBuilder {
 	configuration := abstractions.NewConfigurationBuilder().
 		AddEnvironment().
-		AddYamlFile("config").Build()
+		AddYamlFile("config").AddRemoteWithNacos().Build()
 
 	return web.NewWebHostBuilder().
 		UseConfiguration(configuration).
