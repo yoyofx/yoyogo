@@ -1,5 +1,7 @@
 package abstractions
 
+import "github.com/spf13/viper"
+
 type IConfiguration interface {
 	Get(name string) interface{}
 	GetString(name string) string
@@ -9,4 +11,8 @@ type IConfiguration interface {
 	Unmarshal(interface{})
 	GetProfile() string
 	GetConfDir() string
+}
+
+type IConfigurationRemoteProvider interface {
+	GetProvider(*viper.Viper) *viper.Viper
 }
