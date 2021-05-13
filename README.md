@@ -12,19 +12,22 @@ YoyoGo 简单、轻量、快速、基于依赖注入的微服务框架
 ![Contributors](https://img.shields.io/github/contributors/yoyofx/yoyogo.svg)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-# 特色
-- 漂亮又快速的路由器
-- 中间件支持 (handler func & custom middleware)
-- 微服务框架抽象了分层，在一个框架体系兼容各种server实现，如 rest,grpc等
-- 受到许多出色的 Go Web 框架的启发，server可替换，目前实现了 **fasthttp** 和 **net.http**
+# YoyoGo 特色
+- 漂亮又快速的路由器 & MVC 模式 .
+- 丰富的中间件支持 (handler func & custom middleware) .
+- 微服务框架抽象了分层，在一个框架体系兼容各种server实现，如 rest,grpc等 .
+- 充分运用依赖注入DI，管理运行时生命周期，为框架提供了强大的扩展性 .
+- 功能强大的微服务集成能力 (Nacos, Eureka, Consul, ETCD) .
+- 受到许多出色的 Go Web 框架的启发，并实现了多种 server : **fasthttp** 和 **net.http** 和 **grpc** .
+
+![framework desgin](docs/framework-desgin.jpg)
 
 QQ交流群： [780385870](https://qm.qq.com/cgi-bin/qm/qr?k=xP5ZSGZaLLgJIjK0P89gen8V-p5b1cHg&jump_from=webapi) (Go浪文学院) , 在这里感谢**贾国锦**帮忙设计的logo很漂亮。
 
-也可以加入我的公众号，通过公众号入群菜单进入微信群
+也可以加入我的公众号，通过公众号入群菜单进入微信群，主要还是在微信上活动啦。
 
-<a href="https://sourcerer.io/yoyofx"><img src="https://mnur-prod-public.oss-cn-beijing.aliyuncs.com/0/tech/20201209184239.png" width = "240px" height = "240px" alt="" align=center /></a>
+<a href="https://sourcerer.io/yoyofx"><img src="https://mnur-prod-public.oss-cn-beijing.aliyuncs.com/0/tech/20201209184239.png" width = "180px" height = "180px" alt="" align=center /></a>
 
-感兴趣的朋友
 
 # 框架安装
 ```bash
