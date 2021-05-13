@@ -38,14 +38,14 @@ go get github.com/yoyofx/yoyogo
 ```bash
 window 下在 cmd 中执行：
 set GO111MODULE=on
-set GOPROXY=https://goproxy.io,direct,https://mirrors.aliyun.com/goproxy/,https://goproxy.cn,https://athens.azurefd.net,https://gonexus.dev 
+set GOPROXY=https://goproxy.cn,direct
 linux  下执行：
 export GO111MODULE=on
-export GOPROXY=https://goproxy.cn
+export GOPROXY=https://goproxy.cn,direct
 ```
 ##  go version >= 1.13
 ```
-go env -w GOPROXY=https://goproxy.io,direct,https://mirrors.aliyun.com/goproxy/,https://goproxy.cn,https://athens.azurefd.net,https://gonexus.dev
+go env -w GOPROXY=https://goproxy.cn,direct
 ```
 ### vendor
 ```
@@ -129,7 +129,7 @@ func main() {
 * [X] WebSocket
 * [X] JWT 
 * [ ] swagger
-* [ ] GRpc	 
+* [X] GRpc	 
 * [X] Prometheus 
 
 
