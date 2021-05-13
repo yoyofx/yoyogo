@@ -20,7 +20,7 @@ YoyoGo 简单、轻量、快速、基于依赖注入的微服务框架
 - 功能强大的微服务集成能力 (Nacos, Eureka, Consul, ETCD) .
 - 受到许多出色的 Go Web 框架的启发，并实现了多种 server : **fasthttp** 和 **net.http** 和 **grpc** .
 
-![framework desgin](docs/framework-desgin.jpg)
+![framework desgin](https://mnur-prod-public.oss-cn-beijing.aliyuncs.com/0/tech/framework-desgin.jpg)
 
 QQ交流群： [780385870](https://qm.qq.com/cgi-bin/qm/qr?k=xP5ZSGZaLLgJIjK0P89gen8V-p5b1cHg&jump_from=webapi) (Go浪文学院) , 在这里感谢**贾国锦**帮忙设计的logo很漂亮。
 
