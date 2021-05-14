@@ -8,7 +8,11 @@ import (
 	"net/http"
 )
 
-const defaultMemory = 32 << 20
+func SetRequestMaxMemory(maxMemory int64) {
+	defaultMemory = maxMemory
+}
+
+var defaultMemory int64 = 32 << 20
 
 type formBinding struct{}
 type formPostBinding struct{}

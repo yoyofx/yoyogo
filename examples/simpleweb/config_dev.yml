@@ -49,8 +49,10 @@ yoyogo:
         url: "120.53.133.30"
         port: 80
         namespace: "public"
-        group: ""
+        group: "DEFAULT_GROUP"
         cluster: ""
+        configserver:
+          dataId: "simple_demo"
         auth:
           enable: true
           username: "root"

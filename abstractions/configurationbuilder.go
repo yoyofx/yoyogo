@@ -1,15 +1,20 @@
 package abstractions
 
-import "github.com/yoyofx/yoyogo/abstractions/hostenv"
+import (
+	"github.com/yoyofx/yoyogo/abstractions/hostenv"
+	nacos_viper_remote "github.com/yoyofxteam/nacos-viper-remote"
+)
 
 type ConfigurationContext struct {
-	enableFlag bool
-	enableEnv  bool
-	configDir  string
-	configType string
-	configName string
-	profile    string
-	configFile string
+	enableFlag     bool
+	enableEnv      bool
+	configDir      string
+	configType     string
+	configName     string
+	profile        string
+	configFile     string
+	enableRemote   bool
+	remoteProvider IConfigurationRemoteProvider
 }
 
 type ConfigurationBuilder struct {
@@ -43,6 +48,15 @@ func (builder *ConfigurationBuilder) AddJsonFile(name string) *ConfigurationBuil
 		builder.context.configType = "json"
 		builder.context.configName = name
 	}
+	return builder
+}
+
+func (builder *ConfigurationBuilder) AddRemoteWithNacos() *ConfigurationBuilder {
+	if builder.context.configType == "" {
+		builder.context.configType = "yml"
+	}
+	builder.context.enableRemote = true
+	builder.context.remoteProvider = nacos_viper_remote.NewRemoteProvider(builder.context.configType)
 	return builder
 }
 
