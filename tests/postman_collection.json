@@ -1,0 +1,609 @@
+{
+	"variables": [],
+	"info": {
+		"name": "yoyogo tests",
+		"_postman_id": "b30d3028-2d94-9d12-7427-be673a10fd4a",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Mvc",
+			"description": "",
+			"item": [
+				{
+					"name": "binding",
+					"description": "",
+					"item": [
+						{
+							"name": "http://localhost:8080/app/v1/user/defaultbinding",
+							"request": {
+								"url": "http://localhost:8080/app/v1/user/defaultbinding",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "user",
+											"value": "zl",
+											"type": "text",
+											"description": ""
+										},
+										{
+											"key": "num",
+											"value": "9",
+											"type": "text",
+											"description": ""
+										},
+										{
+											"key": "id",
+											"value": "1",
+											"type": "text",
+											"description": ""
+										}
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/app/v1/user/jsonbinding",
+							"request": {
+								"url": "http://localhost:8080/app/v1/user/jsonbinding",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": ""
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\n\t\"user\":\"zl\",\n\t\"num\": 1,\n\t\"id\":\"1\"\n}"
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/app/v1/user/querybinding?user=zl&id=1&num=1",
+							"request": {
+								"url": {
+									"raw": "http://localhost:8080/app/v1/user/querybinding?user=zl&id=1&num=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"app",
+										"v1",
+										"user",
+										"querybinding"
+									],
+									"query": [
+										{
+											"key": "user",
+											"value": "zl",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "id",
+											"value": "1",
+											"equals": true,
+											"description": ""
+										},
+										{
+											"key": "num",
+											"value": "1",
+											"equals": true,
+											"description": ""
+										}
+									],
+									"variable": []
+								},
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "get c:user/a:register (MVC)",
+					"request": {
+						"url": {
+							"raw": "http://localhost:8080/app/v1/usercontroller/Register?UserName=max&Password=123",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"app",
+								"v1",
+								"usercontroller",
+								"Register"
+							],
+							"query": [
+								{
+									"key": "UserName",
+									"value": "max",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "Password",
+									"value": "123",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/user/GetInfo",
+					"request": {
+						"url": "http://localhost:8080/app/v1/user/GetInfo",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/v1/user/info",
+					"request": {
+						"url": "http://localhost:8080/app/v1/user/getinfo",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/v1/user/username?username=max&password=123",
+					"request": {
+						"url": {
+							"raw": "http://localhost:8080/app/v1/user/getusername?UserName=max&Password=123",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"app",
+								"v1",
+								"user",
+								"getusername"
+							],
+							"query": [
+								{
+									"key": "UserName",
+									"value": "max",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "Password",
+									"value": "123",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/v1/user/postuserinfo",
+					"request": {
+						"url": "http://localhost:8080/app/v1/user/postuserinfo",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": "",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "UserName",
+									"value": "zl",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "Password",
+									"value": "123",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/v1/user/gethtmlhello",
+					"request": {
+						"url": "http://localhost:8080/app/v1/user/gethtmlhello",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 1eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTgxNzQxODAsImlzcyI6InlveW8iLCJ1aWQiOjIyLCJhZG1pbiI6ZmFsc2V9.Wk6bXDjuOMLRbb_rQRuxZrRr2B2MG7Ot4iHmAxzJC1Q",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/v1/user/postuserinfo",
+					"request": {
+						"url": "http://localhost:8080/app/v1/user/postuserinfo",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTgxNjYwNzIsImlzcyI6IllEUSIsInVpZCI6MjIyMiwiYWRtaW4iOmZhbHNlfQ.fS_cDhbuZVLbrSI_fN1zT3_ZU59HdOpcvuzaQkWHeLE",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"UserName\":\"zl\",\"Password\":\"123\"}"
+						},
+						"description": "json body"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/v1/user/GetSD",
+					"request": {
+						"url": "http://localhost:8080/app/v1/user/GetSD",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "获取服务发现实例"
+					},
+					"response": []
+				},
+				{
+					"name": "get c:user/a:register (MVC)",
+					"request": {
+						"url": {
+							"raw": "http://localhost:8080/app/v1/usercontroller/Register?username=max&password=123",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"app",
+								"v1",
+								"usercontroller",
+								"Register"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "max",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "password",
+									"value": "123",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/app/v1/user/captcha",
+					"request": {
+						"url": "http://localhost:8080/app/v1/user/captcha",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/app/v1/db/mysql",
+					"request": {
+						"url": "http://localhost:8080/app/v1/db/mysql",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/app/v1/sd/services",
+					"request": {
+						"url": "http://localhost:8080/app/v1/sd/services",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/app/v1/sd/cacheservices",
+					"request": {
+						"url": "http://localhost:8080/app/v1/sd/cacheservices",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "sd by cache"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/app/v1/sd/one",
+					"request": {
+						"url": "http://localhost:8080/app/v1/sd/one",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "服务发现selector"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/app/v1/sd/httptest",
+					"request": {
+						"url": "http://localhost:8080/app/v1/sd/httptest",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Endpoint",
+			"description": "",
+			"item": [
+				{
+					"name": "http://localhost:8080/actuator/health",
+					"request": {
+						"url": "http://localhost:8080/app/actuator/health",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/actuator/graph?type=viz",
+					"request": {
+						"url": {
+							"raw": "http://localhost:8080/app/actuator/graph?type=viz",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"app",
+								"actuator",
+								"graph"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "viz",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/auth/token",
+					"request": {
+						"url": "http://localhost:8080/app/auth/token",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"id\":\"22\" , \"name\":\"yoyo\"  }"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/app/actuator/health/readiness",
+					"request": {
+						"url": "http://localhost:8080/app/actuator/health/readiness",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "",
+								"disabled": true
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/app/actuator/route/info",
+					"request": {
+						"url": "http://localhost:8080/app/actuator/route/info",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "post /info/:id  (params binding)",
+			"request": {
+				"url": {
+					"raw": "http://localhost:8080/app/info/1?q1=1231232",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"app",
+						"info",
+						"1"
+					],
+					"query": [
+						{
+							"key": "q1",
+							"value": "1231232",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\":\"zl\"\n}"
+				},
+				"description": "Post /info/:id querystring is q1  body { username: \"xxx\"  }"
+			},
+			"response": []
+		},
+		{
+			"name": "get /v1/api/info (group)",
+			"request": {
+				"url": "http://localhost:8080/app/v1/api/info",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "group by /v1/api/info"
+			},
+			"response": []
+		},
+		{
+			"name": "get /info",
+			"request": {
+				"url": "http://localhost:8080/app/info",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Origin",
+						"value": "localhost",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "get /info"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/app/newsession",
+			"request": {
+				"url": "http://localhost:8080/app/newsession",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/app/session",
+			"request": {
+				"url": "http://localhost:8080/app/session",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

@@ -3,9 +3,8 @@ YoyoGo is a simple, light and fast Web framework written in Go.
 
 ![Release](https://img.shields.io/github/v/tag/yoyofx/yoyogo.svg?color=24B898&label=release&logo=github&sort=semver)
 ![Go](https://github.com/yoyofx/yoyogo/workflows/Go/badge.svg)
-![GoVersion](https://img.shields.io/github/go-mod/go-version/maxzhang1985/yoyogo)
-![DockerPull](https://img.shields.io/docker/pulls/maxzhang1985/yoyogo)
-[![Report](https://goreportcard.com/badge/github.com/yoyofx/yoyogo)](https://goreportcard.com/report/github.com/maxzhang1985/yoyogo)
+![GoVersion](https://img.shields.io/github/go-mod/go-version/yoyofx/yoyogo)
+[![Report](https://goreportcard.com/badge/github.com/yoyofx/yoyogo)](https://goreportcard.com/report/github.com/yoyofx/yoyogo)
 [![Documentation](https://img.shields.io/badge/godoc-reference-blue.svg?color=24B898&logo=go&logoColor=ffffff)](https://godoc.org/github.com/yoyofx/yoyogo)
 ![Contributors](https://img.shields.io/github/contributors/yoyofx/yoyogo.svg)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
@@ -17,8 +16,6 @@ YoyoGo is a simple, light and fast Web framework written in Go.
 - No regexp or reflect
 - Inspired by many excellent Go Web framework
 
-[![](Resources/dingdingQR.jpg)](https://sourcerer.io/yoyofx)
-
 # Installation
 `go get github.com/yoyofx/yoyogo`
 
@@ -28,15 +25,14 @@ package main
 import ...
 
 func main() {
-    webHost := YoyoGo.CreateDefaultBuilder(func(router Router.IRouterBuilder) {
-        router.GET("/info",func (ctx *Context.HttpContext) {
-            ctx.JSON(200, Context.H{"info": "ok"})
-        })
-    }).Build().Run()       //default port :8080
+	WebApplication.CreateDefaultBuilder(func(rb router.IRouterBuilder) {
+		rb.GET("/info",func (ctx *context.HttpContext) {    // 支持Group方式
+			ctx.JSON(200, context.H{"info": "ok"})
+		})
+	}).Build().Run()       //默认端口号 :8080
 }
 ```
-![](Resources/yoyorun.jpg)
-
+![](https://mnur-prod-public.oss-cn-beijing.aliyuncs.com/0/tech/20201209182340.png)
 
 # ToDo
 ## Standard
@@ -45,7 +41,7 @@ func main() {
 * [X] Simple router binded handle func
 * [X] HttpContext (request,response)
 * [X] Static File EndPoint（Static File Server）
-* [X] JSON Serialization Struct （Context.H）
+* [X] JSON Serialization Struct （Context.M）
 * [X] Get Request File And Save
 * [X] Unite Get Post Data Away (form-data , x-www-form-urlencoded)
 * [X] Binding Model for Http Request ( From, JSON ) 
@@ -94,8 +90,8 @@ func main() {
 * [X] Framework's factory and type in Dependency injection Integration
 
 ## Features
-* [ ] configtion
-* [ ] WebSocket
+* [X] configtion
+* [X] WebSocket
 * [X] JWT 
 * [ ] swagger
 * [ ] GRpc
@@ -112,51 +108,55 @@ func main() {
 	webHost.Run()
 }
 
-func CreateCustomBuilder() *Abstractions.HostBuilder {
-    configuration := Abstractions.NewConfigurationBuilder().AddYamlFile("config").Build()
-   	return YoyoGo.NewWebHostBuilder().
-   		UseConfiguration(configuration).
-   		Configure(func(app *YoyoGo.WebApplicationBuilder) {
-   			app.UseMiddleware(Middleware.NewCORS())
-   			app.UseMiddleware(Middleware.NewRequestTracker())
-   			app.UseStaticAssets()
-   			app.UseEndpoints(registerEndpointRouterConfig)
-   			app.UseMvc(func(builder *Mvc.ControllerBuilder) {
-   				//builder.AddViews(&View.Option{Path: "./Static/templates"})
-   				builder.AddViewsByConfig()
-   				builder.AddController(contollers.NewUserController)
-   				builder.AddFilter("/v1/user/info", &contollers.TestActionFilter{})
-   			})
-   		}).
-   		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
-   			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
-   			// Eureka.UseServiceDiscovery(serviceCollection)
-   			//Consul.UseServiceDiscovery(serviceCollection)
-   			Nacos.UseServiceDiscovery(serviceCollection)
-   		}).
-   		OnApplicationLifeEvent(getApplicationLifeEvent)
+func CreateCustomBuilder() *abstractions.HostBuilder {
+
+	configuration := abstractions.NewConfigurationBuilder().
+		AddEnvironment().
+		AddYamlFile("config").Build()
+
+	return WebApplication.NewWebHostBuilder().
+		UseConfiguration(configuration).
+		Configure(func(app *WebApplication.WebApplicationBuilder) {
+			app.UseMiddleware(middlewares.NewCORS())
+			//WebApplication.UseMiddleware(middlewares.NewRequestTracker())
+			app.UseStaticAssets()
+			app.UseEndpoints(registerEndpointRouterConfig)
+			app.UseMvc(func(builder *mvc.ControllerBuilder) {
+				//builder.AddViews(&view.Option{Path: "./static/templates"})
+				builder.AddViewsByConfig()
+				builder.AddController(contollers.NewUserController)
+				builder.AddFilter("/v1/user/info", &contollers.TestActionFilter{})
+			})
+		}).
+		ConfigureServices(func(serviceCollection *dependencyinjection.ServiceCollection) {
+			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
+			//eureka.UseServiceDiscovery(serviceCollection)
+			//consul.UseServiceDiscovery(serviceCollection)
+			nacos.UseServiceDiscovery(serviceCollection)
+		}).
+		OnApplicationLifeEvent(getApplicationLifeEvent)
 }
 
 //region endpoint router config function
-func registerEndpoints(router Router.IRouterBuilder) {
-    Endpoints.UseHealth(router)
-	Endpoints.UseViz(router)
-	Endpoints.UsePrometheus(router)
-	Endpoints.UsePprof(router)
-	Endpoints.UseJwt(router)	
+func registerEndpoints(rb router.IRouterBuilder) {
+    Endpoints.UseHealth(rb)
+	Endpoints.UseViz(rb)
+	Endpoints.UsePrometheus(rb)
+	Endpoints.UsePprof(rb)
+	Endpoints.UseJwt(rb)
 
-    router.GET("/error", func(ctx *Context.HttpContext) {
+	rb.GET("/error", func(ctx *context.HttpContext) {
 		panic("http get error")
 	})
 
-	router.POST("/info/:id", PostInfo)
+	rb.POST("/info/:id", PostInfo)
 
-	router.Group("/v1/api", func(router *Router.RouterGroup) {
-		router.GET("/info", GetInfo)
+	rb.Group("/v1/api", func(rg *router.RouterGroup) {
+		rg.GET("/info", GetInfo)
 	})
 
-	router.GET("/info", GetInfo)
-	router.GET("/ioc", GetInfoByIOC)
+	rb.GET("/info", GetInfo)
+	rb.GET("/ioc", GetInfoByIOC)
 }
 
 //endregion
@@ -170,18 +170,18 @@ type UserInfo struct {
 
 //HttpGet request: /info  or /v1/api/info
 //bind UserInfo for id,q1,username
-func GetInfo(ctx *Context.HttpContext) {
-	ctx.JSON(200,  Context.H{"info": "ok"})
+func GetInfo(ctx *context.HttpContext) {
+	ctx.JSON(200,  context.H{"info": "ok"})
 }
 
-func GetInfoByIOC(ctx *Context.HttpContext) {
+func GetInfoByIOC(ctx *context.HttpContext) {
 	var userAction models.IUserAction
 	_ = ctx.RequiredServices.GetService(&userAction)
-	ctx.JSON(200,  Context.H{"info": "ok " + userAction.Login("zhang")})
+	ctx.JSON(200,  context.H{"info": "ok " + userAction.Login("zhang")})
 }
 
 //HttpPost request: /info/:id ?q1=abc&username=123
-func PostInfo(ctx *Context.HttpContext) {
+func PostInfo(ctx *context.HttpContext) {
 	qs_q1 := ctx.Query("q1")
 	pd_name := ctx.Param("username")
 
@@ -190,11 +190,11 @@ func PostInfo(ctx *Context.HttpContext) {
 
 	strResult := fmt.Sprintf("Name:%s , Q1:%s , bind: %s", pd_name, qs_q1, userInfo)
 
-	ctx.JSON(200,  Context.H{"info": "hello world", "result": strResult})
+	ctx.JSON(200,  context.H{"info": "hello world", "result": strResult})
 }
 
-func fireApplicationLifeEvent(life *YoyoGo.ApplicationLife) {
-	printDataEvent := func(event YoyoGo.ApplicationEvent) {
+func fireApplicationLifeEvent(life *abstractions.ApplicationLife) {
+	printDataEvent := func(event abstractions.ApplicationEvent) {
 		fmt.Printf("[yoyogo] Topic: %s; Event: %v\n", event.Topic, event.Data)
 	}
 	for {
@@ -208,9 +208,9 @@ func fireApplicationLifeEvent(life *YoyoGo.ApplicationLife) {
 	}
 }
 
-// Mvc 
+// mvc 
 type UserController struct {
-	*Controller.ApiController
+	*mvc.ApiController
 	userAction models.IUserAction    // IOC
 }
 
@@ -221,19 +221,19 @@ func NewUserController(userAction models.IUserAction) *UserController {
 
 // reuqest param binder
 type RegiserRequest struct {
-	Controller.RequestParam
+	mvc.RequestBody
 	UserName string `param:"username"`
 	Password string `param:"password"`
 }
 
 // auto bind action param by ioc
-func (this *UserController) Register(ctx *Context.HttpContext, request *RegiserRequest) ActionResult.IActionResult {
-	result := Controller.ApiResult{Success: true, Message: "ok", Data: request}
-	return ActionResult.Json{Data: result}
+func (this *UserController) Register(ctx *context.HttpContext, request *RegiserRequest) actionresult.IActionResult {
+	result := Mvc.ApiResult{Success: true, Message: "ok", Data: request}
+	return actionresult.Json{Data: result}
 }
 
 // use userAction interface by ioc  
-func (this *UserController) GetInfo() Controller.ApiResult {
+func (this *UserController) GetInfo() controller.ApiResult {
 	return this.OK(this.userAction.Login("zhang"))
 }
 

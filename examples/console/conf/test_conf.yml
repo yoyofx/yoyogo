@@ -1,0 +1,6 @@
+yoyogo:
+  application:
+    name: console_custom_configfile
+    metadata: "dev"
+    server:
+      type: "console"
