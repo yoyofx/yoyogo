@@ -2,6 +2,7 @@ package web
 
 import (
 	"github.com/yoyofx/yoyogo/abstractions"
+	"github.com/yoyofx/yoyogo/pkg/scheduler"
 	"github.com/yoyofx/yoyogo/web/actionresult"
 	"github.com/yoyofx/yoyogo/web/actionresult/extension"
 	"github.com/yoyofx/yoyogo/web/context"
@@ -91,6 +92,15 @@ func (self *ApplicationBuilder) UseMvc(configure func(builder *mvc.ControllerBui
 	}
 	self.mvcConfigures = append(self.mvcConfigures, configure)
 	return self
+}
+
+func (self *ApplicationBuilder) UseXxlJobExecutor(executorBuilder scheduler.ExecutorOptionsBuilder) *scheduler.JobRegister {
+	ops := executorBuilder()
+	jobRegister := scheduler.JobRegister{
+		Application: self,
+		Executor:    ops.BuildExecutor(),
+	}
+	return &jobRegister
 }
 
 func (self *ApplicationBuilder) UseEndpoints(configure func(router.IRouterBuilder)) *ApplicationBuilder {
