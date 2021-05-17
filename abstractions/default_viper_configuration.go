@@ -67,6 +67,10 @@ func NewConfiguration(configContext *ConfigurationContext) *Configuration {
 	}
 	log.Debug(configFilePath)
 
+	if configContext.enableRemote {
+		defaultConfig = configContext.remoteProvider.GetProvider(defaultConfig)
+	}
+
 	return &Configuration{
 		context: configContext,
 		config:  defaultConfig,

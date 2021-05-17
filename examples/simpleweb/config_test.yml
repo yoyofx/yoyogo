@@ -43,13 +43,16 @@ yoyogo:
     discovery:
       cache:
         ttl: 30     # seconds
+      strategy: "round-robin"    # round-robin  , weight-time ,  random
       type: "nacos"
       metadata:
         url: "120.53.133.30"
         port: 80
-        namespace: "a3ae02e6-79e9-4150-bcfd-93eb8f9b0235"
-        group: "mygroup1"
+        namespace: "public"
+        group: "DEFAULT_GROUP"
         cluster: ""
+        configserver:
+          dataId: "simple_demo"
         auth:
           enable: true
           username: "root"
@@ -92,3 +95,4 @@ yoyogo:
       url: 62.234.6.120:31379
       password:
       db: 0
+
