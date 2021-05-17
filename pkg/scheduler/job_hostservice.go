@@ -1,9 +1,11 @@
 package scheduler
 
 import (
+	"fmt"
 	"github.com/xxl-job/xxl-job-executor-go"
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/hosting"
+	"github.com/yoyofx/yoyogo/abstractions/platform/consolecolors"
 	"github.com/yoyofx/yoyogo/dependencyinjection"
 )
 
@@ -41,6 +43,7 @@ func NewXxlJobService(configuration abstractions.IConfiguration, environment *ab
 }
 
 func (service *XxlJobService) Run() error {
+	fmt.Println(consolecolors.Green("xxl-job executor is running..."))
 	service.Executor.Init()
 	service.registerJob(service.jobList...)
 	return service.Executor.Run()
