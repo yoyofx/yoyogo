@@ -6,15 +6,6 @@ import (
 	"github.com/yoyofx/yoyogo/pkg/scheduler"
 )
 
-func BuildExecutor() scheduler.ExecutorOptionsBuilder  {
-	return func() scheduler.ExecutorOptions {
-		return scheduler.ExecutorOptions{
-			ExecutorIp: "127.0.0.1",
-			ExecutorPort: "5000",
-		}
-	}
-}
-
 func BuildJobList()[]scheduler.JobHandler  {
 	jobMap:=make([]scheduler.JobHandler,1)
 	jobMap=append(jobMap,&DemoJob{})
