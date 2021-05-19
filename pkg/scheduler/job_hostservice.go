@@ -45,6 +45,8 @@ func NewXxlJobService(configuration abstractions.IConfiguration, environment *ab
 func (service *XxlJobService) Run() error {
 	fmt.Println(consolecolors.Green("xxl-job executor is running..."))
 	service.Executor.Init()
+	//设置日志查看handler
+	service.Executor.LogHandler(service.viewLogs)
 	service.registerJob(service.jobList...)
 	return service.Executor.Run()
 }
@@ -52,6 +54,15 @@ func (service *XxlJobService) Run() error {
 func (service *XxlJobService) Stop() error {
 	service.Executor.Stop()
 	return nil
+}
+
+func (service *XxlJobService) viewLogs(req *xxl.LogReq) *xxl.LogRes {
+	return &xxl.LogRes{Code: 200, Msg: "", Content: xxl.LogResContent{
+		FromLineNum: req.FromLineNum,
+		ToLineNum:   2,
+		LogContent:  "这个是自定义日志handler",
+		IsEnd:       true,
+	}}
 }
 
 // RegisterJob 将不再返回application,确保注册任务是最后一步执行

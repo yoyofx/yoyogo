@@ -1,11 +1,11 @@
 yoyogo:
   application:
-    name: console_xxl_job
+    name: console-xxl-job
     metadata: "dev"
     server:
       type: "console"
     xxl:
-      serverAddr: http://localhost:8080/xxl-job-admin
+      serverAddr: http://10.168.4.218:8080/xxl-job-admin/
       #ip: ""
       port: 9999
       #accessToken: ""

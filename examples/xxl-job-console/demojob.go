@@ -14,6 +14,7 @@ func NewDemoJob() *DemoJob {
 }
 
 func (*DemoJob) Execute(cxt context.Context, param *xxl.RunReq) (msg string) {
+
 	fmt.Println("this is job1")
 	return "666"
 }
