@@ -45,7 +45,9 @@ func main() {
 func CreateCustomBuilder() *abstractions.HostBuilder {
 	configuration := abstractions.NewConfigurationBuilder().
 		AddEnvironment().
-		AddYamlFile("config").AddRemoteWithNacos().Build()
+		AddYamlFile("config").
+		AddRemoteWithNacos().
+		Build()
 
 	return web.NewWebHostBuilder().
 		UseConfiguration(configuration).
@@ -65,7 +67,6 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 				builder.AddController(contollers.NewSDController)
 				builder.AddFilter("/v1/user/info", &contollers.TestActionFilter{})
 			})
-			//app.UseXxlJobExecutor(models.BuildExecutor()).RegisterJob(models.BuildJobList())
 		}).
 		ConfigureServices(func(serviceCollection *dependencyinjection.ServiceCollection) {
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
