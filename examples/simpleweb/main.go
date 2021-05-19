@@ -4,6 +4,7 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/yoyofx/yoyogo/abstractions"
+	"github.com/yoyofx/yoyogo/abstractions/configuration"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/dependencyinjection"
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/mysql"
@@ -43,14 +44,9 @@ func main() {
 
 //* Create the builder of Web host
 func CreateCustomBuilder() *abstractions.HostBuilder {
-	configuration := abstractions.NewConfigurationBuilder().
-		AddEnvironment().
-		AddYamlFile("config").
-		AddRemoteWithNacos().
-		Build()
-
+	config := configuration.NACOS("config")
 	return web.NewWebHostBuilder().
-		UseConfiguration(configuration).
+		UseConfiguration(config).
 		Configure(func(app *web.ApplicationBuilder) {
 			app.Use(middlewares.NewSessionWith)
 			app.UseMiddleware(middlewares.NewCORS())
