@@ -57,6 +57,8 @@ yoyogo:
           enable: true
           username: "root"
           password: "1234"
+          accessKey: ""     // will be added later
+          secretKey: ""
 #      type: "consul"
 #      metadata:
 #        address: "localhost:8500"
