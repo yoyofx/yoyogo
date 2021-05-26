@@ -30,6 +30,7 @@ func newWatcher(client *api.Client, opts ...servicediscovery.WatchOption) (servi
 
 	cw := &Watcher{
 		option:   wo,
+		client:   client,
 		exit:     make(chan bool),
 		next:     make(chan *servicediscovery.Result, 10),
 		watchers: make(map[string]*watch.Plan),

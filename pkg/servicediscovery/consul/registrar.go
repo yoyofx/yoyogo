@@ -58,7 +58,7 @@ func (registrar *Registrar) Register() error {
 	registration.Tags = registrar.config.Tags
 
 	registration.Check = &consul.AgentServiceCheck{ // 健康检查
-		HTTP:                           fmt.Sprintf("http://%s:%d%s", registration.Address, registration.Port, "/actuator/health"),
+		HTTP:                           fmt.Sprintf("http://%s:%d%s", registration.Address, registration.Port, registrar.config.Health),
 		Timeout:                        "3s",
 		Interval:                       "5s",  // 健康检查间隔
 		DeregisterCriticalServiceAfter: "30s", //check失败后30秒删除本服务，注销时间，相当于过期时间

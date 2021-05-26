@@ -60,7 +60,8 @@ yoyogo:
   #      type: "consul"
   #      metadata:
   #        address: "localhost:8500"
-  #        health_check: "/actuator/health"
+  #        health_check: "/app/actuator/health"
+  #        token: ""
   #        tags: [""]
   #      type: "eureka"
   #      metadata:

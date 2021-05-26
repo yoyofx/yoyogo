@@ -34,6 +34,7 @@ require (
 	github.com/stretchr/testify v1.6.1
 	github.com/ugorji/go/codec v1.2.1
 	github.com/valyala/fasthttp v1.17.0
+	github.com/xxl-job/xxl-job-executor-go v0.5.2
 	github.com/yoyofxteam/nacos-viper-remote v0.2.1
 	github.com/yoyofxteam/reflectx v0.2.3
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83

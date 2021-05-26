@@ -11,6 +11,7 @@ type Option struct {
 	Address string   `mapstructure:"address"`
 	Token   string   `mapstructure:"token"`
 	Tags    []string `mapstructure:"tags"`
+	Health  string   `mapstructure:"health_check"`
 }
 
 type Client struct {

@@ -1,0 +1,12 @@
+yoyogo:
+  application:
+    name: console-xxl-job
+    metadata: "dev"
+    server:
+      type: "console"
+    xxl:
+      serverAddr: http://10.168.4.218:8080/xxl-job-admin/
+      #ip: ""
+      port: 9999
+      #accessToken: ""
+      #timeout: 0

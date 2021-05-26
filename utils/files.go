@@ -155,3 +155,11 @@ func PathExists(path string) (bool, error) {
 	}
 	return false, err
 }
+
+func CreateDir(string2 string) error {
+	err := os.MkdirAll(string2, 0755)
+	if err != nil {
+		return err
+	}
+	return nil
+}
