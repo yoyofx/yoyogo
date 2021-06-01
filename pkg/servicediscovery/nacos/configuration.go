@@ -23,4 +23,14 @@ type Auth struct {
 	Enable   bool   `mapstructure:"enable"`
 	User     string `mapstructure:"username"`
 	Password string `mapstructure:"password"`
+	// ACM Endpoint
+	Endpoint string `mapstructure:"endpoint"`
+	// ACM RegionId
+	RegionId string `mapstructure:"regionId"`
+	// ACM AccessKey
+	AccessKey string `mapstructure:"accessKey"`
+	// ACM SecretKey
+	SecretKey string `mapstructure:"secretKey"`
+	// ACM OpenKMS
+	OpenKMS bool `mapstructure:"openKMS"`
 }

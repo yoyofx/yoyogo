@@ -57,8 +57,11 @@ yoyogo:
           enable: true
           username: "root"
           password: "1234"
+          endpoint: ""
+          regionId: ""
           accessKey: ""     // will be added later
           secretKey: ""
+          openKMS: false
 #      type: "consul"
 #      metadata:
 #        address: "localhost:8500"
