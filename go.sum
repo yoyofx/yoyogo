@@ -367,8 +367,8 @@ github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2 h1:eY9dn8+vbi4tKz5
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
 github.com/xxl-job/xxl-job-executor-go v0.5.2 h1:Ljhvts0xG4Rzzejc37WgNHy6TzI+2V6gohiM/x0PAdc=
 github.com/xxl-job/xxl-job-executor-go v0.5.2/go.mod h1:bUFhz/5Irp9zkdYk5MxhQcDDT6LlZrI8+rv5mHtQ1mo=
-github.com/yoyofxteam/nacos-viper-remote v0.2.1 h1:BXe8WECpTzn8x32fa6itH5m8uF31txzKY4YgkrXCZvA=
-github.com/yoyofxteam/nacos-viper-remote v0.2.1/go.mod h1:c9YyeAtpREUGkMKpJPbuCFDqIVZl3q8YjeuQMQieCw0=
+github.com/yoyofxteam/nacos-viper-remote v0.2.2 h1:EQ1JwXP0JgTXuaLkmfm34fHH2/3RtaW2+UqHaGrfjUI=
+github.com/yoyofxteam/nacos-viper-remote v0.2.2/go.mod h1:c9YyeAtpREUGkMKpJPbuCFDqIVZl3q8YjeuQMQieCw0=
 github.com/yoyofxteam/reflectx v0.2.3 h1:v/pZFYxW3fA+ZaqG3Kvw4sFPeMYVzLJdjIG2wbeTFJE=
 github.com/yoyofxteam/reflectx v0.2.3/go.mod h1:b7rNVLUDcCjk5emUbqMfyF4vj1QT3vyS7e7FNwgnTmA=
 go.etcd.io/bbolt v1.3.2 h1:Z/90sZLPOeCy2PwprqkFa25PdkusRzaj9P8zm/KNyvk=

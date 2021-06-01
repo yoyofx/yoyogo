@@ -59,7 +59,7 @@ yoyogo:
           password: "1234"
           endpoint: ""
           regionId: ""
-          accessKey: ""     // will be added later
+          accessKey: ""     
           secretKey: ""
           openKMS: false
 #      type: "consul"
