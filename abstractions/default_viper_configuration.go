@@ -49,14 +49,14 @@ func NewConfiguration(configContext *ConfigurationContext) *Configuration {
 	configFilePath := configContext.configFile
 	if configFilePath == "" {
 		configName := configContext.configName + "_" + configContext.profile
-		configFilePath = path.Join(configContext.configDir, configName+"."+configContext.configType)
+		configFilePath = path.Join(configContext.configDir, configName+"."+configContext.ConfigType)
 		exists, _ := utils.PathExists(configFilePath)
 		if !exists {
 			configName = configContext.configName
 		}
 		defaultConfig.AddConfigPath(configContext.configDir)
 		defaultConfig.SetConfigName(configName)
-		defaultConfig.SetConfigType(configContext.configType)
+		defaultConfig.SetConfigType(configContext.ConfigType)
 	} else {
 		defaultConfig.SetConfigFile(configFilePath)
 	}
@@ -67,8 +67,8 @@ func NewConfiguration(configContext *ConfigurationContext) *Configuration {
 	}
 	log.Debug(configFilePath)
 
-	if configContext.enableRemote {
-		defaultConfig = configContext.remoteProvider.GetProvider(defaultConfig)
+	if configContext.EnableRemote {
+		defaultConfig = configContext.RemoteProvider.GetProvider(defaultConfig)
 	}
 
 	return &Configuration{

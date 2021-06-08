@@ -28,6 +28,7 @@ require (
 	github.com/op/go-logging v0.0.0-20160315200505-970db520ece7
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v0.9.3
+	github.com/shima-park/agollo v1.2.10
 	github.com/sirupsen/logrus v1.2.0
 	github.com/spf13/pflag v1.0.3
 	github.com/spf13/viper v1.7.1
@@ -35,7 +36,7 @@ require (
 	github.com/ugorji/go/codec v1.2.1
 	github.com/valyala/fasthttp v1.17.0
 	github.com/xxl-job/xxl-job-executor-go v0.5.2
-	github.com/yoyofxteam/nacos-viper-remote v0.2.1
+	github.com/yoyofxteam/nacos-viper-remote v0.2.2
 	github.com/yoyofxteam/reflectx v0.2.3
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83
 	golang.org/x/image v0.0.0-20190802002840-cff245a6509b

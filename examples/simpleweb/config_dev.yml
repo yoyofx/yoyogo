@@ -57,8 +57,11 @@ yoyogo:
           enable: true
           username: "root"
           password: "1234"
-          accessKey: ""     // will be added later
+          endpoint: ""
+          regionId: ""
+          accessKey: ""
           secretKey: ""
+          openKMS: false
 #      type: "consul"
 #      metadata:
 #        address: "localhost:8500"
@@ -81,6 +84,11 @@ yoyogo:
 #          enable: true
 #          username: "root"
 #          password: "5z1fLbYw8A"
+    configcenter:
+      apollo:
+        appid: "dealer-cb-apptest"
+        endpoint: "http://txconfig.apollo.bitautotech.com"
+        namespace: "application.yaml"
   datasource:
       pool:
         init_cap: 2

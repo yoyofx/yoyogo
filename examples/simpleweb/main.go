@@ -4,9 +4,9 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/yoyofx/yoyogo/abstractions"
-	"github.com/yoyofx/yoyogo/abstractions/configuration"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/dependencyinjection"
+	nacosconfig "github.com/yoyofx/yoyogo/pkg/configuration/nacos"
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/mysql"
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/redis"
 	"github.com/yoyofx/yoyogo/pkg/servicediscovery/nacos"
@@ -44,7 +44,8 @@ func main() {
 
 //* Create the builder of Web host
 func CreateCustomBuilder() *abstractions.HostBuilder {
-	config := configuration.NACOS("config")
+	config := nacosconfig.RemoteConfig("config")
+	//config := apollo.RemoteConfig("config")
 	return web.NewWebHostBuilder().
 		UseConfiguration(config).
 		Configure(func(app *web.ApplicationBuilder) {
