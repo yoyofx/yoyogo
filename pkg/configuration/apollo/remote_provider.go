@@ -33,7 +33,8 @@ func (provider *ViperRemoteProvider) GetProvider(runtime_viper *viper.Viper) *vi
 	}
 	remote_viper.SetConfigType(provider.configType)
 	err = remote_viper.ReadRemoteConfig()
-	if err == nil {
+
+	if err == nil && len(remote_viper.AllSettings()) > 0 {
 		err = remote_viper.WatchRemoteConfigOnChannel()
 		if err == nil {
 			fmt.Println("config center ..........")
@@ -41,8 +42,6 @@ func (provider *ViperRemoteProvider) GetProvider(runtime_viper *viper.Viper) *vi
 			fmt.Printf("apollo config: endpoint %s , namespace: %s , app_id: %s", option.Endpoint, option.Namespace, option.AppID)
 			return remote_viper
 		}
-	} else {
-		panic(err)
 	}
 	return runtime_viper
 }
