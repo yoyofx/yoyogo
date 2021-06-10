@@ -16,6 +16,7 @@ RUN ls -a
 WORKDIR /build/examples/simpleweb
 
 # 将我们的代码编译成二进制可执行文件 app
+RUN go mod download
 RUN go build -o app .
 
 ###################
