@@ -12,7 +12,7 @@ WORKDIR /build
 
 # 将代码复制到容器中
 COPY . .
-WORKDIR /build/Examples/SimpleWeb
+WORKDIR /build/examples/simpleWeb
 RUN ls
 # 将我们的代码编译成二进制可执行文件 app
 RUN go build -o app .
@@ -38,9 +38,9 @@ RUN apk -U add tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && apk del tzdata
 
 # 从builder镜像中把/dist/app 拷贝到当前目录
-COPY --from=builder /build/Examples/SimpleWeb/app /
-COPY --from=builder /build/Examples/SimpleWeb/config_dev.yml /
-COPY --from=builder /build/Examples/SimpleWeb/config_prod.yml /
+COPY --from=builder /build/examples/simpleweb/app /
+COPY --from=builder /build/examples/simpleWeb/config_dev.yml /
+COPY --from=builder /build/examples/simpleWeb/config_prod.yml /
 
 # RUN chmod +x /app
 
