@@ -1,0 +1,16 @@
+{
+  "id": "ad6e9644-b622-2d5c-2e7c-99a5d8a1352e",
+  "name": "postman_prod",
+  "values": [
+    {
+      "enabled": true,
+      "key": "baseurl",
+      "value": "https://www.yoyogo.run",
+      "type": "text"
+    }
+  ],
+  "timestamp": 1623305670790,
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2021-06-10T06:15:04.070Z",
+  "_postman_exported_using": "Postman/5.5.5"
+}
