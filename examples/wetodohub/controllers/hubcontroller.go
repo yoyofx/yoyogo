@@ -45,7 +45,7 @@ func (controller HubController) GetTodoList() actionresult.IActionResult {
 }
 
 func (controller HubController) PostTodoSync(ctx *context.HttpContext) mvc.ApiResult {
-	json := string(ctx.Input.FormBody)
+	json := string(ctx.Input.GetBody())
 	conn, _, _ := controller.redisClient.Open()
 	client := conn.(redis.IClient)
 	_ = client.GetKVOps().SetString("yoyogo:todolist", json, 0)

@@ -1,6 +1,6 @@
 module standardwebapi
 
-go 1.15
+go 1.16
 
 require (
      github.com/yoyofx/yoyogo v0.0.0

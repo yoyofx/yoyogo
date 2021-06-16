@@ -1,6 +1,6 @@
 module github.com/yoyofx/yoyogo
 
-go 1.14
+go 1.16
 
 require (
 	github.com/SkyAPM/go2sky v0.6.0
