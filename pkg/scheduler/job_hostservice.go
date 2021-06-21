@@ -1,12 +1,16 @@
 package scheduler
 
 import (
+	"bufio"
+	"context"
 	"fmt"
 	"github.com/xxl-job/xxl-job-executor-go"
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/hosting"
 	"github.com/yoyofx/yoyogo/abstractions/platform/consolecolors"
 	"github.com/yoyofx/yoyogo/dependencyinjection"
+	"github.com/yoyofx/yoyogo/utils"
+	"strings"
 )
 
 func UseXxlJob(collection *dependencyinjection.ServiceCollection) {
@@ -57,11 +61,36 @@ func (service *XxlJobService) Stop() error {
 }
 
 func (service *XxlJobService) viewLogs(req *xxl.LogReq) *xxl.LogRes {
+	jobDone := IsDone(req.LogID)
+	fi, err := getLogFile(req.LogID, false)
+
+	if err != nil {
+		return nil
+	}
+	defer fi.Close()
+
+	var lines []string
+	rowCount := 0
+	scanner := bufio.NewScanner(fi)
+	for scanner.Scan() {
+		rowCount++
+		line := scanner.Text()
+		if !jobDone {
+			if strings.Contains(line, "xxljob-done") {
+				jobDone = true
+			}
+		}
+
+		if rowCount >= req.FromLineNum {
+			lines = append(lines, scanner.Text())
+		}
+	}
+
 	return &xxl.LogRes{Code: 200, Msg: "", Content: xxl.LogResContent{
 		FromLineNum: req.FromLineNum,
-		ToLineNum:   2,
-		LogContent:  "这个是自定义日志handler",
-		IsEnd:       true,
+		ToLineNum:   rowCount,
+		LogContent:  strings.Join(lines, utils.NewLine()),
+		IsEnd:       jobDone,
 	}}
 }
 
@@ -69,7 +98,10 @@ func (service *XxlJobService) viewLogs(req *xxl.LogReq) *xxl.LogRes {
 func (service *XxlJobService) registerJob(jobList ...JobHandler) {
 	if len(jobList) > 0 {
 		for _, x := range jobList {
-			service.Executor.RegTask(x.GetJobName(), x.Execute)
+			service.Executor.RegTask(x.GetJobName(), func(cxt context.Context, param *xxl.RunReq) string {
+				jobContext := GetContext(cxt, param)
+				return x.Execute(jobContext)
+			})
 		}
 	}
 }

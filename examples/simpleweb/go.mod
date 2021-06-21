@@ -1,6 +1,6 @@
 module simpleweb
 
-go 1.15
+go 1.16
 
 require (
 	github.com/fasthttp/websocket v1.4.3

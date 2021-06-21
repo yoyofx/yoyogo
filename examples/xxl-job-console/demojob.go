@@ -1,9 +1,8 @@
 package main
 
 import (
-	"context"
-	"fmt"
-	"github.com/xxl-job/xxl-job-executor-go"
+	"github.com/yoyofx/yoyogo/pkg/scheduler"
+	"time"
 )
 
 type DemoJob struct {
@@ -13,13 +12,18 @@ func NewDemoJob() *DemoJob {
 	return &DemoJob{}
 }
 
-func (*DemoJob) Execute(cxt context.Context, param *xxl.RunReq) (msg string) {
+func (*DemoJob) Execute(cxt *scheduler.JobContext) (msg string) {
+	cxt.Report("Job %d is beginning...", cxt.LogID)
 
-	fmt.Println("this is job1")
-	return "666"
+	for i := 1; i <= 100; i++ {
+		cxt.Report("Job Progress: %d Percent.", i)
+		time.Sleep(time.Second)
+	}
+
+	return cxt.Done("666")
 }
 
-//自定义任务的名字
+//GetJobName 自定义任务的名字
 func (*DemoJob) GetJobName() string {
 	return "job1"
 }

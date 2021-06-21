@@ -3,6 +3,7 @@ package utils
 import (
 	"math/rand"
 	"reflect"
+	"runtime"
 	"strings"
 	"time"
 	"unicode"
@@ -103,4 +104,11 @@ func GetRandStr(n int) (randStr string) {
 		randStr += chars[randIndex : randIndex+1]
 	}
 	return randStr
+}
+
+func NewLine() string {
+	if runtime.GOOS == "windows" {
+		return "\r\n"
+	}
+	return "\n"
 }

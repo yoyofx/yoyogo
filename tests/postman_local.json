@@ -1,0 +1,16 @@
+{
+  "id": "3ec9e055-7a85-4828-fc74-4c0785983eb0",
+  "name": "postman_local",
+  "values": [
+    {
+      "enabled": true,
+      "key": "baseurl",
+      "value": "http://localhost:8080",
+      "type": "text"
+    }
+  ],
+  "timestamp": 1623305675715,
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2021-06-10T06:14:38.274Z",
+  "_postman_exported_using": "Postman/5.5.5"
+}

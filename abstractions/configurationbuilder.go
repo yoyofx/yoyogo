@@ -2,71 +2,69 @@ package abstractions
 
 import (
 	"github.com/yoyofx/yoyogo/abstractions/hostenv"
-	nacos_viper_remote "github.com/yoyofxteam/nacos-viper-remote"
 )
 
 type ConfigurationContext struct {
 	enableFlag     bool
 	enableEnv      bool
 	configDir      string
-	configType     string
+	ConfigType     string
 	configName     string
 	profile        string
 	configFile     string
-	enableRemote   bool
-	remoteProvider IConfigurationRemoteProvider
+	EnableRemote   bool
+	RemoteProvider IConfigurationRemoteProvider
 }
 
 type ConfigurationBuilder struct {
-	context *ConfigurationContext
+	Context *ConfigurationContext
 }
 
 func NewConfigurationBuilder() *ConfigurationBuilder {
-	return &ConfigurationBuilder{context: &ConfigurationContext{}}
+	return &ConfigurationBuilder{Context: &ConfigurationContext{}}
 }
 
 func (builder *ConfigurationBuilder) AddFlagArgs() *ConfigurationBuilder {
-	builder.context.enableFlag = true
+	builder.Context.enableFlag = true
 	return builder
 }
 
 func (builder *ConfigurationBuilder) AddEnvironment() *ConfigurationBuilder {
-	builder.context.enableEnv = true
+	builder.Context.enableEnv = true
 	return builder
 }
 
 func (builder *ConfigurationBuilder) AddYamlFile(name string) *ConfigurationBuilder {
-	if builder.context.configType == "" {
-		builder.context.configType = "yml"
-		builder.context.configName = name
+	if builder.Context.ConfigType == "" {
+		builder.Context.ConfigType = "yml"
+		builder.Context.configName = name
 	}
 	return builder
 }
 
 func (builder *ConfigurationBuilder) AddJsonFile(name string) *ConfigurationBuilder {
-	if builder.context.configType == "" {
-		builder.context.configType = "json"
-		builder.context.configName = name
+	if builder.Context.ConfigType == "" {
+		builder.Context.ConfigType = "json"
+		builder.Context.configName = name
 	}
 	return builder
 }
 
-func (builder *ConfigurationBuilder) AddRemoteWithNacos() *ConfigurationBuilder {
-	if builder.context.configType == "" {
-		builder.context.configType = "yml"
+func (builder *ConfigurationBuilder) AddPropertiesFile(name string) *ConfigurationBuilder {
+	if builder.Context.ConfigType == "" {
+		builder.Context.ConfigType = "prop"
+		builder.Context.configName = name
 	}
-	builder.context.enableRemote = true
-	builder.context.remoteProvider = nacos_viper_remote.NewRemoteProvider(builder.context.configType)
 	return builder
 }
 
 func (builder *ConfigurationBuilder) BuildEnv(env string) *Configuration {
-	builder.context.profile = env
-	return NewConfiguration(builder.context)
+	builder.Context.profile = env
+	return NewConfiguration(builder.Context)
 }
 
 func (builder *ConfigurationBuilder) Build() *Configuration {
-	builder.context.profile = hostenv.Dev
-	builder.context.enableFlag = true
-	return NewConfiguration(builder.context)
+	builder.Context.profile = hostenv.Dev
+	builder.Context.enableFlag = true
+	return NewConfiguration(builder.Context)
 }

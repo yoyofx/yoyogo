@@ -6,6 +6,7 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/dependencyinjection"
+	nacosconfig "github.com/yoyofx/yoyogo/pkg/configuration/nacos"
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/mysql"
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/redis"
 	"github.com/yoyofx/yoyogo/pkg/servicediscovery/nacos"
@@ -43,12 +44,10 @@ func main() {
 
 //* Create the builder of Web host
 func CreateCustomBuilder() *abstractions.HostBuilder {
-	configuration := abstractions.NewConfigurationBuilder().
-		AddEnvironment().
-		AddYamlFile("config").AddRemoteWithNacos().Build()
-
+	config := nacosconfig.RemoteConfig("config")
+	//config := apollo.RemoteConfig("config")
 	return web.NewWebHostBuilder().
-		UseConfiguration(configuration).
+		UseConfiguration(config).
 		Configure(func(app *web.ApplicationBuilder) {
 			app.Use(middlewares.NewSessionWith)
 			app.UseMiddleware(middlewares.NewCORS())
@@ -65,7 +64,6 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 				builder.AddController(contollers.NewSDController)
 				builder.AddFilter("/v1/user/info", &contollers.TestActionFilter{})
 			})
-			//app.UseXxlJobExecutor(models.BuildExecutor()).RegisterJob(models.BuildJobList())
 		}).
 		ConfigureServices(func(serviceCollection *dependencyinjection.ServiceCollection) {
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
