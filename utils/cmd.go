@@ -8,7 +8,7 @@ import (
 )
 
 // ExecShell 执行shell命令
-func ExecShell(shell string) (stdout string, stderr string) {
+func ExecShell(shell string, dir string) (stdout string, stderr string) {
 	var cmd *exec.Cmd
 	if runtime.GOOS == "windows" {
 		cmd = exec.Command("cmd", "/C", shell)
@@ -20,6 +20,9 @@ func ExecShell(shell string) (stdout string, stderr string) {
 	var stderrBuf bytes.Buffer
 	cmd.Stdout = &out
 	cmd.Stderr = &stderrBuf
+	if dir != "" {
+		cmd.Dir = dir
+	}
 	err := cmd.Run()
 	if err != nil {
 		fmt.Println("shell exec have an error", "err", err)

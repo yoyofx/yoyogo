@@ -33,7 +33,7 @@ func buildProject() {
 
 // linux下编译打包
 func buildProjectWithLinux() {
-	pwd, _ := utils.ExecShell("pwd")
+	pwd, _ := utils.ExecShell("pwd", "")
 	pwd = strings.Replace(pwd, " ", "", -1)
 	pwd = strings.Replace(pwd, "\r\n", "", -1)
 	pwdArr := utils.Explode("/", pwd)
@@ -41,12 +41,12 @@ func buildProjectWithLinux() {
 		return
 	}
 	projectName := pwdArr[len(pwdArr)-1]
-	utils.ExecShell(fmt.Sprintf("go build -o build/%s", projectName))
+	utils.ExecShell(fmt.Sprintf("go build -o build/%s", projectName), "")
 }
 
 // windows下编译打包
 func buildProjectWithWindows() {
-	pwd, _ := utils.ExecShell("cd")
+	pwd, _ := utils.ExecShell("cd", "")
 	pwd = strings.Replace(pwd, " ", "", -1)
 	pwd = strings.Replace(pwd, "\r\n", "", -1)
 	pwdArr := utils.Explode("\\", pwd)
@@ -55,5 +55,5 @@ func buildProjectWithWindows() {
 	}
 	projectName := pwdArr[len(pwdArr)-1]
 
-	utils.ExecShell(fmt.Sprintf("go build -o build/%s.exe", projectName))
+	utils.ExecShell(fmt.Sprintf("go build -o build/%s.exe", projectName), "")
 }
