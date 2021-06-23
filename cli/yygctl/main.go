@@ -17,6 +17,7 @@ func main() {
 	rootCmd.AddCommand(cmds.VersionCmd)
 	rootCmd.AddCommand(cmds.RunCmd)
 	rootCmd.AddCommand(cmds.BuildCmd)
+	rootCmd.AddCommand(cmds.NewCmd)
 	_ = rootCmd.Execute()
 
 }
