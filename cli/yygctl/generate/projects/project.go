@@ -12,7 +12,7 @@ func NewEmptyProject(name string) *Project {
 		Name:    name,
 		Path:    "",
 		Dom:     NewProjectDir(name),
-		visitor: &DefaultVisitor{},
+		visitor: NewDefaultVisitor(),
 	}
 }
 
@@ -39,7 +39,7 @@ func (project *Project) lookupItems(parent *ProjectItem, items []*ProjectItem) {
 			}
 		}
 		if item.Dom != nil {
-			project.lookupItems(parent, item.Dom)
+			project.lookupItems(item, item.Dom)
 		}
 	}
 }
