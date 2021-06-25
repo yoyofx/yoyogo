@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/spf13/cobra"
 	"github.com/yoyofx/yoyogo/cli/yygctl/cmds"
-	"github.com/yoyofx/yoyogo/cli/yygctl/generate/templates"
 )
 
 var rootCmd = &cobra.Command{
@@ -16,7 +15,7 @@ var rootCmd = &cobra.Command{
 
 func main() {
 
-	templates.GetProject("demo").List()
+	//templates.GetProjectByName("console").List()
 
 	rootCmd.AddCommand(cmds.VersionCmd)
 	rootCmd.AddCommand(cmds.RunCmd)

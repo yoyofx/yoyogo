@@ -2,14 +2,16 @@ package projects
 
 type Project struct {
 	Name    string
+	Memo    string
 	Path    string
 	Dom     *ProjectItem
 	visitor Visitor
 }
 
-func NewEmptyProject(name string) *Project {
+func NewEmptyProject(name string, memo string) *Project {
 	return &Project{
 		Name:    name,
+		Memo:    memo,
 		Path:    "",
 		Dom:     NewProjectDir(name),
 		visitor: NewDefaultVisitor(),

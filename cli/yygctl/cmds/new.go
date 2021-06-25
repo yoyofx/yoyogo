@@ -3,6 +3,8 @@ package cmds
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	"github.com/yoyofx/yoyogo/cli/yygctl/generate/templates"
+	"strings"
 )
 
 var l bool
@@ -13,7 +15,8 @@ var NewCmd = &cobra.Command{
 	//Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		if l {
-			fmt.Println("console / webapi / mvc / grpc / xxl-job")
+			fmt.Println(strings.Join(templates.GetProjectList(), ","))
+			//fmt.Println("console / webapi / mvc / grpc / xxl-job")
 		}
 	},
 }
