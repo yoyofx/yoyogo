@@ -4,9 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
+	"github.com/yoyofx/yoyogo/cli/yygctl/generate/templates"
 	"github.com/yoyofx/yoyogo/cli/yygctl/telplate"
 	"html/template"
 	"os"
+	"strings"
 )
 
 var l bool
@@ -20,6 +22,7 @@ var NewCmd = &cobra.Command{
 			return errors.New(" requires at least 1 arg(s), only received 0")
 		}
 		if l {
+			fmt.Println(strings.Join(templates.GetProjectList(), ","))
 			fmt.Println("console / webapi / mvc / grpc / xxl-job")
 			return nil
 		}
