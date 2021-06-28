@@ -2,8 +2,8 @@ package apollo
 
 import (
 	"fmt"
-	remote "github.com/shima-park/agollo/viper-remote"
 	"github.com/spf13/viper"
+	remote "github.com/yoyofxteam/agollo/viper-remote"
 )
 
 type ViperRemoteProvider struct {
