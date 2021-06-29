@@ -7,15 +7,12 @@ import (
 	"github.com/yoyofx/yoyogo/cli/yygctl/generate/projects"
 	"github.com/yoyofx/yoyogo/cli/yygctl/generate/templates"
 	"github.com/yoyofx/yoyogo/cli/yygctl/telplate"
-	"html/template"
-	"io/fs"
-	"os"
 	"strings"
 )
 
 var l bool
 var projectName string
-var path string
+var dirPath string
 var NewCmd = &cobra.Command{
 	Use:   "new",
 	Short: "create new yoyogo demo by template",
@@ -32,7 +29,6 @@ var NewCmd = &cobra.Command{
 		telMap := [5]string{
 			"console", "webapi", "mvc", "grpc", "xxl-job",
 		}
-		fmt.Println(projectName)
 		isHave := false
 		for _, x := range telMap {
 			if x == args[0] {
@@ -46,23 +42,21 @@ var NewCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		if !l {
-			fmt.Println("project:" + projectName)
 			createProject()
 		}
-
 	},
 }
 
 func init() {
 	NewCmd.Flags().BoolVarP(&l, "templates", "l", false, "list of template")
-	NewCmd.Flags().StringVarP(&path, "path", "p", "", "dir path")
+	NewCmd.Flags().StringVarP(&dirPath, "path", "p", "", "dir path")
 	NewCmd.Flags().StringVarP(&projectName, "projectName", "n", "demo", "the name of project")
 }
 
 func createProject() {
 	project := projects.Project{
 		Name: projectName,
-		Path: path,
+		Path: dirPath,
 		Dom: &projects.ProjectItem{
 			Name: projectName,
 			Type: projects.ProjectItemDir,
@@ -75,31 +69,32 @@ func createProject() {
 		root.AddFileWithContent("config.yml", telplate.ConsoleConfigTel)
 		root.AddFileWithContent("service.go", telplate.ConsoleServiceTel)
 	})
-	var dirPath string
-	if path == "" {
-		dirPath = projectName
+	data := map[string]interface{}{
+		"ModelName": projectName,
+	}
+	project.CreateProject(data)
+	/*var tPath string
+	if dirPath == "" {
+		tPath = projectName
 
 	} else {
-		dirPath = path + projectName
+		tPath = dirPath + projectName
 	}
 	data := map[string]interface{}{
 		"ModelName": projectName,
 	}
 	os.Mkdir(dirPath, fs.ModeDir)
 	for _, x := range project.Dom.Dom {
-		tel, _ := template.New("demo").Parse(x.Content)
+		fileName:=path.Join(tPath,x.Name)
+		_,createErr:= os.Create(fileName)
+		if createErr!=nil {
+			fmt.Println(createErr)
+		}
+		tel, _ := template.New("console").Parse(x.Content)
 		file, err := os.OpenFile(dirPath+"/"+x.Name, os.O_CREATE|os.O_WRONLY, 0755)
-		fmt.Println(err)
+		if err!=nil {
+			fmt.Println(err)
+		}
 		tel.Execute(file, data)
-	}
-}
-
-func createProjectMain() {
-
-	data := map[string]interface{}{
-		"ModelName": projectName,
-	}
-	tel, _ := template.New("demo").Parse(telplate.ConsoleMainTel)
-	tel.Execute(os.Stdout, data)
-
+	}*/
 }

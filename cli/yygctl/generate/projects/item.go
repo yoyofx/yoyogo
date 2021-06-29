@@ -37,6 +37,7 @@ func (item *ProjectItem) AddFile(fileName string) {
 func (item *ProjectItem) AddFileWithContent(fileName string, content string) {
 	subItem := NewProjectFile(fileName)
 	subItem.Content = content
+	subItem.Path = item.Path
 	item.Dom = append(item.Dom, subItem)
 }
 

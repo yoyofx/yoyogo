@@ -45,7 +45,7 @@ func (s *AppStartup) ConfigureServices(collection *dependencyinjection.ServiceCo
 const ConsoleGoModTel = `
 module {{.ModelName}}
 go 1.16
-require github.com/yoyofx/yoyogo
+require github.com/yoyofx/yoyogo v1.7.2
 `
 
 const ConsoleConfigTel = `
