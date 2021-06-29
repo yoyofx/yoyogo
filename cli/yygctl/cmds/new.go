@@ -21,23 +21,11 @@ var NewCmd = &cobra.Command{
 		if !l && len(args) == 0 {
 			return errors.New(" requires at least 1 arg(s), only received 0")
 		}
-		if l {
-			fmt.Println(strings.Join(templates.GetProjectList(), ","))
-			fmt.Println("console / webapi / mvc / grpc / xxl-job")
+		if l { // l 表示什么呢？
+			fmt.Println(strings.Join(templates.GetProjectList(), " / "))
 			return nil
 		}
-		telMap := [5]string{
-			"console", "webapi", "mvc", "grpc", "xxl-job",
-		}
-		isHave := false
-		for _, x := range telMap {
-			if x == args[0] {
-				isHave = true
-			}
-		}
-		if !isHave {
-			return errors.New("telpalte name dont have; console / webapi / mvc / grpc / xxl-job")
-		}
+		// 在注册里取不会没有。
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
