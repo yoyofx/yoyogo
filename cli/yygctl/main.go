@@ -14,9 +14,7 @@ var rootCmd = &cobra.Command{
 }
 
 func main() {
-
 	//templates.GetProjectByName("console").List()
-
 	rootCmd.AddCommand(cmds.VersionCmd)
 	rootCmd.AddCommand(cmds.RunCmd)
 	rootCmd.AddCommand(cmds.BuildCmd)

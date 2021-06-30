@@ -4,10 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
-	"github.com/yoyofx/yoyogo/cli/yygctl/generate/projects"
+	"github.com/yoyofx/yoyogo"
+	"github.com/yoyofx/yoyogo/abstractions/platform/consolecolors"
 	"github.com/yoyofx/yoyogo/cli/yygctl/generate/templates"
-	"github.com/yoyofx/yoyogo/cli/yygctl/telplate"
 	"strings"
+	"time"
 )
 
 var l bool
@@ -30,7 +31,7 @@ var NewCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		if !l {
-			createProject()
+			createProject(args[0])
 		}
 	},
 }
@@ -41,26 +42,48 @@ func init() {
 	NewCmd.Flags().StringVarP(&projectName, "projectName", "n", "demo", "the name of project")
 }
 
-func createProject() {
-	project := projects.Project{
-		Name: projectName,
-		Path: dirPath,
-		Dom: &projects.ProjectItem{
-			Name: projectName,
-			Type: projects.ProjectItemDir,
-		},
-	}
-	project.With(func(root *projects.ProjectItem) {
-		root.AddFileWithContent("main.go", telplate.ConsoleMainTel)
-		root.AddFileWithContent("startup.go", telplate.ConsoleStartUpTel)
-		root.AddFileWithContent("go.mod", telplate.ConsoleGoModTel)
-		root.AddFileWithContent("config.yml", telplate.ConsoleConfigTel)
-		root.AddFileWithContent("service.go", telplate.ConsoleServiceTel)
-	})
-	data := map[string]interface{}{
-		"ModelName": projectName,
-	}
-	project.CreateProject(data)
+func createProject(template string) {
+	// 所有模板定义： template/init.go
+	// 模板目录 /template/console   定义： project_define.go
+	project := templates.GetProjectByName(template)
+
+	logo := yoyogo.Logo
+	fmt.Println(consolecolors.Blue(string(logo)))
+	fmt.Println(" ")
+	fmt.Printf("%s   (version:  %s)", consolecolors.Green(":: YoyoGo ::"), consolecolors.Blue(yoyogo.Version))
+	fmt.Print(consolecolors.Blue(`
+light and fast , dependency injection based micro-service framework written in Go.
+`))
+
+	fmt.Println("正在生成项目模板......")
+	time.Sleep(500 * time.Millisecond)
+
+	project.Generate(dirPath, projectName)
+	fmt.Println("生成项目模板完毕.")
+
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	//project := projects.Project{
+	//	Name: projectName,
+	//	Path: dirPath,
+	//	Dom: &projects.ProjectItem{
+	//		Name: projectName,
+	//		Path: "/",
+	//		Type: projects.ProjectItemDir,
+	//	},
+	//}
+	//project.With(func(root *projects.ProjectItem) {
+	//	root.AddFileWithContent("main.go", telplate.ConsoleMainTel)
+	//	root.AddFileWithContent("startup.go", telplate.ConsoleStartUpTel)
+	//	root.AddFileWithContent("go.mod", telplate.ConsoleGoModTel)
+	//	root.AddFileWithContent("config.yml", telplate.ConsoleConfigTel)
+	//	root.AddFileWithContent("service.go", telplate.ConsoleServiceTel)
+	//})
+	//data := map[string]interface{}{
+	//	"ModelName": projectName,
+	//}
+	//project.CreateProject(data)
 	/*var tPath string
 	if dirPath == "" {
 		tPath = projectName
