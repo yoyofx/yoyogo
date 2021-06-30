@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
-	"github.com/yoyofx/yoyogo"
 	"github.com/yoyofx/yoyogo/abstractions/platform/consolecolors"
+	"github.com/yoyofx/yoyogo/cli/yygctl/generate/projects"
 	"github.com/yoyofx/yoyogo/cli/yygctl/generate/templates"
 	"strings"
 	"time"
@@ -47,10 +47,9 @@ func createProject(template string) {
 	// 模板目录 /template/console   定义： project_define.go
 	project := templates.GetProjectByName(template)
 
-	logo := yoyogo.Logo
-	fmt.Println(consolecolors.Blue(string(logo)))
+	fmt.Println(consolecolors.Blue(string(projects.Logo)))
 	fmt.Println(" ")
-	fmt.Printf("%s   (version:  %s)", consolecolors.Green(":: YoyoGo ::"), consolecolors.Blue(yoyogo.Version))
+	fmt.Printf("%s   (version:  %s)", consolecolors.Green(":: YoyoGo ::"), consolecolors.Blue(projects.Version))
 	fmt.Print(consolecolors.Blue(`
 light and fast , dependency injection based micro-service framework written in Go.
 `))

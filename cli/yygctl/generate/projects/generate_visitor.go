@@ -2,7 +2,6 @@ package projects
 
 import (
 	"fmt"
-	"github.com/yoyofx/yoyogo"
 	"html/template"
 	"io/fs"
 	"os"
@@ -26,7 +25,7 @@ func NewGenerator(projectName string, target string, vars map[string]string) *Ge
 		generator.vars = make(map[string]string)
 	}
 	generator.vars["ModelName"] = projectName
-	generator.vars["Version"] = yoyogo.Version
+	generator.vars["Version"] = Version
 	return generator
 }
 
