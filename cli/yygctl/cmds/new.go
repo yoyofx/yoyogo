@@ -54,12 +54,16 @@ func createProject(template string) {
 light and fast , dependency injection based micro-service framework written in Go.
 `))
 
-	fmt.Println("正在生成项目模板......")
-	time.Sleep(500 * time.Millisecond)
+	if project != nil {
+		fmt.Println("正在生成项目模板......")
+		time.Sleep(500 * time.Millisecond)
 
-	project.Generate(dirPath, projectName)
-	fmt.Println("生成项目模板完毕.")
+		project.Generate(dirPath, projectName)
 
+		fmt.Println("生成项目模板完毕.")
+	} else {
+		fmt.Printf("没有找到模板项目,%s", template)
+	}
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	//---------------------------------------------------------------------------------------------------------------------------------------------
