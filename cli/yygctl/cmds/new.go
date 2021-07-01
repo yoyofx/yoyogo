@@ -49,20 +49,20 @@ func createProject(template string) {
 
 	fmt.Println(consolecolors.Blue(string(projects.Logo)))
 	fmt.Println(" ")
-	fmt.Printf("%s   (version:  %s)", consolecolors.Green(":: YoyoGo ::"), consolecolors.Blue(projects.Version))
+	fmt.Printf("%s   (version:  %s)", consolecolors.Green(":: yygctl ::"), consolecolors.Blue(projects.Version))
 	fmt.Print(consolecolors.Blue(`
-light and fast , dependency injection based micro-service framework written in Go.
+This application is a tool to generate the needed files to quickly create a yoyogo application.
 `))
 
 	if project != nil {
-		fmt.Println("正在生成项目模板......")
+		fmt.Println("create template project......")
 		time.Sleep(500 * time.Millisecond)
 
 		project.Generate(dirPath, projectName)
 
-		fmt.Println("生成项目模板完毕.")
+		fmt.Println("template project created.")
 	} else {
-		fmt.Printf("没有找到模板项目,%s", template)
+		fmt.Printf("Not found tempalte project! , %s", template)
 	}
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	//---------------------------------------------------------------------------------------------------------------------------------------------
