@@ -3,4 +3,4 @@ build:
 	chmod 777 build.sh
 	pwd
 	ls
-	sh build.sh ${VERSION}
+	bash build.sh ${VERSION}
