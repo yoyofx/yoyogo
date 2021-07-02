@@ -2,14 +2,14 @@
 osArray=("linux" "darwin" "freebsd" "windows")
 archs=("amd64" "386")
 version=${1-"0.0.1-preview1"}
-out_file="yoyocli"
+out_file="yygctl"
 
 build() {
   os=$1
   arch=$2
 
   go env -w GOPROXY=https://goproxy.cn,direct
-  GOOS=$os GOARCH=$arch go build -o "${out_file}" Cli.go
+  GOOS=$os GOARCH=$arch go build -o "${out_file}" ./cli/yygctl/main.go
   tgzName="${out_file}_${version}_${os}_${arch}.tar.gz"
   rm -f "${tgzName}"
   tar -czf "${tgzName}" "${out_file}"
