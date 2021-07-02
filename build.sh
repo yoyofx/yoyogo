@@ -1,6 +1,6 @@
 #!/usr/bin/Env bash
 osArray=("linux" "darwin" "freebsd" "windows")
-archs=("amd64" "386")
+archs=("amd64")
 version=${1-"0.0.1-preview1"}
 out_file="yygctl"
 
