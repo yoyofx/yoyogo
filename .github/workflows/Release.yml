@@ -56,8 +56,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: yygctl_${{ github.event.inputs.version }}_darwin_386.tar.gz
-        asset_name: yygctl_${{ github.event.inputs.version }}_darwin_386.tar.gz
+        asset_path: yoyocli_${{ github.event.inputs.version }}_darwin_386.tar.gz
+        asset_name: yoyocli_${{ github.event.inputs.version }}_darwin_386.tar.gz
         asset_content_type: application/octet-stream
 
     - name: Upload a Release Asset
@@ -66,8 +66,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: yygctl_${{ github.event.inputs.version }}_darwin_amd64.tar.gz
-        asset_name: yygctl_${{ github.event.inputs.version }}_darwin_amd64.tar.gz
+        asset_path: yoyocli_${{ github.event.inputs.version }}_darwin_amd64.tar.gz
+        asset_name: yoyocli_${{ github.event.inputs.version }}_darwin_amd64.tar.gz
         asset_content_type: application/octet-stream
 
     - name: Upload a Release Asset
@@ -76,8 +76,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: yygctl_${{ github.event.inputs.version }}_freebsd_386.tar.gz
-        asset_name: yygctl_${{ github.event.inputs.version }}_freebsd_386.tar.gz
+        asset_path: yoyocli_${{ github.event.inputs.version }}_freebsd_386.tar.gz
+        asset_name: yoyocli_${{ github.event.inputs.version }}_freebsd_386.tar.gz
         asset_content_type: application/octet-stream
 
 
@@ -87,8 +87,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: yygctl_${{ github.event.inputs.version }}_freebsd_amd64.tar.gz
-        asset_name: yygctl_${{ github.event.inputs.version }}_freebsd_amd64.tar.gz
+        asset_path: yoyocli_${{ github.event.inputs.version }}_freebsd_amd64.tar.gz
+        asset_name: yoyocli_${{ github.event.inputs.version }}_freebsd_amd64.tar.gz
         asset_content_type: application/octet-stream
 
     - name: Upload a Release Asset
@@ -97,8 +97,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: yygctl_${{ github.event.inputs.version }}_linux_386.tar.gz
-        asset_name: yygctl_${{ github.event.inputs.version }}_linux_386.tar.gz
+        asset_path: yoyocli_${{ github.event.inputs.version }}_linux_386.tar.gz
+        asset_name: yoyocli_${{ github.event.inputs.version }}_linux_386.tar.gz
         asset_content_type: application/octet-stream
     - name: Upload a Release Asset
       uses: actions/upload-release-asset@v1.0.2
@@ -106,18 +106,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: yygctl_${{ github.event.inputs.version }}_linux_amd64.tar.gz
-        asset_name: yygctl_${{ github.event.inputs.version }}_linux_amd64.tar.gz
-        asset_content_type: application/octet-stream
-
-    - name: Upload a Release Asset
-      uses: actions/upload-release-asset@v1.0.2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: yygctl_${{ github.event.inputs.version }}_windows_386.tar.gz
-        asset_name: yygctl_${{ github.event.inputs.version }}_windows_386.tar.gz
+        asset_path: yoyocli_${{ github.event.inputs.version }}_linux_amd64.tar.gz
+        asset_name: yoyocli_${{ github.event.inputs.version }}_linux_amd64.tar.gz
         asset_content_type: application/octet-stream
 
     - name: Upload a Release Asset
@@ -126,6 +116,16 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: yygctl_${{ github.event.inputs.version }}_windows_amd64.tar.gz
-        asset_name: yygctl_${{ github.event.inputs.version }}_windows_amd64.tar.gz
+        asset_path: yoyocli_${{ github.event.inputs.version }}_windows_386.tar.gz
+        asset_name: yoyocli_${{ github.event.inputs.version }}_windows_386.tar.gz
+        asset_content_type: application/octet-stream
+
+    - name: Upload a Release Asset
+      uses: actions/upload-release-asset@v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: yoyocli_${{ github.event.inputs.version }}_windows_amd64.tar.gz
+        asset_name: yoyocli_${{ github.event.inputs.version }}_windows_amd64.tar.gz
         asset_content_type: application/octet-stream
