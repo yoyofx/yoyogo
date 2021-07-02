@@ -3,9 +3,9 @@ package cmds
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"github.com/yoyofx/yoyogo/utils"
 	"runtime"
 	"strings"
+	"yygctl/utils"
 )
 
 var RunCmd = &cobra.Command{

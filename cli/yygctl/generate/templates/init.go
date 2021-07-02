@@ -1,7 +1,7 @@
 package templates
 
 import (
-	"github.com/yoyofx/yoyogo/cli/yygctl/generate/templates/console"
+	"yygctl/generate/templates/console"
 )
 
 func init() {

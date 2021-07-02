@@ -7,9 +7,10 @@ out_file="yygctl"
 build() {
   os=$1
   arch=$2
-
+  cd cli/yygctl
+  go mod download
   go env -w GOPROXY=https://goproxy.cn,direct
-  GOOS=$os GOARCH=$arch go build -o "${out_file}" ./cli/yygctl/main.go
+  GOOS=$os GOARCH=$arch go build -o "${out_file}" .
   tgzName="${out_file}_${version}_${os}_${arch}.tar.gz"
   rm -f "${tgzName}"
   tar -czf "${tgzName}" "${out_file}"
