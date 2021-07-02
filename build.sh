@@ -21,6 +21,7 @@ main() {
   cd cli/yygctl
   ls
   echo "mod download"
+  go get -t .
   go mod download
   for os in "${osArray[@]}"; do
     for arch in "${archs[@]}"; do
