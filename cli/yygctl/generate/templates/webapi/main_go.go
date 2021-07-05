@@ -1,7 +1,7 @@
 package webapi
 
 const Main_tel = `
-package {{.ModelName}}
+package {{.CurrentModelName}}
 
 import (
 	"github.com/yoyofx/yoyogo/web"
