@@ -2,10 +2,10 @@ package projects
 
 import (
 	"fmt"
-	"html/template"
 	"io/fs"
 	"os"
 	"path"
+	"text/template"
 )
 
 type Generator struct {

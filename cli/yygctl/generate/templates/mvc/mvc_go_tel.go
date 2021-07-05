@@ -19,8 +19,8 @@ func NewDemoController() *DemoController {
 //-------------------------------------------------------------------------------
 type RegisterRequest struct {
 	mvc.RequestBody
-	UserName string` + " `param:\"UserName\"`" +
-	"Password string" + "`param:\"Password\"`" +
+	UserName string` + " `param:\"UserName\"`\n" +
+	"    Password string" + "`param:\"Password\"`\n" +
 	`}
 
 //GET URL  http://localhost:8080/app/v1/demo/register?UserName=max&Password=123
@@ -79,7 +79,7 @@ module {{.ModelName}}
 go 1.16
 
 require (
-     github.com/yoyofx/yoyogo v1.7.2
+     github.com/yoyofx/yoyogo {{.Version}}
 )
 `
 
