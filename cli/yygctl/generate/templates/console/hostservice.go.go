@@ -1,7 +1,7 @@
 package console
 
 const ProjectItem_hostservice_go = `
-package main
+package {{.CurrentModelName}}
 
 import "fmt"
 
@@ -9,7 +9,7 @@ type HostService struct {
 }
 
 func NewService() *HostService {
-	return &Service1{}
+	return &HostService{}
 }
 
 func (s *HostService) Run() error {

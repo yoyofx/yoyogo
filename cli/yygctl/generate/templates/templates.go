@@ -1,9 +1,9 @@
 package templates
 
 import (
-	"github.com/yoyofx/yoyogo/cli/yygctl/generate/projects"
 	"sort"
 	"sync"
+	"yygctl/generate/projects"
 )
 
 var projectsTmpMap map[string]*projects.Project

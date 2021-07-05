@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/yoyofx/yoyogo/cli/yygctl/cmds"
+	"yygctl/cmds"
 )
 
 var rootCmd = &cobra.Command{
@@ -14,9 +14,7 @@ var rootCmd = &cobra.Command{
 }
 
 func main() {
-
 	//templates.GetProjectByName("console").List()
-
 	rootCmd.AddCommand(cmds.VersionCmd)
 	rootCmd.AddCommand(cmds.RunCmd)
 	rootCmd.AddCommand(cmds.BuildCmd)

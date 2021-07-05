@@ -1,7 +1,7 @@
 package console
 
 const ProjectItem_startup_go = `
-package main
+package {{.CurrentModelName}}
 
 import (
 	"github.com/yoyofx/yoyogo/abstractions"

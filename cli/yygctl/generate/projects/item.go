@@ -1,5 +1,7 @@
 package projects
 
+import "path"
+
 const (
 	ProjectItemFile = iota
 	ProjectItemDir
@@ -25,6 +27,7 @@ func NewProjectDir(name string) *ProjectItem {
 	subItem := &ProjectItem{
 		Name: name,
 		Type: ProjectItemDir,
+		Path: "/",
 	}
 	return subItem
 }
@@ -37,11 +40,13 @@ func (item *ProjectItem) AddFile(fileName string) {
 func (item *ProjectItem) AddFileWithContent(fileName string, content string) {
 	subItem := NewProjectFile(fileName)
 	subItem.Content = content
+	subItem.Path = path.Join(item.Path, fileName)
 	item.Dom = append(item.Dom, subItem)
 }
 
 func (item *ProjectItem) AddDir(name string) *ProjectItem {
 	subItem := NewProjectDir(name)
+	subItem.Path = path.Join(item.Path, name)
 	item.Dom = append(item.Dom, subItem)
 	return subItem
 }
