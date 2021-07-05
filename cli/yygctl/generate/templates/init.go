@@ -1,8 +1,8 @@
 package templates
 
 import (
-	"github.com/yoyofx/yoyogo/cli/yygctl/generate/templates/console"
 	"github.com/yoyofx/yoyogo/cli/yygctl/generate/templates/webapi"
+	"yygctl/generate/templates/console"
 )
 
 func init() {

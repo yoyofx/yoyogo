@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/yoyofx/yoyogo/cli/yygctl/cmds"
+	"yygctl/cmds"
 )
 
 var rootCmd = &cobra.Command{

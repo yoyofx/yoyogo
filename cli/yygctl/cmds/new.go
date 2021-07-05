@@ -4,11 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
-	"github.com/yoyofx/yoyogo/abstractions/platform/consolecolors"
-	"github.com/yoyofx/yoyogo/cli/yygctl/generate/projects"
-	"github.com/yoyofx/yoyogo/cli/yygctl/generate/templates"
 	"strings"
 	"time"
+	"yygctl/generate/projects"
+	"yygctl/generate/templates"
+	"yygctl/utils/consolecolors"
 )
 
 var l bool
