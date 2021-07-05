@@ -1,7 +1,7 @@
 package mvc
 
 const DemoController_Tel = `
-package controllers
+package {{.CurrentModelName}}
 
 import (
 	"github.com/yoyofx/yoyogo/web/context"
@@ -36,7 +36,7 @@ func (controller DemoController) GetInfo() mvc.ApiResult {
 `
 
 const Main_Tel = `
-package {{.ModelName}}
+package {{.CurrentModelName}}
 
 import (
 	"github.com/yoyofx/yoyogo/abstractions"
@@ -44,7 +44,7 @@ import (
 	"github.com/yoyofx/yoyogo/web"
 	"github.com/yoyofx/yoyogo/web/actionresult/extension"
 	"github.com/yoyofx/yoyogo/web/mvc"
-    "{{.ModelName}}/controllers"
+    "{{.ModelName}}/controller"
 )
 
 func main() {
@@ -63,7 +63,7 @@ func CreateMVCBuilder() *abstractions.HostBuilder {
 			app.SetJsonSerializer(extension.CamelJson())
 			app.UseMvc(func(builder *mvc.ControllerBuilder) {
 				builder.AddViewsByConfig()                           //视图
-				builder.AddController(controllers.NewDemoController) // 注册mvc controller
+				builder.AddController(controller.NewDemoController) // 注册mvc controller
 			})
 		}).
 		ConfigureServices(func(serviceCollection *dependencyinjection.ServiceCollection) {

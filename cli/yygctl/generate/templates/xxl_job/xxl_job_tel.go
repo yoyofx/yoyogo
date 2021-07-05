@@ -1,7 +1,7 @@
 package xxl_job
 
 const Main_Tel = `
-package {{.ModelName}}
+package {{.CurrentModelName}}
 
 import (
 	"github.com/yoyofx/yoyogo/abstractions/configuration"
@@ -35,7 +35,7 @@ require (
 `
 
 const Demo_Job_Tel = `
-package {{.ModelName}}
+package {{.CurrentModelName}}
 
 import (
 	"github.com/yoyofx/yoyogo/pkg/scheduler"
