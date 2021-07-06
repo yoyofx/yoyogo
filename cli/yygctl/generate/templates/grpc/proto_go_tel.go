@@ -66,7 +66,7 @@ type HelloRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name string ` + "`" + "\"protobuf:bytes,1,opt,name=name,proto3\"" + " json:\"name,omitempty\"" + "`" + `
+	Name string ` + "`" + "protobuf:\"bytes,1,opt,name=name,proto3\"" + " json:\"name,omitempty\"" + "`" + `
 }
 
 func (x *HelloRequest) Reset() {

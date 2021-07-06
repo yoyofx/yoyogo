@@ -145,7 +145,7 @@ yoyogo:
   datasource:
       mysql:
         name: db1
-        url: tcp(127.0.0.1:10042)/db1?charset=utf8&parseTime=True
+        url: tcp(localhost:10042)/yoyoBlog?charset=utf8&parseTime=True
         username: root
         password: root
         debug: true
