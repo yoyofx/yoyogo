@@ -140,3 +140,27 @@ func (hw *Api) SayRoute(r *pb.HelloRequest) error {
 }
 
 `
+const CLient_Config_Tel = `
+yoyogo:
+  application:
+    name: yoyogo_grpc_clientdemo    # go build grpc-demo/client --profile=test
+    metadata: "grpc client demo"
+    server:
+      type: "console"
+  cloud:
+    discovery:
+      cache:
+        ttl: 30     # seconds
+      register-enable: false
+      type: "nacos"
+      metadata:
+        url: "127.0.0.1"
+        port: 80
+        namespace: "public"
+        group: ""
+        cluster: ""
+        auth:
+          enable: false
+          username: "root"
+          password: "root"
+`

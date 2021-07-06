@@ -19,14 +19,25 @@ add $GOPATH to $PATH Environment variable
 There are commands working with application root folder
 ## new 
 ```bash
-yygctl new <TEMPLATE> [-l|--list]
+yygctl new <TEMPLATE> [-l|--list] [-n <PROJECTNAME>] [-p <TARGETDIR>]
 ```
 ### --list
 list all templates
 #### TEMPLATE LIST
 console / webapi / mvc / grpc / xxl-job
 
-## add
+### -n 
+generate folder by project name <PROJECTNAME>
+
+### -p <TARGETDIR>
+output files to target directory. 
+
+## such as 
+```bash
+yygctl new console -n demo -p /Projects
+```
+
+## add (Not realized)
 add code snippet to the file, filepath was for default settings.
 ```bash
 yygctl add <SNIPPET> [-l|--list] [-f|--file <filepath>]
@@ -50,10 +61,5 @@ yygctl run
 display yoyogo version
 ```bash
 yygctl version
-```
-
-## protoc
-```bash
-yygctl protoc --go_out=plugins=grpc:. ./proto/*.proto
 ```
 
