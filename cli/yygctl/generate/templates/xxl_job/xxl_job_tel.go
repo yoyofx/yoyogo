@@ -74,7 +74,7 @@ yoyogo:
     server:
       type: "console"
     xxl:
-      serverAddr: http://10.168.4.218:8080/xxl-job-admin/
+      serverAddr: http://127.0.0.1:8080/xxl-job-admin/
       #ip: ""
       port: 9999
       #accessToken: ""

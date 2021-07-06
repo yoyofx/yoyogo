@@ -2,7 +2,7 @@ package grpc
 
 import "yygctl/generate/projects"
 
-var Project = projects.NewEmptyProject("mvc", "MVC Application").With(func(root *projects.ProjectItem) {
+var Project = projects.NewEmptyProject("grpc", "Grpc Application").With(func(root *projects.ProjectItem) {
 	clientDir := root.AddDir("client")
 	clientDir.AddFileWithContent("api.go", Client_Api_Tel)
 	clientDir.AddFileWithContent("clientservice.go", Client_Service_Tel)

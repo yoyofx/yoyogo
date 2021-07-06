@@ -147,7 +147,7 @@ yoyogo:
         name: db1
         url: tcp(localhost:10042)/yoyoBlog?charset=utf8&parseTime=True
         username: root
-        password: 1234abcd
+        password: root
         debug: true
         pool:
           init_cap: 2
@@ -155,7 +155,7 @@ yoyogo:
           idle_timeout : 5
       redis:
         name: reids1
-        url: 62.234.6.120:31379
+        url: 127.0.0.1:31379
         password:
         db: 0
         pool:
