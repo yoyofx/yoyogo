@@ -1,6 +1,6 @@
 module github.com/yoyofx/yoyogo
 
-go 1.14
+go 1.16
 
 require (
 	github.com/SkyAPM/go2sky v0.6.0
@@ -30,7 +30,7 @@ require (
 	github.com/prometheus/client_golang v0.9.3
 	github.com/shima-park/agollo v1.2.10
 	github.com/sirupsen/logrus v1.2.0
-	github.com/spf13/pflag v1.0.3
+	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.6.1
 	github.com/ugorji/go/codec v1.2.1
@@ -46,7 +46,7 @@ require (
 	google.golang.org/protobuf v1.26.0 // indirect
 	gopkg.in/gcfg.v1 v1.2.3 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
-	gopkg.in/yaml.v2 v2.3.0
+	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.0.4
 	gorm.io/gorm v1.20.12
 )
