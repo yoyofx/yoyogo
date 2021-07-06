@@ -56,12 +56,3 @@ require (
 	google.golang.org/protobuf v1.26.0
 )
 `
-
-const Config_Tel = `
-yoyogo:
-  application:
-    name: yoyogo_grpc_clientdemo    # go build grpc-demo/client --profile=test
-    metadata: "grpc client demo"
-    server:
-      type: "console"
-`
