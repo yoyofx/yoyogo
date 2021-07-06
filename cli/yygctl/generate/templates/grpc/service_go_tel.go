@@ -106,8 +106,8 @@ yoyogo:
         ttl: 30     # seconds
       type: "nacos"
       metadata:
-        url: "120.53.133.30"
-        port: 80
+        url: "127.0.0.1"
+        port: 8080
         namespace: "public"
         group: ""
         cluster: ""
@@ -124,18 +124,18 @@ yoyogo:
 #      metadata:
 #         datacenter: ""
 #         address:
-#           - "http://sd.yoyogo.run/eureka"
+#           - "http://127.0.0.1:8050/eureka"
 #         ttl: 30   # seconds
 #      type: "etcd"
 #      metadata:
 #        address:
-#          - "81.70.154.55:32379"
+#          - "127.0.0.1:2379"
 #        namespace: "public"
 #        ttl: 60
 #        auth:
-#          enable: true
+#          enable: false
 #          username: "root"
-#          password: "5z1fLbYw8A"
+#          password: "root"
   datasource:
       pool:
         init_cap: 2
@@ -144,13 +144,13 @@ yoyogo:
       db:
         name: db1
         type: mysql
-        url: tcp(localhost:10042)/yoyoBlog?charset=utf8&parseTime=True
+        url: tcp(localhost:3379)/xxx?charset=utf8&parseTime=True
         username: root
         password: 1234abcd
         debug: true
       redis:
         name: reids1
-        url: 62.234.6.120:31379
+        url: 127.0.0.1:31379
         password:
         db: 0
 

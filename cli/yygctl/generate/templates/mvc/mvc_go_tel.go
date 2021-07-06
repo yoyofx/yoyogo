@@ -129,7 +129,7 @@ yoyogo:
     discovery:
       type: "nacos"
       metadata:
-        url: "120.53.133.30"
+        url: "127.0.0.1"
         port: 80
         namespace: "public"
         group_name: ""
@@ -145,7 +145,7 @@ yoyogo:
   datasource:
       mysql:
         name: db1
-        url: tcp(localhost:10042)/yoyoBlog?charset=utf8&parseTime=True
+        url: tcp(localhost:10042)/xxx?charset=utf8&parseTime=True
         username: root
         password: root
         debug: true

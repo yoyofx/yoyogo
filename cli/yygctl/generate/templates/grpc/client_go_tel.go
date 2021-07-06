@@ -154,13 +154,13 @@ yoyogo:
       register-enable: false
       type: "nacos"
       metadata:
-        url: "120.53.133.30"
+        url: "127.0.0.1"
         port: 80
         namespace: "public"
         group: ""
         cluster: ""
         auth:
-          enable: true
+          enable: false
           username: "root"
-          password: "1234"
+          password: "root"
 `
