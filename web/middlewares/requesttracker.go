@@ -51,7 +51,7 @@ func (router *RequestTrackerMiddleware) Inovke(ctx *context.HttpContext, next fu
 	}
 	ctx.Output.Header(headerXRequestID, requestId)
 
-	span, ctxc, _ := router.tracer.CreateEntrySpan(ctx.Input.Request.Context(), ctx.Input.Request.URL.Path, func() (string, error) {
+	span, ctxc, _ := router.tracer.CreateEntrySpan(ctx.Input.Request.Context(), ctx.Input.Request.URL.Path, func(headerKey string) (string, error) {
 		return ctx.Input.Request.Header.Get(headerXRequestID), nil
 	})
 
