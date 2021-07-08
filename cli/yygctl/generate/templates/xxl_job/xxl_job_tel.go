@@ -29,7 +29,7 @@ go 1.16
 
 require (
     github.com/yoyofx/yoyogo {{.Version}}
-	github.com/xxl-job/xxl-job-executor-go v0.5.2
+	github.com/xxl-job/xxl-job-executor-go v0.6.1
 )
 
 `
