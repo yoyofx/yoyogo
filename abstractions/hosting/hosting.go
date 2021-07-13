@@ -2,7 +2,7 @@ package hosting
 
 import (
 	"github.com/yoyofx/yoyogo/abstractions"
-	"github.com/yoyofx/yoyogo/dependencyinjection"
+	"github.com/yoyofxteam/dependencyinjection"
 )
 
 func AddHostService(collection *dependencyinjection.ServiceCollection, serviceCtor interface{}) {

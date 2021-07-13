@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/yoyofx/yoyogo"
 	"github.com/yoyofx/yoyogo/abstractions/hostenv"
-	"github.com/yoyofx/yoyogo/dependencyinjection"
+	"github.com/yoyofxteam/dependencyinjection"
 	"net"
 	"os"
 	"strings"

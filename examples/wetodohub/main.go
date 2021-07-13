@@ -2,10 +2,10 @@ package main
 
 import (
 	"github.com/yoyofx/yoyogo/abstractions"
-	"github.com/yoyofx/yoyogo/dependencyinjection"
 	"github.com/yoyofx/yoyogo/web"
 	"github.com/yoyofx/yoyogo/web/actionresult/extension"
 	"github.com/yoyofx/yoyogo/web/mvc"
+	"github.com/yoyofxteam/dependencyinjection"
 	"websockethub/controllers"
 	"websockethub/hubs"
 )

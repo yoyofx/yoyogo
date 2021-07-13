@@ -570,6 +570,8 @@ github.com/vektah/gqlparser/v2 v2.1.0 h1:uiKJ+T5HMGGQM2kRKQ8Pxw8+Zq9qhhZhz/lieYv
 github.com/vektah/gqlparser/v2 v2.1.0/go.mod h1:SyUiHgLATUR8BiYURfTirrTcGpcE+4XkV2se04Px1Ms=
 github.com/xxl-job/xxl-job-executor-go v0.6.1 h1:ixelbHETGBHPwTBuk/BciChRQr/VaHxbWY0FzIt2NXM=
 github.com/xxl-job/xxl-job-executor-go v0.6.1/go.mod h1:bUFhz/5Irp9zkdYk5MxhQcDDT6LlZrI8+rv5mHtQ1mo=
+github.com/yoyofxteam/dependencyinjection v1.0.0 h1:YpM1hboqc80hGsrdeDEn0gwudHvWno/VOUhhSybOCbM=
+github.com/yoyofxteam/dependencyinjection v1.0.0/go.mod h1:GSLNDP0AulXOm7DDsHjNTZMSwlW1bgUV5OB8EdXoS1Q=
 github.com/yoyofxteam/nacos-viper-remote v0.3.0 h1:VJ4FzujkuJn2m9BHQ7hinHy9gWbWECXTtQQDpicns2E=
 github.com/yoyofxteam/nacos-viper-remote v0.3.0/go.mod h1:GyANZvN0gjo2webhxROdCBrEdC10sXi2OcVzwJ+z91Y=
 github.com/yoyofxteam/reflectx v0.2.3 h1:v/pZFYxW3fA+ZaqG3Kvw4sFPeMYVzLJdjIG2wbeTFJE=

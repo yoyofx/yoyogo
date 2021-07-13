@@ -2,9 +2,9 @@ package context
 
 import (
 	"errors"
-	"github.com/yoyofx/yoyogo/dependencyinjection"
 	"github.com/yoyofx/yoyogo/web/actionresult"
 	"github.com/yoyofx/yoyogo/web/binding"
+	"github.com/yoyofxteam/dependencyinjection"
 	"net/http"
 	"sync"
 )
