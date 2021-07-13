@@ -4,8 +4,8 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/hosting"
 	"github.com/yoyofx/yoyogo/console"
-	"github.com/yoyofx/yoyogo/dependencyinjection"
 	"github.com/yoyofx/yoyogo/pkg/servicediscovery/nacos"
+	"github.com/yoyofxteam/dependencyinjection"
 )
 
 func main() {

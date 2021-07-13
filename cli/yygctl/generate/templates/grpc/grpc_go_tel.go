@@ -5,7 +5,7 @@ package main
 
 import (
 	"github.com/yoyofx/yoyogo/abstractions"
-	"github.com/yoyofx/yoyogo/dependencyinjection"
+	"github.com/yoyofxteam/dependencyinjection"
 	yrpc "github.com/yoyofx/yoyogo/grpc"
 	"github.com/yoyofx/yoyogo/pkg/servicediscovery/nacos"
 	"google.golang.org/grpc"
@@ -45,6 +45,7 @@ module {{.ModelName}}
 go 1.16
 
 require (
+	github.com/yoyofxteam/dependencyinjection v1.0.0
 	github.com/yoyofx/yoyogo {{.Version}}
 	github.com/golang/protobuf v1.5.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0

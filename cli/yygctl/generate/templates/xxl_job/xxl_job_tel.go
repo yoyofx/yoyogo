@@ -5,7 +5,7 @@ package {{.CurrentModelName}}
 
 import (
 	"github.com/yoyofx/yoyogo/abstractions/configuration"
-	"github.com/yoyofx/yoyogo/dependencyinjection"
+	"github.com/yoyofxteam/dependencyinjection"
 	"github.com/yoyofx/yoyogo/pkg/scheduler"
 )
 
@@ -28,6 +28,7 @@ module "{{.ModelName}}"
 go 1.16
 
 require (
+	github.com/yoyofxteam/dependencyinjection v1.0.0
     github.com/yoyofx/yoyogo {{.Version}}
 	github.com/xxl-job/xxl-job-executor-go v0.6.1
 )

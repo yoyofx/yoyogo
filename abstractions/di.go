@@ -1,6 +1,6 @@
 package abstractions
 
-import "github.com/yoyofx/yoyogo/dependencyinjection"
+import "github.com/yoyofxteam/dependencyinjection"
 
 var (
 	configurationProcessors []func(config IConfiguration, serviceCollection *dependencyinjection.ServiceCollection)

@@ -2,9 +2,9 @@ package servicediscovery
 
 import (
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
-	"github.com/yoyofx/yoyogo/dependencyinjection"
 	grpconn "github.com/yoyofx/yoyogo/grpc/conn"
 	"github.com/yoyofx/yoyogo/pkg/httpclient"
+	"github.com/yoyofxteam/dependencyinjection"
 )
 
 func UseGeneralServiceDiscovery(serviceCollection *dependencyinjection.ServiceCollection) {

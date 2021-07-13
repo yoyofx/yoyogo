@@ -40,7 +40,7 @@ package {{.CurrentModelName}}
 
 import (
 	"github.com/yoyofx/yoyogo/abstractions"
-	"github.com/yoyofx/yoyogo/dependencyinjection"
+	"github.com/yoyofxteam/dependencyinjection"
 	"github.com/yoyofx/yoyogo/web"
 	"github.com/yoyofx/yoyogo/web/actionresult/extension"
 	"github.com/yoyofx/yoyogo/web/mvc"
@@ -79,7 +79,8 @@ module {{.ModelName}}
 go 1.16
 
 require (
-     github.com/yoyofx/yoyogo {{.Version}}
+	github.com/yoyofxteam/dependencyinjection v1.0.0
+	github.com/yoyofx/yoyogo {{.Version}}
 )
 `
 

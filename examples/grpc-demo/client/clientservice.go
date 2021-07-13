@@ -15,11 +15,14 @@ func NewClientService(api *Api) *ClientService {
 
 func (s *ClientService) Run() error {
 	fmt.Println("host service Running")
-	err := s.helloworldApi.SayRecord(&pb.HelloRequest{})
-	if err != nil {
-		return err
+	if s.helloworldApi != nil {
+		err := s.helloworldApi.SayRecord(&pb.HelloRequest{})
+		if err != nil {
+			return err
+		}
+	} else {
+		fmt.Println("grpc is not connected !!")
 	}
-
 	return nil
 }
 

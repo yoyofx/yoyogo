@@ -4,9 +4,9 @@ go 1.16
 
 require (
 	github.com/SkyAPM/go2sky v1.1.0
+	github.com/yoyofxteam/dependencyinjection v1.0.0
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/clbanning/x2j v0.0.0-20191024224557-825249438eec // indirect
-	github.com/defval/inject/v2 v2.2.2
 	github.com/fasthttp/websocket v1.4.3
 	github.com/fogleman/gg v1.3.0
 	github.com/franela/goblin v0.0.0-20201006155558-6240afcb2eb7 // indirect

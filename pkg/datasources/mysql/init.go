@@ -3,7 +3,7 @@ package mysql
 import (
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/health"
-	"github.com/yoyofx/yoyogo/dependencyinjection"
+	"github.com/yoyofxteam/dependencyinjection"
 )
 
 func init() {

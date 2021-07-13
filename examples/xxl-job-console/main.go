@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/yoyofx/yoyogo/abstractions/configuration"
-	"github.com/yoyofx/yoyogo/dependencyinjection"
 	"github.com/yoyofx/yoyogo/pkg/scheduler"
+	"github.com/yoyofxteam/dependencyinjection"
 )
 
 func main() {
