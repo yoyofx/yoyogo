@@ -1,12 +1,14 @@
 package conn
 
 import (
+	"context"
 	"errors"
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/resolver"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Factory struct {
@@ -24,14 +26,13 @@ type LoadBalanceResolver struct {
 
 func (gcf *Factory) CreateClientConn(serverUrl string, grpcOpts ...grpc.DialOption) (*grpc.ClientConn, error) {
 	if grpcOpts == nil {
-		grpcOpts = append(grpcOpts, grpc.WithInsecure(),
+		grpcOpts = append(grpcOpts, grpc.WithInsecure(), grpc.WithBlock(),
 			grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robin"}`),
 			grpc.WithResolvers(gcf.NewLoadBalanceResolver()),
 		)
 	}
-	conn, err := grpc.Dial(serverUrl,
-		grpcOpts...,
-	)
+	ctx, _ := context.WithTimeout(context.Background(), time.Second*15)
+	conn, err := grpc.DialContext(ctx, serverUrl, grpcOpts...)
 	return conn, err
 }
 
