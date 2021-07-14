@@ -3,7 +3,7 @@ package scheduler
 import (
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/console"
-	"github.com/yoyofx/yoyogo/dependencyinjection"
+	"github.com/yoyofxteam/dependencyinjection"
 )
 
 func NewXxlJobBuilder(config abstractions.IConfiguration) *abstractions.HostBuilder {

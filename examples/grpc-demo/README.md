@@ -63,7 +63,7 @@ grpcurl -plaintext -d '{"name":"Go"}' localhost:31127 helloworld.Greeter.SayHell
 ```go
 import (
 	"github.com/yoyofx/yoyogo/abstractions"
-	"github.com/yoyofx/yoyogo/dependencyinjection"
+	"github.com/yoyofxteam/dependencyinjection"
 	yrpc "github.com/yoyofx/yoyogo/grpc"
 	"google.golang.org/grpc"
 	pb "grpc-demo/proto/helloworld"

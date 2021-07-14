@@ -2,7 +2,7 @@ package httpclient
 
 import (
 	"github.com/yoyofx/yoyogo/abstractions"
-	"github.com/yoyofx/yoyogo/dependencyinjection"
+	"github.com/yoyofxteam/dependencyinjection"
 )
 
 func init() {

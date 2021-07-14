@@ -1,9 +1,9 @@
 package session
 
 import (
-	"github.com/yoyofx/yoyogo/dependencyinjection"
 	"github.com/yoyofx/yoyogo/web/session/identity"
 	"github.com/yoyofx/yoyogo/web/session/store"
+	"github.com/yoyofxteam/dependencyinjection"
 )
 
 type Options struct {

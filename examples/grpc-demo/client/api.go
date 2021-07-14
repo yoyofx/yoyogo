@@ -14,7 +14,12 @@ type Api struct {
 }
 
 func NewHelloworldApi(factory *grpconn.Factory) *Api {
-	clientConn, _ := factory.CreateClientConn("grpc://public/[yoyogo_grpc_dev]")
+	clientConn, err := factory.CreateClientConn("grpc://public/[yoyogo_grpc_dev]")
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+
 	client := pb.NewGreeterClient(clientConn)
 	return &Api{client: client}
 }

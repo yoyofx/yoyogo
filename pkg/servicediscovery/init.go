@@ -3,8 +3,8 @@ package servicediscovery
 import (
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
-	"github.com/yoyofx/yoyogo/dependencyinjection"
 	"github.com/yoyofx/yoyogo/pkg/servicediscovery/strategy"
+	"github.com/yoyofxteam/dependencyinjection"
 	"strconv"
 	"time"
 )

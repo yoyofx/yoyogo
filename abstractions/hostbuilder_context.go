@@ -2,7 +2,7 @@ package abstractions
 
 import (
 	"github.com/yoyofx/yoyogo/abstractions/hostenv"
-	"github.com/yoyofx/yoyogo/dependencyinjection"
+	"github.com/yoyofxteam/dependencyinjection"
 )
 
 type HostBuilderContext struct {

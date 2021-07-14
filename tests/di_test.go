@@ -3,7 +3,7 @@ package tests
 import (
 	"github.com/magiconair/properties/assert"
 	"github.com/yoyofx/yoyogo/abstractions"
-	"github.com/yoyofx/yoyogo/dependencyinjection"
+	"github.com/yoyofxteam/dependencyinjection"
 	"testing"
 )
 
