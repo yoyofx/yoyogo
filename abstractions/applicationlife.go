@@ -11,6 +11,7 @@ type ApplicationLife struct {
 	eventPublisher     *ApplicationEventPublisher
 	ApplicationStopped chan ApplicationEvent
 	ApplicationStarted chan ApplicationEvent
+	State              string
 }
 
 func NewApplicationLife() *ApplicationLife {
@@ -25,9 +26,11 @@ func NewApplicationLife() *ApplicationLife {
 }
 
 func (life *ApplicationLife) StartApplication() {
+	life.State = "up"
 	life.eventPublisher.Publish(APPLICATION_LIFE_START, "Start")
 }
 
 func (life *ApplicationLife) StopApplication() {
+	life.State = "down"
 	life.eventPublisher.Publish(APPLICATION_LIFE_STOP, "Stop")
 }
