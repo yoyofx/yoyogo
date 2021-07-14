@@ -29,21 +29,13 @@ func HookSignals(host abstractions.IServiceHost) {
 			sig = <-quitSig
 			fmt.Println()
 			switch sig {
-			case syscall.SIGQUIT:
+			// graceful stop
+			case syscall.SIGHUP, syscall.SIGINT, syscall.SIGKILL, syscall.SIGTERM, syscall.SIGQUIT:
 				host.StopApplicationNotify()
 				host.Shutdown()
-				os.Exit(0)
-				// graceful stop
-			case syscall.SIGHUP:
-				host.StopApplicationNotify()
-				host.Shutdown()
-			case syscall.SIGINT, syscall.SIGKILL, syscall.SIGTERM:
-				host.StopApplicationNotify()
-				host.Shutdown()
-				os.Exit(0)
 				// terminate now
 			}
-			time.Sleep(time.Second * 3)
+			time.Sleep(time.Second * 15)
 		}
 	}()
 }
