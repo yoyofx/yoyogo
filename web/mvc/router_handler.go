@@ -23,11 +23,12 @@ func NewMvcRouterHandler() *RouterHandler {
 }
 
 func (handler *RouterHandler) Invoke(ctx *context.HttpContext, pathComponents []string) func(ctx *context.HttpContext) {
-	if !handler.Options.Template.Match(pathComponents) {
+	matchInfo := &MatchMvcInfo{}
+	if !handler.Options.Template.Match(pathComponents, matchInfo) {
 		return nil
 	}
 
-	controllerName := handler.Options.Template.ControllerName
+	controllerName := matchInfo.ControllerName
 	controller, err := ActivateController(ctx.RequiredServices, controllerName)
 	if err != nil {
 		ctx.Output.SetStatus(http.StatusNotFound)
@@ -35,7 +36,7 @@ func (handler *RouterHandler) Invoke(ctx *context.HttpContext, pathComponents []
 		return nil
 	}
 
-	actionName := handler.Options.Template.ActionName
+	actionName := matchInfo.ActionName
 	controllerDescriptor := handler.ControllerDescriptors[controllerName]
 	actionDescriptor, foundAction := controllerDescriptor.GetActionDescriptorByName(actionName)
 	if !foundAction {

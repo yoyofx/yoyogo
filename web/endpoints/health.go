@@ -10,7 +10,7 @@ import (
 func UseHealth(router router.IRouterBuilder) {
 	xlog.GetXLogger("Endpoint").Debug("loaded health endpoint.")
 
-	router.GET("/actuator/health", func(ctx *context.HttpContext) {
+	router.GET("/actuator/health/detail", func(ctx *context.HttpContext) {
 		var indicatorList []health.Indicator
 		_ = ctx.RequiredServices.GetService(&indicatorList)
 		builder := health.NewHealthIndicator(indicatorList)

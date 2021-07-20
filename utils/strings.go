@@ -47,6 +47,16 @@ func Contains(obj interface{}, target interface{}) bool {
 	return false
 }
 
+func ContainsStr(slice []string, item string) bool {
+	set := make(map[string]struct{}, len(slice))
+	for _, s := range slice {
+		set[s] = struct{}{}
+	}
+
+	_, ok := set[item]
+	return ok
+}
+
 // Substr字符串截取
 func Substr(str string, start int, length int) string {
 	rs := []rune(str)
