@@ -26,20 +26,24 @@ func UseRouteInfo(route router.IRouterBuilder) {
 			_ = ctx.RequiredServices.GetService(&builder)
 			_ = ctx.RequiredServices.GetService(&env)
 			serverPath := env.MetaData["server.path"]
-			//mvcTemplate := env.MetaData["mvc.template"]
+			mvcTemplate := env.MetaData["mvc.template"]
 			// route
 			routerInfoList = make([]router.Info, len(route.GetRouteInfo()))
 			copy(routerInfoList, route.GetRouteInfo())
 			for idx, _ := range routerInfoList {
-				routerInfoList[idx].Path = "/" + serverPath + routerInfoList[idx].Path
+				routerInfoList[idx].Path = fmt.Sprintf("/%s%s", serverPath, routerInfoList[idx].Path)
 			}
 			// mvc
+			mvcTemplate = strings.ReplaceAll(mvcTemplate, "{controller}", "%s")
+			mvcTemplate = strings.ReplaceAll(mvcTemplate, "{action}", "%s")
+			mvcTemplate = fmt.Sprintf("/%s/%s", serverPath, mvcTemplate)
 			descriptorList := builder.GetControllerDescriptorList()
 			for _, desc := range descriptorList {
 				for _, action := range desc.GetActionDescriptors() {
 					colName := strings.ReplaceAll(desc.ControllerName, "controller", "")
 					actionName := getActionPath(action.ActionName)
-					routerInfoList = append(routerInfoList, router.Info{Method: strings.ToUpper(action.ActionMethod), Path: fmt.Sprintf("/%s/%s", colName, actionName), Type: "mvc"})
+
+					routerInfoList = append(routerInfoList, router.Info{Method: strings.ToUpper(action.ActionMethod), Path: fmt.Sprintf(mvcTemplate, colName, actionName), Type: "mvc"})
 				}
 			}
 		})
