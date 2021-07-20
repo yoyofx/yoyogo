@@ -419,7 +419,7 @@
 						{
 							"name": "{{baseurl}}/actuator/health",
 							"request": {
-								"url": "{{baseurl}}/app/actuator/health",
+								"url": "{{baseurl}}/app/actuator/health/detail",
 								"method": "GET",
 								"header": [],
 								"body": {},
@@ -510,9 +510,20 @@
 					"response": []
 				},
 				{
-					"name": "http://localhost:8080/app/actuator/route/info",
+					"name": "http://localhost:8080/app/actuator/routers",
 					"request": {
-						"url": "{{baseurl}}/app/actuator/route/info",
+						"url": "{{baseurl}}/app/actuator/routers",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "{{baseurl}}/app/actuator/metrics",
+					"request": {
+						"url": "{{baseurl}}/app/actuator/metrics",
 						"method": "GET",
 						"header": [],
 						"body": {},
