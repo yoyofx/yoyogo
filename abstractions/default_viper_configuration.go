@@ -69,6 +69,7 @@ func NewConfiguration(configContext *ConfigurationContext) *Configuration {
 
 	if configContext.EnableRemote {
 		defaultConfig = configContext.RemoteProvider.GetProvider(defaultConfig)
+		_ = defaultConfig.BindPFlags(pflag.CommandLine)
 	}
 
 	return &Configuration{

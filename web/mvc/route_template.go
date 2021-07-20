@@ -5,11 +5,14 @@ import "strings"
 type RouteTemplate struct {
 	Template        string
 	TemplateSplits  []string
-	ControllerName  string
-	ActionName      string
 	controllerIndex int
 	actionIndex     int
 	pathLen         int
+}
+
+type MatchMvcInfo struct {
+	ControllerName string
+	ActionName     string
 }
 
 func NewRouteTemplate(temp string) *RouteTemplate {
@@ -24,15 +27,15 @@ func NewRouteTemplate(temp string) *RouteTemplate {
 	}
 }
 
-func (template *RouteTemplate) Match(pathComponents []string) bool {
+func (template *RouteTemplate) Match(pathComponents []string, matchinfo *MatchMvcInfo) bool {
 	if len(pathComponents) >= template.pathLen {
-		template.ControllerName = pathComponents[template.GetControllerIndex()]
-		template.ControllerName = strings.ToLower(template.ControllerName)
-		if !strings.Contains(template.ControllerName, "controller") {
-			template.ControllerName += "controller"
+		matchinfo.ControllerName = pathComponents[template.GetControllerIndex()]
+		matchinfo.ControllerName = strings.ToLower(matchinfo.ControllerName)
+		if !strings.Contains(matchinfo.ControllerName, "controller") {
+			matchinfo.ControllerName += "controller"
 		}
 
-		template.ActionName = strings.ToLower(pathComponents[template.GetActionIndex()])
+		matchinfo.ActionName = strings.ToLower(pathComponents[template.GetActionIndex()])
 
 		for index, item := range pathComponents {
 			if index != template.GetControllerIndex() && index != template.GetActionIndex() {
