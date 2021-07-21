@@ -19,6 +19,7 @@ import (
 	"github.com/yoyofx/yoyogo/web/session/identity"
 	"github.com/yoyofx/yoyogo/web/session/store"
 	"github.com/yoyofxteam/dependencyinjection"
+	"github.com/yoyofxteam/reflectx"
 	"simpleweb/contollers"
 	"simpleweb/hubs"
 	"simpleweb/models"
@@ -80,6 +81,8 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 				//options.AddSessionMemoryStore(store.NewMemory())
 				options.AddSessionIdentity(identity.NewCookie())
 			})
+
+			AddConfiguation(serviceCollection, new(DbConfig))
 		}).
 		OnApplicationLifeEvent(getApplicationLifeEvent)
 }
@@ -180,3 +183,25 @@ func getApplicationLifeEvent(life *abstractions.ApplicationLife) {
 }
 
 //endregion
+
+type DbConfig struct {
+	abstractions.ConfigurationProperties `section:"yoyogo.datasource.db"`
+
+	Name     string `mapstructure:"name" config:"name"`
+	Url      string `mapstructure:"url" config:"url"`
+	UserName string `mapstructure:"username" config:"user_name"`
+	Password string `mapstructure:"password" config:"password"`
+	Debug    bool   `mapstructure:"debug" config:"debug"`
+}
+
+func AddConfiguation(sc *dependencyinjection.ServiceCollection, objType interface{}) {
+	typeInfo, _ := reflectx.GetTypeInfo(objType)
+	fieldInfo := typeInfo.GetFieldByName("ConfigurationProperties")
+	typeName := typeInfo.Name
+	configSection := fieldInfo.Tags.Get("section")
+
+	_ = typeName
+	_ = configSection
+}
+
+// AddConfiguation(serviceCollection,new(DbConfig))

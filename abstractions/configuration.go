@@ -16,3 +16,6 @@ type IConfiguration interface {
 type IConfigurationRemoteProvider interface {
 	GetProvider(*viper.Viper) *viper.Viper
 }
+
+type ConfigurationProperties struct {
+}
