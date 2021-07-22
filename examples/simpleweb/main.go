@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jinzhu/copier"
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/pkg/configuration/apollo"
@@ -20,9 +21,11 @@ import (
 	"github.com/yoyofx/yoyogo/web/session/store"
 	"github.com/yoyofxteam/dependencyinjection"
 	"github.com/yoyofxteam/reflectx"
+	"reflect"
 	"simpleweb/contollers"
 	"simpleweb/hubs"
 	"simpleweb/models"
+	"sync"
 )
 
 func SimpleDemo() {
@@ -82,7 +85,7 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 				options.AddSessionIdentity(identity.NewCookie())
 			})
 
-			AddConfiguation(serviceCollection, new(DbConfig))
+			AddConfiguration(serviceCollection, NewDbConfig)
 		}).
 		OnApplicationLifeEvent(getApplicationLifeEvent)
 }
@@ -114,6 +117,7 @@ func registerEndpointRouterConfig(rb router.IRouterBuilder) {
 
 	rb.GET("/info", GetInfo)
 	rb.GET("/ioc", GetInfoByIOC)
+	rb.GET("/restconfig", RestConfig)
 	rb.GET("/session", TestSession)
 	rb.GET("/newsession", SetSession)
 
@@ -148,7 +152,18 @@ func GetInfo(ctx *context.HttpContext) {
 func GetInfoByIOC(ctx *context.HttpContext) {
 	var userAction models.IUserAction
 	_ = ctx.RequiredServices.GetService(&userAction)
-	ctx.JSON(200, context.H{"info": "ok " + userAction.Login("zhang")})
+
+	var db DbConfig
+	_ = ctx.RequiredServices.GetService(&db)
+
+	ctx.JSON(200, context.H{
+		"info":     "ok " + userAction.Login("zhang"),
+		"dbconfig": db.Name,
+	})
+}
+
+func RestConfig(ctx *context.HttpContext) {
+	RefreshAll()
 }
 
 //bootstrap binding
@@ -184,9 +199,14 @@ func getApplicationLifeEvent(life *abstractions.ApplicationLife) {
 
 //endregion
 
-type DbConfig struct {
-	abstractions.ConfigurationProperties `section:"yoyogo.datasource.db"`
+type IConfigurationProperties interface {
+	GetSection() string
+}
 
+const DbConfigTag = "yoyogo.datasource.db"
+
+type DbConfig struct {
+	//abstractions.ConfigurationProperties `section:"yoyogo.datasource.db"`
 	Name     string `mapstructure:"name" config:"name"`
 	Url      string `mapstructure:"url" config:"url"`
 	UserName string `mapstructure:"username" config:"user_name"`
@@ -194,14 +214,64 @@ type DbConfig struct {
 	Debug    bool   `mapstructure:"debug" config:"debug"`
 }
 
-func AddConfiguation(sc *dependencyinjection.ServiceCollection, objType interface{}) {
-	typeInfo, _ := reflectx.GetTypeInfo(objType)
-	fieldInfo := typeInfo.GetFieldByName("ConfigurationProperties")
-	typeName := typeInfo.Name
-	configSection := fieldInfo.Tags.Get("section")
-
-	_ = typeName
-	_ = configSection
+func (db *DbConfig) GetSection() string {
+	return DbConfigTag
 }
 
-// AddConfiguation(serviceCollection,new(DbConfig))
+func NewDbConfig(configuration abstractions.IConfiguration) DbConfig {
+	var config DbConfig
+	GetConfigObject(configuration, DbConfigTag, &config) //configuration.GetConfigObject(configuration,DbConfigTag,config)
+	return config
+}
+
+// AddConfiguration 注入函数 用户API
+func AddConfiguration(sc *dependencyinjection.ServiceCollection, objType interface{}) {
+	_, objectType := reflectx.GetCtorFuncOutTypeName(objType)
+	configObject := reflect.New(objectType).Interface().(IConfigurationProperties)
+	sectionName := configObject.GetSection()
+	configMap[sectionName] = nil
+	sc.AddTransient(objType)
+}
+
+/*
+	以下是IConfiguration对象内容
+*/
+
+func GetConfigObject(configuration abstractions.IConfiguration, configTag string, configObject interface{}) {
+	gRWLock.RLock()
+	object := configMap[configTag]
+	gRWLock.RUnlock()
+	if object == nil {
+		// need lock
+		Section := configuration.GetSection(configTag)
+		Section.Unmarshal(configObject)
+		object = configObject
+		gRWLock.Lock()
+		configMap[configTag] = object
+		gRWLock.Unlock()
+	} else {
+		_ = copier.Copy(configObject, object)
+		//configObject = object
+	}
+
+}
+
+func RefreshAll() {
+	gRWLock.Lock()
+	configMap = make(map[string]interface{})
+	gRWLock.Unlock()
+}
+
+func RefreshBy(name string) {
+	gRWLock.Lock()
+	delete(configMap, name)
+	gRWLock.Unlock()
+}
+
+// 以下都在 IConfiguration对象内部
+var gRWLock = new(sync.RWMutex)
+
+// 这个应该在 IConfiguration对象里
+var configMap = make(map[string]interface{})
+
+// AddConfiguration(serviceCollection,new(DbConfig))

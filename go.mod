@@ -4,7 +4,6 @@ go 1.16
 
 require (
 	github.com/SkyAPM/go2sky v1.1.0
-	github.com/yoyofxteam/dependencyinjection v1.0.0
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/clbanning/x2j v0.0.0-20191024224557-825249438eec // indirect
 	github.com/fasthttp/websocket v1.4.3
@@ -34,6 +33,7 @@ require (
 	github.com/ugorji/go/codec v1.2.1
 	github.com/valyala/fasthttp v1.28.0
 	github.com/xxl-job/xxl-job-executor-go v0.6.1
+	github.com/yoyofxteam/dependencyinjection v1.0.1
 	github.com/yoyofxteam/nacos-viper-remote v0.3.0
 	github.com/yoyofxteam/reflectx v0.2.3
 	go.etcd.io/etcd/client/v3 v3.5.0
