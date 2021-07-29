@@ -18,6 +18,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/hashicorp/consul/api v1.1.0
 	github.com/hudl/fargo v1.3.0
+	github.com/jinzhu/copier v0.3.2
 	github.com/magiconair/properties v1.8.5
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d
 	github.com/mitchellh/go-homedir v1.1.0 // indirect

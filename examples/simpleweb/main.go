@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/jinzhu/copier"
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/pkg/configuration/apollo"
@@ -25,7 +24,6 @@ import (
 	"simpleweb/contollers"
 	"simpleweb/hubs"
 	"simpleweb/models"
-	"sync"
 )
 
 func SimpleDemo() {
@@ -117,7 +115,7 @@ func registerEndpointRouterConfig(rb router.IRouterBuilder) {
 
 	rb.GET("/info", GetInfo)
 	rb.GET("/ioc", GetInfoByIOC)
-	rb.GET("/restconfig", RestConfig)
+	//rb.GET("/restconfig", RestConfig)
 	rb.GET("/session", TestSession)
 	rb.GET("/newsession", SetSession)
 
@@ -160,10 +158,6 @@ func GetInfoByIOC(ctx *context.HttpContext) {
 		"info":     "ok " + userAction.Login("zhang"),
 		"dbconfig": db.Name,
 	})
-}
-
-func RestConfig(ctx *context.HttpContext) {
-	RefreshAll()
 }
 
 //bootstrap binding
@@ -220,7 +214,7 @@ func (db *DbConfig) GetSection() string {
 
 func NewDbConfig(configuration abstractions.IConfiguration) DbConfig {
 	var config DbConfig
-	GetConfigObject(configuration, DbConfigTag, &config) //configuration.GetConfigObject(configuration,DbConfigTag,config)
+	configuration.GetConfigObject(DbConfigTag, &config) //configuration.GetConfigObject(configuration,DbConfigTag,config)
 	return config
 }
 
@@ -229,49 +223,6 @@ func AddConfiguration(sc *dependencyinjection.ServiceCollection, objType interfa
 	_, objectType := reflectx.GetCtorFuncOutTypeName(objType)
 	configObject := reflect.New(objectType).Interface().(IConfigurationProperties)
 	sectionName := configObject.GetSection()
-	configMap[sectionName] = nil
+	fmt.Println(sectionName)
 	sc.AddTransient(objType)
 }
-
-/*
-	以下是IConfiguration对象内容
-*/
-
-func GetConfigObject(configuration abstractions.IConfiguration, configTag string, configObject interface{}) {
-	gRWLock.RLock()
-	object := configMap[configTag]
-	gRWLock.RUnlock()
-	if object == nil {
-		// need lock
-		Section := configuration.GetSection(configTag)
-		Section.Unmarshal(configObject)
-		object = configObject
-		gRWLock.Lock()
-		configMap[configTag] = object
-		gRWLock.Unlock()
-	} else {
-		_ = copier.Copy(configObject, object)
-		//configObject = object
-	}
-
-}
-
-func RefreshAll() {
-	gRWLock.Lock()
-	configMap = make(map[string]interface{})
-	gRWLock.Unlock()
-}
-
-func RefreshBy(name string) {
-	gRWLock.Lock()
-	delete(configMap, name)
-	gRWLock.Unlock()
-}
-
-// 以下都在 IConfiguration对象内部
-var gRWLock = new(sync.RWMutex)
-
-// 这个应该在 IConfiguration对象里
-var configMap = make(map[string]interface{})
-
-// AddConfiguration(serviceCollection,new(DbConfig))
