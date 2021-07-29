@@ -12,7 +12,7 @@ type DbConfig struct {
 	Debug    bool   `mapstructure:"debug" config:"debug"`
 }
 
-func (db *DbConfig) GetSection() string {
+func (db DbConfig) GetSection() string {
 	return DbConfigTag
 }
 
