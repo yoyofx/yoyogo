@@ -16,8 +16,7 @@ func (db *DbConfig) GetSection() string {
 	return DbConfigTag
 }
 
-func NewDbConfig(configuration abstractions.IConfiguration) DbConfig {
-	var config DbConfig
+func NewDbConfig(configuration abstractions.IConfiguration) (config DbConfig) {
 	configuration.GetConfigObject(DbConfigTag, &config) //configuration.GetConfigObject(configuration,DbConfigTag,config)
 	return config
 }
