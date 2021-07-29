@@ -2,11 +2,13 @@ package abstractions
 
 import (
 	"flag"
+	"github.com/jinzhu/copier"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/utils"
 	"path"
+	"sync"
 )
 
 type Configuration struct {
@@ -14,6 +16,10 @@ type Configuration struct {
 	config  *viper.Viper
 	log     xlog.ILogger
 }
+
+var gRWLock = new(sync.RWMutex)
+
+var configMap = make(map[string]interface{})
 
 func NewConfiguration(configContext *ConfigurationContext) *Configuration {
 	log := xlog.GetXLogger("Configuration")
@@ -117,4 +123,34 @@ func (c *Configuration) GetProfile() string {
 
 func (c *Configuration) GetConfDir() string {
 	return c.context.configDir
+}
+
+func (c *Configuration) GetConfigObject(configTag string, configObject interface{}) {
+	gRWLock.RLock()
+	object := configMap[configTag]
+	gRWLock.RUnlock()
+	if object == nil {
+		// need lock
+		Section := c.GetSection(configTag)
+		Section.Unmarshal(configObject)
+		object = configObject
+		gRWLock.Lock()
+		configMap[configTag] = object
+		gRWLock.Unlock()
+	} else {
+		_ = copier.Copy(configObject, object)
+	}
+
+}
+
+func (c *Configuration) RefreshAll() {
+	gRWLock.Lock()
+	configMap = make(map[string]interface{})
+	gRWLock.Unlock()
+}
+
+func (c *Configuration) RefreshBy(name string) {
+	gRWLock.Lock()
+	delete(configMap, name)
+	gRWLock.Unlock()
 }
