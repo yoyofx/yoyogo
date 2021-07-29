@@ -121,6 +121,35 @@
 					"_postman_isSubFolder": true
 				},
 				{
+					"name": "dbconfig_test",
+					"description": "",
+					"item": [
+						{
+							"name": "{{baseurl}}/app/v1/db/restconfig",
+							"request": {
+								"url": "{{baseurl}}/app/v1/db/restconfig",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "{{baseurl}}/app/v1/db/config",
+							"request": {
+								"url": "{{baseurl}}/app/v1/db/config",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
 					"name": "get c:user/a:register (MVC)",
 					"request": {
 						"url": {

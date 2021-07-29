@@ -5,11 +5,12 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
-	"github.com/yoyofx/yoyogo/pkg/configuration/apollo"
+	"github.com/yoyofx/yoyogo/pkg/configuration"
+	nacosconfig "github.com/yoyofx/yoyogo/pkg/configuration/nacos"
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/mysql"
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/redis"
 	"github.com/yoyofx/yoyogo/pkg/servicediscovery/nacos"
-	web "github.com/yoyofx/yoyogo/web"
+	"github.com/yoyofx/yoyogo/web"
 	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofx/yoyogo/web/endpoints"
 	"github.com/yoyofx/yoyogo/web/middlewares"
@@ -19,8 +20,6 @@ import (
 	"github.com/yoyofx/yoyogo/web/session/identity"
 	"github.com/yoyofx/yoyogo/web/session/store"
 	"github.com/yoyofxteam/dependencyinjection"
-	"github.com/yoyofxteam/reflectx"
-	"reflect"
 	"simpleweb/contollers"
 	"simpleweb/hubs"
 	"simpleweb/models"
@@ -46,8 +45,8 @@ func main() {
 
 //* Create the builder of Web host
 func CreateCustomBuilder() *abstractions.HostBuilder {
-	//config := nacosconfig.RemoteConfig("config")
-	config := apollo.RemoteConfig("config")
+	config := nacosconfig.RemoteConfig("config")
+	//config := apollo.RemoteConfig("config")
 	return web.NewWebHostBuilder().
 		UseConfiguration(config).
 		Configure(func(app *web.ApplicationBuilder) {
@@ -83,7 +82,7 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 				options.AddSessionIdentity(identity.NewCookie())
 			})
 
-			AddConfiguration(serviceCollection, NewDbConfig)
+			configuration.AddConfiguration(serviceCollection, models.NewDbConfig)
 		}).
 		OnApplicationLifeEvent(getApplicationLifeEvent)
 }
@@ -151,12 +150,8 @@ func GetInfoByIOC(ctx *context.HttpContext) {
 	var userAction models.IUserAction
 	_ = ctx.RequiredServices.GetService(&userAction)
 
-	var db DbConfig
-	_ = ctx.RequiredServices.GetService(&db)
-
 	ctx.JSON(200, context.H{
-		"info":     "ok " + userAction.Login("zhang"),
-		"dbconfig": db.Name,
+		"info": "ok " + userAction.Login("zhang"),
 	})
 }
 
@@ -192,37 +187,3 @@ func getApplicationLifeEvent(life *abstractions.ApplicationLife) {
 }
 
 //endregion
-
-type IConfigurationProperties interface {
-	GetSection() string
-}
-
-const DbConfigTag = "yoyogo.datasource.db"
-
-type DbConfig struct {
-	//abstractions.ConfigurationProperties `section:"yoyogo.datasource.db"`
-	Name     string `mapstructure:"name" config:"name"`
-	Url      string `mapstructure:"url" config:"url"`
-	UserName string `mapstructure:"username" config:"user_name"`
-	Password string `mapstructure:"password" config:"password"`
-	Debug    bool   `mapstructure:"debug" config:"debug"`
-}
-
-func (db *DbConfig) GetSection() string {
-	return DbConfigTag
-}
-
-func NewDbConfig(configuration abstractions.IConfiguration) DbConfig {
-	var config DbConfig
-	configuration.GetConfigObject(DbConfigTag, &config) //configuration.GetConfigObject(configuration,DbConfigTag,config)
-	return config
-}
-
-// AddConfiguration 注入函数 用户API
-func AddConfiguration(sc *dependencyinjection.ServiceCollection, objType interface{}) {
-	_, objectType := reflectx.GetCtorFuncOutTypeName(objType)
-	configObject := reflect.New(objectType).Interface().(IConfigurationProperties)
-	sectionName := configObject.GetSection()
-	fmt.Println(sectionName)
-	sc.AddTransient(objType)
-}

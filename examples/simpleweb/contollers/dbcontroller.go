@@ -1,14 +1,18 @@
 package contollers
 
 import (
+	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/pkg/cache/redis"
 	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofx/yoyogo/web/mvc"
 	"gorm.io/gorm"
+	"simpleweb/models"
 )
 
 type DbController struct {
 	mvc.ApiController
+
+	//dbconfig *models.DbConfig
 }
 
 func NewDbController() *DbController {
@@ -35,4 +39,17 @@ func (controller DbController) GetRedis(ctx *context.HttpContext) mvc.ApiResult 
 		return controller.OK(context.H{"redis key: dcctor1": strv})
 	}
 	return controller.Fail(err.Error())
+}
+
+func (controller DbController) GetConfig(ctx *context.HttpContext) mvc.ApiResult {
+	var dbconfig models.DbConfig
+	_ = ctx.RequiredServices.GetService(&dbconfig)
+	return controller.OK(context.H{"dbconfig": dbconfig.Name})
+}
+
+func (controller DbController) RestConfig(ctx *context.HttpContext) mvc.ApiResult {
+	var configuration abstractions.IConfiguration
+	_ = ctx.RequiredServices.GetService(&configuration)
+	configuration.RefreshAll()
+	return controller.OK(context.H{"ok": "true"})
 }

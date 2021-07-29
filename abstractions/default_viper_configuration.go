@@ -12,14 +12,12 @@ import (
 )
 
 type Configuration struct {
-	context *ConfigurationContext
-	config  *viper.Viper
-	log     xlog.ILogger
+	context   *ConfigurationContext
+	configMap map[string]interface{}
+	gRWLock   *sync.RWMutex
+	config    *viper.Viper
+	log       xlog.ILogger
 }
-
-var gRWLock = new(sync.RWMutex)
-
-var configMap = make(map[string]interface{})
 
 func NewConfiguration(configContext *ConfigurationContext) *Configuration {
 	log := xlog.GetXLogger("Configuration")
@@ -79,9 +77,11 @@ func NewConfiguration(configContext *ConfigurationContext) *Configuration {
 	}
 
 	return &Configuration{
-		context: configContext,
-		config:  defaultConfig,
-		log:     log,
+		context:   configContext,
+		gRWLock:   new(sync.RWMutex),
+		configMap: make(map[string]interface{}),
+		config:    defaultConfig,
+		log:       log,
 	}
 }
 
@@ -126,17 +126,17 @@ func (c *Configuration) GetConfDir() string {
 }
 
 func (c *Configuration) GetConfigObject(configTag string, configObject interface{}) {
-	gRWLock.RLock()
-	object := configMap[configTag]
-	gRWLock.RUnlock()
+	c.gRWLock.RLock()
+	object := c.configMap[configTag]
+	c.gRWLock.RUnlock()
 	if object == nil {
 		// need lock
 		Section := c.GetSection(configTag)
 		Section.Unmarshal(configObject)
 		object = configObject
-		gRWLock.Lock()
-		configMap[configTag] = object
-		gRWLock.Unlock()
+		c.gRWLock.Lock()
+		c.configMap[configTag] = object
+		c.gRWLock.Unlock()
 	} else {
 		_ = copier.Copy(configObject, object)
 	}
@@ -144,13 +144,13 @@ func (c *Configuration) GetConfigObject(configTag string, configObject interface
 }
 
 func (c *Configuration) RefreshAll() {
-	gRWLock.Lock()
-	configMap = make(map[string]interface{})
-	gRWLock.Unlock()
+	c.gRWLock.Lock()
+	c.configMap = make(map[string]interface{})
+	c.gRWLock.Unlock()
 }
 
 func (c *Configuration) RefreshBy(name string) {
-	gRWLock.Lock()
-	delete(configMap, name)
-	gRWLock.Unlock()
+	c.gRWLock.Lock()
+	delete(c.configMap, name)
+	c.gRWLock.Unlock()
 }
