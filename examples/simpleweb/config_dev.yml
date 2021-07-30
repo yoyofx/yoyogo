@@ -87,7 +87,7 @@ yoyogo:
     configcenter:
       apollo:
         appid: "SampleApp"
-        endpoint: "http://49.232.153.51:8080"
+        endpoint: "http://49.232.153.51:8080"    # admin:  http://49.232.153.51:8070/
         namespace: "application.yaml"
   datasource:
       pool:
