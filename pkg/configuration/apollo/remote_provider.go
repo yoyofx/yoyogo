@@ -45,3 +45,7 @@ func (provider *ViperRemoteProvider) GetProvider(runtime_viper *viper.Viper) *vi
 	}
 	return runtime_viper
 }
+
+func (provider *ViperRemoteProvider) WatchRemoteConfigOnChannel(remoteViper *viper.Viper) <-chan bool {
+	return nil
+}

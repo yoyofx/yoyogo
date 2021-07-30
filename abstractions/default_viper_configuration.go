@@ -71,18 +71,39 @@ func NewConfiguration(configContext *ConfigurationContext) *Configuration {
 	}
 	log.Debug(configFilePath)
 
-	if configContext.EnableRemote {
-		defaultConfig = configContext.RemoteProvider.GetProvider(defaultConfig)
-		_ = defaultConfig.BindPFlags(pflag.CommandLine)
-	}
-
-	return &Configuration{
+	configuration := &Configuration{
 		context:   configContext,
+		config:    defaultConfig,
 		gRWLock:   new(sync.RWMutex),
 		configMap: make(map[string]interface{}),
-		config:    defaultConfig,
 		log:       log,
 	}
+
+	if configContext.EnableRemote {
+		defaultConfig = configContext.RemoteProvider.GetProvider(defaultConfig)
+		if defaultConfig != nil {
+			_ = defaultConfig.BindPFlags(pflag.CommandLine)
+			//remote config
+			configuration.config = defaultConfig
+			configuration.OnWatchRemoteConfigChanged()
+			log.Info("remote config is ready , on changed notify listening ......")
+		} else {
+			log.Error("remote config is not ready , switch local.")
+		}
+	}
+
+	return configuration
+}
+
+func (c *Configuration) OnWatchRemoteConfigChanged() {
+	respChan := c.context.RemoteProvider.WatchRemoteConfigOnChannel(c.config)
+	go func(rc <-chan bool) {
+		for {
+			<-rc
+			c.RefreshAll()
+			c.log.Info("sync remote config")
+		}
+	}(respChan)
 }
 
 func (c *Configuration) Get(name string) interface{} {

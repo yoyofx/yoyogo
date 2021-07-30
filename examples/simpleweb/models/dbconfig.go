@@ -2,8 +2,6 @@ package models
 
 import "github.com/yoyofx/yoyogo/abstractions"
 
-const DbConfigTag = "yoyogo.datasource.db"
-
 type DbConfig struct {
 	Name     string `mapstructure:"name" config:"name"`
 	Url      string `mapstructure:"url" config:"url"`
@@ -12,11 +10,8 @@ type DbConfig struct {
 	Debug    bool   `mapstructure:"debug" config:"debug"`
 }
 
-func (db DbConfig) GetSection() string {
-	return DbConfigTag
-}
-
+// NewDbConfig 托管到IConfiguration和依赖注入中管理
 func NewDbConfig(configuration abstractions.IConfiguration) (config DbConfig) {
-	configuration.GetConfigObject(DbConfigTag, &config) //configuration.GetConfigObject(configuration,DbConfigTag,config)
+	configuration.GetConfigObject("yoyogo.datasource.db", &config)
 	return config
 }

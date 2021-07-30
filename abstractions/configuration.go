@@ -18,6 +18,7 @@ type IConfiguration interface {
 
 type IConfigurationRemoteProvider interface {
 	GetProvider(*viper.Viper) *viper.Viper
+	WatchRemoteConfigOnChannel(remoteViper *viper.Viper) <-chan bool
 }
 
 type ConfigurationProperties struct {

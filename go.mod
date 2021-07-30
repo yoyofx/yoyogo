@@ -35,7 +35,7 @@ require (
 	github.com/valyala/fasthttp v1.28.0
 	github.com/xxl-job/xxl-job-executor-go v0.6.1
 	github.com/yoyofxteam/dependencyinjection v1.0.1
-	github.com/yoyofxteam/nacos-viper-remote v0.3.0
+	github.com/yoyofxteam/nacos-viper-remote v0.4.0
 	github.com/yoyofxteam/reflectx v0.2.3
 	go.etcd.io/etcd/client/v3 v3.5.0
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a
