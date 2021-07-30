@@ -6,7 +6,7 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/pkg/configuration"
-	"github.com/yoyofx/yoyogo/pkg/configuration/apollo"
+	nacosconfig "github.com/yoyofx/yoyogo/pkg/configuration/nacos"
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/mysql"
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/redis"
 	"github.com/yoyofx/yoyogo/pkg/servicediscovery/nacos"
@@ -45,8 +45,8 @@ func main() {
 
 //* Create the builder of Web host
 func CreateCustomBuilder() *abstractions.HostBuilder {
-	//config := nacosconfig.RemoteConfig("config")
-	config := apollo.RemoteConfig("config")
+	config := nacosconfig.RemoteConfig("config")
+	//config := apollo.RemoteConfig("config")
 	return web.NewWebHostBuilder().
 		UseConfiguration(config).
 		Configure(func(app *web.ApplicationBuilder) {
