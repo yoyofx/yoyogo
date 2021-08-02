@@ -86,8 +86,8 @@ yoyogo:
 #          password: "5z1fLbYw8A"
     configcenter:
       apollo:
-        appid: "dealer-cb-apptest"
-        endpoint: "http://txconfig.apollo.bitautotech.com"
+        appid: "SampleApp"
+        endpoint: "http://49.232.153.51:8080"    # admin:  http://49.232.153.51:8070/
         namespace: "application.yaml"
   datasource:
       pool:

@@ -4,7 +4,6 @@ go 1.16
 
 require (
 	github.com/SkyAPM/go2sky v1.1.0
-	github.com/yoyofxteam/dependencyinjection v1.0.0
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/clbanning/x2j v0.0.0-20191024224557-825249438eec // indirect
 	github.com/fasthttp/websocket v1.4.3
@@ -19,6 +18,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/hashicorp/consul/api v1.1.0
 	github.com/hudl/fargo v1.3.0
+	github.com/jinzhu/copier v0.3.2
 	github.com/magiconair/properties v1.8.5
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
@@ -34,7 +34,8 @@ require (
 	github.com/ugorji/go/codec v1.2.1
 	github.com/valyala/fasthttp v1.28.0
 	github.com/xxl-job/xxl-job-executor-go v0.6.1
-	github.com/yoyofxteam/nacos-viper-remote v0.3.0
+	github.com/yoyofxteam/dependencyinjection v1.0.1
+	github.com/yoyofxteam/nacos-viper-remote v0.4.0
 	github.com/yoyofxteam/reflectx v0.2.3
 	go.etcd.io/etcd/client/v3 v3.5.0
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a

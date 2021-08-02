@@ -1,14 +1,16 @@
 package apollo
 
 import (
+	"bytes"
 	"fmt"
 	remote "github.com/shima-park/agollo/viper-remote"
 	"github.com/spf13/viper"
 )
 
 type ViperRemoteProvider struct {
-	configType string
-	configSet  string
+	configType    string
+	configSet     string
+	viperProvider *RemoteProvider
 }
 
 func NewRemoteProvider(configType string) *ViperRemoteProvider {
@@ -27,6 +29,10 @@ func (provider *ViperRemoteProvider) GetProvider(runtime_viper *viper.Viper) *vi
 	remote.SetAppID(option.AppID)
 
 	remote_viper := viper.New()
+	provider.viperProvider = DefaultRemoteProvider()
+	provider.viperProvider.provider = "apollo"
+	provider.viperProvider.endpoint = option.Endpoint
+	provider.viperProvider.path = option.Namespace
 	err = remote_viper.AddRemoteProvider("apollo", option.Endpoint, option.Namespace)
 	if provider.configType == "" {
 		provider.configType = "yaml"
@@ -35,7 +41,7 @@ func (provider *ViperRemoteProvider) GetProvider(runtime_viper *viper.Viper) *vi
 	err = remote_viper.ReadRemoteConfig()
 
 	if err == nil && len(remote_viper.AllSettings()) > 0 {
-		err = remote_viper.WatchRemoteConfigOnChannel()
+		//err = remote_viper.WatchRemoteConfigOnChannel()
 		if err == nil {
 			fmt.Println("config center ..........")
 			fmt.Println("used remote viper by apollo")
@@ -44,4 +50,21 @@ func (provider *ViperRemoteProvider) GetProvider(runtime_viper *viper.Viper) *vi
 		}
 	}
 	return runtime_viper
+}
+
+func (provider *ViperRemoteProvider) WatchRemoteConfigOnChannel(remoteViper *viper.Viper) <-chan bool {
+	updater := make(chan bool)
+
+	respChan, _ := viper.RemoteConfig.WatchChannel(provider.viperProvider)
+	go func(rc <-chan *viper.RemoteResponse) {
+		for {
+			b := <-rc
+			reader := bytes.NewReader(b.Value)
+			_ = remoteViper.ReadConfig(reader)
+			// configuration on changed
+			updater <- true
+		}
+	}(respChan)
+
+	return updater
 }

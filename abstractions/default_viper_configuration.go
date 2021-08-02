@@ -2,17 +2,21 @@ package abstractions
 
 import (
 	"flag"
+	"github.com/jinzhu/copier"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/utils"
 	"path"
+	"sync"
 )
 
 type Configuration struct {
-	context *ConfigurationContext
-	config  *viper.Viper
-	log     xlog.ILogger
+	context   *ConfigurationContext
+	configMap map[string]interface{}
+	gRWLock   *sync.RWMutex
+	config    *viper.Viper
+	log       xlog.ILogger
 }
 
 func NewConfiguration(configContext *ConfigurationContext) *Configuration {
@@ -67,16 +71,39 @@ func NewConfiguration(configContext *ConfigurationContext) *Configuration {
 	}
 	log.Debug(configFilePath)
 
-	if configContext.EnableRemote {
-		defaultConfig = configContext.RemoteProvider.GetProvider(defaultConfig)
-		_ = defaultConfig.BindPFlags(pflag.CommandLine)
+	configuration := &Configuration{
+		context:   configContext,
+		config:    defaultConfig,
+		gRWLock:   new(sync.RWMutex),
+		configMap: make(map[string]interface{}),
+		log:       log,
 	}
 
-	return &Configuration{
-		context: configContext,
-		config:  defaultConfig,
-		log:     log,
+	if configContext.EnableRemote {
+		defaultConfig = configContext.RemoteProvider.GetProvider(defaultConfig)
+		if defaultConfig.ConfigFileUsed() == "" {
+			_ = defaultConfig.BindPFlags(pflag.CommandLine)
+			//remote config
+			configuration.config = defaultConfig
+			configuration.OnWatchRemoteConfigChanged()
+			log.Info("remote config is ready , on changed notify listening ......")
+		} else {
+			log.Error("remote config is not ready , switch local.")
+		}
 	}
+
+	return configuration
+}
+
+func (c *Configuration) OnWatchRemoteConfigChanged() {
+	respChan := c.context.RemoteProvider.WatchRemoteConfigOnChannel(c.config)
+	go func(rc <-chan bool) {
+		for {
+			<-rc
+			c.RefreshAll()
+			c.log.Info("sync remote config")
+		}
+	}(respChan)
 }
 
 func (c *Configuration) Get(name string) interface{} {
@@ -117,4 +144,34 @@ func (c *Configuration) GetProfile() string {
 
 func (c *Configuration) GetConfDir() string {
 	return c.context.configDir
+}
+
+func (c *Configuration) GetConfigObject(configTag string, configObject interface{}) {
+	c.gRWLock.RLock()
+	object := c.configMap[configTag]
+	c.gRWLock.RUnlock()
+	if object == nil {
+		// need lock
+		Section := c.GetSection(configTag)
+		Section.Unmarshal(configObject)
+		object = configObject
+		c.gRWLock.Lock()
+		c.configMap[configTag] = object
+		c.gRWLock.Unlock()
+	} else {
+		_ = copier.Copy(configObject, object)
+	}
+
+}
+
+func (c *Configuration) RefreshAll() {
+	c.gRWLock.Lock()
+	c.configMap = make(map[string]interface{})
+	c.gRWLock.Unlock()
+}
+
+func (c *Configuration) RefreshBy(name string) {
+	c.gRWLock.Lock()
+	delete(c.configMap, name)
+	c.gRWLock.Unlock()
 }

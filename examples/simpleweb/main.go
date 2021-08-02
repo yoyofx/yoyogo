@@ -5,11 +5,12 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
-	"github.com/yoyofx/yoyogo/pkg/configuration/apollo"
+	"github.com/yoyofx/yoyogo/pkg/configuration"
+	nacosconfig "github.com/yoyofx/yoyogo/pkg/configuration/nacos"
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/mysql"
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/redis"
 	"github.com/yoyofx/yoyogo/pkg/servicediscovery/nacos"
-	web "github.com/yoyofx/yoyogo/web"
+	"github.com/yoyofx/yoyogo/web"
 	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofx/yoyogo/web/endpoints"
 	"github.com/yoyofx/yoyogo/web/middlewares"
@@ -44,8 +45,8 @@ func main() {
 
 //* Create the builder of Web host
 func CreateCustomBuilder() *abstractions.HostBuilder {
-	//config := nacosconfig.RemoteConfig("config")
-	config := apollo.RemoteConfig("config")
+	config := nacosconfig.RemoteConfig("config")
+	//config := apollo.RemoteConfig("config")
 	return web.NewWebHostBuilder().
 		UseConfiguration(config).
 		Configure(func(app *web.ApplicationBuilder) {
@@ -80,6 +81,8 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 				//options.AddSessionMemoryStore(store.NewMemory())
 				options.AddSessionIdentity(identity.NewCookie())
 			})
+
+			configuration.AddConfiguration(serviceCollection, models.NewDbConfig)
 		}).
 		OnApplicationLifeEvent(getApplicationLifeEvent)
 }
@@ -111,6 +114,7 @@ func registerEndpointRouterConfig(rb router.IRouterBuilder) {
 
 	rb.GET("/info", GetInfo)
 	rb.GET("/ioc", GetInfoByIOC)
+	//rb.GET("/restconfig", RestConfig)
 	rb.GET("/session", TestSession)
 	rb.GET("/newsession", SetSession)
 
@@ -145,7 +149,10 @@ func GetInfo(ctx *context.HttpContext) {
 func GetInfoByIOC(ctx *context.HttpContext) {
 	var userAction models.IUserAction
 	_ = ctx.RequiredServices.GetService(&userAction)
-	ctx.JSON(200, context.H{"info": "ok " + userAction.Login("zhang")})
+
+	ctx.JSON(200, context.H{
+		"info": "ok " + userAction.Login("zhang"),
+	})
 }
 
 //bootstrap binding

@@ -11,8 +11,15 @@ type IConfiguration interface {
 	Unmarshal(interface{})
 	GetProfile() string
 	GetConfDir() string
+	GetConfigObject(configTag string, configObject interface{})
+	RefreshAll()
+	RefreshBy(name string)
 }
 
 type IConfigurationRemoteProvider interface {
 	GetProvider(*viper.Viper) *viper.Viper
+	WatchRemoteConfigOnChannel(remoteViper *viper.Viper) <-chan bool
+}
+
+type ConfigurationProperties struct {
 }
