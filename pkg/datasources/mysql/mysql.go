@@ -30,6 +30,7 @@ type MySqlDataSource struct {
 	count            int
 	lock             sync.Mutex
 	log              xlog.ILogger
+	isDebug          bool
 }
 
 // NewMysqlDataSource 初始化MySQL数据源
@@ -48,6 +49,7 @@ func NewMysqlDataSource(configuration abstractions.IConfiguration) *MySqlDataSou
 		connectionString: "",
 		config:           configuration,
 		connPool:         make(map[string]pool.Pool, 0),
+		isDebug:          datasourcesConfig.Debug,
 		log:              log,
 	}
 	if p != nil {
