@@ -130,7 +130,7 @@ func buildingHostEnvironmentSetting(serviceCollection *dependencyinjection.Servi
 
 	hostEnv.Port = strings.Replace(hostEnv.Addr, ":", "", -1)
 	hostEnv.Args = os.Args
-
+	hostEnv.Profile = context.Configuration.GetProfile()
 	if hostEnv.Profile == "" {
 		hostEnv.Profile = hostenv.Dev
 	}
