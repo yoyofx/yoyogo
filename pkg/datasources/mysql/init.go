@@ -10,7 +10,7 @@ func init() {
 	abstractions.RegisterConfigurationProcessor(
 		func(config abstractions.IConfiguration, serviceCollection *dependencyinjection.ServiceCollection) {
 			serviceCollection.AddSingletonByImplementsAndName("mysql-master", NewMysqlDataSource, new(abstractions.IDataSource))
-			serviceCollection.AddTransient(NewGormDb)
+			serviceCollection.AddSingleton(NewGormDb)
 			serviceCollection.AddTransientByImplements(NewMysqlHealthIndicator, new(health.Indicator))
 		})
 
