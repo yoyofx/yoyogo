@@ -89,6 +89,12 @@ func (ctx *HttpContext) Bind(i interface{}) (err error) {
 	return err
 }
 
+//BindWithUri is a special bind
+func (ctx *HttpContext) BindWithUri(i interface{}) (err error) {
+	err = binding.Uri.BindUri(ctx.Input.QueryStrings(), i)
+	return err
+}
+
 // BindWith Use Binding By Name
 func (ctx *HttpContext) BindWith(i interface{}, bindEnum binding.Binding) (err error) {
 	req := ctx.Input.Request
@@ -99,8 +105,6 @@ func (ctx *HttpContext) BindWith(i interface{}, bindEnum binding.Binding) (err e
 		err = binding.XML.Bind(req, i)
 	case binding.Query.Name():
 		err = binding.Query.Bind(req, i)
-	case binding.Uri.Name():
-		err = binding.Uri.BindUri(ctx.Input.QueryStrings(), i)
 	case binding.YAML.Name():
 		err = binding.YAML.Bind(req, i)
 	case binding.FormMultipart.Name():
