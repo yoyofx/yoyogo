@@ -2,16 +2,19 @@ package mvc
 
 import (
 	"errors"
+	"fmt"
+	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofxteam/reflectx"
 	"reflect"
 )
 
 type ActionMethodExecutor struct {
+	logger xlog.ILogger
 }
 
 func NewActionMethodExecutor() ActionMethodExecutor {
-	return ActionMethodExecutor{}
+	return ActionMethodExecutor{logger: xlog.GetXLogger("ActionMethodExecutor")}
 }
 
 func (actionExecutor ActionMethodExecutor) Execute(ctx *ActionExecutorContext) interface{} {
@@ -60,7 +63,10 @@ func requestParamTypeConvertFunc(index int, parameter reflectx.MethodParameterIn
 		default:
 			if paramType.NumField() > 0 && paramType.Field(0).Name == "RequestBody" {
 				reqBindingData := reflect.New(paramType).Interface()
-				_ = ctx.Bind(reqBindingData)
+				bindErr := ctx.Bind(reqBindingData)
+				if bindErr != nil {
+					fmt.Println(bindErr)
+				}
 				value = reflect.ValueOf(reqBindingData)
 			}
 		}
