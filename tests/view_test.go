@@ -1,7 +1,9 @@
 package tests
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
+	"github.com/yoyofx/yoyogo/web/mvc"
 	"github.com/yoyofx/yoyogo/web/view"
 	"os"
 	"path/filepath"
@@ -36,4 +38,25 @@ func Test_ViewTemplate(t *testing.T) {
 	workDir, _ := os.Getwd()
 	tplPath := filepath.Join(workDir, "testdata/view_test.tpl")
 	assert.Equal(t, path1, tplPath)
+}
+
+func Test_ApiResult(t *testing.T) {
+	res := mvc.ApiResultBuilder().Success(true).Data("666").Message("哈哈哈哈").Build()
+	var h = false
+	res2 := mvc.SuccessWithMsgFunc("666", func() string {
+		if h {
+			return "丢你螺母"
+		}
+		return "diaonilaomu"
+	})
+	res3 := mvc.ApiResultBuilder().Success(true).Data("666").MessageWithFunc(func() string {
+		if h {
+			return "丢你螺母"
+		}
+		return "diaonilaomu"
+	}).Build()
+	fmt.Println(res)
+	fmt.Println(res2)
+	fmt.Println(res3)
+	assert.Equal(t, res3.Message, "diaonilaomu")
 }
