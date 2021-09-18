@@ -80,6 +80,14 @@ func (controller UserController) GetValidation(ctx *context.HttpContext) mvc.Api
 	return controller.OK(context.H{"validation": ok})
 }
 
+func (controller UserController) GetTestApiResult() mvc.ApiResult {
+	return controller.ApiResult().
+		Success().
+		Data("ok").
+		Message("hello").
+		StatusCode(400).Build()
+}
+
 type UserInfo struct {
 	UserName string                `form:"user" json:"user" binding:"required"`
 	Number   int                   `form:"num" json:"num" binding:"gt=0,lt=10"`

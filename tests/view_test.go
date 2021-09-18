@@ -41,7 +41,7 @@ func Test_ViewTemplate(t *testing.T) {
 }
 
 func Test_ApiResult(t *testing.T) {
-	res := mvc.ApiResultBuilder().Success(true).Data("666").Message("哈哈哈哈").Build()
+	res := mvc.NewApiResultBuilder().Success().Data("666").Message("哈哈哈哈").Build()
 	var h = false
 	res2 := mvc.SuccessWithMsgFunc("666", func() string {
 		if h {
@@ -49,7 +49,7 @@ func Test_ApiResult(t *testing.T) {
 		}
 		return "diaonilaomu"
 	})
-	res3 := mvc.ApiResultBuilder().Success(true).Data("666").MessageWithFunc(func() string {
+	res3 := mvc.NewApiResultBuilder().Success().Data("666").MessageWithFunc(func() string {
 		if h {
 			return "丢你螺母"
 		}
@@ -59,4 +59,13 @@ func Test_ApiResult(t *testing.T) {
 	fmt.Println(res2)
 	fmt.Println(res3)
 	assert.Equal(t, res3.Message, "diaonilaomu")
+
+	testBuilder := mvc.NewApiResultBuilder().Success().Data(1).StatusCode(400)
+	apiResult := testBuilder.Build()
+
+	assert.Equal(t, apiResult.Data, 1)
+	assert.Equal(t, apiResult.Success, true)
+
+	testBuilder.Fail()
+
 }

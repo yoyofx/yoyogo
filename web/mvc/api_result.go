@@ -1,47 +1,67 @@
 package mvc
 
+import "sync"
+
+var (
+	apiResultPool = sync.Pool{
+		New: func() interface{} {
+			return &ApiResult{Status: 200}
+		},
+	}
+)
+
 type ApiResult struct {
 	Success bool
 	Message string
 	Data    interface{}
+	Status  int
 }
 
-type Builder struct {
-	success bool
-	message string
-	data    interface{}
+func (api ApiResult) StatusCode() int {
+	return api.Status
 }
 
-func ApiResultBuilder() *Builder {
-	return &Builder{}
+type ApiResultBuilder struct {
+	result *ApiResult
 }
 
-func (arb *Builder) Success(success bool) *Builder {
-	arb.success = success
+func NewApiResultBuilder() *ApiResultBuilder {
+	return &ApiResultBuilder{result: apiResultPool.Get().(*ApiResult)}
+}
+
+func (arb *ApiResultBuilder) Success() *ApiResultBuilder {
+	arb.result.Status = 200
+	arb.result.Success = true
 	return arb
 }
 
-func (arb *Builder) Message(msg string) *Builder {
-	arb.message = msg
+func (arb *ApiResultBuilder) Fail() *ApiResultBuilder {
+	arb.result.Success = false
 	return arb
 }
 
-func (arb *Builder) MessageWithFunc(fc func() string) *Builder {
-	arb.message = fc()
+func (arb *ApiResultBuilder) Message(msg string) *ApiResultBuilder {
+	arb.result.Message = msg
 	return arb
 }
 
-func (arb *Builder) Data(data interface{}) *Builder {
-	arb.data = data
+func (arb *ApiResultBuilder) MessageWithFunc(fc func() string) *ApiResultBuilder {
+	arb.result.Message = fc()
 	return arb
 }
 
-func (arb *Builder) Build() ApiResult {
-	return ApiResult{
-		Success: arb.success,
-		Data:    arb.data,
-		Message: arb.message,
-	}
+func (arb *ApiResultBuilder) Data(data interface{}) *ApiResultBuilder {
+	arb.result.Data = data
+	return arb
+}
+
+func (arb *ApiResultBuilder) StatusCode(statusCode int) *ApiResultBuilder {
+	arb.result.Status = statusCode
+	return arb
+}
+
+func (arb *ApiResultBuilder) Build() ApiResult {
+	return *arb.result
 }
 
 func SuccessVoid() ApiResult {
