@@ -11,21 +11,29 @@ type RouterHandlerResponse struct {
 }
 
 func (response *RouterHandlerResponse) Callback(ctx *context.HttpContext) {
+	statusCode := 200
+	if stater, ok := response.Result.(StatusCoder); ok {
+		code := stater.StatusCode()
+		if code > 0 {
+			statusCode = code
+		}
+	}
+
 	if actionResult, ok := response.Result.(actionresult.IActionResult); ok {
-		ctx.Render(200, actionResult)
+		ctx.Render(statusCode, actionResult)
 	} else {
 		contentType := ctx.Input.Request.Header.Get(context.HeaderContentType)
 		switch {
 		case strings.HasPrefix(contentType, context.MIMEApplicationXML):
-			ctx.XML(200, response.Result)
+			ctx.XML(statusCode, response.Result)
 		case strings.HasPrefix(contentType, context.MIMEApplicationYAML):
-			ctx.YAML(200, response.Result)
+			ctx.YAML(statusCode, response.Result)
 		case strings.HasPrefix(contentType, context.MIMEApplicationProtobuf):
-			ctx.ProtoBuf(200, response.Result)
+			ctx.ProtoBuf(statusCode, response.Result)
 		case strings.HasPrefix(contentType, context.MIMEApplicationJSON):
 			fallthrough
 		default:
-			ctx.JSON(200, response.Result)
+			ctx.JSON(statusCode, response.Result)
 		}
 
 	}
