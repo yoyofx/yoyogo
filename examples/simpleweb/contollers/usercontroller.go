@@ -124,3 +124,18 @@ func (controller UserController) QueryBinding(ctx *context.HttpContext) mvc.ApiR
 	}
 	return controller.OK(userInfo)
 }
+
+type UploadForm struct {
+	mvc.RequestBody
+	File *multipart.FileHeader `form:"file1"`
+	Key  string                `form:"key"`
+}
+
+func (controller UserController) Upload(form *UploadForm) mvc.ApiResult {
+	return controller.OK(context.H{
+		"file": form.File.Filename,
+		"size": form.File.Size,
+		"key":  form.Key,
+	})
+
+}

@@ -39,8 +39,9 @@ func (server *FastHttpServer) Run(context *abstractions.HostBuilderContext) (e e
 	fastHttpHandler := NewFastHTTPHandler(context.RequestDelegate.(IRequestDelegate))
 
 	server.webserver = &fasthttp.Server{
-		Handler:           fastHttpHandler,
-		KeepHijackedConns: true,
+		Handler:            fastHttpHandler,
+		KeepHijackedConns:  true,
+		MaxRequestBodySize: int(context.HostConfiguration.Server.MaxRequestSize),
 	}
 
 	addr := server.Addr
