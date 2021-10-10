@@ -2,6 +2,7 @@ package binding
 
 import (
 	"net/http"
+	"strings"
 	"unsafe"
 )
 
@@ -79,6 +80,9 @@ var (
 func Default(method, contentType string) Binding {
 	if method == http.MethodGet {
 		return Form
+	}
+	if strings.HasPrefix(contentType, MIMEMultipartPOSTForm) {
+		return FormMultipart
 	}
 
 	switch contentType {
