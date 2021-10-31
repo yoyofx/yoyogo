@@ -77,7 +77,7 @@ yoyogo:
 #      type: "etcd"
 #      metadata:
 #        address:
-#          - "81.70.154.55:32379"
+#          - "152.136.141.235:32379"
 #        namespace: "public"
 #        ttl: 60
 #        auth:
@@ -103,6 +103,6 @@ yoyogo:
         debug: false
       redis:
         name: reids1
-        url: 62.234.6.120:31379
+        url: 152.136.141.235:31379
         password:
         db: 0
