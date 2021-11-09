@@ -163,7 +163,7 @@ func (rec *Recovery) Inovke(ctx *context.HttpContext, next func(ctx *context.Htt
 			var hostEnv *abstractions.HostEnvironment
 			envErr := ctx.RequiredServices.GetService(&hostEnv)
 
-			if envErr == nil && hostEnv.IsDevelopment() {
+			if envErr == nil {
 				rec.PrintStack = true
 				rec.LogStack = true
 				rec.StackAll = true
@@ -181,26 +181,26 @@ func (rec *Recovery) Inovke(ctx *context.HttpContext, next func(ctx *context.Htt
 			// PrintStack will write stack trace info to the IResponseWriter if set to true!
 			if rec.LogStack {
 				infos.Stack = stack
-				var msg string
+				var errorMsg string
 				//print console stack errors
 				if !rec.StackAll {
 					infos.Stack = nil
-					msg = string(stack)
+
 					rec.Logger.Error(panicText, err)
 				} else {
-					rec.Logger.Error(panicText, err, msg)
+					// print all stack errors for console
+					errorMsg = string(stack)
+					rec.Logger.Error(panicText, err)
+					rec.Logger.Error(errorMsg)
 				}
 
 			}
 
-			if rec.PrintStack {
-				rec.Formatter.FormatPanicError(ctx.Output.GetWriter(), ctx.Input.GetReader(), infos)
-			} else {
-				if ctx.Input.Header("Content-Type") == "" {
-					ctx.Output.Header("Content-Type", "text/plain; charset=utf-8")
-				}
-				_, _ = fmt.Fprint(ctx.Output.GetWriter(), NoPrintStackBodyString)
+			if ctx.Input.Header("Content-Type") == "" {
+				ctx.Output.Header("Content-Type", "application/json; charset=utf-8")
 			}
+			noPrintStackBodyString := fmt.Sprintf(panicText, err)
+			_, _ = fmt.Fprint(ctx.Output.GetWriter(), noPrintStackBodyString)
 
 			if rec.PanicHandlerFunc != nil {
 				func() {

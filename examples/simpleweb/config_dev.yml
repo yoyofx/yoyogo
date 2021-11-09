@@ -46,7 +46,7 @@ yoyogo:
       strategy: "round-robin"    # round-robin  , weight-time ,  random
       type: "nacos"
       metadata:
-        url: "120.53.133.30"
+        url: "nacos.yoyogo.run"
         port: 80
         namespace: "public"
         group: "DEFAULT_GROUP"
@@ -55,8 +55,8 @@ yoyogo:
           dataId: "simple_demo"
         auth:
           enable: true
-          username: "root"
-          password: "1234"
+          username: "nacos"
+          password: "nacos"
           endpoint: ""
           regionId: ""
           accessKey: ""
@@ -103,6 +103,6 @@ yoyogo:
         debug: false
       redis:
         name: reids1
-        url: 62.234.6.120:31379
-        password:
+        url: m.yoyogo.run:6379
+        password: 123.com
         db: 0
