@@ -11,8 +11,8 @@ import (
 )
 
 var client = redis.NewClient(&redis.Options{
-	Addr:     "62.234.6.120:31379",
-	Password: "",
+	Addr:     "m.yoyogo.run:31379",
+	Password: "123.com",
 	DB:       0,
 })
 
