@@ -23,7 +23,7 @@ func NewUserController(userAction models.IUserAction, sd servicediscovery.IServi
 }
 
 type RegisterRequest struct {
-	mvc.RequestBody
+	//mvc.RequestBody
 	UserName string `param:"UserName"`
 	Password string `param:"Password"`
 }
