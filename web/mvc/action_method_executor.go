@@ -51,11 +51,14 @@ func (actionExecutor ActionMethodExecutor) getParamValues(paramList []reflectx.M
 func requestParamTypeConvertFunc(index int, parameter reflectx.MethodParameterInfo, ctx *context.HttpContext) (reflect.Value, error) {
 	var value reflect.Value
 	var err error = nil
+
 	paramType := parameter.ParameterType
 	if paramType.Kind() == reflect.Ptr {
 		paramType = paramType.Elem()
 	}
 	if paramType.Kind() == reflect.Struct {
+		// Mapping -> parameter.Name , paramType.Name() ,paramType, ctx
+
 		switch paramType.Name() {
 		case "HttpContext":
 			value = reflect.ValueOf(ctx)
