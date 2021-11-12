@@ -1,7 +1,6 @@
 package contollers
 
 import (
-	"fmt"
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/web/actionresult"
 	"github.com/yoyofx/yoyogo/web/binding"
@@ -23,22 +22,25 @@ func NewUserController(userAction models.IUserAction, sd servicediscovery.IServi
 }
 
 type RegisterRequest struct {
-	//mvc.RequestBody
-	UserName string `param:"UserName"`
-	Password string `param:"Password"`
+	mvc.RequestBody `route:"/{id}/{tenant}"`
+
+	UserName string `uri:"userName"`
+	Password string `uri:"password"`
 }
 
 func (controller UserController) Register(ctx *context.HttpContext, request *RegisterRequest) mvc.ApiResult {
 	return mvc.ApiResult{Success: true, Message: "ok", Data: request}
 }
 
-func (controller UserController) GetUserName(ctx *context.HttpContext, request *RegisterRequest) actionresult.IActionResult {
-	result := mvc.ApiResult{Success: true, Message: "ok", Data: request}
-	fmt.Println("hello world")
-	return actionresult.Json{Data: result}
+type PostUserInfoRequest struct {
+	mvc.RequestBody //`route:"/{id}"`
+
+	UserName string `form:"userName" json:"userName"`
+	Password string `form:"password" json:"password"`
+	Token    string `header:"Authorization" json:"token"`
 }
 
-func (controller UserController) PostUserInfo(ctx *context.HttpContext, request *RegisterRequest) actionresult.IActionResult {
+func (controller UserController) PostUserInfo(ctx *context.HttpContext, request *PostUserInfoRequest) actionresult.IActionResult {
 	return actionresult.Json{Data: mvc.ApiResult{Success: true, Message: "ok", Data: context.H{
 		"user":    ctx.GetUser(),
 		"request": request,

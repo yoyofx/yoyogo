@@ -14,7 +14,7 @@ func (queryBinding) Name() string {
 func (queryBinding) Bind(req *http.Request, obj interface{}) error {
 	values := req.URL.Query()
 	fmt.Println(values)
-	if err := mapForm(obj, values); err != nil {
+	if err := mapUri(obj, values); err != nil {
 		return err
 	}
 	return validate(obj)

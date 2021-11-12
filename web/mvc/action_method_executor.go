@@ -57,24 +57,34 @@ func requestParamTypeConvertFunc(index int, parameter reflectx.MethodParameterIn
 		paramType = paramType.Elem()
 	}
 	if paramType.Kind() == reflect.Struct {
-		// Mapping -> parameter.Name , paramType.Name() ,paramType, ctx
-
-		switch paramType.Name() {
-		case "HttpContext":
-			value = reflect.ValueOf(ctx)
-		default:
-			reqBindingData := reflect.New(paramType).Interface()
-			if paramType.NumField() > 0 && paramType.Field(0).Name == "RequestBody" {
-				bindErr := ctx.Bind(reqBindingData)
-				if bindErr != nil {
-					panic(bindErr)
-				}
-			} else {
-				err = errors.New("Can't bind non mvc.RequestBody!")
-			}
-			value = reflect.ValueOf(reqBindingData)
+		// Mapping * struct type -> parameter.Name , paramType.Name() ,paramType, ctx
+		mappingFunc, hasMapping := RequestMppingFuncs[paramType.Name()]
+		if hasMapping {
+			value, err = mappingFunc(parameter.Name, paramType.Name(), paramType, ctx)
+		} else {
+			value, err = RequestMppingFuncs["Default"](parameter.Name, paramType.Name(), paramType, ctx)
 		}
+
+		//switch paramType.Name() {
+		//case "HttpContext":
+		//	value = reflect.ValueOf(ctx)
+		//default:
+		//	reqBindingData := reflect.New(paramType).Interface()
+		//	if paramType.NumField() > 0 && paramType.Field(0).Name == "RequestBody" {
+		//		bindErr := ctx.Bind(reqBindingData)
+		//		bindErr2:= ctx.BindWith(reqBindingData, binding.Query)
+		//		if bindErr != nil || bindErr2!=nil {
+		//			panic(bindErr.Error() + bindErr2.Error())
+		//		}
+		//	} else {
+		//		err = errors.New("Can't bind non mvc.RequestBody!")
+		//	}
+		//	value = reflect.ValueOf(reqBindingData)
+		//}
 		return value, err
+	} else {
+		// normal type , such as int ,string, float
 	}
+
 	return value, errors.New("the type not support")
 }
