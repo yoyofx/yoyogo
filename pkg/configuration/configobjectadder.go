@@ -1,7 +1,6 @@
 package configuration
 
 import (
-	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofxteam/dependencyinjection"
 )
 
@@ -12,11 +11,4 @@ func AddConfiguration(sc *dependencyinjection.ServiceCollection, objType interfa
 	//sectionName := configObject.GetSection()
 	//fmt.Println(sectionName)
 	sc.AddTransient(objType)
-}
-
-func Local(configName string) *abstractions.Configuration {
-	config := abstractions.NewConfigurationBuilder().
-		AddEnvironment().
-		AddYamlFile(configName).Build()
-	return config
 }
