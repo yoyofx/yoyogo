@@ -33,16 +33,16 @@ require (
 	github.com/spf13/viper v1.8.1
 	github.com/stretchr/testify v1.7.0
 	github.com/ugorji/go/codec v1.2.1
-	github.com/valyala/fasthttp v1.28.0
+	github.com/valyala/fasthttp v1.34.0
 	github.com/xxl-job/xxl-job-executor-go v0.6.1
 	github.com/yoyofxteam/dependencyinjection v1.0.1
 	github.com/yoyofxteam/nacos-viper-remote v0.4.0
 	github.com/yoyofxteam/reflectx v0.2.3
 	go.etcd.io/etcd/client/v3 v3.5.0
-	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a
+	golang.org/x/crypto v0.0.0-20220214200702-86341886e292
 	golang.org/x/image v0.0.0-20190802002840-cff245a6509b
-	golang.org/x/net v0.0.0-20210510120150-4163338589ed
-	golang.org/x/sys v0.0.0-20210603081109-ebe580a85c40
+	golang.org/x/net v0.0.0-20220225172249-27dd8689420f
+	golang.org/x/sys v0.0.0-20220227234510-4e6760a101f9
 	google.golang.org/grpc v1.38.0
 	gopkg.in/gcfg.v1 v1.2.3 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
