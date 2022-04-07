@@ -22,13 +22,14 @@ func NewUserController(userAction models.IUserAction, sd servicediscovery.IServi
 }
 
 type RegisterRequest struct {
-	mvc.RequestBody `route:"/{id}/{tenant}"`
+	//mvc.RequestBody `route:"/{id}/{tenant}"`
 
 	UserName string `uri:"userName"`
 	Password string `uri:"password"`
 }
 
 func (controller UserController) Register(ctx *context.HttpContext, request *RegisterRequest) mvc.ApiResult {
+	panic("error")
 	return mvc.ApiResult{Success: true, Message: "ok", Data: request}
 }
 
