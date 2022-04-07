@@ -1,6 +1,7 @@
 package contollers
 
 import (
+	"fmt"
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/web/actionresult"
 	"github.com/yoyofx/yoyogo/web/binding"
@@ -22,14 +23,17 @@ func NewUserController(userAction models.IUserAction, sd servicediscovery.IServi
 }
 
 type RegisterRequest struct {
-	//mvc.RequestBody `route:"/{id}/{tenant}"`
+	mvc.RequestBody `route:"/{id}/{tenant}"`
 
-	UserName string `uri:"userName"`
-	Password string `uri:"password"`
+	UserName   string `uri:"userName"`
+	Password   string `uri:"password"`
+	TestNumber uint64 `uri:"num"`
 }
 
 func (controller UserController) Register(ctx *context.HttpContext, request *RegisterRequest) mvc.ApiResult {
-	panic("error")
+	num := context.Query2Number[uint64](ctx, "num", "55")
+
+	fmt.Println(num)
 	return mvc.ApiResult{Success: true, Message: "ok", Data: request}
 }
 

@@ -2,6 +2,7 @@ package context
 
 import (
 	"errors"
+	"github.com/yoyofx/yoyogo/utils/cast"
 	"github.com/yoyofx/yoyogo/web/actionresult"
 	"github.com/yoyofx/yoyogo/web/binding"
 	"github.com/yoyofxteam/dependencyinjection"
@@ -119,6 +120,13 @@ func (ctx *HttpContext) BindWith(i interface{}, bindEnum binding.Binding) (err e
 		return binding.Form.Bind(req, i)
 	}
 	return err
+}
+
+// Query2Number Query String to number with default value
+func Query2Number[N cast.Number](ctx *HttpContext, key string, defaultVal string) N {
+	str := ctx.Input.QueryDefault(key, defaultVal)
+	num, _ := cast.Str2Number[N](str)
+	return num
 }
 
 // Redirect redirects the request
