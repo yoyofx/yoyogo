@@ -5,6 +5,7 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/web/view"
 	"github.com/yoyofxteam/reflectx"
+	"reflect"
 	"strings"
 )
 
@@ -58,6 +59,11 @@ func (builder *ControllerBuilder) SetupOptions(configOption func(options *Option
 	configOption(builder.mvcRouterHandler.Options)
 }
 
+// EnableRouteAttributes enable route attributes, such as request parameters fields[0] is RequestBody or RequestGET/POST
+func (builder *ControllerBuilder) EnableRouteAttributes() {
+	builder.mvcRouterHandler.ActionRoutesAttributes.Enable()
+}
+
 // AddController add controller (ctor) to ioc.
 func (builder *ControllerBuilder) AddController(controllerCtor interface{}) {
 	logger := xlog.GetXLogger("ControllerBuilder")
@@ -68,9 +74,40 @@ func (builder *ControllerBuilder) AddController(controllerCtor interface{}) {
 	descriptor := NewControllerDescriptor(controllerName, controllerType, controllerCtor)
 	builder.mvcRouterHandler.ControllerDescriptors[controllerName] = descriptor
 	logger.Debug("add mvc controller: [%s]", controllerName)
-	for _, desc := range descriptor.GetActionDescriptors() {
-		//logger.Debug("add mvc controller action: %s", desc.ActionName)
-		logger.Debug("add mvc controller action:{[%s/%s],method=[%s]}", strings.Replace(controllerName, "controller", "", -1), strings.ToLower(desc.ActionName), strings.ToUpper(desc.ActionMethod))
+
+	// add routes for action attributes
+	controllerAttr := controllerType.Field(0).Tag.Get("route")
+	if controllerAttr != "" {
+		for _, desc := range descriptor.GetActionDescriptors() {
+			for _, parameter := range desc.MethodInfo.Parameters {
+				paramType := parameter.ParameterType
+				if paramType.Kind() == reflect.Ptr {
+					paramType = paramType.Elem()
+				}
+				if paramType.Kind() == reflect.Struct {
+					if paramType.NumField() > 0 {
+						fieldName := paramType.Field(0).Name
+						if fieldName == "RequestBody" || fieldName == "RequestGET" || fieldName == "RequestPOST" {
+							routeTemplate := paramType.Field(0).Tag.Get("route")
+							if routeTemplate != "" {
+								routeAttr := NewRouteAttribute(routeTemplate)
+								routeAttr.Controller = controllerName
+								routeAttr.Action = strings.ToLower(desc.ActionName)
+								if fieldName == "RequestBody" || fieldName == "RequestPOST" {
+									routeAttr.Method = "POST"
+								} else {
+									routeAttr.Method = "GET"
+								}
+								builder.mvcRouterHandler.ActionRoutesAttributes.Add(routeAttr)
+								//fmt.Println(routeTemplate)
+							}
+						}
+					}
+				}
+			}
+			//logger.Debug("add mvc controller action: %s", desc.ActionName)
+			logger.Debug("add mvc controller action for attributes:{[%s/%s],method=[%s]}", strings.Replace(controllerName, "controller", "", -1), strings.ToLower(desc.ActionName), strings.ToUpper(desc.ActionMethod))
+		}
 	}
 }
 
@@ -96,4 +133,8 @@ func (builder *ControllerBuilder) GetMvcOptions() *Options {
 // GetRouterHandler is get mvc router handler.
 func (builder *ControllerBuilder) GetRouterHandler() *RouterHandler {
 	return builder.mvcRouterHandler
+}
+
+func (builder *ControllerBuilder) SetRouteProcessor(processor IRouterAttributeBuilder) {
+	builder.mvcRouterHandler.ActionRoutesAttributes.SetProcessor(processor)
 }

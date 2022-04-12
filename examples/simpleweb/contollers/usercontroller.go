@@ -13,7 +13,8 @@ import (
 )
 
 type UserController struct {
-	mvc.ApiController
+	mvc.ApiController `route:"user"`
+
 	userAction      models.IUserAction
 	discoveryClient servicediscovery.IServiceDiscovery
 }
@@ -23,7 +24,7 @@ func NewUserController(userAction models.IUserAction, sd servicediscovery.IServi
 }
 
 type RegisterRequest struct {
-	mvc.RequestBody `route:"/{id}/{tenant}"`
+	mvc.RequestBody `route:"/v1/users/register"`
 
 	UserName   string `uri:"userName"`
 	Password   string `uri:"password"`
@@ -145,4 +146,13 @@ func (controller UserController) Upload(form *UploadForm) mvc.ApiResult {
 		"key":  form.Key,
 	})
 
+}
+
+func (controller UserController) TestFunc(request *struct {
+	mvc.RequestGET `route:"/v1/user/:id/test"`
+	Name           string `uri:"name"`
+	Id             uint64 `path:"id"`
+}) mvc.ApiResult {
+
+	return mvc.Success(request)
 }

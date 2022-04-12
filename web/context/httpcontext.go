@@ -96,6 +96,11 @@ func (ctx *HttpContext) BindWithUri(i interface{}) (err error) {
 	return err
 }
 
+func (ctx *HttpContext) BindWithRouteData(i interface{}) (err error) {
+	err = binding.Path.BindUri(ctx.Input.RouterData, i)
+	return err
+}
+
 // BindWith Use Binding By Name
 func (ctx *HttpContext) BindWith(i interface{}, bindEnum binding.Binding) (err error) {
 	req := ctx.Input.Request
