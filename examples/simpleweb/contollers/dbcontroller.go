@@ -3,6 +3,7 @@ package contollers
 import (
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/pkg/cache/redis"
+	"github.com/yoyofx/yoyogo/pkg/configuration"
 	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofx/yoyogo/web/mvc"
 	"gorm.io/gorm"
@@ -11,12 +12,16 @@ import (
 
 type DbController struct {
 	mvc.ApiController
-
-	//dbconfig *models.DbConfig
+	dbConfig configuration.OptionsSnapshot[models.MyConfig]
 }
 
-func NewDbController() *DbController {
-	return &DbController{}
+func NewDbController(snapshotOptions configuration.OptionsSnapshot[models.MyConfig]) *DbController {
+	return &DbController{dbConfig: snapshotOptions}
+}
+
+func (controller DbController) TestConfigObject() mvc.ApiResult {
+	myconfig := controller.dbConfig.CurrentValue()
+	return mvc.Success(myconfig)
 }
 
 func (controller DbController) GetMysql(ctx *context.HttpContext) mvc.ApiResult {
