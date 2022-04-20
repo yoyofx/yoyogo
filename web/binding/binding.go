@@ -74,6 +74,7 @@ var (
 	MsgPack       = msgpackBinding{}
 	YAML          = yamlBinding{}
 	Uri           = uriBinding{}
+	Path          = routeDataBinding{}
 	Header        = headerBinding{}
 )
 

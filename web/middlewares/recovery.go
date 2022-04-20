@@ -166,7 +166,7 @@ func (rec *Recovery) Inovke(ctx *context.HttpContext, next func(ctx *context.Htt
 			if envErr == nil {
 				rec.PrintStack = true
 				rec.LogStack = true
-				rec.StackAll = true
+				rec.StackAll = !hostEnv.IsDevelopment()
 				rec.Formatter = &HTMLPanicFormatter{}
 			}
 			if ctx.Output.Status() != http.StatusNotFound {

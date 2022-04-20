@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-func postWechatMessage(sendUrl, msg string) string {
+func PostWechatMessage(sendUrl, msg string) string {
 	client := &http.Client{}
 	req, _ := http.NewRequest("POST", sendUrl, bytes.NewBuffer([]byte(msg)))
 	req.Header.Set("Content-Type", "application/json")
@@ -61,5 +61,5 @@ func SendTxtMessage(request GrafanaAlertRequest, config abstractions.IConfigurat
 	logger.Info("send message:%s", msgStr)
 
 	//return sendUrl + msgStr
-	return postWechatMessage(sendUrl, msgStr)
+	return PostWechatMessage(sendUrl, msgStr)
 }

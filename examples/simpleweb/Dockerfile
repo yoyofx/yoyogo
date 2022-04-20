@@ -16,8 +16,10 @@ COPY . .
 WORKDIR /build/examples/simpleweb
 RUN ls -a
 # 将我们的代码编译成二进制可执行文件 app
-RUN go mod download
-RUN go build -o app .
+
+RUN go mod download \
+    && go mod tidy \
+    && go build -o app .
 
 ###################
 # 接下来创建一个小镜像

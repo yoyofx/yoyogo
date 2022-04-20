@@ -17,15 +17,15 @@ yoyogo:
         ttl: 30     # seconds
       type: "nacos"
       metadata:
-        url: "120.53.133.30"
-        port: 80
+        url: "47.100.213.49"
+        port: 8848
         namespace: "public"
         group: ""
         cluster: ""
         auth:
-          enable: true
-          username: "root"
-          password: "1234"
+          enable: false
+          username: "nacos"
+          password: "P@ssW0rd"
 #      type: "consul"
 #      metadata:
 #        address: "localhost:8500"

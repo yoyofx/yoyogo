@@ -40,7 +40,7 @@ func CreateHttpBuilder(routerConfig func(router router.IRouterBuilder)) *abstrac
 		})
 }
 
-func CreateMvcBuilder(appFunc func(app *ApplicationBuilder)) *abstractions.HostBuilder {
+func CreateMvcBuilder(appFunc func(*ApplicationBuilder)) *WebHostBuilder {
 	configuration := abstractions.NewConfigurationBuilder().
 		AddEnvironment().
 		AddYamlFile("config").Build()

@@ -2,7 +2,6 @@ package mvc
 
 import (
 	"errors"
-	"fmt"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofxteam/reflectx"
@@ -20,7 +19,7 @@ func NewActionMethodExecutor() ActionMethodExecutor {
 func (actionExecutor ActionMethodExecutor) Execute(ctx *ActionExecutorContext) interface{} {
 	if ctx.Controller != nil {
 		methodInfo := ctx.ActionDescriptor.MethodInfo
-		values := getParamValues(methodInfo.Parameters, ctx.Context)
+		values := actionExecutor.getParamValues(methodInfo.Parameters, ctx.Context)
 		returns := methodInfo.InvokeWithValue(reflect.ValueOf(ctx.Controller), values...)
 		if len(returns) > 0 {
 			responseData := returns[0]
@@ -31,7 +30,7 @@ func (actionExecutor ActionMethodExecutor) Execute(ctx *ActionExecutorContext) i
 	return nil
 }
 
-func getParamValues(paramList []reflectx.MethodParameterInfo, ctx *context.HttpContext) []reflect.Value {
+func (actionExecutor ActionMethodExecutor) getParamValues(paramList []reflectx.MethodParameterInfo, ctx *context.HttpContext) []reflect.Value {
 	if len(paramList) == 0 {
 		return nil
 	}
@@ -41,36 +40,51 @@ func getParamValues(paramList []reflectx.MethodParameterInfo, ctx *context.HttpC
 			continue
 		}
 		val, err := requestParamTypeConvertFunc(index, param, ctx)
-		if err == nil {
-			values[index-1] = val
+		if err != nil {
+			actionExecutor.logger.Error(err.Error()) // throw binding error
 		}
+		values[index-1] = val
 	}
-
 	return values
 }
 
 func requestParamTypeConvertFunc(index int, parameter reflectx.MethodParameterInfo, ctx *context.HttpContext) (reflect.Value, error) {
 	var value reflect.Value
 	var err error = nil
+
 	paramType := parameter.ParameterType
 	if paramType.Kind() == reflect.Ptr {
 		paramType = paramType.Elem()
 	}
 	if paramType.Kind() == reflect.Struct {
-		switch paramType.Name() {
-		case "HttpContext":
-			value = reflect.ValueOf(ctx)
-		default:
-			if paramType.NumField() > 0 && paramType.Field(0).Name == "RequestBody" {
-				reqBindingData := reflect.New(paramType).Interface()
-				bindErr := ctx.Bind(reqBindingData)
-				if bindErr != nil {
-					fmt.Println(bindErr)
-				}
-				value = reflect.ValueOf(reqBindingData)
-			}
+		// Mapping * struct type -> parameter.Name , paramType.Name() ,paramType, ctx
+		mappingFunc, hasMapping := RequestMppingFuncs[paramType.Name()]
+		if hasMapping {
+			value, err = mappingFunc(parameter.Name, paramType.Name(), paramType, ctx)
+		} else {
+			value, err = RequestMppingFuncs["Default"](parameter.Name, paramType.Name(), paramType, ctx)
 		}
+
+		//switch paramType.Name() {
+		//case "HttpContext":
+		//	value = reflect.ValueOf(ctx)
+		//default:
+		//	reqBindingData := reflect.New(paramType).Interface()
+		//	if paramType.NumField() > 0 && paramType.Field(0).Name == "RequestBody" {
+		//		bindErr := ctx.Bind(reqBindingData)
+		//		bindErr2:= ctx.BindWith(reqBindingData, binding.Query)
+		//		if bindErr != nil || bindErr2!=nil {
+		//			panic(bindErr.Error() + bindErr2.Error())
+		//		}
+		//	} else {
+		//		err = errors.New("Can't bind non mvc.RequestBody!")
+		//	}
+		//	value = reflect.ValueOf(reqBindingData)
+		//}
 		return value, err
+	} else {
+		// normal type , such as int ,string, float
 	}
+
 	return value, errors.New("the type not support")
 }

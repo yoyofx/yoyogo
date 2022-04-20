@@ -6,7 +6,6 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/pkg/configuration"
-	nacosconfig "github.com/yoyofx/yoyogo/pkg/configuration/nacos"
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/mysql"
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/redis"
 	"github.com/yoyofx/yoyogo/pkg/servicediscovery/nacos"
@@ -43,10 +42,11 @@ func main() {
 	webHost.Run()
 }
 
-//* Create the builder of Web host
+//CreateCustomBuilder Create the builder of Web host
 func CreateCustomBuilder() *abstractions.HostBuilder {
-	config := nacosconfig.RemoteConfig("config")
+	//config := nacosconfig.RemoteConfig("config")
 	//config := apollo.RemoteConfig("config")
+	config := configuration.LocalConfig("config")
 	return web.NewWebHostBuilder().
 		UseConfiguration(config).
 		Configure(func(app *web.ApplicationBuilder) {
@@ -59,6 +59,7 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 			app.UseMvc(func(builder *mvc.ControllerBuilder) {
 				//builder.AddViews(&view.Option{Path: "./static/templates"})
 				builder.AddViewsByConfig()
+				builder.EnableRouteAttributes()
 				builder.AddController(contollers.NewUserController)
 				builder.AddController(contollers.NewHubController)
 				builder.AddController(contollers.NewDbController)
