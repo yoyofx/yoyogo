@@ -1,6 +1,7 @@
 package contollers
 
 import (
+	"fmt"
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/web/actionresult"
 	"github.com/yoyofx/yoyogo/web/binding"
@@ -12,7 +13,8 @@ import (
 )
 
 type UserController struct {
-	mvc.ApiController
+	mvc.ApiController `route:"user"`
+
 	userAction      models.IUserAction
 	discoveryClient servicediscovery.IServiceDiscovery
 }
@@ -22,13 +24,17 @@ func NewUserController(userAction models.IUserAction, sd servicediscovery.IServi
 }
 
 type RegisterRequest struct {
-	mvc.RequestBody `route:"/{id}/{tenant}"`
+	mvc.RequestBody `route:"/v1/users/register"`
 
-	UserName string `uri:"userName"`
-	Password string `uri:"password"`
+	UserName   string `uri:"userName"`
+	Password   string `uri:"password"`
+	TestNumber uint64 `uri:"num"`
 }
 
 func (controller UserController) Register(ctx *context.HttpContext, request *RegisterRequest) mvc.ApiResult {
+	num := context.Query2Number[uint64](ctx, "num", "55")
+
+	fmt.Println(num)
 	return mvc.ApiResult{Success: true, Message: "ok", Data: request}
 }
 
@@ -140,4 +146,13 @@ func (controller UserController) Upload(form *UploadForm) mvc.ApiResult {
 		"key":  form.Key,
 	})
 
+}
+
+func (controller UserController) TestFunc(request *struct {
+	mvc.RequestGET `route:"/v1/user/:id/test"`
+	Name           string `uri:"name"`
+	Id             uint64 `path:"id"`
+}) mvc.ApiResult {
+
+	return mvc.Success(request)
 }

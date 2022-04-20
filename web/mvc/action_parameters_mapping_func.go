@@ -35,7 +35,7 @@ func requestBodyMappingMapping(paramName string, paramTypeName string, paramType
 	var err error
 	reqBindingData := reflect.New(paramType).Interface()
 
-	fmTags := map[string]bool{"header": false, "uri": false}
+	fmTags := map[string]bool{"header": false, "uri": false, "path": false}
 	for fi := 0; fi < paramType.NumField(); fi++ {
 		for key, _ := range fmTags {
 			_, inTag := paramType.Field(fi).Tag.Lookup(key)
@@ -46,12 +46,21 @@ func requestBodyMappingMapping(paramName string, paramTypeName string, paramType
 		}
 	}
 
-	if paramType.NumField() > 0 && paramType.Field(0).Name == "RequestBody" {
-		err = sourceContext.Bind(reqBindingData)
-		if fmTags["uri"] {
-			_ = sourceContext.BindWith(reqBindingData, binding.Query)
-		} else if fmTags["header"] {
-			_ = sourceContext.BindWith(reqBindingData, binding.Header)
+	if paramType.NumField() > 0 {
+		paramTypeName := paramType.Field(0).Name
+		if paramTypeName == "RequestBody" || paramTypeName == "RequestGET" || paramTypeName == "RequestPOST" {
+			err = sourceContext.Bind(reqBindingData)
+			if fmTags["uri"] {
+				_ = sourceContext.BindWith(reqBindingData, binding.Query)
+			}
+			if fmTags["header"] {
+				_ = sourceContext.BindWith(reqBindingData, binding.Header)
+			}
+			if fmTags["path"] {
+				_ = sourceContext.BindWithRouteData(reqBindingData)
+			}
+		} else {
+			err = errors.New("Can't bind non mvc.RequestBody!")
 		}
 
 	} else {

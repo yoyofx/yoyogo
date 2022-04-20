@@ -42,7 +42,7 @@ func main() {
 	webHost.Run()
 }
 
-//* Create the builder of Web host
+//CreateCustomBuilder Create the builder of Web host
 func CreateCustomBuilder() *abstractions.HostBuilder {
 	//config := nacosconfig.RemoteConfig("config")
 	//config := apollo.RemoteConfig("config")
@@ -59,6 +59,7 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 			app.UseMvc(func(builder *mvc.ControllerBuilder) {
 				//builder.AddViews(&view.Option{Path: "./static/templates"})
 				builder.AddViewsByConfig()
+				builder.EnableRouteAttributes()
 				builder.AddController(contollers.NewUserController)
 				builder.AddController(contollers.NewHubController)
 				builder.AddController(contollers.NewDbController)
