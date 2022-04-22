@@ -101,6 +101,7 @@ yoyogo:
         username: root
         password: 1234abcd
         debug: false
+        env: ${USER}
       redis:
         name: reids1
         url: m.yoyogo.run:6379

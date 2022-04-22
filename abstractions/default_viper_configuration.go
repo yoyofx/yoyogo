@@ -108,36 +108,35 @@ func (c *Configuration) OnWatchRemoteConfigChanged() {
 }
 
 func (c *Configuration) Get(name string) interface{} {
-	if c.AssertEnvironment(c.config.GetString(name)) {
-		c.BindEnvironment(c.config.GetString(name), name)
+	if c.assertDSL(c.config.GetString(name)) {
+		c.bindEnvDSL(c.config.GetString(name), name)
 	}
 	return c.config.Get(name)
 }
 
 func (c *Configuration) GetString(name string) string {
-	if c.AssertEnvironment(c.config.GetString(name)) {
-		c.BindEnvironment(c.config.GetString(name), name)
+	if c.assertDSL(c.config.GetString(name)) {
+		c.bindEnvDSL(c.config.GetString(name), name)
 	}
 	return c.config.GetString(name)
 }
 
 func (c *Configuration) GetBool(name string) bool {
-	if c.AssertEnvironment(c.config.GetString(name)) {
-		c.BindEnvironment(c.config.GetString(name), name)
+	if c.assertDSL(c.config.GetString(name)) {
+		c.bindEnvDSL(c.config.GetString(name), name)
 	}
 	return c.config.GetBool(name)
 }
 
 func (c *Configuration) GetInt(name string) int {
-	if c.AssertEnvironment(c.config.GetString(name)) {
-		c.BindEnvironment(c.config.GetString(name), name)
+	if c.assertDSL(c.config.GetString(name)) {
+		c.bindEnvDSL(c.config.GetString(name), name)
 	}
 	return c.config.GetInt(name)
 }
 
 func (c *Configuration) GetSection(name string) IConfiguration {
 	section := c.config.Sub(name)
-
 	if section != nil {
 		return &Configuration{config: section}
 	}
@@ -172,7 +171,7 @@ func (c *Configuration) GetConfigObject(configTag string, configObject interface
 		c.configMap[configTag] = object
 		c.gRWLock.Unlock()
 	} else {
-		_ = copier.Copy(configObject, object)
+		_ = copier.CopyWithOption(configObject, object, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	}
 
 }
@@ -190,30 +189,28 @@ func (c *Configuration) RefreshBy(name string) {
 }
 
 /**
-读取环境变量
+bindEnvDSL 读取DSL:环境变量 -> ${ENV:DEFAULT}
 */
-func (c *Configuration) BindEnvironment(key string, originalKey string) {
-	//fmt.Println("两个参数")
-	//fmt.Println(key + "---" + originalKey)
+func (c *Configuration) bindEnvDSL(key string, originalKey string) {
 	key = key[2 : len(key)-1]
 	envKeyDefaultValue := strings.Split(key, ":")
 	if len(envKeyDefaultValue) > 2 {
 		panic("can't read environment for illegal key:" + key)
 	}
-	envKey := envKeyDefaultValue[0]
-	//fmt.Println("环境变量key" + envKey)
-	viper.BindEnv(envKey)
-	envValue := viper.Get(envKey)
-	if envValue == nil {
-		if len(envKeyDefaultValue) > 1 {
-			c.config.Set(originalKey, envKeyDefaultValue[1])
-			return
-		}
+	envKey := envKeyDefaultValue[0] // ${ENV:DEFAULT}  [0] is key of the env
+	_ = viper.BindEnv(envKey)       // binding environment for the env key
+	envValue := viper.Get(envKey)   // get value of env
+	dslValue := envValue            // dsl value is env value by default
+	// if env value is nil and dsl parameters length > 1
+	if envValue == nil && len(envKeyDefaultValue) > 1 {
+		dslValue = envKeyDefaultValue[1]
 	}
-	c.config.Set(originalKey, envValue)
+	c.gRWLock.Lock()
+	c.config.Set(originalKey, dslValue)
+	c.gRWLock.Unlock()
 }
 
-func (c *Configuration) AssertEnvironment(key string) bool {
+func (c *Configuration) assertDSL(key string) bool {
 	if len(key) < 2 {
 		return false
 	}
