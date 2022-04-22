@@ -68,6 +68,8 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 			})
 		}).
 		ConfigureServices(func(serviceCollection *dependencyinjection.ServiceCollection) {
+			configuration.Configure[models.MyConfig](serviceCollection)
+
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
 			serviceCollection.AddSingleton(hubs.NewHub) // add websocket hubs
 
