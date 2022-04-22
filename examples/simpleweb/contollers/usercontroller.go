@@ -2,6 +2,7 @@ package contollers
 
 import (
 	"fmt"
+	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/servicediscovery"
 	"github.com/yoyofx/yoyogo/web/actionresult"
 	"github.com/yoyofx/yoyogo/web/binding"
@@ -16,6 +17,7 @@ type UserController struct {
 	mvc.ApiController
 	userAction      models.IUserAction
 	discoveryClient servicediscovery.IServiceDiscovery
+	config          abstractions.IConfiguration
 }
 
 func NewUserController(userAction models.IUserAction, sd servicediscovery.IServiceDiscovery) *UserController {
@@ -108,11 +110,15 @@ func (controller UserController) JsonBinding(ctx *context.HttpContext) mvc.ApiRe
 }
 
 //FromQuery
-func (controller UserController) QueryBinding(ctx *context.HttpContext) mvc.ApiResult {
+func (controller UserController) GetQueryBinding(ctx *context.HttpContext) mvc.ApiResult {
+	fmt.Println("进入方法")
+	fmt.Println(controller.config.Get("env"))
+
 	userInfo := &UserInfo{}
 	err := ctx.BindWith(userInfo, binding.Query)
 	if err != nil {
 		return controller.Fail(err.Error())
 	}
 	return controller.OK(userInfo)
+
 }

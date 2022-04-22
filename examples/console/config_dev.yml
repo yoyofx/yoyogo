@@ -4,3 +4,4 @@ yoyogo:
     metadata: "dev"
     server:
       type: "console"
+env: ${MAVEN_HOME}

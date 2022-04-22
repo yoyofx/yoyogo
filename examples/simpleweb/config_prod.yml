@@ -6,7 +6,7 @@ yoyogo:
       type: "fasthttp"
       address: ":8080"
       path: "app"
-      max_request_size: 2096157
+      max_request_size: 209615700
       session:
         name: "YOYOGO_SESSIONID"
         timeout: 3600

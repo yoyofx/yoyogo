@@ -8,6 +8,7 @@ import (
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/utils"
 	"path"
+	"strings"
 	"sync"
 )
 
@@ -107,18 +108,30 @@ func (c *Configuration) OnWatchRemoteConfigChanged() {
 }
 
 func (c *Configuration) Get(name string) interface{} {
+	if c.AssertEnvironment(c.config.GetString(name)) {
+		c.BindEnvironment(c.config.GetString(name), name)
+	}
 	return c.config.Get(name)
 }
 
 func (c *Configuration) GetString(name string) string {
+	if c.AssertEnvironment(c.config.GetString(name)) {
+		c.BindEnvironment(c.config.GetString(name), name)
+	}
 	return c.config.GetString(name)
 }
 
 func (c *Configuration) GetBool(name string) bool {
+	if c.AssertEnvironment(c.config.GetString(name)) {
+		c.BindEnvironment(c.config.GetString(name), name)
+	}
 	return c.config.GetBool(name)
 }
 
 func (c *Configuration) GetInt(name string) int {
+	if c.AssertEnvironment(c.config.GetString(name)) {
+		c.BindEnvironment(c.config.GetString(name), name)
+	}
 	return c.config.GetInt(name)
 }
 
@@ -174,4 +187,40 @@ func (c *Configuration) RefreshBy(name string) {
 	c.gRWLock.Lock()
 	delete(c.configMap, name)
 	c.gRWLock.Unlock()
+}
+
+/**
+读取环境变量
+*/
+func (c *Configuration) BindEnvironment(key string, originalKey string) {
+	//fmt.Println("两个参数")
+	//fmt.Println(key + "---" + originalKey)
+	key = key[2 : len(key)-1]
+	envKeyDefaultValue := strings.Split(key, ":")
+	if len(envKeyDefaultValue) > 2 {
+		panic("can't read environment for illegal key:" + key)
+	}
+	envKey := envKeyDefaultValue[0]
+	//fmt.Println("环境变量key" + envKey)
+	viper.BindEnv(envKey)
+	envValue := viper.Get(envKey)
+	if envValue == nil {
+		if len(envKeyDefaultValue) > 1 {
+			c.config.Set(originalKey, envKeyDefaultValue[1])
+			return
+		}
+	}
+	c.config.Set(originalKey, envValue)
+}
+
+func (c *Configuration) AssertEnvironment(key string) bool {
+	if len(key) < 2 {
+		return false
+	}
+	prefix := key[0:2]
+	last := key[len(key)-1:]
+	if !(prefix == "${" && last == "}") {
+		return false
+	}
+	return true
 }

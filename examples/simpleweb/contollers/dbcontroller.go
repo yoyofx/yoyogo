@@ -1,6 +1,7 @@
 package contollers
 
 import (
+	"fmt"
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/pkg/cache/redis"
 	"github.com/yoyofx/yoyogo/web/context"
@@ -17,6 +18,12 @@ type DbController struct {
 
 func NewDbController() *DbController {
 	return &DbController{}
+}
+
+func (controller DbController) PostFile(ctx *context.HttpContext) mvc.ApiResult {
+	file, _, _ := ctx.Input.FormFile("file")
+	fmt.Println(file)
+	return mvc.ApiResult{}
 }
 
 func (controller DbController) GetMysql(ctx *context.HttpContext) mvc.ApiResult {
