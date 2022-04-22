@@ -1,0 +1,4 @@
+env: ${MAVEN_HOME}
+profile:
+  homebrew: ${HOMEBREW_BOTTLE_DOMAIN}
+  default: ${DEFAULT:yoyogoDefault}

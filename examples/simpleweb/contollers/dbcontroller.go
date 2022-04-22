@@ -1,6 +1,7 @@
 package contollers
 
 import (
+	"fmt"
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/pkg/cache/redis"
 	"github.com/yoyofx/yoyogo/pkg/configuration"
@@ -22,6 +23,12 @@ func NewDbController(snapshotOptions configuration.OptionsSnapshot[models.MyConf
 func (controller DbController) TestConfigObject() mvc.ApiResult {
 	myconfig := controller.dbConfig.CurrentValue()
 	return mvc.Success(myconfig)
+}
+
+func (controller DbController) PostFile(ctx *context.HttpContext) mvc.ApiResult {
+	file, _, _ := ctx.Input.FormFile("file")
+	fmt.Println(file)
+	return mvc.ApiResult{}
 }
 
 func (controller DbController) GetMysql(ctx *context.HttpContext) mvc.ApiResult {

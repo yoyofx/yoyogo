@@ -6,7 +6,7 @@ yoyogo:
       type: "fasthttp"
       address: ":8080"
       path: "app"
-      max_request_size: 31457280
+      max_request_size: 209615700
       session:
         name: "YOYOGO_SESSIONID"
         timeout: 3600
@@ -106,3 +106,4 @@ yoyogo:
         url: m.yoyogo.run:6379
         password: 123.com
         db: 0
+env: ${MAVEN_HOME}
