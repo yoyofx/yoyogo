@@ -14,11 +14,15 @@ func (c *ApiController) GetName() string {
 }
 
 func (c *ApiController) OK(data interface{}) ApiResult {
-	return ApiResult{Success: true, Message: "true", Data: data}
+	return ApiResult{Success: true, Message: "true", Data: data, Status: 200}
 }
 
 func (c *ApiController) Fail(msg string) ApiResult {
-	return ApiResult{Success: false, Message: msg}
+	return ApiResult{Success: false, Message: msg, Status: 200}
+}
+
+func (c *ApiController) ApiResult() *ApiResultBuilder {
+	return NewApiResultBuilder()
 }
 
 func (c *ApiController) SetViewEngine(viewEngine view.IViewEngine) {

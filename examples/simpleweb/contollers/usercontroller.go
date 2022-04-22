@@ -14,7 +14,8 @@ import (
 )
 
 type UserController struct {
-	mvc.ApiController
+	mvc.ApiController `route:"user"`
+
 	userAction      models.IUserAction
 	discoveryClient servicediscovery.IServiceDiscovery
 	config          abstractions.IConfiguration
@@ -25,22 +26,29 @@ func NewUserController(userAction models.IUserAction, sd servicediscovery.IServi
 }
 
 type RegisterRequest struct {
-	mvc.RequestBody
-	UserName string `param:"UserName"`
-	Password string `param:"Password"`
+	mvc.RequestBody `route:"/v1/users/register"`
+
+	UserName   string `uri:"userName"`
+	Password   string `uri:"password"`
+	TestNumber uint64 `uri:"num"`
 }
 
 func (controller UserController) Register(ctx *context.HttpContext, request *RegisterRequest) mvc.ApiResult {
+	num := context.Query2Number[uint64](ctx, "num", "55")
+
+	fmt.Println(num)
 	return mvc.ApiResult{Success: true, Message: "ok", Data: request}
 }
 
-func (controller UserController) GetUserName(ctx *context.HttpContext, request *RegisterRequest) actionresult.IActionResult {
-	result := mvc.ApiResult{Success: true, Message: "ok", Data: request}
-	fmt.Println("hello world")
-	return actionresult.Json{Data: result}
+type PostUserInfoRequest struct {
+	mvc.RequestBody //`route:"/{id}"`
+
+	UserName string `form:"userName" json:"userName"`
+	Password string `form:"password" json:"password"`
+	Token    string `header:"Authorization" json:"token"`
 }
 
-func (controller UserController) PostUserInfo(ctx *context.HttpContext, request *RegisterRequest) actionresult.IActionResult {
+func (controller UserController) PostUserInfo(ctx *context.HttpContext, request *PostUserInfoRequest) actionresult.IActionResult {
 	return actionresult.Json{Data: mvc.ApiResult{Success: true, Message: "ok", Data: context.H{
 		"user":    ctx.GetUser(),
 		"request": request,
@@ -82,6 +90,14 @@ func (controller UserController) GetValidation(ctx *context.HttpContext) mvc.Api
 	return controller.OK(context.H{"validation": ok})
 }
 
+func (controller UserController) GetTestApiResult() mvc.ApiResult {
+	return controller.ApiResult().
+		Success().
+		Data("ok").
+		Message("hello").
+		StatusCode(400).Build()
+}
+
 type UserInfo struct {
 	UserName string                `form:"user" json:"user" binding:"required"`
 	Number   int                   `form:"num" json:"num" binding:"gt=0,lt=10"`
@@ -121,4 +137,28 @@ func (controller UserController) GetQueryBinding(ctx *context.HttpContext) mvc.A
 	}
 	return controller.OK(userInfo)
 
+}
+
+type UploadForm struct {
+	mvc.RequestBody
+	File *multipart.FileHeader `form:"file1"`
+	Key  string                `form:"key"`
+}
+
+func (controller UserController) Upload(form *UploadForm) mvc.ApiResult {
+	return controller.OK(context.H{
+		"file": form.File.Filename,
+		"size": form.File.Size,
+		"key":  form.Key,
+	})
+
+}
+
+func (controller UserController) TestFunc(request *struct {
+	mvc.RequestGET `route:"/v1/user/:id/test"`
+	Name           string `uri:"name"`
+	Id             uint64 `path:"id"`
+}) mvc.ApiResult {
+
+	return mvc.Success(request)
 }

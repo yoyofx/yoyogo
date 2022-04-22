@@ -11,6 +11,7 @@ type EndPointRouterHandler struct {
 	children  []*EndPointRouterHandler
 	param     byte
 	Component string
+	fullURL   *string
 	Methods   map[string]func(ctx *context.HttpContext)
 }
 
@@ -25,6 +26,7 @@ func (endPoint *EndPointRouterHandler) Invoke(ctx *context.HttpContext, pathComp
 
 // Insert a node into the tree.
 func (t *EndPointRouterHandler) Insert(method, path string, handler func(ctx *context.HttpContext)) {
+	t.fullURL = &path
 	components := strings.Split(path, "/")[1:]
 Next:
 	for _, component := range components {
@@ -36,6 +38,7 @@ Next:
 		}
 		newNode := &EndPointRouterHandler{Component: component,
 			Methods: make(map[string]func(ctx *context.HttpContext))}
+		newNode.fullURL = &path
 		if len(component) > 0 {
 			if component[0] == ':' || component[0] == '*' {
 				newNode.param = component[0]
@@ -45,6 +48,14 @@ Next:
 		t = newNode
 	}
 	t.Methods[method] = handler
+}
+
+func (t *EndPointRouterHandler) Match(ctx *context.HttpContext, pathComponents []string) (string, bool) {
+	node := t.search(pathComponents, ctx.Input.RouterData)
+	if node != nil {
+		return *node.fullURL, true
+	}
+	return "", false
 }
 
 // Search the tree.

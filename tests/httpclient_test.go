@@ -98,26 +98,26 @@ func TestHttpCleintFactoryCreateServiceDiscoveryCleint(t *testing.T) {
 	assert.Equal(t, string(res.Body), "ok")
 }
 
-func TestHttpClientFactoryBaseUrl(t *testing.T) {
-	httpServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(200)
-		_, _ = w.Write([]byte("ok"))
-	}))
-	fmt.Print(httpServer.URL)
-	//httpServer.URL = "http://127.0.0.1:8080"
-	defer httpServer.Close()
-	factory := httpclient.NewFactory()
-	client, err := factory.Create(httpServer.URL)
-	if err != nil {
-		panic(err)
-	}
-	req := httpclient.WithRequest()
-	req.GET("")
-	req.SetTimeout(10)
-	res, err := client.Do(req)
-	fmt.Print(string(res.Body))
-	assert.Equal(t, string(res.Body), "ok")
-}
+//func TestHttpClientFactoryBaseUrl(t *testing.T) {
+//	httpServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+//		w.WriteHeader(200)
+//		_, _ = w.Write([]byte("ok"))
+//	}))
+//	fmt.Print(httpServer.URL)
+//	//httpServer.URL = "http://127.0.0.1:8080"
+//	defer httpServer.Close()
+//	factory := httpclient.NewFactory()
+//	client, err := factory.Create(httpServer.URL)
+//	if err != nil {
+//		panic(err)
+//	}
+//	req := httpclient.WithRequest()
+//	req.GET("")
+//	req.SetTimeout(10)
+//	res, err := client.Do(req)
+//	fmt.Print(string(res.Body))
+//	assert.Equal(t, string(res.Body), "ok")
+//}
 
 func TestBaseUrlSplicingUrl(t *testing.T) {
 	factory := httpclient.NewFactory()

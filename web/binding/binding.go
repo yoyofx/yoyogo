@@ -2,6 +2,7 @@ package binding
 
 import (
 	"net/http"
+	"strings"
 	"unsafe"
 )
 
@@ -73,12 +74,16 @@ var (
 	MsgPack       = msgpackBinding{}
 	YAML          = yamlBinding{}
 	Uri           = uriBinding{}
+	Path          = routeDataBinding{}
 	Header        = headerBinding{}
 )
 
 func Default(method, contentType string) Binding {
 	if method == http.MethodGet {
 		return Form
+	}
+	if strings.HasPrefix(contentType, MIMEMultipartPOSTForm) {
+		return FormMultipart
 	}
 
 	switch contentType {

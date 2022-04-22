@@ -19,6 +19,16 @@ func NewWebHostBuilder() *WebHostBuilder {
 	return builder
 }
 
+func (host *WebHostBuilder) UseConfiguration(configuration abstractions.IConfiguration) *WebHostBuilder {
+	host.HostBuilder.UseConfiguration(configuration)
+	return host
+}
+
+func (host *WebHostBuilder) Configure(configure func(*ApplicationBuilder)) *WebHostBuilder {
+	host.HostBuilder.Configure(configure)
+	return host
+}
+
 //
 //// SetEnvironment set value(Dev,tests,Prod) by environment
 //func (host *WebHostBuilder) SetEnvironment(mode string) *WebHostBuilder {

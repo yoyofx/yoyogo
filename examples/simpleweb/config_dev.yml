@@ -46,17 +46,17 @@ yoyogo:
       strategy: "round-robin"    # round-robin  , weight-time ,  random
       type: "nacos"
       metadata:
-        url: "120.53.133.30"
-        port: 80
+        url: "47.100.213.49"
+        port: 8848
         namespace: "public"
         group: "DEFAULT_GROUP"
         cluster: ""
         configserver:
           dataId: "simple_demo"
         auth:
-          enable: true
-          username: "root"
-          password: "1234"
+          enable: false
+          username: "nacos"
+          password: "P@ssW0rd"
           endpoint: ""
           regionId: ""
           accessKey: ""
@@ -103,7 +103,7 @@ yoyogo:
         debug: false
       redis:
         name: reids1
-        url: 62.234.6.120:31379
-        password:
+        url: m.yoyogo.run:6379
+        password: 123.com
         db: 0
 env: ${MAVEN_HOME}

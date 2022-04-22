@@ -9,22 +9,28 @@ import (
 )
 
 type RouterHandler struct {
-	ControllerFilters     []ActionFilterChain
-	ControllerDescriptors map[string]ControllerDescriptor
-	Options               *Options
-	ViewEngine            view.IViewEngine
+	ControllerFilters      []ActionFilterChain
+	ControllerDescriptors  map[string]ControllerDescriptor
+	ActionRoutesAttributes *RouteAttributeCollection
+	Options                *Options
+	ViewEngine             view.IViewEngine
 }
 
 func NewMvcRouterHandler() *RouterHandler {
 	return &RouterHandler{
-		Options:               NewMvcOptions(),
-		ControllerDescriptors: make(map[string]ControllerDescriptor),
+		Options:                NewMvcOptions(),
+		ActionRoutesAttributes: NewRouteAttributeCollection(),
+		ControllerDescriptors:  make(map[string]ControllerDescriptor),
 	}
 }
 
 func (handler *RouterHandler) Invoke(ctx *context.HttpContext, pathComponents []string) func(ctx *context.HttpContext) {
-	matchInfo := &MatchMvcInfo{}
-	if !handler.Options.Template.Match(pathComponents, matchInfo) {
+	matchInfo := MatchMvcInfo{}
+	foundRoute := handler.ActionRoutesAttributes.Match(ctx, pathComponents, &matchInfo)
+	if !foundRoute {
+		foundRoute = handler.Options.Template.Match(pathComponents, &matchInfo)
+	}
+	if !foundRoute {
 		return nil
 	}
 

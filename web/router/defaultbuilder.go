@@ -8,6 +8,8 @@ import (
 	"github.com/yoyofx/yoyogo/web/mvc"
 	"net/url"
 	"path"
+	"reflect"
+	"runtime"
 	"strings"
 )
 
@@ -71,6 +73,7 @@ func (router *DefaultRouterBuilder) GetConfiguration() abstractions.IConfigurati
 func (router *DefaultRouterBuilder) UseMvc(used bool) {
 	if used {
 		router.mvcControllerBuilder = mvc.NewControllerBuilder()
+		router.mvcControllerBuilder.SetRouteProcessor(router.endPointRouterHandler)
 	} else {
 		router.mvcControllerBuilder = nil
 	}
@@ -88,8 +91,9 @@ func (router *DefaultRouterBuilder) Search(ctx *context.HttpContext, components 
 	var handler func(ctx *context.HttpContext) = nil
 	pathComponents := strings.Split(ctx.Input.Request.URL.Path, "/")[1:]
 	handler = router.endPointRouterHandler.Invoke(ctx, pathComponents)
-
-	if handler == nil && router.IsMvc() {
+	handlerName := runtime.FuncForPC(reflect.ValueOf(handler).Pointer()).Name()
+	mvcFuncName := "mvc.EmptyHandler"
+	if handler == nil && router.IsMvc() || strings.Contains(handlerName, mvcFuncName) {
 		handler = router.mvcControllerBuilder.GetRouterHandler().Invoke(ctx, pathComponents)
 	}
 

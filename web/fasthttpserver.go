@@ -37,10 +37,14 @@ func (server *FastHttpServer) GetAddr() string {
 func (server *FastHttpServer) Run(context *abstractions.HostBuilderContext) (e error) {
 
 	fastHttpHandler := NewFastHTTPHandler(context.RequestDelegate.(IRequestDelegate))
-
+	defaultMaxRequestSize := 100000
+	if context.HostConfiguration != nil {
+		defaultMaxRequestSize = int(context.HostConfiguration.Server.MaxRequestSize)
+	}
 	server.webserver = &fasthttp.Server{
-		Handler:           fastHttpHandler,
-		KeepHijackedConns: true,
+		Handler:            fastHttpHandler,
+		KeepHijackedConns:  true,
+		MaxRequestBodySize: defaultMaxRequestSize,
 	}
 
 	addr := server.Addr
