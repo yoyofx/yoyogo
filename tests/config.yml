@@ -1,4 +1,4 @@
-env: ${USER}
+env: ${CUSTOM_ENV}
 profile:
-  homebrew: ${HOME}
-  default: ${DEFAULT:yoyogoDefault}
+  dns: ${REMOTE_HOST}
+  ip: ${REMOTE_IP:10.0.1.12}
