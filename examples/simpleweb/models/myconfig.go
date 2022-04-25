@@ -4,8 +4,9 @@ type MyConfig struct {
 	Name     string
 	Url      string
 	UserName string
-	Password string //`mapstructure:"password"
+	Password string
 	Debug    bool
+	Env      string
 }
 
 func (config MyConfig) GetSection() string {

@@ -1,0 +1,5 @@
+env: ${CUSTOM_ENV}
+profile:
+  dns: ${REMOTE_HOST}
+  ip: ${REMOTE_IP:10.0.1.12}
+  namespace: ${MYNAMESPACE:space.localhost}

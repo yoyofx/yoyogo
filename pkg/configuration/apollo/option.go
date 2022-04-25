@@ -1,9 +1,9 @@
 package apollo
 
 type Option struct {
-	AppID     string `mapstructure:"appid"`
-	Endpoint  string `mapstructure:"endpoint"`
-	Namespace string `mapstructure:"namespace"`
+	AppID     string `mapstructure:"appid" config:"appid"`
+	Endpoint  string `mapstructure:"endpoint" config:"endpoint"`
+	Namespace string `mapstructure:"namespace" config:"namespace"`
 }
 
 type RemoteProvider struct {

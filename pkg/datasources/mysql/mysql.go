@@ -14,12 +14,12 @@ import (
 
 // DataSourceConfig 数据源配置
 type dataSourceConfig struct {
-	Name     string                      `mapstructure:"name"`
-	Url      string                      `mapstructure:"url"`
-	UserName string                      `mapstructure:"username"`
-	Password string                      `mapstructure:"password"`
-	Debug    bool                        `mapstructure:"debug"`
-	Pool     *datasources.DataSourcePool `mapstructure:"pool"`
+	Name     string                      `mapstructure:"name" config:"name"`
+	Url      string                      `mapstructure:"url" config:"url"`
+	UserName string                      `mapstructure:"username" config:"username"`
+	Password string                      `mapstructure:"password" config:"password"`
+	Debug    bool                        `mapstructure:"debug" config:"debug"`
+	Pool     *datasources.DataSourcePool `mapstructure:"pool" config:"pool"`
 }
 
 type MySqlDataSource struct {
