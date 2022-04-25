@@ -1,13 +1,16 @@
 package abstractions
 
 import (
+	"errors"
 	"flag"
 	"github.com/jinzhu/copier"
+	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/utils"
 	"path"
+	"reflect"
 	"strings"
 	"sync"
 )
@@ -92,8 +95,24 @@ func NewConfiguration(configContext *ConfigurationContext) *Configuration {
 			log.Error("remote config is not ready , switch local.")
 		}
 	}
-
+	configuration.Initialize()
 	return configuration
+}
+
+func (c *Configuration) Initialize() {
+	c.context.decoderConfigOption = func(config *mapstructure.DecoderConfig) {
+		config.TagName = "config"
+		config.DecodeHook = func(f reflect.Type, t reflect.Type, data interface{}) (interface{}, error) {
+			if f.Kind() != reflect.String && t.Kind() != reflect.String {
+				return data, nil
+			}
+			fromStr := data.(string)
+			if c.assertDSL(fromStr) {
+				return c.bindEnvDSL(fromStr, "")
+			}
+			return data, nil
+		}
+	}
 }
 
 func (c *Configuration) OnWatchRemoteConfigChanged() {
@@ -109,28 +128,28 @@ func (c *Configuration) OnWatchRemoteConfigChanged() {
 
 func (c *Configuration) Get(name string) interface{} {
 	if c.assertDSL(c.config.GetString(name)) {
-		c.bindEnvDSL(c.config.GetString(name), name)
+		_, _ = c.bindEnvDSL(c.config.GetString(name), name)
 	}
 	return c.config.Get(name)
 }
 
 func (c *Configuration) GetString(name string) string {
 	if c.assertDSL(c.config.GetString(name)) {
-		c.bindEnvDSL(c.config.GetString(name), name)
+		_, _ = c.bindEnvDSL(c.config.GetString(name), name)
 	}
 	return c.config.GetString(name)
 }
 
 func (c *Configuration) GetBool(name string) bool {
 	if c.assertDSL(c.config.GetString(name)) {
-		c.bindEnvDSL(c.config.GetString(name), name)
+		_, _ = c.bindEnvDSL(c.config.GetString(name), name)
 	}
 	return c.config.GetBool(name)
 }
 
 func (c *Configuration) GetInt(name string) int {
 	if c.assertDSL(c.config.GetString(name)) {
-		c.bindEnvDSL(c.config.GetString(name), name)
+		_, _ = c.bindEnvDSL(c.config.GetString(name), name)
 	}
 	return c.config.GetInt(name)
 }
@@ -138,13 +157,13 @@ func (c *Configuration) GetInt(name string) int {
 func (c *Configuration) GetSection(name string) IConfiguration {
 	section := c.config.Sub(name)
 	if section != nil {
-		return &Configuration{config: section}
+		return &Configuration{config: section, log: c.log, context: c.context, configMap: c.configMap}
 	}
 	return nil
 }
 
 func (c *Configuration) Unmarshal(obj interface{}) {
-	err := c.config.Unmarshal(obj)
+	err := c.config.Unmarshal(obj, c.context.decoderConfigOption)
 	if err != nil {
 		c.log.Error("unmarshal config is failed, err:", err)
 	}
@@ -191,23 +210,27 @@ func (c *Configuration) RefreshBy(name string) {
 /**
 bindEnvDSL 读取DSL:环境变量 -> ${ENV:DEFAULT}
 */
-func (c *Configuration) bindEnvDSL(key string, originalKey string) {
-	key = key[2 : len(key)-1]
-	envKeyDefaultValue := strings.Split(key, ":")
+func (c *Configuration) bindEnvDSL(dslKey string, originalKey string) (interface{}, error) {
+	dslKey = dslKey[2 : len(dslKey)-1]
+	envKeyDefaultValue := strings.Split(dslKey, ":")
 	if len(envKeyDefaultValue) > 2 {
-		panic("can't read environment for illegal key:" + key)
+		return nil, errors.New("can't read environment for illegal key:" + dslKey)
 	}
 	envKey := envKeyDefaultValue[0] // ${ENV:DEFAULT}  [0] is key of the env
-	_ = viper.BindEnv(envKey)       // binding environment for the env key
-	envValue := viper.Get(envKey)   // get value of env
-	dslValue := envValue            // dsl value is env value by default
+	c.gRWLock.Lock()
+	defer c.gRWLock.Unlock()
+	// written lock
+	_ = viper.BindEnv(envKey)     // binding environment for the env key
+	envValue := viper.Get(envKey) // get value of env
+	dslValue := envValue          // dsl value is env value by default
 	// if env value is nil and dsl parameters length > 1
 	if envValue == nil && len(envKeyDefaultValue) > 1 {
 		dslValue = envKeyDefaultValue[1]
 	}
-	c.gRWLock.Lock()
-	c.config.Set(originalKey, dslValue)
-	c.gRWLock.Unlock()
+	if originalKey != "" {
+		c.config.Set(originalKey, dslValue)
+	}
+	return dslValue, nil
 }
 
 func (c *Configuration) assertDSL(key string) bool {

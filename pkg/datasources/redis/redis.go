@@ -14,18 +14,18 @@ import (
 
 // DataSourceConfig 数据源配置
 type redisConfig struct {
-	Name     string                      `mapstructure:"name"`
-	Url      string                      `mapstructure:"url"`
-	Password string                      `mapstructure:"password"`
-	DB       int                         `mapstructure:"db"`
-	Pool     *datasources.DataSourcePool `mapstructure:"pool"`
+	Name     string                      `mapstructure:"name" config:"name"`
+	Url      string                      `mapstructure:"url" config:"url"`
+	Password string                      `mapstructure:"password" config:"password"`
+	DB       int                         `mapstructure:"db" config:"db"`
+	Pool     *datasources.DataSourcePool `mapstructure:"pool" config:"pool"`
 }
 
 // DataSourcePool 数据源连接池配置
 type redisPool struct {
-	InitCap     int `mapstructure:"init_cap"`
-	MaxCap      int `mapstructure:"max_cap"`
-	Idletimeout int `mapstructure:"idle_timeout"`
+	InitCap     int `mapstructure:"init_cap" config:"init_cap"`
+	MaxCap      int `mapstructure:"max_cap" config:"max_cap"`
+	Idletimeout int `mapstructure:"idle_timeout" config:"idle_timeout"`
 }
 
 type RedisDataSource struct {

@@ -20,8 +20,8 @@ type SessionMiddleware struct {
 }
 
 type SessionConfig struct {
-	Name    string `mapstructure:"name"`
-	TimeOut int64  `mapstructure:"timeout"`
+	Name    string `mapstructure:"name" config:"name"`
+	TimeOut int64  `mapstructure:"timeout" config:"timeout"`
 }
 
 func NewSessionWith(provider identity.IProvider, store store.ISessionStore, config abstractions.IConfiguration) *SessionMiddleware {

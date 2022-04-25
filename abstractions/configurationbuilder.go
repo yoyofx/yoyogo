@@ -1,19 +1,21 @@
 package abstractions
 
 import (
+	"github.com/spf13/viper"
 	"github.com/yoyofx/yoyogo/abstractions/hostenv"
 )
 
 type ConfigurationContext struct {
-	enableFlag     bool
-	enableEnv      bool
-	configDir      string
-	ConfigType     string
-	configName     string
-	profile        string
-	configFile     string
-	EnableRemote   bool
-	RemoteProvider IConfigurationRemoteProvider
+	enableFlag          bool
+	enableEnv           bool
+	configDir           string
+	ConfigType          string
+	configName          string
+	profile             string
+	configFile          string
+	EnableRemote        bool
+	RemoteProvider      IConfigurationRemoteProvider
+	decoderConfigOption viper.DecoderConfigOption
 }
 
 type ConfigurationBuilder struct {

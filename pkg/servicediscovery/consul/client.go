@@ -8,10 +8,10 @@ import (
 
 type Option struct {
 	ENV     *abstractions.HostEnvironment
-	Address string   `mapstructure:"address"`
-	Token   string   `mapstructure:"token"`
-	Tags    []string `mapstructure:"tags"`
-	Health  string   `mapstructure:"health_check"`
+	Address string   `mapstructure:"address" config:"address"`
+	Token   string   `mapstructure:"token" config:"token"`
+	Tags    []string `mapstructure:"tags" config:"tags"`
+	Health  string   `mapstructure:"health_check" config:"health_check"`
 }
 
 type Client struct {

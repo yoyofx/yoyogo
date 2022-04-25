@@ -14,9 +14,9 @@ import (
 
 type Option struct {
 	ENV        *abstractions.HostEnvironment
-	Address    []string `mapstructure:"address"`
-	Ttl        int      `mapstructure:"ttl"`
-	DataCenter string   `mapstructure:"datacenter"`
+	Address    []string `mapstructure:"address" config:"address"`
+	Ttl        int      `mapstructure:"ttl" config:"ttl"`
+	DataCenter string   `mapstructure:"datacenter" config:"datacenter"`
 }
 
 type Registrar struct {

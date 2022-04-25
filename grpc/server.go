@@ -11,8 +11,8 @@ import (
 type Server struct {
 	IsTLS         bool
 	Addr          string
-	CertFile      string `mapstructure:"cert"`
-	KeyFile       string `mapstructure:"key"`
+	CertFile      string `mapstructure:"cert" config:"cert"`
+	KeyFile       string `mapstructure:"key" config:"key"`
 	serverContext *ServerBuilderContext
 }
 

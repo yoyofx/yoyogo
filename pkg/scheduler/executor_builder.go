@@ -6,12 +6,12 @@ import (
 )
 
 type ExecutorOptions struct {
-	ServerAddr   string        `mapstructure:"serverAddr"`
-	AccessToken  string        `mapstructure:"accessToken"`
-	Timeout      time.Duration `mapstructure:"timeout"`
-	ExecutorIp   string        `mapstructure:"ip"`
-	ExecutorPort string        `mapstructure:"port"`
-	RegistryKey  string        // application name
+	ServerAddr   string        `mapstructure:"serverAddr" config:"serverAddr"`
+	AccessToken  string        `mapstructure:"accessToken" config:"accessToken"`
+	Timeout      time.Duration `mapstructure:"timeout" config:"timeout"`
+	ExecutorIp   string        `mapstructure:"ip" config:"ip"`
+	ExecutorPort string        `mapstructure:"port" config:"port"`
+	RegistryKey  string        `mapstructure:"registryKey" config:"registryKey"` // application name
 	logger       xxl.Logger    //日志处理
 }
 
