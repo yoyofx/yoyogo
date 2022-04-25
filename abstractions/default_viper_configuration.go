@@ -192,19 +192,18 @@ func (c *Configuration) GetConfigObject(configTag string, configObject interface
 	} else {
 		_ = copier.CopyWithOption(configObject, object, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	}
-
 }
 
 func (c *Configuration) RefreshAll() {
 	c.gRWLock.Lock()
+	defer c.gRWLock.Unlock()
 	c.configMap = make(map[string]interface{})
-	c.gRWLock.Unlock()
 }
 
 func (c *Configuration) RefreshBy(name string) {
 	c.gRWLock.Lock()
+	defer c.gRWLock.Unlock()
 	delete(c.configMap, name)
-	c.gRWLock.Unlock()
 }
 
 /**
@@ -218,9 +217,9 @@ func (c *Configuration) bindEnvDSL(dslKey string, originalKey string) (interface
 	}
 	envKey := envKeyDefaultValue[0] // ${ENV:DEFAULT}  [0] is key of the env
 	c.gRWLock.Lock()
-	defer c.gRWLock.Unlock()
 	// written lock
-	_ = viper.BindEnv(envKey)     // binding environment for the env key
+	_ = viper.BindEnv(envKey) // binding environment for the env key
+	c.gRWLock.Unlock()
 	envValue := viper.Get(envKey) // get value of env
 	dslValue := envValue          // dsl value is env value by default
 	// if env value is nil and dsl parameters length > 1
@@ -228,7 +227,9 @@ func (c *Configuration) bindEnvDSL(dslKey string, originalKey string) (interface
 		dslValue = envKeyDefaultValue[1]
 	}
 	if originalKey != "" {
+		c.gRWLock.Lock()
 		c.config.Set(originalKey, dslValue)
+		c.gRWLock.Unlock()
 	}
 	return dslValue, nil
 }
