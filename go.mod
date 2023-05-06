@@ -35,7 +35,7 @@ require (
 	github.com/yoyofxteam/reflectx v0.2.3
 	go.etcd.io/etcd/client/v3 v3.5.4
 	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4
-	golang.org/x/image v0.0.0-20190802002840-cff245a6509b
+	golang.org/x/image v0.5.0
 	golang.org/x/net v0.7.0
 	golang.org/x/sys v0.6.0
 	google.golang.org/grpc v1.46.2
