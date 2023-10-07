@@ -50,7 +50,7 @@ func (lr *LoadBalanceResolver) Close() {
 }
 
 func (lr *LoadBalanceResolver) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
-	serverName := strings.Split(strings.Split(target.Endpoint, "[")[1], "]")[0]
+	serverName := strings.Split(strings.Split(target.Endpoint(), "[")[1], "]")[0]
 	service, err := lr.discoveryCache.GetService(serverName)
 	if err != nil {
 		return nil, err
