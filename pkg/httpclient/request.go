@@ -36,6 +36,9 @@ type Request struct {
 func (c *Request) Header(key, value string) *Request {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
+	if c.header == nil {
+		c.header = map[string][]string{}
+	}
 	c.header.Add(key, value)
 	if strings.ToLower(key) == "content-type" {
 		c.contentType = value
@@ -66,8 +69,16 @@ func (c *Request) GET(url string) *Request {
 func (c *Request) ContentType(value string) *Request {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
+	if c.header == nil {
+		c.header = map[string][]string{}
+	}
 	c.header.Set("Content-Type", value)
 	c.contentType = value
+	return c
+}
+
+func (c *Request) WithContentTypeAsJson() *Request {
+	c.ContentType("application/json")
 	return c
 }
 
