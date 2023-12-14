@@ -36,7 +36,7 @@ type Request struct {
 func (c *Request) Header(key, value string) *Request {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
-	c.header[key] = []string{value}
+	c.header.Add(key, value)
 	if strings.ToLower(key) == "content-type" {
 		c.contentType = value
 	}
