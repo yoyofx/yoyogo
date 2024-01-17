@@ -42,7 +42,7 @@ func main() {
 	webHost.Run()
 }
 
-//CreateCustomBuilder Create the builder of Web host
+// CreateCustomBuilder Create the builder of Web host
 func CreateCustomBuilder() *abstractions.HostBuilder {
 	//config := nacosconfig.RemoteConfig("config")
 	//config := apollo.RemoteConfig("config")
@@ -94,7 +94,7 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 
 //*/
 
-//region router config function
+// region router config function
 func registerEndpointRouterConfig(rb router.IRouterBuilder) {
 	endpoints.UseHealth(rb)
 	endpoints.UseViz(rb)
@@ -104,6 +104,7 @@ func registerEndpointRouterConfig(rb router.IRouterBuilder) {
 	endpoints.UseLiveness(rb)
 	endpoints.UseJwt(rb)
 	endpoints.UseRouteInfo(rb)
+	endpoints.UseSwaggerUI(rb)
 
 	rb.GET("/error", func(ctx *context.HttpContext) {
 		panic("http get error")
@@ -145,8 +146,8 @@ type UserInfo struct {
 	Id       string `param:"id"`
 }
 
-//HttpGet request: /info  or /v1/api/info
-//bind UserInfo for id,q1,username
+// HttpGet request: /info  or /v1/api/info
+// bind UserInfo for id,q1,username
 func GetInfo(ctx *context.HttpContext) {
 	ctx.JSON(200, context.H{"info": "ok"})
 }
@@ -160,8 +161,8 @@ func GetInfoByIOC(ctx *context.HttpContext) {
 	})
 }
 
-//bootstrap binding
-//HttpPost request: /info/:id ?q1=abc&username=123
+// bootstrap binding
+// HttpPost request: /info/:id ?q1=abc&username=123
 func PostInfo(ctx *context.HttpContext) {
 	qs_q1 := ctx.Input.Query("q1")
 	pd_name := ctx.Input.Param("username")
