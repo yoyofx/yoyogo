@@ -1,6 +1,7 @@
 package endpoints
 
 import (
+	"fmt"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/web/actionresult"
 	"github.com/yoyofx/yoyogo/web/context"
@@ -9,6 +10,13 @@ import (
 
 func UseSwaggerUI(router router.IRouterBuilder) {
 	xlog.GetXLogger("Endpoint").Debug("loaded swagger ui endpoint.")
+
+	routeInfoArr := router.GetRouteInfo()
+	builder := router.GetMvcBuilder()
+	fmt.Println(builder)
+	for _, routeInfo := range routeInfoArr {
+		fmt.Println(routeInfo)
+	}
 
 	router.GET("/swagger.json", func(ctx *context.HttpContext) {
 		swaggerJson := `{
