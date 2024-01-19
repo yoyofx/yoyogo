@@ -12,13 +12,11 @@ func UseSwaggerUI(router router.IRouterBuilder) {
 	xlog.GetXLogger("Endpoint").Debug("loaded swagger ui endpoint.")
 
 	router.GET("/swagger.json", func(ctx *context.HttpContext) {
-		routeInfoArr := router.GetRouteInfo()
 		builder := router.GetMvcBuilder()
-		fmt.Println(builder)
-		for _, routeInfo := range routeInfoArr {
-			fmt.Println(routeInfo)
-		}
-
+		con := builder.GetControllerDescriptorByName("usercontroller")
+		action, _ := con.GetActionDescriptorByName("register")
+		info := action.MethodInfo.Parameters[2]
+		fmt.Println(info.ParameterType.Field(2).Tag.Get("json"))
 		swaggerJson := `{
     "swagger": "2.0",
     "info": {
