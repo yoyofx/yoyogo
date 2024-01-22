@@ -41,11 +41,10 @@ func (controller UserController) Register(ctx *context.HttpContext, request *Reg
 }
 
 type PostUserInfoRequest struct {
-	mvc.RequestBody //`route:"/{id}"`
-
-	UserName string `form:"userName" json:"userName"`
-	Password string `form:"password" json:"password"`
-	Token    string `header:"Authorization" json:"token"`
+	mvc.RequestBody        //`route:"/{id}"`
+	UserName        string `form:"userName" json:"userName"`
+	Password        string `form:"password" json:"password"`
+	Token           string `header:"Authorization" json:"token"`
 }
 
 func (controller UserController) PostUserInfo(ctx *context.HttpContext, request *PostUserInfoRequest) actionresult.IActionResult {
@@ -105,7 +104,7 @@ type UserInfo struct {
 	Image    *multipart.FileHeader `form:"file"`
 }
 
-//FromBody
+// FromBody
 func (controller UserController) DefaultBinding(ctx *context.HttpContext) mvc.ApiResult {
 	userInfo := &UserInfo{}
 	err := ctx.Bind(userInfo)
@@ -115,7 +114,7 @@ func (controller UserController) DefaultBinding(ctx *context.HttpContext) mvc.Ap
 	return controller.OK(userInfo)
 }
 
-//FromBody
+// FromBody
 func (controller UserController) JsonBinding(ctx *context.HttpContext) mvc.ApiResult {
 	userInfo := &UserInfo{}
 	err := ctx.BindWith(userInfo, binding.JSON)
@@ -125,7 +124,7 @@ func (controller UserController) JsonBinding(ctx *context.HttpContext) mvc.ApiRe
 	return controller.OK(userInfo)
 }
 
-//FromQuery
+// FromQuery
 func (controller UserController) GetQueryBinding(ctx *context.HttpContext) mvc.ApiResult {
 	fmt.Println("进入方法")
 	fmt.Println(controller.config.Get("env"))

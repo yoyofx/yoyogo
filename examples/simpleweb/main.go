@@ -9,6 +9,7 @@ import (
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/mysql"
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/redis"
 	"github.com/yoyofx/yoyogo/pkg/servicediscovery/nacos"
+	"github.com/yoyofx/yoyogo/pkg/swagger"
 	"github.com/yoyofx/yoyogo/web"
 	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofx/yoyogo/web/endpoints"
@@ -104,7 +105,9 @@ func registerEndpointRouterConfig(rb router.IRouterBuilder) {
 	endpoints.UseLiveness(rb)
 	endpoints.UseJwt(rb)
 	endpoints.UseRouteInfo(rb)
-	endpoints.UseSwaggerUI(rb)
+	endpoints.UseSwaggerUI(rb, func() swagger.Info {
+		return swagger.Info{}
+	})
 
 	rb.GET("/error", func(ctx *context.HttpContext) {
 		panic("http get error")
