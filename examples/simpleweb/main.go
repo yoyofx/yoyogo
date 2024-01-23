@@ -106,7 +106,7 @@ func registerEndpointRouterConfig(rb router.IRouterBuilder) {
 	endpoints.UseJwt(rb)
 	endpoints.UseRouteInfo(rb)
 	endpoints.UseSwaggerUI(rb, func() swagger.Info {
-		return swagger.Info{}
+		return swagger.Info{Title: "simple web swagger", Version: "10.0.0", Description: "尝试对接swagger文档"}
 	})
 
 	rb.GET("/error", func(ctx *context.HttpContext) {
