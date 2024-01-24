@@ -28,7 +28,7 @@ func NewRouteTemplate(temp string) *RouteTemplate {
 }
 
 func (template *RouteTemplate) Match(pathComponents []string, matchinfo *MatchMvcInfo) bool {
-	if len(pathComponents) >= template.pathLen {
+	if len(pathComponents) == template.pathLen {
 		matchinfo.ControllerName = pathComponents[template.GetControllerIndex()]
 		matchinfo.ControllerName = strings.ToLower(matchinfo.ControllerName)
 		if !strings.Contains(matchinfo.ControllerName, "controller") {

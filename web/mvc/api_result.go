@@ -124,3 +124,55 @@ func FailWithMsgFunc(data interface{}, fc func() string) ApiResult {
 		Message: fc(),
 	}
 }
+
+type ApiDocResult[T any] struct {
+	Success bool
+	Message string
+	Data    T
+	Status  int
+}
+
+type ApiDocResultBuilder[T any] struct {
+	result *ApiDocResult[T]
+}
+
+func (arb *ApiDocResultBuilder[T]) Success() *ApiDocResultBuilder[T] {
+	arb.result.Status = 200
+	arb.result.Success = true
+	return arb
+}
+
+func (arb *ApiDocResultBuilder[T]) Fail() *ApiDocResultBuilder[T] {
+	arb.result.Success = false
+	return arb
+}
+
+func (arb *ApiDocResultBuilder[T]) Message(msg string) *ApiDocResultBuilder[T] {
+	arb.result.Message = msg
+	return arb
+}
+
+func (arb *ApiDocResultBuilder[T]) MessageWithFunc(fc func() string) *ApiDocResultBuilder[T] {
+	arb.result.Message = fc()
+	return arb
+}
+
+func (arb *ApiDocResultBuilder[T]) Data(data T) *ApiDocResultBuilder[T] {
+	arb.result.Data = data
+	return arb
+}
+
+func (arb *ApiDocResultBuilder[T]) StatusCode(statusCode int) *ApiDocResultBuilder[T] {
+	arb.result.Status = statusCode
+	return arb
+}
+
+func ApiDocumentResult[T any]() *ApiDocResultBuilder[T] {
+	return &ApiDocResultBuilder[T]{
+		result: &ApiDocResult[T]{Status: 200},
+	}
+}
+
+func (arb *ApiDocResultBuilder[T]) Build() ApiDocResult[T] {
+	return *arb.result
+}

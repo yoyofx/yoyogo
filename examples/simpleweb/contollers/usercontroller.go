@@ -26,7 +26,7 @@ func NewUserController(userAction models.IUserAction, sd servicediscovery.IServi
 }
 
 type RegisterRequest struct {
-	mvc.RequestBody `route:"/v1/users/register"`
+	mvc.RequestBody `route:"/api/users/register"`
 
 	UserName   string `uri:"userName"`
 	Password   string `uri:"password"`
@@ -64,6 +64,11 @@ func (controller UserController) GetHtmlBody() actionresult.IActionResult {
 	return controller.View("raw", map[string]interface{}{
 		"body": "raw.htm hello world!",
 	})
+}
+
+func (controller UserController) GetDoc() mvc.ApiDocResult[string] {
+
+	return mvc.ApiDocumentResult[string]().Success().Data("ok").Message("hello").Build()
 }
 
 func (controller UserController) GetInfo() mvc.ApiResult {
