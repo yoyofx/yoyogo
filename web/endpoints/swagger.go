@@ -1,10 +1,8 @@
 package endpoints
 
 import (
-	"encoding/json"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/pkg/swagger"
-	"github.com/yoyofx/yoyogo/web/actionresult"
 	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofx/yoyogo/web/mvc"
 	"github.com/yoyofx/yoyogo/web/router"
@@ -26,6 +24,13 @@ func FilterValidParams(controller mvc.ControllerDescriptor, pathMap map[string]m
 	suf := len(controller.ControllerName) - 10
 	basePath := controller.ControllerName[0:suf]
 	for _, act := range controller.GetActionDescriptors() {
+		// 遍历 action, 拼接api路径 swagger.Path
+		actPath := "/" + basePath + "/" + act.ActionName[len(act.ActionMethod):]
+		pathInfoMap := make(map[string]swagger.Path)
+		pathMap[actPath] = pathInfoMap
+		pathInfo := swagger.Path{}
+
+		// action params
 		if len(act.MethodInfo.Parameters) > 0 {
 			for _, param := range act.MethodInfo.Parameters {
 				// 跳过HttpContext
@@ -36,27 +41,31 @@ func FilterValidParams(controller mvc.ControllerDescriptor, pathMap map[string]m
 				if strings.HasSuffix(param.Name, "Controller") {
 					continue
 				}
-				// 拼接api路径
-				actPath := "/" + basePath + "/" + act.ActionName[len(act.ActionMethod):]
-				pathInfoMap := make(map[string]swagger.Path)
-				pathMap[actPath] = pathInfoMap
+
 				paramSourceData := param.ParameterType.Elem()
 				fieldNum := paramSourceData.NumField()
 				//根据请求方法分类
-				if act.ActionMethod == "post" {
-					pathInfo := swagger.Path{}
-					pathInfo.RequestBody = RequestBody(param)
+				if act.ActionMethod == "post" || act.ActionMethod == "any" {
 					for i := 0; i < fieldNum; i++ {
 						// 获取方法注释
 						filed := paramSourceData.Field(i)
-						if filed.Type.Name() == "RequestBody" {
-							pathInfo.Description = filed.Tag.Get("note")
-							pathInfo.Summary = filed.Tag.Get("note")
-
+						if strings.Contains(filed.Type.Name(), "Request") {
+							if filed.Type.Name() == "RequestBody" || filed.Type.Name() == "RequestPOST" {
+								act.ActionMethod = "post"
+							} else {
+								actionMethodDef := filed.Type.Name()
+								actionMethodDef = strings.ReplaceAll(actionMethodDef, "Request", "")
+								act.ActionMethod = strings.ToLower(actionMethodDef) // get / head / delete / options / patch / put
+							}
 						}
+						pathInfo.Description = filed.Tag.Get("note")
+						pathInfo.Summary = filed.Tag.Get("note")
 					}
-					pathInfoMap[act.ActionMethod] = pathInfo
+
 				}
+
+				pathInfo.RequestBody = RequestBody(param)
+				pathInfoMap[act.ActionMethod] = pathInfo
 
 			}
 		}
@@ -97,9 +106,9 @@ func UseSwaggerUI(router router.IRouterBuilder, f func() swagger.Info) {
 	router.GET("/swagger.json", func(ctx *context.HttpContext) {
 		pathMap := GetAllController(router)
 		openapi.Paths = pathMap
-		marshal, _ := json.Marshal(&openapi)
-		swaggerJson := marshal
-		ctx.Render(200, actionresult.Data{ContentType: "application/json; charset=utf-8", Data: []byte(swaggerJson)})
+		//marshal, _ := json.Marshal(&openapi)
+		//swaggerJson := marshal
+		ctx.JSON(200, openapi) //.Render(200, actionresult.Data{ContentType: "application/json; charset=utf-8", Data: []byte(swaggerJson)})
 	})
 
 	router.GET("/swagger", func(ctx *context.HttpContext) {
