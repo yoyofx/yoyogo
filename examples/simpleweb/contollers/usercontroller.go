@@ -14,7 +14,7 @@ import (
 )
 
 type UserController struct {
-	mvc.ApiController `route:"user"`
+	mvc.ApiController `route:"user" doc:"用户接口Controller"`
 
 	userAction      models.IUserAction
 	discoveryClient servicediscovery.IServiceDiscovery

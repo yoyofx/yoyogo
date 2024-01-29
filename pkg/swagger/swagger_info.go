@@ -20,3 +20,16 @@ type License struct {
 	Name string `json:"name"`
 	Url  string `json:"url"`
 }
+
+type Server struct {
+	Url string `json:"url"`
+}
+
+type Tag struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	//ExternalDocs struct {
+	//	Description string `json:"description"`
+	//	Url         string `json:"url"`
+	//}
+}

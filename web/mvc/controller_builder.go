@@ -71,10 +71,13 @@ func (builder *ControllerBuilder) AddController(controllerCtor interface{}) {
 	controllerName, controllerType := reflectx.GetCtorFuncOutTypeName(controllerCtor)
 	controllerName = strings.ToLower(controllerName)
 	// Create Controller and Action descriptors
-	descriptor := NewControllerDescriptor(controllerName, controllerType, controllerCtor)
-	builder.mvcRouterHandler.ControllerDescriptors[controllerName] = descriptor
+	descriptor, err := NewControllerDescriptor(controllerName, controllerType, controllerCtor)
 	logger.Debug("add mvc controller: [%s]", controllerName)
-
+	if err != nil {
+		logger.Error(err.Error())
+		return
+	}
+	builder.mvcRouterHandler.ControllerDescriptors[controllerName] = descriptor
 	// add routes for action attributes
 	controllerAttr := controllerType.Field(0).Tag.Get("route")
 	if controllerAttr != "" {

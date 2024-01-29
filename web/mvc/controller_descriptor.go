@@ -1,6 +1,7 @@
 package mvc
 
 import (
+	"errors"
 	"github.com/yoyofx/yoyogo/utils"
 	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofxteam/reflectx"
@@ -11,12 +12,19 @@ import (
 // ControllerDescriptor
 type ControllerDescriptor struct {
 	ControllerName    string
+	Descriptor        string
 	ControllerType    interface{} // ctor func of controller
 	actionDescriptors map[string]ActionDescriptor
 }
 
 // NewControllerDescriptor create new controller descriptor
-func NewControllerDescriptor(name string, controllerType reflect.Type, controllerCtor interface{}) ControllerDescriptor {
+func NewControllerDescriptor(name string, controllerType reflect.Type, controllerCtor interface{}) (ControllerDescriptor, error) {
+
+	fieldApiController := controllerType.Field(0)
+	if fieldApiController.Name != "ApiController" {
+		return ControllerDescriptor{}, errors.New("controller must be embed field0 ApiController")
+	}
+	controllerDoc := fieldApiController.Tag.Get("doc")
 
 	instance := reflect.New(controllerType).Interface()
 	actionList := reflectx.GetObjectMethodInfoList(instance)
@@ -25,7 +33,7 @@ func NewControllerDescriptor(name string, controllerType reflect.Type, controlle
 
 	for _, action := range actionList {
 		actionName := strings.ToLower(action.Name)
-		if !utils.ContainsStr([]string{"fail", "ok", "setviewengine", "view", "getname"}, actionName) {
+		if !utils.ContainsStr([]string{"apiresult", "fail", "ok", "setviewengine", "view", "getname"}, actionName) {
 			actionDescriptors[actionName] = ActionDescriptor{
 				ActionName:   action.Name,
 				ActionMethod: getHttpMethodByActionName(actionName),
@@ -34,7 +42,7 @@ func NewControllerDescriptor(name string, controllerType reflect.Type, controlle
 		}
 	}
 
-	return ControllerDescriptor{name, controllerCtor, actionDescriptors}
+	return ControllerDescriptor{name, controllerDoc, controllerCtor, actionDescriptors}, nil
 }
 
 // GetActionDescriptors get action descriptor list

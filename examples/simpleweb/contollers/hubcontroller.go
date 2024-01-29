@@ -13,7 +13,7 @@ import (
 
 // websocket hub
 type HubController struct {
-	mvc.ApiController
+	mvc.ApiController `doc:"websocket hub controller"`
 
 	hub         *hubs.Hub
 	redisClient *redisdb.RedisDataSource

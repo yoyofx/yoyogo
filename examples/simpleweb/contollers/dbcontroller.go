@@ -12,8 +12,8 @@ import (
 )
 
 type DbController struct {
-	mvc.ApiController
-	dbConfig configuration.OptionsSnapshot[models.MyConfig]
+	mvc.ApiController `doc:"数据库接口Controller"`
+	dbConfig          configuration.OptionsSnapshot[models.MyConfig]
 }
 
 func NewDbController(snapshotOptions configuration.OptionsSnapshot[models.MyConfig]) *DbController {

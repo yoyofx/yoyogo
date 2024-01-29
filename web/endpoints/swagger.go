@@ -10,26 +10,27 @@ import (
 	"strings"
 )
 
-func GetAllController(router router.IRouterBuilder) map[string]map[string]swagger.Path {
+func GetSwaggerRouteInfomation(openapi *swagger.OpenApi, router router.IRouterBuilder) {
 	builder := router.GetMvcBuilder()
 	controllerList := builder.GetControllerDescriptorList()
-	pathMap := make(map[string]map[string]swagger.Path)
 	for _, controller := range controllerList {
-		FilterValidParams(controller, pathMap)
+		FilterValidParams(controller, openapi)
 	}
-	return pathMap
 }
 
-func FilterValidParams(controller mvc.ControllerDescriptor, pathMap map[string]map[string]swagger.Path) map[string]map[string]swagger.Path {
+func FilterValidParams(controller mvc.ControllerDescriptor, openapi *swagger.OpenApi) {
 	suf := len(controller.ControllerName) - 10
-	basePath := controller.ControllerName[0:suf]
+	controllerName := controller.ControllerName[0:suf]
+	openapi.Tags = append(openapi.Tags, swagger.Tag{Name: controller.ControllerName, Description: controller.Descriptor})
 	for _, act := range controller.GetActionDescriptors() {
 		// 遍历 action, 拼接api路径 swagger.Path
-		actPath := "/" + basePath + "/" + act.ActionName[len(act.ActionMethod):]
-		pathInfoMap := make(map[string]swagger.Path)
-		pathMap[actPath] = pathInfoMap
-		pathInfo := swagger.Path{}
 
+		actionName := strings.ReplaceAll(strings.ToLower(act.ActionName), act.ActionMethod, "")
+		actPath := "/" + controllerName + "/" + actionName
+		pathInfoMap := make(map[string]swagger.Path)
+		openapi.Paths[actPath] = pathInfoMap
+		pathInfo := swagger.Path{}
+		pathInfo.Tags = []string{controller.ControllerName}
 		// action params
 		if len(act.MethodInfo.Parameters) > 0 {
 			for _, param := range act.MethodInfo.Parameters {
@@ -72,7 +73,6 @@ func FilterValidParams(controller mvc.ControllerDescriptor, pathMap map[string]m
 		pathInfoMap[act.ActionMethod] = pathInfo
 
 	}
-	return pathMap
 }
 
 func RequestBody(param reflectx.MethodParameterInfo) swagger.RequestBody {
@@ -101,15 +101,13 @@ func RequestBody(param reflectx.MethodParameterInfo) swagger.RequestBody {
 
 func UseSwaggerUI(router router.IRouterBuilder, f func() swagger.Info) {
 	xlog.GetXLogger("Endpoint").Debug("loaded swagger ui endpoint.")
-	openapi := swagger.OpenApi{}
-	openapi.Openapi = "3.0.3"
+	openapi := &swagger.OpenApi{
+		Openapi: "3.0.3",
+		Paths:   make(map[string]map[string]swagger.Path)}
 	openapi.Info = f()
 	router.GET("/swagger.json", func(ctx *context.HttpContext) {
-		pathMap := GetAllController(router)
-		openapi.Paths = pathMap
-		//marshal, _ := json.Marshal(&openapi)
-		//swaggerJson := marshal
-		ctx.JSON(200, openapi) //.Render(200, actionresult.Data{ContentType: "application/json; charset=utf-8", Data: []byte(swaggerJson)})
+		GetSwaggerRouteInfomation(openapi, router)
+		ctx.JSON(200, openapi)
 	})
 
 	router.GET("/swagger", func(ctx *context.HttpContext) {
