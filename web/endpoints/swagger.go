@@ -63,12 +63,13 @@ func FilterValidParams(controller mvc.ControllerDescriptor, pathMap map[string]m
 					}
 
 				}
-
 				pathInfo.RequestBody = RequestBody(param)
-				pathInfoMap[act.ActionMethod] = pathInfo
-
 			}
 		}
+		if act.ActionMethod == "any" {
+			act.ActionMethod = "get"
+		}
+		pathInfoMap[act.ActionMethod] = pathInfo
 
 	}
 	return pathMap
