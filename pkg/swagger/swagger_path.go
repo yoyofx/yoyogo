@@ -6,7 +6,7 @@ type Path struct {
 	Description string                   `json:"description"`
 	OperationId string                   `json:"operationId"`
 	Parameters  []Parameters             `json:"parameters"`
-	RequestBody RequestBody              `json:"requestBody"`
+	RequestBody RequestBody              `json:"requestBody,omitempty"`
 	Responses   map[string]ResponsesItem `json:"responses"`
 	Security    []Security               `json:"security"`
 }
@@ -18,10 +18,10 @@ type Parameters struct {
 	Required    bool   `json:"required"`
 	Schema      struct {
 		Type string `json:"type"`
-	} `json:"schema"`
+	} `json:"schema,omitempty"`
 }
 type RequestBody struct {
-	Content map[string]ContentType `json:"content"`
+	Content map[string]ContentType `json:"content,omitempty"`
 }
 
 type ContentType struct {
@@ -36,6 +36,7 @@ type Schema struct {
 type Property struct {
 	Description string `json:"description"`
 	Type        string `json:"type"`
+	Format      string `json:"format"`
 }
 
 type ResponsesItem struct {

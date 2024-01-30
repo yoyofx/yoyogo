@@ -22,15 +22,14 @@ func FilterValidParams(controller mvc.ControllerDescriptor, openapi *swagger.Ope
 	suf := len(controller.ControllerName) - 10
 	controllerName := controller.ControllerName[0:suf]
 	openapi.Tags = append(openapi.Tags, swagger.Tag{Name: controller.ControllerName, Description: controller.Descriptor})
+
 	for _, act := range controller.GetActionDescriptors() {
 		// 遍历 action, 拼接api路径 swagger.Path
-
-		actionName := strings.ReplaceAll(strings.ToLower(act.ActionName), act.ActionMethod, "")
-		actPath := "/" + controllerName + "/" + actionName
-		pathInfoMap := make(map[string]swagger.Path)
-		openapi.Paths[actPath] = pathInfoMap
 		pathInfo := swagger.Path{}
 		pathInfo.Tags = []string{controller.ControllerName}
+		actionName := strings.ReplaceAll(strings.ToLower(act.ActionName), act.ActionMethod, "")
+		actPath := "/" + controllerName + "/" + actionName
+
 		// action params
 		if len(act.MethodInfo.Parameters) > 0 {
 			for _, param := range act.MethodInfo.Parameters {
@@ -50,7 +49,7 @@ func FilterValidParams(controller mvc.ControllerDescriptor, openapi *swagger.Ope
 					for i := 0; i < fieldNum; i++ {
 						// 获取方法注释
 						filed := paramSourceData.Field(i)
-						if strings.Contains(filed.Type.Name(), "Request") {
+						if strings.HasPrefix(filed.Type.Name(), "Request") {
 							if filed.Type.Name() == "RequestBody" || filed.Type.Name() == "RequestPOST" {
 								act.ActionMethod = "post"
 							} else {
@@ -58,84 +57,155 @@ func FilterValidParams(controller mvc.ControllerDescriptor, openapi *swagger.Ope
 								actionMethodDef = strings.ReplaceAll(actionMethodDef, "Request", "")
 								act.ActionMethod = strings.ToLower(actionMethodDef) // get / head / delete / options / patch / put
 							}
-						}
-						pathInfo.Description = filed.Tag.Get("note")
-						pathInfo.Summary = filed.Tag.Get("note")
-					}
+							// 获取BODY参数注释 RequestBody or RequestGET or RequestPOST
+							body, parameters := RequestBody(param)
+							if body.Content != nil {
+								pathInfo.RequestBody = body
+							}
+							if len(parameters) > 0 {
+								pathInfo.Parameters = parameters
+							}
 
+							pathInfo.Description = filed.Tag.Get("doc")
+							pathInfo.Summary = filed.Tag.Get("doc")
+							break
+						}
+
+					}
 				}
-				pathInfo.RequestBody = RequestBody(param)
+
 			}
 		}
 		if act.ActionMethod == "any" {
 			act.ActionMethod = "get"
 		}
-		pathInfoMap[act.ActionMethod] = pathInfo
+		if act.IsAttributeRoute {
+			actPath = act.Route.Template
+		}
 
+		openapi.Paths[actPath] = map[string]swagger.Path{act.ActionMethod: pathInfo}
 	}
 }
 
-func RequestBody(param reflectx.MethodParameterInfo) swagger.RequestBody {
+func RequestBody(param reflectx.MethodParameterInfo) (swagger.RequestBody, []swagger.Parameters) {
 	paramSourceData := param.ParameterType.Elem()
 	fieldNum := paramSourceData.NumField()
+	// 获取参数
+	var parameterList []swagger.Parameters
 	// 获取BODY参数注释
-	requestBody := swagger.RequestBody{}
+	contentTypeStr := ""
 	contentType := make(map[string]swagger.ContentType)
-	requestBody.Content = contentType
 	schema := swagger.Schema{}
 	schema.Type = "object"
 	schemaProperties := make(map[string]swagger.Property)
 	schema.Properties = schemaProperties
 	for i := 0; i < fieldNum; i++ {
 		filed := paramSourceData.Field(i)
-		property := swagger.Property{}
-		property.Type = filed.Type.Name()
-		property.Description = filed.Tag.Get("note")
-		schemaProperties[filed.Name] = property
+		if strings.HasPrefix(filed.Type.Name(), "Request") {
+			continue
+		}
+		uriField := filed.Tag.Get("uri")
+		formField := filed.Tag.Get("form")
+		jsonField := filed.Tag.Get("json")
+		pathField := filed.Tag.Get("path")
+		headerField := filed.Tag.Get("header")
+
+		if uriField != "" || pathField != "" || headerField != "" {
+			// 构建参数
+			params := swagger.Parameters{}
+			params.In = "query"
+			fieldName := uriField
+			if fieldName == "" {
+				fieldName = pathField
+				params.In = "path"
+			}
+			if fieldName == "" {
+				fieldName = headerField
+				params.In = "header"
+			}
+			params.Name = fieldName
+			params.Description = filed.Tag.Get("doc")
+			parameterList = append(parameterList, params)
+		}
+
+		if formField != "" || jsonField != "" {
+			fieldName := formField
+			if fieldName == "" {
+				fieldName = jsonField
+			}
+			property := swagger.Property{}
+			property.Type = strings.ToLower(filed.Type.Name())
+			if property.Type == "" {
+				property.Type = strings.ToLower(filed.Type.Elem().Name())
+			}
+			if strings.Contains(property.Type, "int") {
+				property.Type = "integer"
+			} else if strings.Contains(property.Type, "file") {
+				property.Type = "string"
+				property.Format = "binary"
+			}
+
+			property.Description = filed.Tag.Get("doc")
+			schemaProperties[fieldName] = property
+		}
 	}
-	content := swagger.ContentType{}
-	content.Schema = schema
-	contentType["application/json"] = content
-	return requestBody
+	//application/x-www-form-urlencoded
+	//multipart/form-data
+	if len(schemaProperties) > 0 {
+		contentTypeStr = "application/json"
+		content := swagger.ContentType{Schema: schema}
+		contentType[contentTypeStr] = content
+	} else {
+		contentType = nil
+	}
+	//requestBody.Content = contentType
+	return swagger.RequestBody{Content: contentType}, parameterList
 }
 
 func UseSwaggerUI(router router.IRouterBuilder, f func() swagger.Info) {
 	xlog.GetXLogger("Endpoint").Debug("loaded swagger ui endpoint.")
-	openapi := &swagger.OpenApi{
-		Openapi: "3.0.3",
-		Paths:   make(map[string]map[string]swagger.Path)}
-	openapi.Info = f()
+
 	router.GET("/swagger.json", func(ctx *context.HttpContext) {
+		openapi := &swagger.OpenApi{
+			Openapi: "3.1.0",
+			Paths:   make(map[string]map[string]swagger.Path)}
+		openapi.Info = f()
 		GetSwaggerRouteInfomation(openapi, router)
 		ctx.JSON(200, openapi)
 	})
 
 	router.GET("/swagger", func(ctx *context.HttpContext) {
 		swaggerUIHTML := `<!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <title>Swagger UI</title>
-            <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.52.5/swagger-ui.css">
-            <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.52.5/swagger-ui-bundle.js"></script>
-        </head>
-        <body>
-            <div id="swagger-ui"></div>
-            <script>
-                window.onload = function() {
-                    const ui = SwaggerUIBundle({
-                        url: "http://localhost:8080/app/swagger.json",
-                        dom_id: '#swagger-ui',
-                        presets: [
-                            SwaggerUIBundle.presets.apis,
-                            SwaggerUIBundle.SwaggerUIStandalonePreset
-                        ],
-                      
-                    })
-                }
-            </script>
-        </body>
-        </html>`
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="SwaggerUI"
+    />
+    <title>SwaggerUI</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.0.0/swagger-ui.css" />
+  </head>
+  <body>
+  <div id="swagger-ui"></div>
+  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.0.0/swagger-ui-bundle.js" crossorigin></script>
+  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.0.0/swagger-ui-standalone-preset.js" crossorigin></script>
+  <script>
+    window.onload = () => {
+      window.ui = SwaggerUIBundle({
+        url: 'http://localhost:8080/app/swagger.json',
+        dom_id: '#swagger-ui',
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        layout: "StandaloneLayout",
+      });
+    };
+  </script>
+  </body>
+</html>`
 		ctx.Output.Header("Content-Type", "text/html; charset=utf-8")
 		_, _ = ctx.Output.Write([]byte(swaggerUIHTML))
 		ctx.Output.SetStatus(200)

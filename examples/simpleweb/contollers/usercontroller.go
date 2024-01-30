@@ -26,11 +26,11 @@ func NewUserController(userAction models.IUserAction, sd servicediscovery.IServi
 }
 
 type RegisterRequest struct {
-	mvc.RequestBody `route:"/api/users/register"`
+	mvc.RequestBody `route:"/api/users/register" doc:"用户注册"`
 
-	UserName   string `uri:"userName"`
-	Password   string `uri:"password"`
-	TestNumber uint64 `uri:"num"`
+	UserName   string `uri:"userName" doc:"用户名"`
+	Password   string `uri:"password" doc:"密码"`
+	TestNumber uint64 `uri:"num" doc:"数字"`
 }
 
 func (controller UserController) Register(ctx *context.HttpContext, request *RegisterRequest) mvc.ApiResult {
@@ -41,10 +41,10 @@ func (controller UserController) Register(ctx *context.HttpContext, request *Reg
 }
 
 type PostUserInfoRequest struct {
-	mvc.RequestBody        //`route:"/{id}"`
-	UserName        string `form:"userName" json:"userName"`
-	Password        string `form:"password" json:"password"`
-	Token           string `header:"Authorization" json:"token"`
+	mvc.RequestBody `doc:"用户信息提交"` //`route:"/{id}"`
+	UserName        string         `form:"userName" json:"userName" doc:"用户名"`
+	Password        string         `form:"password" json:"password" doc:"密码"`
+	Token           string         `header:"Authorization" json:"token" doc:"token"`
 }
 
 func (controller UserController) PostUserInfo(ctx *context.HttpContext, request *PostUserInfoRequest) actionresult.IActionResult {
@@ -103,10 +103,10 @@ func (controller UserController) GetTestApiResult() mvc.ApiResult {
 }
 
 type UserInfo struct {
-	UserName string                `form:"user" json:"user" binding:"required"`
-	Number   int                   `form:"num" json:"num" binding:"gt=0,lt=10"`
-	Id       string                `form:"id" json:"id" binding:"required,gt=0,lt=10"`
-	Image    *multipart.FileHeader `form:"file"`
+	UserName string                `form:"user" json:"user" binding:"required" doc:"用户名"`
+	Number   int                   `form:"num" json:"num" binding:"gt=0,lt=10" doc:"数字"`
+	Id       string                `form:"id" json:"id" binding:"required,gt=0,lt=10" doc:"id"`
+	Image    *multipart.FileHeader `form:"file" doc:"图片文件"`
 }
 
 // FromBody
@@ -144,9 +144,9 @@ func (controller UserController) GetQueryBinding(ctx *context.HttpContext) mvc.A
 }
 
 type UploadForm struct {
-	mvc.RequestBody
-	File *multipart.FileHeader `form:"file1"`
-	Key  string                `form:"key"`
+	mvc.RequestBody `doc:"文件上传"`
+	File            *multipart.FileHeader `form:"file1" doc:"文件"`
+	Key             string                `form:"key" doc:"文件ID"`
 }
 
 func (controller UserController) Upload(form *UploadForm) mvc.ApiResult {
@@ -159,9 +159,9 @@ func (controller UserController) Upload(form *UploadForm) mvc.ApiResult {
 }
 
 func (controller UserController) TestFunc(request *struct {
-	mvc.RequestGET `route:"/v1/user/:id/test"`
-	Name           string `uri:"name"`
-	Id             uint64 `path:"id"`
+	mvc.RequestGET `route:"/v1/user/:id/test" doc:"测试接口"`
+	Name           string `uri:"name" doc:"测试用户名"`
+	Id             uint64 `path:"id" doc:"测试ID"`
 }) mvc.ApiResult {
 
 	return mvc.Success(request)

@@ -1,6 +1,7 @@
 package mvc
 
 import (
+	"github.com/nacos-group/nacos-sdk-go/common/logger"
 	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/web/view"
@@ -78,6 +79,17 @@ func (builder *ControllerBuilder) AddController(controllerCtor interface{}) {
 		return
 	}
 	builder.mvcRouterHandler.ControllerDescriptors[controllerName] = descriptor
+	descriptors := descriptor.actionDescriptors
+	for _, desc := range descriptors {
+		logger.Debug("add mvc controller action: %s", desc.ActionName)
+		if desc.IsAttributeRoute {
+			builder.mvcRouterHandler.ActionRoutesAttributes.Add(*desc.Route)
+			logger.Debug("add mvc controller action for attributes:{[%s/%s],method=[%s]}", strings.Replace(controllerName, "controller", "", -1), strings.ToLower(desc.ActionName), strings.ToUpper(desc.ActionMethod))
+		}
+	}
+}
+
+func addAttributeRoute(builder *ControllerBuilder, controllerName string, controllerType reflect.Type, descriptor ControllerDescriptor) {
 	// add routes for action attributes
 	controllerAttr := controllerType.Field(0).Tag.Get("route")
 	if controllerAttr != "" {
@@ -112,6 +124,7 @@ func (builder *ControllerBuilder) AddController(controllerCtor interface{}) {
 			logger.Debug("add mvc controller action for attributes:{[%s/%s],method=[%s]}", strings.Replace(controllerName, "controller", "", -1), strings.ToLower(desc.ActionName), strings.ToUpper(desc.ActionMethod))
 		}
 	}
+
 }
 
 // GetControllerDescriptorList is get controller descriptor array
