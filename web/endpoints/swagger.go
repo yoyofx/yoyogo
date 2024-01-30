@@ -7,6 +7,7 @@ import (
 	"github.com/yoyofx/yoyogo/web/mvc"
 	"github.com/yoyofx/yoyogo/web/router"
 	"github.com/yoyofxteam/reflectx"
+	"regexp"
 	"strings"
 )
 
@@ -81,6 +82,10 @@ func FilterValidParams(controller mvc.ControllerDescriptor, openapi *swagger.Ope
 		}
 		if act.IsAttributeRoute {
 			actPath = act.Route.Template
+			// used regexp ,replace :id to {id}
+			reg := regexp.MustCompile(`:[a-zA-Z0-9]+`)
+			actPath = reg.ReplaceAllString(actPath, "{$0}")
+			actPath = strings.ReplaceAll(actPath, ":", "")
 		}
 
 		openapi.Paths[actPath] = map[string]swagger.Path{act.ActionMethod: pathInfo}
@@ -158,7 +163,6 @@ func RequestBody(param reflectx.MethodParameterInfo) (swagger.RequestBody, []swa
 	} else {
 		contentType = nil
 	}
-	//requestBody.Content = contentType
 	return swagger.RequestBody{Content: contentType}, parameterList
 }
 
