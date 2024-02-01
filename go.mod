@@ -34,7 +34,7 @@ require (
 	github.com/yoyofxteam/nacos-viper-remote v0.4.0
 	github.com/yoyofxteam/reflectx v0.2.3
 	go.etcd.io/etcd/client/v3 v3.5.11
-	golang.org/x/crypto v0.16.0
+	golang.org/x/crypto v0.17.0
 	golang.org/x/image v0.14.0
 	golang.org/x/net v0.19.0
 	golang.org/x/sys v0.15.0
