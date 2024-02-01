@@ -36,7 +36,7 @@ type Schema struct {
 type Property struct {
 	Description string `json:"description"`
 	Type        string `json:"type"`
-	Format      string `json:"format"`
+	Format      string `json:"format,omitempty"`
 }
 
 type ResponsesItem struct {

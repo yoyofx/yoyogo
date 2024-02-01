@@ -7,9 +7,63 @@ import (
 	"github.com/yoyofx/yoyogo/web/mvc"
 	"github.com/yoyofx/yoyogo/web/router"
 	"github.com/yoyofxteam/reflectx"
+	"reflect"
 	"regexp"
 	"strings"
 )
+
+func UseSwaggerDoc(router router.IRouterBuilder, info swagger.Info) {
+	xlog.GetXLogger("Endpoint").Debug("loaded swagger ui endpoint.")
+
+	// swagger.json
+	router.GET("/swagger.json", func(ctx *context.HttpContext) {
+		openapi := &swagger.OpenApi{
+			Openapi: "3.1.0",
+			Paths:   make(map[string]map[string]swagger.Path)}
+		openapi.Info = info
+		GetSwaggerRouteInfomation(openapi, router)
+		ctx.JSON(200, openapi)
+	})
+
+	// swagger ui
+	router.GET("/swagger", func(ctx *context.HttpContext) {
+		swaggerUIHTML := `<!DOCTYPE html>
+			<html lang="en">
+			  <head>
+				<meta charset="utf-8" />
+				<meta name="viewport" content="width=device-width, initial-scale=1" />
+				<meta
+				  name="description"
+				  content="SwaggerUI"
+				/>
+				<title>SwaggerUI</title>
+				<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.0.0/swagger-ui.css" />
+			  </head>
+			  <body>
+			  <div id="swagger-ui"></div>
+			  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.0.0/swagger-ui-bundle.js" crossorigin></script>
+			  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.0.0/swagger-ui-standalone-preset.js" crossorigin></script>
+			  <script>
+				window.onload = () => {
+				  window.ui = SwaggerUIBundle({
+					url: 'http://localhost:8080/app/swagger.json',
+					dom_id: '#swagger-ui',
+					presets: [
+					  SwaggerUIBundle.presets.apis,
+					  SwaggerUIStandalonePreset
+					],
+					layout: "StandaloneLayout",
+				  });
+				};
+			  </script>
+			  </body>
+			</html>`
+		ctx.Output.Header("Content-Type", "text/html; charset=utf-8")
+		_, _ = ctx.Output.Write([]byte(swaggerUIHTML))
+		ctx.Output.SetStatus(200)
+
+	})
+}
 
 func GetSwaggerRouteInfomation(openapi *swagger.OpenApi, router router.IRouterBuilder) {
 	builder := router.GetMvcBuilder()
@@ -86,6 +140,18 @@ func FilterValidParams(controller mvc.ControllerDescriptor, openapi *swagger.Ope
 			reg := regexp.MustCompile(`:[a-zA-Z0-9]+`)
 			actPath = reg.ReplaceAllString(actPath, "{$0}")
 			actPath = strings.ReplaceAll(actPath, ":", "")
+
+		}
+		// responses
+		pathInfo.Responses = make(map[string]swagger.ResponsesItem)
+		responseType := act.MethodInfo.OutType
+		// is struct
+
+		if responseType != nil && responseType.Kind() == reflect.Struct {
+			// struct , ApiResult , ApiDocResult[?]
+			println(responseType.Name())
+		} else {
+			pathInfo.Responses["200"] = swagger.ResponsesItem{Description: "OK"}
 		}
 
 		openapi.Paths[actPath] = map[string]swagger.Path{act.ActionMethod: pathInfo}
@@ -134,6 +200,9 @@ func RequestBody(param reflectx.MethodParameterInfo) (swagger.RequestBody, []swa
 		}
 
 		if formField != "" || jsonField != "" {
+			//if contentTypeStr == "" {
+			//	contentTypeStr = "application/x-www-form-urlencoded"
+			//}
 			fieldName := formField
 			if fieldName == "" {
 				fieldName = jsonField
@@ -143,10 +212,8 @@ func RequestBody(param reflectx.MethodParameterInfo) (swagger.RequestBody, []swa
 			if property.Type == "" {
 				property.Type = strings.ToLower(filed.Type.Elem().Name())
 			}
-			if strings.Contains(property.Type, "int") {
-				property.Type = "integer"
-			} else if strings.Contains(property.Type, "file") {
-				property.Type = "string"
+			property.Type = getSwaggerType(property.Type)
+			if property.Type == "file" {
 				property.Format = "binary"
 			}
 
@@ -156,8 +223,11 @@ func RequestBody(param reflectx.MethodParameterInfo) (swagger.RequestBody, []swa
 	}
 	//application/x-www-form-urlencoded
 	//multipart/form-data
+
 	if len(schemaProperties) > 0 {
+		//if contentTypeStr == "" {
 		contentTypeStr = "application/json"
+		//}
 		content := swagger.ContentType{Schema: schema}
 		contentType[contentTypeStr] = content
 	} else {
@@ -166,53 +236,20 @@ func RequestBody(param reflectx.MethodParameterInfo) (swagger.RequestBody, []swa
 	return swagger.RequestBody{Content: contentType}, parameterList
 }
 
-func UseSwaggerUI(router router.IRouterBuilder, f func() swagger.Info) {
-	xlog.GetXLogger("Endpoint").Debug("loaded swagger ui endpoint.")
-
-	router.GET("/swagger.json", func(ctx *context.HttpContext) {
-		openapi := &swagger.OpenApi{
-			Openapi: "3.1.0",
-			Paths:   make(map[string]map[string]swagger.Path)}
-		openapi.Info = f()
-		GetSwaggerRouteInfomation(openapi, router)
-		ctx.JSON(200, openapi)
-	})
-
-	router.GET("/swagger", func(ctx *context.HttpContext) {
-		swaggerUIHTML := `<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="SwaggerUI"
-    />
-    <title>SwaggerUI</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.0.0/swagger-ui.css" />
-  </head>
-  <body>
-  <div id="swagger-ui"></div>
-  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.0.0/swagger-ui-bundle.js" crossorigin></script>
-  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.0.0/swagger-ui-standalone-preset.js" crossorigin></script>
-  <script>
-    window.onload = () => {
-      window.ui = SwaggerUIBundle({
-        url: 'http://localhost:8080/app/swagger.json',
-        dom_id: '#swagger-ui',
-        presets: [
-          SwaggerUIBundle.presets.apis,
-          SwaggerUIStandalonePreset
-        ],
-        layout: "StandaloneLayout",
-      });
-    };
-  </script>
-  </body>
-</html>`
-		ctx.Output.Header("Content-Type", "text/html; charset=utf-8")
-		_, _ = ctx.Output.Write([]byte(swaggerUIHTML))
-		ctx.Output.SetStatus(200)
-
-	})
+func getSwaggerType(goType string) string {
+	if strings.Contains(goType, "file") {
+		return "string"
+	}
+	switch goType {
+	case "int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16", "uint32", "uint64":
+		return "integer"
+	case "float32", "float64":
+		return "number"
+	case "string":
+		return "string"
+	case "bool":
+		return "boolean"
+	default:
+		return "object"
+	}
 }
