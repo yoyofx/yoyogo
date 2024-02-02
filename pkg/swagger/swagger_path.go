@@ -41,7 +41,7 @@ type Property struct {
 
 type ResponsesItem struct {
 	Description string                 `json:"description"`
-	Content     map[string]interface{} `json:"content"`
+	Content     map[string]interface{} `json:"content,omitempty"`
 }
 
 type Security struct {

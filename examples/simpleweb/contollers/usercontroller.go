@@ -9,6 +9,7 @@ import (
 	"github.com/yoyofx/yoyogo/web/captcha"
 	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofx/yoyogo/web/mvc"
+	"gorm.io/gorm/utils"
 	"mime/multipart"
 	"simpleweb/models"
 )
@@ -64,11 +65,6 @@ func (controller UserController) GetHtmlBody() actionresult.IActionResult {
 	return controller.View("raw", map[string]interface{}{
 		"body": "raw.htm hello world!",
 	})
-}
-
-func (controller UserController) GetDoc() mvc.ApiDocResult[string] {
-
-	return mvc.ApiDocumentResult[string]().Success().Data("ok").Message("hello").Build()
 }
 
 func (controller UserController) GetInfo() mvc.ApiResult {
@@ -158,6 +154,7 @@ func (controller UserController) Upload(form *UploadForm) mvc.ApiResult {
 
 }
 
+// TestFunc attribute routing @route("/v1/user/{id}/test")
 func (controller UserController) TestFunc(request *struct {
 	mvc.RequestGET `route:"/v1/user/:id/test" doc:"测试接口"`
 	Name           string `uri:"name" doc:"测试用户名"`
@@ -165,4 +162,15 @@ func (controller UserController) TestFunc(request *struct {
 }) mvc.ApiResult {
 
 	return mvc.Success(request)
+}
+
+// GetDocumentById TestFunc attribute routing @route("/v1/user/doc/{id}")
+func (controller UserController) GetDocumentById(request *struct {
+	mvc.RequestGET `route:"/v1/user/doc/:id" doc:"根据ID获取文档"`
+	Id             uint64 `path:"id" doc:"文档ID"`
+}) mvc.ApiDocResult[string] {
+
+	return mvc.ApiDocumentResult[string]().Success().
+		Data("Document Id:" + utils.ToString(request.Id)).
+		Message("GetDocumentById").Build()
 }

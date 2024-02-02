@@ -100,33 +100,31 @@ func FilterValidParams(controller mvc.ControllerDescriptor, openapi *swagger.Ope
 				paramSourceData := param.ParameterType.Elem()
 				fieldNum := paramSourceData.NumField()
 				//根据请求方法分类
-				if act.ActionMethod == "post" || act.ActionMethod == "any" {
-					for i := 0; i < fieldNum; i++ {
-						// 获取方法注释
-						filed := paramSourceData.Field(i)
-						if strings.HasPrefix(filed.Type.Name(), "Request") {
-							if filed.Type.Name() == "RequestBody" || filed.Type.Name() == "RequestPOST" {
-								act.ActionMethod = "post"
-							} else {
-								actionMethodDef := filed.Type.Name()
-								actionMethodDef = strings.ReplaceAll(actionMethodDef, "Request", "")
-								act.ActionMethod = strings.ToLower(actionMethodDef) // get / head / delete / options / patch / put
-							}
-							// 获取BODY参数注释 RequestBody or RequestGET or RequestPOST
-							body, parameters := RequestBody(param)
-							if body.Content != nil {
-								pathInfo.RequestBody = body
-							}
-							if len(parameters) > 0 {
-								pathInfo.Parameters = parameters
-							}
-
-							pathInfo.Description = filed.Tag.Get("doc")
-							pathInfo.Summary = filed.Tag.Get("doc")
-							break
+				for i := 0; i < fieldNum; i++ {
+					// 获取方法注释
+					filed := paramSourceData.Field(i)
+					if strings.HasPrefix(filed.Type.Name(), "Request") {
+						if filed.Type.Name() == "RequestBody" || filed.Type.Name() == "RequestPOST" {
+							act.ActionMethod = "post"
+						} else {
+							actionMethodDef := filed.Type.Name()
+							actionMethodDef = strings.ReplaceAll(actionMethodDef, "Request", "")
+							act.ActionMethod = strings.ToLower(actionMethodDef) // get / head / delete / options / patch / put
+						}
+						// 获取BODY参数注释 RequestBody or RequestGET or RequestPOST
+						body, parameters := RequestBody(param)
+						if body.Content != nil {
+							pathInfo.RequestBody = body
+						}
+						if len(parameters) > 0 {
+							pathInfo.Parameters = parameters
 						}
 
+						pathInfo.Description = filed.Tag.Get("doc")
+						pathInfo.Summary = filed.Tag.Get("doc")
+						break
 					}
+
 				}
 
 			}
@@ -150,6 +148,13 @@ func FilterValidParams(controller mvc.ControllerDescriptor, openapi *swagger.Ope
 		if responseType != nil && responseType.Kind() == reflect.Struct {
 			// struct , ApiResult , ApiDocResult[?]
 			println(responseType.Name())
+			// new struct type to object
+			responseObject := reflect.New(responseType).Elem().Interface()
+
+			swaggerResponse := swagger.ConvertToSwaggerResponse(responseObject)
+			responseItem := swagger.ResponsesItem{Description: "OK", Content: make(map[string]interface{})}
+			responseItem.Content["application/json"] = map[string]interface{}{"schema": swaggerResponse}
+			pathInfo.Responses["200"] = responseItem
 		} else {
 			pathInfo.Responses["200"] = swagger.ResponsesItem{Description: "OK"}
 		}
@@ -172,7 +177,11 @@ func RequestBody(param reflectx.MethodParameterInfo) (swagger.RequestBody, []swa
 	schema.Properties = schemaProperties
 	for i := 0; i < fieldNum; i++ {
 		filed := paramSourceData.Field(i)
-		if strings.HasPrefix(filed.Type.Name(), "Request") {
+		fieldTypeName := strings.ToLower(filed.Type.Name())
+		if fieldTypeName == "" {
+			fieldTypeName = strings.ToLower(filed.Type.Elem().Name())
+		}
+		if strings.HasPrefix(fieldTypeName, "Request") {
 			continue
 		}
 		uriField := filed.Tag.Get("uri")
@@ -181,7 +190,7 @@ func RequestBody(param reflectx.MethodParameterInfo) (swagger.RequestBody, []swa
 		pathField := filed.Tag.Get("path")
 		headerField := filed.Tag.Get("header")
 
-		if uriField != "" || pathField != "" || headerField != "" {
+		if uriField != "" || pathField != "" || headerField != "" || formField != "" {
 			// 构建参数
 			params := swagger.Parameters{}
 			params.In = "query"
@@ -194,28 +203,37 @@ func RequestBody(param reflectx.MethodParameterInfo) (swagger.RequestBody, []swa
 				fieldName = headerField
 				params.In = "header"
 			}
+			if fieldName == "" {
+				fieldName = formField
+				params.In = "formData"
+			}
+
 			params.Name = fieldName
+			params.Schema = struct {
+				Type string `json:"type"`
+			}(struct{ Type string }{
+				Type: swagger.GetSwaggerType(fieldTypeName),
+			})
+
 			params.Description = filed.Tag.Get("doc")
 			parameterList = append(parameterList, params)
 		}
 
-		if formField != "" || jsonField != "" {
+		if jsonField != "" {
 			//if contentTypeStr == "" {
 			//	contentTypeStr = "application/x-www-form-urlencoded"
 			//}
-			fieldName := formField
-			if fieldName == "" {
-				fieldName = jsonField
-			}
+			fieldName := jsonField
+
 			property := swagger.Property{}
 			property.Type = strings.ToLower(filed.Type.Name())
 			if property.Type == "" {
 				property.Type = strings.ToLower(filed.Type.Elem().Name())
 			}
-			property.Type = getSwaggerType(property.Type)
-			if property.Type == "file" {
-				property.Format = "binary"
-			}
+			property.Type = swagger.GetSwaggerType(property.Type)
+			//if property.Type == "file" {
+			//	property.Format = "binary"
+			//}
 
 			property.Description = filed.Tag.Get("doc")
 			schemaProperties[fieldName] = property
@@ -227,29 +245,11 @@ func RequestBody(param reflectx.MethodParameterInfo) (swagger.RequestBody, []swa
 	if len(schemaProperties) > 0 {
 		//if contentTypeStr == "" {
 		contentTypeStr = "application/json"
-		//}
+
 		content := swagger.ContentType{Schema: schema}
 		contentType[contentTypeStr] = content
 	} else {
 		contentType = nil
 	}
 	return swagger.RequestBody{Content: contentType}, parameterList
-}
-
-func getSwaggerType(goType string) string {
-	if strings.Contains(goType, "file") {
-		return "string"
-	}
-	switch goType {
-	case "int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16", "uint32", "uint64":
-		return "integer"
-	case "float32", "float64":
-		return "number"
-	case "string":
-		return "string"
-	case "bool":
-		return "boolean"
-	default:
-		return "object"
-	}
 }

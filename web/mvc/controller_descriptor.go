@@ -41,15 +41,13 @@ func NewControllerDescriptor(name string, controllerType reflect.Type, controlle
 				MethodInfo:   action,
 			}
 			// Action Descriptors
-			attributeRoute, err := addAttributeRouteActionDescriptor(name, actionDescriptor)
-			if err != nil {
-				logger.Error(err.Error())
-			} else {
-				if attributeRoute != nil {
-					actionDescriptor.IsAttributeRoute = true
-					actionDescriptor.Route = attributeRoute
-				}
+			attributeRoute, _ := addAttributeRouteActionDescriptor(name, actionDescriptor)
+
+			if attributeRoute != nil {
+				actionDescriptor.IsAttributeRoute = true
+				actionDescriptor.Route = attributeRoute
 			}
+
 			actionDescriptors[actionName] = actionDescriptor
 		}
 	}
