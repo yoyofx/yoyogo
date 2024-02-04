@@ -1,6 +1,8 @@
 package endpoints
 
 import (
+	"fmt"
+	"github.com/yoyofx/yoyogo/abstractions"
 	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"github.com/yoyofx/yoyogo/pkg/swagger"
 	"github.com/yoyofx/yoyogo/web/context"
@@ -17,11 +19,14 @@ func UseSwaggerDoc(router router.IRouterBuilder, info swagger.Info) {
 
 	// swagger.json
 	router.GET("/swagger.json", func(ctx *context.HttpContext) {
+		var env *abstractions.HostEnvironment
+		_ = ctx.RequiredServices.GetService(&env)
+
 		openapi := &swagger.OpenApi{
 			Openapi: "3.1.0",
 			Paths:   make(map[string]map[string]swagger.Path)}
 		openapi.Info = info
-		GetSwaggerRouteInfomation(openapi, router)
+		GetSwaggerRouteInfomation(openapi, router, env)
 		ctx.JSON(200, openapi)
 	})
 
@@ -65,15 +70,22 @@ func UseSwaggerDoc(router router.IRouterBuilder, info swagger.Info) {
 	})
 }
 
-func GetSwaggerRouteInfomation(openapi *swagger.OpenApi, router router.IRouterBuilder) {
+func GetSwaggerRouteInfomation(openapi *swagger.OpenApi, router router.IRouterBuilder, env *abstractions.HostEnvironment) {
 	builder := router.GetMvcBuilder()
 	controllerList := builder.GetControllerDescriptorList()
 	for _, controller := range controllerList {
-		FilterValidParams(controller, openapi)
+		FilterValidParams(controller, openapi, env)
 	}
 }
 
-func FilterValidParams(controller mvc.ControllerDescriptor, openapi *swagger.OpenApi) {
+func FilterValidParams(controller mvc.ControllerDescriptor, openapi *swagger.OpenApi, env *abstractions.HostEnvironment) {
+	//serverPath := env.MetaData["server.path"]
+	mvcTemplate := env.MetaData["mvc.template"]
+	// mvc
+	mvcTemplate = strings.ReplaceAll(mvcTemplate, "{controller}", "%s")
+	mvcTemplate = strings.ReplaceAll(mvcTemplate, "{action}", "%s")
+	mvcTemplate = fmt.Sprintf("/%s/", mvcTemplate)
+
 	suf := len(controller.ControllerName) - 10
 	controllerName := controller.ControllerName[0:suf]
 	openapi.Tags = append(openapi.Tags, swagger.Tag{Name: controller.ControllerName, Description: controller.Descriptor})
@@ -83,8 +95,8 @@ func FilterValidParams(controller mvc.ControllerDescriptor, openapi *swagger.Ope
 		pathInfo := swagger.Path{}
 		pathInfo.Tags = []string{controller.ControllerName}
 		actionName := strings.ReplaceAll(strings.ToLower(act.ActionName), act.ActionMethod, "")
-		actPath := "/" + controllerName + "/" + actionName
-
+		//actPath := "/" + controllerName + "/" + actionName
+		actPath := fmt.Sprintf(mvcTemplate, controllerName, actionName)
 		// action params
 		if len(act.MethodInfo.Parameters) > 0 {
 			for _, param := range act.MethodInfo.Parameters {
