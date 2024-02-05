@@ -105,7 +105,12 @@ func registerEndpointRouterConfig(rb router.IRouterBuilder) {
 	endpoints.UseLiveness(rb)
 	endpoints.UseJwt(rb)
 	endpoints.UseRouteInfo(rb)
-	endpoints.UseSwaggerDoc(rb, swagger.Info{Title: "simple web swagger", Version: "10.0.0", Description: "尝试对接swagger文档"})
+	endpoints.UseSwaggerDoc(rb,
+		swagger.Info{
+			Title:       "YoyoGO 框架文档演示",
+			Version:     "1.0.0 beta",
+			Description: "框架文档演示swagger文档 1.0",
+		})
 
 	rb.GET("/error", func(ctx *context.HttpContext) {
 		panic("http get error")

@@ -5,7 +5,7 @@ type Path struct {
 	Summary     string                   `json:"summary"`
 	Description string                   `json:"description"`
 	OperationId string                   `json:"operationId"`
-	Parameters  []Parameters             `json:"parameters"`
+	Parameters  interface{}              `json:"parameters,omitempty"`
 	RequestBody RequestBody              `json:"requestBody,omitempty"`
 	Responses   map[string]ResponsesItem `json:"responses"`
 	Security    []Security               `json:"security"`

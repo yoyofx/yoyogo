@@ -18,12 +18,12 @@ func UseSwaggerDoc(router router.IRouterBuilder, info swagger.Info) {
 	xlog.GetXLogger("Endpoint").Debug("loaded swagger ui endpoint.")
 
 	// swagger.json
-	router.GET("/swagger.json", func(ctx *context.HttpContext) {
+	router.GET("/resources/swagger.json", func(ctx *context.HttpContext) {
 		var env *abstractions.HostEnvironment
 		_ = ctx.RequiredServices.GetService(&env)
 
 		openapi := &swagger.OpenApi{
-			Openapi: "3.1.0",
+			Openapi: "3.0.0",
 			Paths:   make(map[string]map[string]swagger.Path)}
 		openapi.Info = info
 		GetSwaggerRouteInfomation(openapi, router, env)
@@ -31,7 +31,12 @@ func UseSwaggerDoc(router router.IRouterBuilder, info swagger.Info) {
 	})
 
 	// swagger ui
-	router.GET("/swagger", func(ctx *context.HttpContext) {
+	router.GET("/resources/swagger", func(ctx *context.HttpContext) {
+		var env *abstractions.HostEnvironment
+		_ = ctx.RequiredServices.GetService(&env)
+		serverPath := env.MetaData["server.path"]
+		// swagger json address
+		swaggerJsonUri := fmt.Sprintf("/%s/resources/swagger.json", serverPath)
 		swaggerUIHTML := `<!DOCTYPE html>
 			<html lang="en">
 			  <head>
@@ -42,16 +47,16 @@ func UseSwaggerDoc(router router.IRouterBuilder, info swagger.Info) {
 				  content="SwaggerUI"
 				/>
 				<title>SwaggerUI</title>
-				<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.0.0/swagger-ui.css" />
+				<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.11.2/swagger-ui.css" />
 			  </head>
 			  <body>
 			  <div id="swagger-ui"></div>
-			  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.0.0/swagger-ui-bundle.js" crossorigin></script>
-			  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.0.0/swagger-ui-standalone-preset.js" crossorigin></script>
+			  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.11.2/swagger-ui-bundle.js" crossorigin></script>
+			  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.11.2/swagger-ui-standalone-preset.js" crossorigin></script>
 			  <script>
 				window.onload = () => {
 				  window.ui = SwaggerUIBundle({
-					url: 'http://localhost:8080/app/swagger.json',
+					url: '%s',
 					dom_id: '#swagger-ui',
 					presets: [
 					  SwaggerUIBundle.presets.apis,
@@ -63,6 +68,7 @@ func UseSwaggerDoc(router router.IRouterBuilder, info swagger.Info) {
 			  </script>
 			  </body>
 			</html>`
+		swaggerUIHTML = fmt.Sprintf(swaggerUIHTML, swaggerJsonUri)
 		ctx.Output.Header("Content-Type", "text/html; charset=utf-8")
 		_, _ = ctx.Output.Write([]byte(swaggerUIHTML))
 		ctx.Output.SetStatus(200)
@@ -79,12 +85,12 @@ func GetSwaggerRouteInfomation(openapi *swagger.OpenApi, router router.IRouterBu
 }
 
 func FilterValidParams(controller mvc.ControllerDescriptor, openapi *swagger.OpenApi, env *abstractions.HostEnvironment) {
-	//serverPath := env.MetaData["server.path"]
+	serverPath := env.MetaData["server.path"]
 	mvcTemplate := env.MetaData["mvc.template"]
 	// mvc
 	mvcTemplate = strings.ReplaceAll(mvcTemplate, "{controller}", "%s")
 	mvcTemplate = strings.ReplaceAll(mvcTemplate, "{action}", "%s")
-	mvcTemplate = fmt.Sprintf("/%s/", mvcTemplate)
+	mvcTemplate = fmt.Sprintf("/%s/%s", serverPath, mvcTemplate)
 
 	suf := len(controller.ControllerName) - 10
 	controllerName := controller.ControllerName[0:suf]
@@ -146,6 +152,7 @@ func FilterValidParams(controller mvc.ControllerDescriptor, openapi *swagger.Ope
 		}
 		if act.IsAttributeRoute {
 			actPath = act.Route.Template
+			actPath = fmt.Sprintf("/%s%s", serverPath, actPath)
 			// used regexp ,replace :id to {id}
 			reg := regexp.MustCompile(`:[a-zA-Z0-9]+`)
 			actPath = reg.ReplaceAllString(actPath, "{$0}")
@@ -159,7 +166,7 @@ func FilterValidParams(controller mvc.ControllerDescriptor, openapi *swagger.Ope
 
 		if responseType != nil && responseType.Kind() == reflect.Struct {
 			// struct , ApiResult , ApiDocResult[?]
-			println(responseType.Name())
+			// println(responseType.Name())
 			// new struct type to object
 			responseObject := reflect.New(responseType).Elem().Interface()
 
