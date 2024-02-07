@@ -34,7 +34,7 @@ QQ交流群： [780385870](https://qm.qq.com/cgi-bin/qm/qr?k=xP5ZSGZaLLgJIjK0P89
 go get github.com/yoyofx/yoyogo
 ```
 # 安装依赖 (由于某些原因国内下载不了依赖)
-##  go version < 1.13
+##  go version < 1.20
 ```bash
 window 下在 cmd 中执行：
 set GO111MODULE=on
@@ -122,6 +122,7 @@ github.com/shima-park/agollo
 * [x] RouteData路由数据 (/api/:version/) 与 Binding的集成 
 * [x] 路由组功能
 * [x] MVC默认模板功能
+* [X] MVC 自定义路由
 * [x] 路由过滤器 Filter
 
 ## MVC
@@ -139,7 +140,7 @@ github.com/shima-park/agollo
 * [X] 配置
 * [X] WebSocket
 * [X] JWT 
-* [ ] swagger
+* [X] swagger
 * [X] GRpc	 
 * [X] Prometheus 
 
@@ -194,6 +195,26 @@ func registerEndpoints(rb router.IRouterBuilder) {
 	Endpoints.UsePrometheus(rb)
 	Endpoints.UsePprof(rb)
 	Endpoints.UseJwt(rb)
+	
+	//swagger api document
+	endpoints.UseSwaggerDoc(rb,
+		swagger.Info{
+			Title:          "YoyoGO 框架文档演示",
+			Version:        "v1.0.0",
+			Description:    "框架文档演示swagger文档 v1.0 [ #yoyogo](https://github.com/yoyofx/yoyogo).",
+			TermsOfService: "https://dev.yoyogo.run",
+			Contact: swagger.Contact{
+				Email: "zl.hxd@hotmail.com",
+				Name:  "yoyogo",
+			},
+			License: swagger.License{
+				Name: "MIT",
+				Url:  "https://opensource.org/licenses/MIT",
+			},
+		},
+		func(openapi *swagger.OpenApi) {
+			openapi.AddSecurityBearerAuth()
+		})
 
 	rb.GET("/error", func(ctx *context.HttpContext) {
 		panic("http get error")
@@ -250,11 +271,12 @@ func NewUserController(userAction models.IUserAction) *UserController {
 	return &UserController{userAction: userAction}
 }
 
-// 请求对象的参数化绑定
-type RegiserRequest struct {
-	mvc.RequestBody
-	UserName string `param:"username"`
-	Password string `param:"password"`
+// 请求对象的参数化绑定 , 使用 doc属性标注 支持swagger文档
+type RegisterRequest struct {
+	mvc.RequestBody `route:"/api/users/register" doc:"用户注册"`
+	UserName   string `uri:"userName" doc:"用户名"`
+	Password   string `uri:"password" doc:"密码"`
+	TestNumber uint64 `uri:"num" doc:"数字"`
 }
 
 // Register函数自动绑定参数
@@ -267,6 +289,26 @@ func (this *UserController) Register(ctx *context.HttpContext, request *RegiserR
 func (this *UserController) GetInfo() mvc.ApiResult {
 	return this.OK(this.userAction.Login("zhang"))
 }
+
+// DocumentResponse custom document response , use doc tag for swagger
+type DocumentResponse struct {
+	Message string        `json:"message" doc:"消息"`
+	List    []DocumentDto `json:"list" doc:"文档列表"`
+	Success bool          `json:"success" doc:"是否成功"`
+}
+
+// Swagger API 文档支持
+func (controller UserController) GetDocumentList(request *struct {
+	mvc.RequestGET `route:"/v1/user/doc/list" doc:"获取全部文档列表"`
+}) DocumentResponse {
+
+	return DocumentResponse{Message: "GetDocumentList", List: []DocumentDto{
+		{Id: 1, Name: "test1", Time: time.Now()}, {Id: 2, Name: "test2", Time: time.Now()},
+		{Id: 3, Name: "test3", Time: time.Now()}, {Id: 4, Name: "test4", Time: time.Now()},
+		{Id: 5, Name: "test5", Time: time.Now()}, {Id: 6, Name: "test6", Time: time.Now()},
+	}, Success: true}
+}
+
 
 // Web程序的开始与停止事件
 func fireApplicationLifeEvent(life *abstractions.ApplicationLife) {

@@ -23,9 +23,9 @@ func UseSwaggerDoc(router router.IRouterBuilder, info swagger.Info, configFunc f
 		_ = ctx.RequiredServices.GetService(&env)
 		baseUrl := fmt.Sprintf("http://localhost:%s", env.Port)
 		openapi := swagger.NewOpenApi(baseUrl, info)
+
 		configFunc(openapi)
-		//openapi.AddSecurityBearerAuth()
-		GetSwaggerRouteInfomation(openapi, router, env)
+		GetSwaggerRouteInformation(openapi, router, env)
 		ctx.JSON(200, openapi)
 	})
 
@@ -76,15 +76,51 @@ func UseSwaggerDoc(router router.IRouterBuilder, info swagger.Info, configFunc f
 	})
 }
 
-func GetSwaggerRouteInfomation(openapi *swagger.OpenApi, router router.IRouterBuilder, env *abstractions.HostEnvironment) {
+func GetSwaggerRouteInformation(openapi *swagger.OpenApi, router router.IRouterBuilder, env *abstractions.HostEnvironment) {
+	// mvc routes
 	builder := router.GetMvcBuilder()
 	controllerList := builder.GetControllerDescriptorList()
 	for _, controller := range controllerList {
-		FilterValidParams(controller, openapi, env)
+		getMvcRouters(controller, openapi, env)
+	}
+
+	// default routes
+	getEndpointRouters(openapi, router, env)
+}
+
+func getEndpointRouters(openapi *swagger.OpenApi, router router.IRouterBuilder, env *abstractions.HostEnvironment) {
+	// default normal route ,such as rb.POST("/info/:id", PostInfo)
+	routerInfoList := router.GetRouteInfo()
+	openapi.Tags = append(openapi.Tags, swagger.Tag{Name: "default", Description: fmt.Sprintf("Endpoints of the default route. (%v)", len(routerInfoList))})
+	for idx, _ := range routerInfoList {
+		// uri parameters
+		pathInfo := swagger.Path{
+			Tags:       []string{"default"},
+			Responses:  map[string]swagger.ResponsesItem{},
+			Parameters: []swagger.Parameters{}}
+
+		actPath := fmt.Sprintf("/%s%s", env.MetaData["server.path"], routerInfoList[idx].Path)
+		// used regexp ,replace :id to {id}
+		if strings.Contains(actPath, ":") {
+			reg := regexp.MustCompile(`:([a-zA-Z0-9]+)`)
+			matches := reg.FindAllString(actPath, -1)
+			var params []swagger.Parameters
+			if len(matches) > 0 {
+				for _, match := range matches {
+					paramName := strings.Replace(match, ":", "", -1)
+					params = append(params, swagger.Parameters{In: "path", Name: paramName})
+				}
+				pathInfo.Parameters = params
+			}
+			actPath = reg.ReplaceAllString(actPath, "{$1}")
+		}
+
+		pathInfo.Responses["200"] = swagger.ResponsesItem{Description: "OK"}
+		openapi.Paths[actPath] = map[string]swagger.Path{strings.ToLower(routerInfoList[idx].Method): pathInfo}
 	}
 }
 
-func FilterValidParams(controller mvc.ControllerDescriptor, openapi *swagger.OpenApi, env *abstractions.HostEnvironment) {
+func getMvcRouters(controller mvc.ControllerDescriptor, openapi *swagger.OpenApi, env *abstractions.HostEnvironment) {
 	serverPath := env.MetaData["server.path"]
 	mvcTemplate := env.MetaData["mvc.template"]
 	// mvc
@@ -154,9 +190,8 @@ func FilterValidParams(controller mvc.ControllerDescriptor, openapi *swagger.Ope
 			actPath = act.Route.Template
 			actPath = fmt.Sprintf("/%s%s", serverPath, actPath)
 			// used regexp ,replace :id to {id}
-			reg := regexp.MustCompile(`:[a-zA-Z0-9]+`)
-			actPath = reg.ReplaceAllString(actPath, "{$0}")
-			actPath = strings.ReplaceAll(actPath, ":", "")
+			reg := regexp.MustCompile(`:([a-zA-Z0-9]+)`)
+			actPath = reg.ReplaceAllString(actPath, "{$1}")
 			pathInfo.Summary = pathInfo.Summary + " ( Route Attribute ) "
 		} else {
 			pathInfo.Summary = pathInfo.Summary + " ( MVC ) "

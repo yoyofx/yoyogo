@@ -93,8 +93,8 @@ func main() {
 * [X] configtion
 * [X] WebSocket
 * [X] JWT 
-* [ ] swagger
-* [ ] GRpc
+* [X] swagger
+* [X] GRpc
 * [X] Prometheus 
 
 

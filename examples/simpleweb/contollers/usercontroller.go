@@ -182,7 +182,7 @@ func (controller UserController) GetDocumentById(request *struct {
 		Message("GetDocumentById").Build()
 }
 
-// custom document response
+// DocumentResponse custom document response
 type DocumentResponse struct {
 	Message string        `json:"message" doc:"消息"`
 	List    []DocumentDto `json:"list" doc:"文档列表"`
@@ -193,11 +193,9 @@ func (controller UserController) GetDocumentList(request *struct {
 	mvc.RequestGET `route:"/v1/user/doc/list" doc:"获取全部文档列表"`
 }) DocumentResponse {
 
-	list := []DocumentDto{
+	return DocumentResponse{Message: "GetDocumentList", List: []DocumentDto{
 		{Id: 1, Name: "test1", Time: time.Now()}, {Id: 2, Name: "test2", Time: time.Now()},
 		{Id: 3, Name: "test3", Time: time.Now()}, {Id: 4, Name: "test4", Time: time.Now()},
 		{Id: 5, Name: "test5", Time: time.Now()}, {Id: 6, Name: "test6", Time: time.Now()},
-	}
-
-	return DocumentResponse{Message: "GetDocumentList", List: list, Success: true}
+	}, Success: true}
 }
