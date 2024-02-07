@@ -8,7 +8,7 @@ import (
 )
 
 type SDController struct {
-	mvc.ApiController
+	mvc.ApiController `doc:"服务发现接口Controller"`
 	discoveryCache    servicediscovery.Cache
 	discoveryClient   servicediscovery.IServiceDiscoveryClient
 	discoverySelector servicediscovery.ISelector

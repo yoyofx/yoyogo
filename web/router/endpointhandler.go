@@ -3,11 +3,13 @@ package router
 import (
 	"github.com/yoyofx/yoyogo/web/context"
 	"net/url"
+	"sort"
 	"strings"
 )
 
 // EndPointRouterHandler node.
 type EndPointRouterHandler struct {
+	// 需要数组排序,Component是否包含:和*,如果包含则放在最后
 	children  []*EndPointRouterHandler
 	param     byte
 	Component string
@@ -25,14 +27,14 @@ func (endPoint *EndPointRouterHandler) Invoke(ctx *context.HttpContext, pathComp
 }
 
 // Insert a node into the tree.
-func (t *EndPointRouterHandler) Insert(method, path string, handler func(ctx *context.HttpContext)) {
-	t.fullURL = &path
+func (endPoint *EndPointRouterHandler) Insert(method, path string, handler func(ctx *context.HttpContext)) {
+	endPoint.fullURL = &path
 	components := strings.Split(path, "/")[1:]
 Next:
 	for _, component := range components {
-		for _, child := range t.children {
+		for _, child := range endPoint.children {
 			if child.Component == component {
-				t = child
+				endPoint = child
 				continue Next
 			}
 		}
@@ -44,14 +46,14 @@ Next:
 				newNode.param = component[0]
 			}
 		}
-		t.children = append(t.children, newNode)
-		t = newNode
+		endPoint.children = append(endPoint.children, newNode)
+		endPoint = newNode
 	}
-	t.Methods[method] = handler
+	endPoint.Methods[method] = handler
 }
 
-func (t *EndPointRouterHandler) Match(ctx *context.HttpContext, pathComponents []string) (string, bool) {
-	node := t.search(pathComponents, ctx.Input.RouterData)
+func (endPoint *EndPointRouterHandler) Match(ctx *context.HttpContext, pathComponents []string) (string, bool) {
+	node := endPoint.search(pathComponents, ctx.Input.RouterData)
 	if node != nil {
 		return *node.fullURL, true
 	}
@@ -59,15 +61,18 @@ func (t *EndPointRouterHandler) Match(ctx *context.HttpContext, pathComponents [
 }
 
 // Search the tree.
-func (t *EndPointRouterHandler) search(components []string, params url.Values) *EndPointRouterHandler {
+func (endPoint *EndPointRouterHandler) search(components []string, params url.Values) *EndPointRouterHandler {
 Next:
 	for cidx, component := range components {
-		if t.Component == component && cidx == 0 {
+		if endPoint.Component == component && cidx == 0 {
 			continue
-		} else if t.Component != "/" && t.Component != component && cidx == 0 {
+		} else if endPoint.Component != "/" && endPoint.Component != component && cidx == 0 {
 			return nil
 		}
-		for _, child := range t.children {
+
+		sort.Slice(endPoint.children, endPoint.Less)
+		for _, child := range endPoint.children {
+
 			if child.Component == component || child.param == ':' || child.param == '*' {
 				if child.param == '*' {
 					return child
@@ -75,11 +80,20 @@ Next:
 				if child.param == ':' {
 					params.Add(child.Component[1:], component)
 				}
-				t = child
+				endPoint = child
 				continue Next
 			}
 		}
 		return nil // not found
 	}
-	return t
+	return endPoint
+}
+
+// Less sort by EndPointRouterHandler
+// Less function for sort,
+func (endPoint *EndPointRouterHandler) Less(i, j int) bool {
+	if endPoint.children[i].param == ':' || endPoint.children[i].param == '*' {
+		return false
+	}
+	return true
 }

@@ -9,6 +9,7 @@ import (
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/mysql"
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/redis"
 	"github.com/yoyofx/yoyogo/pkg/servicediscovery/nacos"
+	"github.com/yoyofx/yoyogo/pkg/swagger"
 	"github.com/yoyofx/yoyogo/web"
 	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofx/yoyogo/web/endpoints"
@@ -42,7 +43,7 @@ func main() {
 	webHost.Run()
 }
 
-//CreateCustomBuilder Create the builder of Web host
+// CreateCustomBuilder Create the builder of Web host
 func CreateCustomBuilder() *abstractions.HostBuilder {
 	//config := nacosconfig.RemoteConfig("config")
 	//config := apollo.RemoteConfig("config")
@@ -94,7 +95,7 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 
 //*/
 
-//region router config function
+// region router config function
 func registerEndpointRouterConfig(rb router.IRouterBuilder) {
 	endpoints.UseHealth(rb)
 	endpoints.UseViz(rb)
@@ -104,6 +105,24 @@ func registerEndpointRouterConfig(rb router.IRouterBuilder) {
 	endpoints.UseLiveness(rb)
 	endpoints.UseJwt(rb)
 	endpoints.UseRouteInfo(rb)
+	endpoints.UseSwaggerDoc(rb,
+		swagger.Info{
+			Title:          "YoyoGO 框架文档演示",
+			Version:        "v1.0.0",
+			Description:    "框架文档演示swagger文档 v1.0 [ #yoyogo](https://github.com/yoyofx/yoyogo).",
+			TermsOfService: "https://dev.yoyogo.run",
+			Contact: swagger.Contact{
+				Email: "zl.hxd@hotmail.com",
+				Name:  "yoyogo",
+			},
+			License: swagger.License{
+				Name: "MIT",
+				Url:  "https://opensource.org/licenses/MIT",
+			},
+		},
+		func(openapi *swagger.OpenApi) {
+			openapi.AddSecurityBearerAuth()
+		})
 
 	rb.GET("/error", func(ctx *context.HttpContext) {
 		panic("http get error")
@@ -145,8 +164,8 @@ type UserInfo struct {
 	Id       string `param:"id"`
 }
 
-//HttpGet request: /info  or /v1/api/info
-//bind UserInfo for id,q1,username
+// HttpGet request: /info  or /v1/api/info
+// bind UserInfo for id,q1,username
 func GetInfo(ctx *context.HttpContext) {
 	ctx.JSON(200, context.H{"info": "ok"})
 }
@@ -160,8 +179,8 @@ func GetInfoByIOC(ctx *context.HttpContext) {
 	})
 }
 
-//bootstrap binding
-//HttpPost request: /info/:id ?q1=abc&username=123
+// bootstrap binding
+// HttpPost request: /info/:id ?q1=abc&username=123
 func PostInfo(ctx *context.HttpContext) {
 	qs_q1 := ctx.Input.Query("q1")
 	pd_name := ctx.Input.Param("username")

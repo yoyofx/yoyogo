@@ -26,9 +26,9 @@ func NewMvcRouterHandler() *RouterHandler {
 
 func (handler *RouterHandler) Invoke(ctx *context.HttpContext, pathComponents []string) func(ctx *context.HttpContext) {
 	matchInfo := MatchMvcInfo{}
-	foundRoute := handler.ActionRoutesAttributes.Match(ctx, pathComponents, &matchInfo)
+	foundRoute := handler.Options.Template.Match(pathComponents, &matchInfo)
 	if !foundRoute {
-		foundRoute = handler.Options.Template.Match(pathComponents, &matchInfo)
+		foundRoute = handler.ActionRoutesAttributes.Match(ctx, pathComponents, &matchInfo)
 	}
 	if !foundRoute {
 		return nil
