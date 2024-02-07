@@ -107,9 +107,21 @@ func registerEndpointRouterConfig(rb router.IRouterBuilder) {
 	endpoints.UseRouteInfo(rb)
 	endpoints.UseSwaggerDoc(rb,
 		swagger.Info{
-			Title:       "YoyoGO 框架文档演示",
-			Version:     "1.0.0 beta",
-			Description: "框架文档演示swagger文档 1.0",
+			Title:          "YoyoGO 框架文档演示",
+			Version:        "v1.0.0",
+			Description:    "框架文档演示swagger文档 v1.0 [ #yoyogo](https://github.com/yoyofx/yoyogo).",
+			TermsOfService: "https://dev.yoyogo.run",
+			Contact: swagger.Contact{
+				Email: "zl.hxd@hotmail.com",
+				Name:  "yoyogo",
+			},
+			License: swagger.License{
+				Name: "MIT",
+				Url:  "https://opensource.org/licenses/MIT",
+			},
+		},
+		func(openapi *swagger.OpenApi) {
+			openapi.AddSecurityBearerAuth()
 		})
 
 	rb.GET("/error", func(ctx *context.HttpContext) {

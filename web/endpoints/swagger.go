@@ -14,18 +14,17 @@ import (
 	"strings"
 )
 
-func UseSwaggerDoc(router router.IRouterBuilder, info swagger.Info) {
+func UseSwaggerDoc(router router.IRouterBuilder, info swagger.Info, configFunc func(openapi *swagger.OpenApi)) {
 	xlog.GetXLogger("Endpoint").Debug("loaded swagger ui endpoint.")
 
 	// swagger.json
 	router.GET("/resources/swagger.json", func(ctx *context.HttpContext) {
 		var env *abstractions.HostEnvironment
 		_ = ctx.RequiredServices.GetService(&env)
-
-		openapi := &swagger.OpenApi{
-			Openapi: "3.0.0",
-			Paths:   make(map[string]map[string]swagger.Path)}
-		openapi.Info = info
+		baseUrl := fmt.Sprintf("http://localhost:%s", env.Port)
+		openapi := swagger.NewOpenApi(baseUrl, info)
+		configFunc(openapi)
+		//openapi.AddSecurityBearerAuth()
 		GetSwaggerRouteInfomation(openapi, router, env)
 		ctx.JSON(200, openapi)
 	})
@@ -34,9 +33,10 @@ func UseSwaggerDoc(router router.IRouterBuilder, info swagger.Info) {
 	router.GET("/resources/swagger", func(ctx *context.HttpContext) {
 		var env *abstractions.HostEnvironment
 		_ = ctx.RequiredServices.GetService(&env)
+		baseUrl := fmt.Sprintf("http://localhost:%s", env.Port)
 		serverPath := env.MetaData["server.path"]
 		// swagger json address
-		swaggerJsonUri := fmt.Sprintf("/%s/resources/swagger.json", serverPath)
+		swaggerJsonUri := fmt.Sprintf("%s/%s/resources/swagger.json", baseUrl, serverPath)
 		swaggerUIHTML := `<!DOCTYPE html>
 			<html lang="en">
 			  <head>
