@@ -10,6 +10,9 @@ func GetSwaggerType(goType string) string {
 	if strings.Contains(goType, "file") {
 		return "file"
 	}
+	if strings.HasPrefix(goType, "[]") {
+		return "array"
+	}
 	switch goType {
 	case "int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16", "uint32", "uint64":
 		return "integer"
@@ -19,6 +22,8 @@ func GetSwaggerType(goType string) string {
 		return "string"
 	case "bool":
 		return "boolean"
+	case "time.Time":
+		return "string"
 	default:
 		return "object"
 	}
@@ -52,19 +57,32 @@ func ConvertToSwaggerResponse(data interface{}) map[string]interface{} {
 		//}
 
 		if swaggerType == "array" {
+			itemTypeName := GetSwaggerType(field.Type.Elem().String())
+			properties := make(map[string]interface{})
+			if itemTypeName == "object" {
+				objectVal := reflect.New(field.Type.Elem()).Elem().Interface()
+				properties = ConvertToSwaggerResponse(objectVal)["properties"].(map[string]interface{})
+			}
+
+			itemsProperty := map[string]interface{}{
+				"type":       GetSwaggerType(itemTypeName),
+				"properties": properties,
+			}
+
 			response["properties"].(map[string]interface{})[fieldName] = map[string]interface{}{
 				"type":  "array",
-				"items": map[string]interface{}{"type": GetSwaggerType(getArrayElementType(fieldType))},
-			}
+				"items": itemsProperty}
 		} else {
 			response["properties"].(map[string]interface{})[fieldName] = map[string]interface{}{
-				"type": swaggerType,
+				"type":        swaggerType,
+				"description": field.Tag.Get("doc"),
 			}
 		}
 
 		if swaggerType == "object" {
 			if fieldValue != nil {
-				response["properties"].(map[string]interface{})[fieldName].(map[string]interface{})["properties"] = ConvertToSwaggerResponse(fieldValue)
+				fieldMap := ConvertToSwaggerResponse(fieldValue)
+				response["properties"].(map[string]interface{})[fieldName].(map[string]interface{})["properties"] = fieldMap["properties"]
 			}
 		}
 	}

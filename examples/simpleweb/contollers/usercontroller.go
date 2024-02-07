@@ -9,9 +9,9 @@ import (
 	"github.com/yoyofx/yoyogo/web/captcha"
 	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofx/yoyogo/web/mvc"
-	"gorm.io/gorm/utils"
 	"mime/multipart"
 	"simpleweb/models"
+	"time"
 )
 
 type UserController struct {
@@ -164,13 +164,40 @@ func (controller UserController) TestFunc(request *struct {
 	return mvc.Success(request)
 }
 
+type DocumentDto struct {
+	Id   uint64    `json:"id" doc:"文档ID"`
+	Name string    `json:"name" doc:"文档名称"`
+	Time time.Time `json:"time" doc:"创建时间"`
+}
+
 // GetDocumentById TestFunc attribute routing @route("/v1/user/doc/{id}")
 func (controller UserController) GetDocumentById(request *struct {
 	mvc.RequestGET `route:"/v1/user/doc/:id" doc:"根据ID获取文档"`
 	Id             uint64 `path:"id" doc:"文档ID"`
-}) mvc.ApiDocResult[string] {
+}) mvc.ApiDocResult[DocumentDto] {
 
-	return mvc.ApiDocumentResult[string]().Success().
-		Data("Document Id:" + utils.ToString(request.Id)).
+	response := DocumentDto{Id: request.Id, Name: "test", Time: time.Now()}
+	return mvc.ApiDocumentResult[DocumentDto]().Success().
+		Data(response).
 		Message("GetDocumentById").Build()
+}
+
+// custom document response
+type DocumentResponse struct {
+	Message string        `json:"message" doc:"消息"`
+	List    []DocumentDto `json:"list" doc:"文档列表"`
+	Success bool          `json:"success" doc:"是否成功"`
+}
+
+func (controller UserController) GetDocumentList(request *struct {
+	mvc.RequestGET `route:"/v1/user/doc/list" doc:"获取全部文档列表"`
+}) DocumentResponse {
+
+	list := []DocumentDto{
+		{Id: 1, Name: "test1", Time: time.Now()}, {Id: 2, Name: "test2", Time: time.Now()},
+		{Id: 3, Name: "test3", Time: time.Now()}, {Id: 4, Name: "test4", Time: time.Now()},
+		{Id: 5, Name: "test5", Time: time.Now()}, {Id: 6, Name: "test6", Time: time.Now()},
+	}
+
+	return DocumentResponse{Message: "GetDocumentList", List: list, Success: true}
 }

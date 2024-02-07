@@ -157,7 +157,9 @@ func FilterValidParams(controller mvc.ControllerDescriptor, openapi *swagger.Ope
 			reg := regexp.MustCompile(`:[a-zA-Z0-9]+`)
 			actPath = reg.ReplaceAllString(actPath, "{$0}")
 			actPath = strings.ReplaceAll(actPath, ":", "")
-
+			pathInfo.Summary = pathInfo.Summary + " ( Route Attribute ) "
+		} else {
+			pathInfo.Summary = pathInfo.Summary + " ( MVC ) "
 		}
 		// responses
 		pathInfo.Responses = make(map[string]swagger.ResponsesItem)
