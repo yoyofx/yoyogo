@@ -6,7 +6,7 @@ require (
 	github.com/yoyofx/yoyogo v0.0.0
 	github.com/yoyofxteam/dependencyinjection v1.0.1
 	google.golang.org/grpc v1.60.0
-	google.golang.org/protobuf v1.31.0
+	google.golang.org/protobuf v1.33.0
 )
 
 require (
