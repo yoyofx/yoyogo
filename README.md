@@ -1,4 +1,4 @@
-<img src="https://mnur-prod-public.oss-cn-beijing.aliyuncs.com/0/tech/yoyogo.png" width = "380px" height = "120px" alt="" align=center />[中文](https://github.com/yoyofx/yoyogo/blob/master/README.md)  / [English](https://github.com/yoyofx/yoyogo/blob/master/README_En.md)
+yoyo<img src="https://mnur-prod-public.oss-cn-beijing.aliyuncs.com/0/tech/yoyogo.png" width = "380px" height = "120px" alt="" align=center />[中文](https://github.com/yoyofx/yoyogo/blob/master/README.md)  / [English](https://github.com/yoyofx/yoyogo/blob/master/README_En.md)
 
 YoyoGo 简单、轻量、快速、基于依赖注入的微服务框架
 
@@ -64,7 +64,7 @@ func main() {
     }).Build().Run()       //默认端口号 :8080
 }
 ```
-![](https://mnur-prod-public.oss-cn-beijing.aliyuncs.com/0/tech/20201209182340.png)
+![](https://mnur-prod-public.oss-cn-beijing.aliyuncs.com/0/tech/20201209182340lee.png)
 
 ## 依赖框架模块
 只涉及框架使用或贡献过的库
@@ -96,13 +96,13 @@ github.com/shima-park/agollo
 * [X] Secure Json Render
 * [X] Ascii Json Render
 * [X] Pure Json Render
-* [X] Binary Data Render
+* [X] do Binary Data Render
 * [X] TEXT
 * [X] Protobuf
 * [X] MessagePack
 * [X] XML
 * [X] YAML
-* [X] File
+* [X] xFile
 * [X] Image
 * [X] Template
 * [X] Auto formater Render
@@ -114,12 +114,12 @@ github.com/shima-park/agollo
 * [X] CORS	
 * [X] Binding
 * [X] JWT
-* [X] RequestId And Tracker for SkyWorking
+* [X] yoyo p RequestId And Tracker for SkyWorking
 
 ## 路由
-* [x] GET，POST，HEAD，PUT，DELETE 方法支持
+* [x] p GET，POST，HEAD，PUT，DELETE 方法支持
 * [x] 路由解析树与表达式支持
-* [x] RouteData路由数据 (/api/:version/) 与 Binding的集成 
+* [x] yoyo p RouteData路由数据 (/api/:version/) 与 Binding的集成 
 * [x] 路由组功能
 * [x] MVC默认模板功能
 * [X] MVC 自定义路由
@@ -142,7 +142,7 @@ github.com/shima-park/agollo
 * [X] JWT 
 * [X] swagger
 * [X] GRpc	 
-* [X] Prometheus 
+* [X] yoyo Prometheus 
 
 
 # 进阶范例
